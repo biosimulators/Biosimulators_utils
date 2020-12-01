@@ -2,7 +2,8 @@ name: Lint, test, and compile documentation
 
 on:
   push:
-    tags-ignore: '*'
+    branches: '**'
+    tags-ignore: '*.*'
 
 jobs:
   build:
