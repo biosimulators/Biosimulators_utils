@@ -5,6 +5,8 @@ on:
     tags:
 
 jobs:
+  if: startsWith(github.ref, 'refs/tags/')
+  
   getVersionNumber:
     name: Get version number
     runs-on: ubuntu-latest
