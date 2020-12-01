@@ -1,0 +1,3 @@
+[flake8]
+filename = biosimulators_utils
+max-line-length = 140

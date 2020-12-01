@@ -1,0 +1,54 @@
+name: Release a new version
+
+on:
+  push:
+    tags:
+
+jobs:
+  getVersionNumber:
+    name: Get version number
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version-number.outputs.version }}
+    steps:
+      - id: get-version-number
+        name: Get version number
+        env:
+          TAG: ${{ github.ref }}
+        run: |
+          version="${TAG/refs\/tags\//}"
+          echo "::set-output name=version::$version"
+
+  release:
+    name: Release a new version
+    needs: getVersionNumber
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # GitHub
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.getVersionNumber.outputs.version }}
+          release_name: Release ${{ needs.getVersionNumber.outputs.version }}
+
+      # PyPI
+      - name: Install pandoc
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends pandoc
+        
+      - name: Convert README to .rst format
+        run: pandoc --from=gfm --output=README.rst --to=rst README.md
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}

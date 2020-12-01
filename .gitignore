@@ -3,7 +3,12 @@
 __pycache__/
 *.pyc
 
+# coverage files
+.coverage
+coverage.xml
+
 # compiled documentation
+README.rst
 docs/.doctrees/
 docs/_raw_sources/
 docs/_sources/
