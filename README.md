@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/biosimulators/Biosimulators_utils.svg)](LICENSE)
 ![Analytics](https://ga-beacon.appspot.com/UA-86759801-1/Biosimulators_utils/README.md?pixel)
 
-# BioSimulators-utils
+# BioSimulators utils
 Utilities for building standardized command-line interfaces for biosimulation tools that support the [Simulation Experiment Description Markup Language](https://sed-ml.org/) (SED-ML) and the [COMBINE/OMEX format](https://combinearchive.org/).
 
 ## Contents
@@ -11,7 +11,7 @@ Utilities for building standardized command-line interfaces for biosimulation to
 * [API documentation](#api-documentation)
 * [License](#license)
 * [Development team](#development-team)
-* [Contributing to BioSimulators-utils](#contributing-to-biosimulators-utils)
+* [Contributing to BioSimulators utils](#contributing-to-biosimulators-utils)
 * [Acknowledgements](#acknowledgements)
 * [Questions and comments](#questions-and-comments)
 
@@ -40,8 +40,8 @@ This package is released under the [MIT license](LICENSE).
 ## Development team
 This package was developed by the [Karr Lab](https://www.karrlab.org) at the Icahn School of Medicine at Mount Sinai in New York and the [Center for Reproducible Biomedical Modeling](http://reproduciblebiomodels.org).
 
-## Contributing to BioSimulators-utils
-We enthusiastically welcome contributions to BioSimulators-utils! Please see the [guide to contributing](CONTRIBUTING.md) and the [developer's code of conduct](CODE_OF_CONDUCT.md).
+## Contributing to BioSimulators utils
+We enthusiastically welcome contributions to BioSimulators utils! Please see the [guide to contributing](CONTRIBUTING.md) and the [developer's code of conduct](CODE_OF_CONDUCT.md).
 
 ## Acknowledgements
 This work was supported by National Institutes of Health award P41EB023912.

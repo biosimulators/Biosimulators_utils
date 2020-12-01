@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 # -- Project information -----------------------------------------------------
 source_base_url = 'https://github.com/biosimulators/Biosimulators_utils/blob/dev/'
-project = 'BioSimulators-utils'
+project = 'BioSimulators utils'
 copyright = '{}, BioSimulators Team'.format(datetime.datetime.now().year)
 author = 'BioSimulators Team'
 

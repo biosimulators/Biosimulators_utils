@@ -1,6 +1,6 @@
-# Contributing to BioSimulators-utils
+# Contributing to BioSimulators utils
 
-We enthusiastically welcome contributions to BioSimulators-utils!
+We enthusiastically welcome contributions to BioSimulators utils!
 
 ## Coordinating contributions
 
@@ -17,7 +17,7 @@ This repository follows standard Python conventions:
 * `setup.cfg`: Configuration for the pip installation script
 * `requirements.txt`: Dependencies of this package
 * `requirements.optional.txt`: Optional dependencies of this package
-* `MANIFEST.in`: List of files to include when BioSimulators-utils is packaged for distribution through PyPI
+* `MANIFEST.in`: List of files to include when BioSimulators utils is packaged for distribution through PyPI
 * `LICENSE`: License for this package
 * `CONTRIBUTING.md`: Guide to contributing to this package (this document)
 * `CODE_OF_CONDUCT.md`: Code of conduct for developers of this package
@@ -32,7 +32,7 @@ This repository follows standard Python style conventions:
 
 ## Documentation convention
 
-BioSimulators-utils is documented using [reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html) and the [napoleon Sphinx plugin](https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html). The documentation can be compiled with [Sphinx](https://www.sphinx-doc.org/) by running the following commands:
+BioSimulators utils is documented using [reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html) and the [napoleon Sphinx plugin](https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html). The documentation can be compiled with [Sphinx](https://www.sphinx-doc.org/) by running the following commands:
 
 ```
 python -m pip install -r docs-src/requirements.txt
