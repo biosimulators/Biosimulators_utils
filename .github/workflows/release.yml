@@ -55,6 +55,11 @@ jobs:
       - name: Convert README to .rst format
         run: pandoc --from=gfm --output=README.rst --to=rst README.md
 
+      - name: Create packages to upload to PyPI
+        run: |
+          python setup.py sdist
+          python setup.py bdist_wheel
+
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
