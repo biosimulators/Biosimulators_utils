@@ -51,7 +51,7 @@ jobs:
           sudo dpkg -i /tmp/pandoc.deb
           rm /tmp/pandocVersions.html
           rm /tmp/pandoc.deb
-        
+
       - name: Convert README to .rst format
         run: pandoc --from=gfm --output=README.rst --to=rst README.md
 
@@ -72,15 +72,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install --upgrade setuptools
-          python -m pip install wheel
+          python -m pip install wheel twine
 
       - name: Create packages to upload to PyPI
         run: |
           python setup.py sdist
           python setup.py bdist_wheel
 
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@master
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
+      - name: Upload packages to PyPI
+        run: |
+          twine upload \
+            --username __token__ \
+            --password "${{ secrets.PYPI_TOKEN }}" \
+            dist/*
