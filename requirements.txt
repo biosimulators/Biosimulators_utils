@@ -1,0 +1,4 @@
+lxml
+python-dateutil
+python-libcombine
+python-libsedml
