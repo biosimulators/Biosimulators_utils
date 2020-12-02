@@ -1,7 +1,7 @@
-[![Build](https://github.com/biosimulators/Biosimulators_utils/workflows/build/badge.svg)](https://github.com/biosimulators/Biosimulators_utils/actions?query=workflow:"build")
+[![Build](https://github.com/biosimulators/Biosimulators_utils/Lint%2C%20test%2C%20and%20compile%20documentation/build/badge.svg)](https://github.com/biosimulators/Biosimulators_utils/actions?query=workflow%3A%22Lint%2C+test%2C+and+compile+documentation%22)
 [![Test coverage](https://codecov.io/gh/biosimulators/Biosimulators_utils/branch/dev/graph/badge.svg)](https://codecov.io/gh/biosimulators/Biosimulators_utils)
 [![License](https://img.shields.io/github/license/biosimulators/Biosimulators_utils.svg)](LICENSE)
-![Analytics](https://ga-beacon.appspot.com/UA-86759801-1/Biosimulators_utils/README.md?pixel)
+
 
 # BioSimulators utils
 Utilities for building standardized command-line interfaces for biosimulation tools that support the [Simulation Experiment Description Markup Language](https://sed-ml.org/) (SED-ML) and the [COMBINE/OMEX format](https://combinearchive.org/).
