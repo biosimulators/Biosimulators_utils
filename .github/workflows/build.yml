@@ -76,6 +76,7 @@ jobs:
         name: Commit the compiled documentation
         if: github.ref == 'refs/heads/dev'
         run: |
+          git pull
           git config --local user.email "biosimulators.daemon@gmail.com"
           git config --local user.name "biosimulatorsdaemon"
           git add docs
