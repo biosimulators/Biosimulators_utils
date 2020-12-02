@@ -9,6 +9,8 @@ jobs:
   build:
     name: Lint, test, and compile documentation
     runs-on: ubuntu-latest
+    outputs:
+      docsChanged: ${{ steps.commit-docs.outputs.docsChanged }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -70,16 +72,23 @@ jobs:
           sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
           sphinx-build docs-src docs
       
-      - name: Commit the compiled documentation
+      - id: commit-docs
+        name: Commit the compiled documentation
         if: github.ref == 'refs/heads/dev'
         run: |
           git config --local user.email "biosimulators.daemon@gmail.com"
           git config --local user.name "biosimulatorsdaemon"
           git add docs
           git commit -m "Updating compiled documentation"
+          if [[ $? = 0 ]]; then
+            docsChanged=1
+          else
+            docsChanged=0
+          fi
+          echo "::set-output name=docsChanged::$docsChanged"
 
       - name: Push the compiled documentation
-        if: github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/dev' && steps.commit-docs.outputs.docsChanged == "1"
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
