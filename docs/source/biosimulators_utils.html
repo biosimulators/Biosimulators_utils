@@ -1,0 +1,512 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2. biosimulators_utils package &#8212; BioSimulators utils 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3. About BioSimulators utils" href="../about.html" />
+    <link rel="prev" title="1. Installation instructions" href="../installation.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">BioSimulators utils</a></h1>
+
+
+
+<p class="blurb">Utilities for building standardized command-line interfaces for biosimulation tools</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosimulators&repo=Biosimulators_utils&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation instructions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">2.1. Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-biosimulators_utils.combine">2.2. biosimulators_utils.combine module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-biosimulators_utils.utils">2.3. biosimulators_utils.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">3. About BioSimulators utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">4. Index</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://biosimulators.org">BioSimulators</a></li>
+    
+    <li class="toctree-l1"><a href="https://run.biosimulations.org">runBioSimulations</a></li>
+    
+    <li class="toctree-l1"><a href="https://biosimulations.org">BioSimulations</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../installation.html" title="previous chapter"><span class="section-number">1. </span>Installation instructions</a></li>
+      <li>Next: <a href="../about.html" title="next chapter"><span class="section-number">3. </span>About BioSimulators utils</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-biosimulators_utils">
+<span id="biosimulators-utils-package"></span><h1><span class="section-number">2. </span>biosimulators_utils package<a class="headerlink" href="#module-biosimulators_utils" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2><span class="section-number">2.1. </span>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-biosimulators_utils.combine">
+<span id="biosimulators-utils-combine-module"></span><h2><span class="section-number">2.2. </span>biosimulators_utils.combine module<a class="headerlink" href="#module-biosimulators_utils.combine" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="biosimulators_utils.combine.CombineArchive">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.combine.</code><code class="sig-name descname">CombineArchive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contents</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">authors</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">created</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">updated</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.combine.CombineArchiveBase</span></code></p>
+<p>A COMBINE/OMEX archive</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchive.contents">
+<code class="sig-name descname">contents</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchive.contents" title="Permalink to this definition">¶</a></dt>
+<dd><p>contents of the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#biosimulators_utils.combine.CombineArchiveContent" title="biosimulators_utils.combine.CombineArchiveContent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchive.description">
+<code class="sig-name descname">description</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchive.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>description</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchive.authors">
+<code class="sig-name descname">authors</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchive.authors" title="Permalink to this definition">¶</a></dt>
+<dd><p>authors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Author</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchive.created">
+<code class="sig-name descname">created</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchive.created" title="Permalink to this definition">¶</a></dt>
+<dd><p>created date</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime.datetime</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchive.updated">
+<code class="sig-name descname">updated</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchive.updated" title="Permalink to this definition">¶</a></dt>
+<dd><p>updated date</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime.datetime</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.combine.CombineArchive.get_master_content">
+<code class="sig-name descname">get_master_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchive.get_master_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the master content of an archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>master content</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#biosimulators_utils.combine.CombineArchiveContent" title="biosimulators_utils.combine.CombineArchiveContent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></a> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – if more than one content item is marked as master</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.combine.CombineArchive.is_equal">
+<code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchive.is_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if two content items are equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.combine.CombineArchiveContent" title="biosimulators_utils.combine.CombineArchiveContent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></a>) – another content item</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two others are equal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.combine.CombineArchive.to_tuple">
+<code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchive.to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tuple representation of a COMBINE/OMEX archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tuple representation of a COMBINE/OMEX archive</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.combine.CombineArchiveAuthor">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.combine.</code><code class="sig-name descname">CombineArchiveAuthor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">given_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">family_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveAuthor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An author of a COMBINE/OMEX archive of a content item of a COMBINE/OMEX archive</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchiveAuthor.given_name">
+<code class="sig-name descname">given_name</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveAuthor.given_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>given/first name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchiveAuthor.family_name">
+<code class="sig-name descname">family_name</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveAuthor.family_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>family/last name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.combine.CombineArchiveAuthor.is_equal">
+<code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveAuthor.is_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if two authors are equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.combine.CombineArchiveAuthor" title="biosimulators_utils.combine.CombineArchiveAuthor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveAuthor</span></code></a>) – another author</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two others are equal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.combine.CombineArchiveAuthor.to_tuple">
+<code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveAuthor.to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tuple representation of an author</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tuple representation of an author</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.combine.CombineArchiveContent">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.combine.</code><code class="sig-name descname">CombineArchiveContent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">location</span></em>, <em class="sig-param"><span class="n">format</span></em>, <em class="sig-param"><span class="n">master</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">authors</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">created</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">updated</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveContent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.combine.CombineArchiveBase</span></code></p>
+<p>A content item (e.g., file) in a COMBINE/OMEX archive</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchiveContent.location">
+<code class="sig-name descname">location</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveContent.location" title="Permalink to this definition">¶</a></dt>
+<dd><p>path to the content</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchiveContent.format">
+<code class="sig-name descname">format</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveContent.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL for the specification of the format of the content</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchiveContent.master">
+<code class="sig-name descname">master</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveContent.master" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if the content is the “primary” content of the parent archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchiveContent.description">
+<code class="sig-name descname">description</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveContent.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>description</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchiveContent.authors">
+<code class="sig-name descname">authors</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveContent.authors" title="Permalink to this definition">¶</a></dt>
+<dd><p>authors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Author</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchiveContent.created">
+<code class="sig-name descname">created</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveContent.created" title="Permalink to this definition">¶</a></dt>
+<dd><p>created date</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime.datetime</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchiveContent.updated">
+<code class="sig-name descname">updated</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveContent.updated" title="Permalink to this definition">¶</a></dt>
+<dd><p>updated date</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime.datetime</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.combine.CombineArchiveContent.is_equal">
+<code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveContent.is_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if two content items are equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.combine.CombineArchiveContent" title="biosimulators_utils.combine.CombineArchiveContent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></a>) – another content item</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two others are equal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.combine.CombineArchiveContent.to_tuple">
+<code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveContent.to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tuple representation of a content item of a COMBINE/OMEX archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tuple representation of a content item of a COMBINE/OMEX archive</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.combine.CombineArchiveReader">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.combine.</code><code class="sig-name descname">CombineArchiveReader</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Reader for COMBINE/OMEX archives</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.combine.CombineArchiveReader.NONE_DATETIME">
+<code class="sig-name descname">NONE_DATETIME</code><em class="property"> = '2000-01-01T00:00:00Z'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveReader.NONE_DATETIME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.combine.CombineArchiveReader.run">
+<em class="property">classmethod </em><code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_file</span></em>, <em class="sig-param"><span class="n">out_dir</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveReader.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read an archive from a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_file</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to save archive</p></li>
+<li><p><strong>out_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – directory which contains the files in the archive</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>description of archive</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.combine.CombineArchive" title="biosimulators_utils.combine.CombineArchive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ArchiveIoError</strong> – archive is invalid</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.combine.CombineArchiveWriter">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.combine.</code><code class="sig-name descname">CombineArchiveWriter</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Writer for COMBINE/OMEX archives</p>
+<dl class="py method">
+<dt id="biosimulators_utils.combine.CombineArchiveWriter.run">
+<em class="property">classmethod </em><code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">archive</span></em>, <em class="sig-param"><span class="n">in_dir</span></em>, <em class="sig-param"><span class="n">out_file</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.CombineArchiveWriter.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write an archive to a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive</strong> (<a class="reference internal" href="#biosimulators_utils.combine.CombineArchive" title="biosimulators_utils.combine.CombineArchive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code></a>) – description of archive</p></li>
+<li><p><strong>in_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – directory which contains the files in the archive</p></li>
+<li><p><strong>out_file</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to save archive</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>AssertionError</strong> – if files could not be added to the archive or the archive could not be
+    saved</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-biosimulators_utils.utils">
+<span id="biosimulators-utils-utils-module"></span><h2><span class="section-number">2.3. </span>biosimulators_utils.utils module<a class="headerlink" href="#module-biosimulators_utils.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="biosimulators_utils.utils.are_lists_equal">
+<code class="sig-prename descclassname">biosimulators_utils.utils.</code><code class="sig-name descname">are_lists_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em>, <em class="sig-param"><span class="n">sort_key</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.utils.are_lists_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if two lists are equal, optionally up to the order of the elements</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code>) – first list</p></li>
+<li><p><strong>b</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code>) – second list</p></li>
+<li><p><strong>sort_key</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.FunctionType</span></code>) – function to sort the lists</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if lists are equal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2020, BioSimulators Team.
+      
+      |
+      <a href="../_sources/source/biosimulators_utils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/biosimulators/Biosimulators_utils" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
