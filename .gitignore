@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 
 # coverage files
+htmlcov/
 .coverage
 coverage.xml
 
