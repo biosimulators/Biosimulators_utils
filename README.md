@@ -1,5 +1,5 @@
 [![Build](https://github.com/biosimulators/Biosimulators_utils/workflows/build/badge.svg)](https://github.com/biosimulators/Biosimulators_utils/actions?query=workflow:"build")
-[![Test coverage](https://codecov.io/gh/biosimulators/Biosimulators_utils/branch/master/graph/badge.svg)](https://codecov.io/gh/biosimulators/Biosimulators_utils)
+[![Test coverage](https://codecov.io/gh/biosimulators/Biosimulators_utils/branch/dev/graph/badge.svg)](https://codecov.io/gh/biosimulators/Biosimulators_utils)
 [![License](https://img.shields.io/github/license/biosimulators/Biosimulators_utils.svg)](LICENSE)
 ![Analytics](https://ga-beacon.appspot.com/UA-86759801-1/Biosimulators_utils/README.md?pixel)
 
