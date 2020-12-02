@@ -88,12 +88,12 @@ class CombineArchive(CombineArchiveBase):
             other (:obj:`CombineArchiveContent`): another content item
 
         Returns:
-            :obj:`bool`: :obj:`True`, if two others are equal
+            :obj:`bool`: :obj:`True`, if two archives are equal
         """
         return self.__class__ == other.__class__ \
-            and are_lists_equal(self.contents, other.contents, CombineArchiveContent.to_tuple) \
+            and are_lists_equal(self.contents, other.contents) \
             and self.description == other.description \
-            and are_lists_equal(self.authors, other.authors, CombineArchiveAuthor.to_tuple) \
+            and are_lists_equal(self.authors, other.authors) \
             and self.created == other.created \
             and self.updated == other.updated
 
@@ -146,14 +146,14 @@ class CombineArchiveContent(CombineArchiveBase):
             other (:obj:`CombineArchiveContent`): another content item
 
         Returns:
-            :obj:`bool`: :obj:`True`, if two others are equal
+            :obj:`bool`: :obj:`True`, if two content items are equal
         """
         return self.__class__ == other.__class__ \
             and self.location == other.location \
             and self.format == other.format \
             and self.master == other.master \
             and self.description == other.description \
-            and are_lists_equal(self.authors, other.authors, CombineArchiveAuthor.to_tuple) \
+            and are_lists_equal(self.authors, other.authors) \
             and self.created == other.created \
             and self.updated == other.updated
 
@@ -182,7 +182,7 @@ class CombineArchiveAuthor(object):
             other (:obj:`CombineArchiveAuthor`): another author
 
         Returns:
-            :obj:`bool`: :obj:`True`, if two others are equal
+            :obj:`bool`: :obj:`True`, if two authors are equal
         """
         return self.__class__ == other.__class__ \
             and self.given_name == other.given_name \
