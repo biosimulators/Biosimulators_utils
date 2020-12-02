@@ -199,7 +199,7 @@
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.combine.CombineArchiveContent" title="biosimulators_utils.combine.CombineArchiveContent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></a>) – another content item</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two others are equal</p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two archives are equal</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
@@ -259,7 +259,7 @@
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.combine.CombineArchiveAuthor" title="biosimulators_utils.combine.CombineArchiveAuthor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveAuthor</span></code></a>) – another author</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two others are equal</p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two authors are equal</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
@@ -374,7 +374,7 @@
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.combine.CombineArchiveContent" title="biosimulators_utils.combine.CombineArchiveContent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></a>) – another content item</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two others are equal</p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two content items are equal</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
@@ -464,14 +464,13 @@
 <span id="biosimulators-utils-utils-module"></span><h2><span class="section-number">2.3. </span>biosimulators_utils.utils module<a class="headerlink" href="#module-biosimulators_utils.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="biosimulators_utils.utils.are_lists_equal">
-<code class="sig-prename descclassname">biosimulators_utils.utils.</code><code class="sig-name descname">are_lists_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em>, <em class="sig-param"><span class="n">sort_key</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.utils.are_lists_equal" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">biosimulators_utils.utils.</code><code class="sig-name descname">are_lists_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.utils.are_lists_equal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine if two lists are equal, optionally up to the order of the elements</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code>) – first list</p></li>
 <li><p><strong>b</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code>) – second list</p></li>
-<li><p><strong>sort_key</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.FunctionType</span></code>) – function to sort the lists</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
