@@ -1,4 +1,4 @@
 lxml
-python-dateutil
-python-libcombine
-python-libsedml
+python_dateutil
+python_libcombine
+python_libsedml
