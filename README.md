@@ -1,6 +1,7 @@
-[![Build](https://github.com/biosimulators/Biosimulators_utils/Lint%2C%20test%2C%20and%20compile%20documentation/build/badge.svg)](https://github.com/biosimulators/Biosimulators_utils/actions?query=workflow%3A%22Lint%2C+test%2C+and+compile+documentation%22)
+[![Latest release](https://img.shields.io/github/v/release/biosimulators/Biosimulators_utils)](https://github.com/biosimulators/Biosimulators_utils/releases)
+[![PyPI](https://img.shields.io/pypi/v/biosimulators-utils)](https://pypi.org/project/biosimulators-utils/)
+[![CI status](https://github.com/biosimulators/Biosimulators_utils/workflows/Lint,%20test,%20and%20compile%20documentation/badge.svg)](https://github.com/biosimulators/Biosimulators_utils/actions?query=workflow%3A%22Lint%2C+test%2C+and+compile+documentation%22)
 [![Test coverage](https://codecov.io/gh/biosimulators/Biosimulators_utils/branch/dev/graph/badge.svg)](https://codecov.io/gh/biosimulators/Biosimulators_utils)
-[![License](https://img.shields.io/github/license/biosimulators/Biosimulators_utils.svg)](LICENSE)
 
 
 # BioSimulators utils
