@@ -79,7 +79,7 @@ jobs:
           git config --local user.email "biosimulators.daemon@gmail.com"
           git config --local user.name "biosimulatorsdaemon"
           git add docs
-          set -e
+          set +e
           git commit -m "Updating compiled documentation"
           if [[ $? = 0 ]]; then
             docsChanged=1
