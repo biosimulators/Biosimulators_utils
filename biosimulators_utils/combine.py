@@ -77,8 +77,8 @@ class CombineArchive(CombineArchiveBase):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation of a COMBINE/OMEX archive
         """
-        contents = tuple(c.to_tuple() for c in sorted(self.contents, key=CombineArchiveContent.to_tuple))
-        authors = tuple(a.to_tuple() for a in sorted(self.authors, key=CombineArchiveAuthor.to_tuple))
+        contents = tuple(sorted(content.to_tuple() for content in self.contents))
+        authors = tuple(sorted(author.to_tuple() for author in self.authors))
         return (contents, self.description, authors, self.created, self.updated)
 
     def is_equal(self, other):
@@ -136,7 +136,7 @@ class CombineArchiveContent(CombineArchiveBase):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation of a content item of a COMBINE/OMEX archive
         """
-        authors = tuple(a.to_tuple() for a in sorted(self.authors, key=CombineArchiveAuthor.to_tuple))
+        authors = tuple(sorted(author.to_tuple() for author in self.authors))
         return (self.location, self.format, self.master, self.description, authors, self.created, self.updated)
 
     def is_equal(self, other):
@@ -235,12 +235,12 @@ class CombineArchiveWriter(object):
     @classmethod
     def _write_metadata(cls, obj, archive_comb, filename):
         """ Write metadata about an archive or a file in an archive
-        
+
         Args:
             obj (:obj:`CombineArchiveBase`): archive or file in an archive
             archive_comb (:obj:`libcombine.CombineArchive`): archive
             filename (:obj:`str`): path of object with archive
-        
+
         Raises:
             :obj:`NotImplementedError`: of the updated date is not defined
         """
