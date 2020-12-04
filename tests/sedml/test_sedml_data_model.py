@@ -170,6 +170,14 @@ class DataModelTestCase(unittest.TestCase):
             ]
         )
 
+        document = data_model.SedDocument(
+            models=[model],
+            simulations=[ss_simulation, one_step_simulation, time_course_simulation],
+            tasks=[task],
+            data_generators=[plot2d.curves[0].x_data],
+            outputs=[report, plot2d, plot3d],
+        )
+
         self.assertEqual(
             ss_simulation.to_tuple(),
             (
@@ -208,6 +216,14 @@ class DataModelTestCase(unittest.TestCase):
         self.assertEqual(report.to_tuple()[0], report.id)
         self.assertEqual(plot2d.to_tuple()[1][0][4][2][0][1], plot2d.curves[0].x_data.variables[0].name)
         self.assertEqual(plot3d.to_tuple()[1][0][5][2][0][0], plot3d.surfaces[0].x_data.variables[0].id)
+
+        self.assertEqual(document.to_tuple(), (
+            (model.to_tuple(),),
+            tuple(sorted((ss_simulation.to_tuple(), one_step_simulation.to_tuple(), time_course_simulation.to_tuple()))),
+            (task.to_tuple(),),
+            (plot2d.curves[0].x_data.to_tuple(),),
+            tuple(sorted((report.to_tuple(), plot2d.to_tuple(), plot3d.to_tuple()))),
+        ))
 
         change = model.changes[0]
         change2 = copy.deepcopy(change)
@@ -291,3 +307,8 @@ class DataModelTestCase(unittest.TestCase):
         self.assertTrue(plot3d.is_equal(plot3d_2))
         plot3d_2.name = None
         self.assertFalse(plot3d.is_equal(plot3d_2))
+
+        document_2 = copy.deepcopy(document)
+        self.assertTrue(document.is_equal(document_2))
+        document_2.models = []
+        self.assertFalse(document.is_equal(document_2))

@@ -4,6 +4,7 @@ import enum
 
 
 __all__ = [
+    'SedDocument',
     'Simulation',
     'SteadyStateSimulation',
     'OneStepSimulation',
@@ -27,6 +28,63 @@ __all__ = [
     'Curve',
     'Surface',
 ]
+
+
+class SedDocument(object):
+    """ A SED-ML document
+
+    Attributes:
+        models (:obj:`list` of :obj:`Model`): models
+        simulations (:obj:`list` of :obj:`Simulation`): simulations
+        tasks (:obj:`list` of :obj:`AbstractTask`): tasks
+        data_generators (:obj:`list` of :obj:`DataGenerator`): data generators
+        outputs (:obj:`list` of :obj:`Output`): outputs
+    """
+
+    def __init__(self, models=None, simulations=None, tasks=None, data_generators=None, outputs=None):
+        """
+        Args:
+            models (:obj:`list` of :obj:`Model`, optional): models
+            simulations (:obj:`list` of :obj:`Simulation`, optional): simulations
+            tasks (:obj:`list` of :obj:`AbstractTask`, optional): tasks
+            data_generators (:obj:`list` of :obj:`DataGenerator`, optional): data generators
+            outputs (:obj:`list` of :obj:`Output`, optional): outputs
+        """
+        self.models = models or []
+        self.simulations = simulations or []
+        self.tasks = tasks or []
+        self.data_generators = data_generators or []
+        self.outputs = outputs or []
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (
+            tuple(sorted(model.to_tuple() for model in self.models)),
+            tuple(sorted(simulation.to_tuple() for simulation in self.simulations)),
+            tuple(sorted(task.to_tuple() for task in self.tasks)),
+            tuple(sorted(data_generator.to_tuple() for data_generator in self.data_generators)),
+            tuple(sorted(output.to_tuple() for output in self.outputs)),
+        )
+
+    def is_equal(self, other):
+        """ Determine if SED-ML documents are equal
+
+        Args:
+            other (:obj:`Simulation`): another SED-ML document
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two SED-ML documents are equal
+        """
+        return self.__class__ == other.__class__ \
+            and are_lists_equal(self.models, other.models) \
+            and are_lists_equal(self.simulations, other.simulations) \
+            and are_lists_equal(self.tasks, other.tasks) \
+            and are_lists_equal(self.data_generators, other.data_generators) \
+            and are_lists_equal(self.outputs, other.outputs)
 
 
 class Simulation(abc.ABC):
