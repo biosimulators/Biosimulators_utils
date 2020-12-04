@@ -1,4 +1,4 @@
-from ..utils import are_lists_equal
+from ..utils.core import are_lists_equal
 import abc
 import enum
 

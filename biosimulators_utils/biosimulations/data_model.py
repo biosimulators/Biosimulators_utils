@@ -1,5 +1,5 @@
 from ..data_model import Person
-from ..utils import are_lists_equal
+from ..utils.core import are_lists_equal
 
 __all__ = [
     'Metadata',

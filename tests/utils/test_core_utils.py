@@ -1,4 +1,4 @@
-from biosimulators_utils import utils
+from biosimulators_utils.utils import core as utils
 import unittest
 
 
