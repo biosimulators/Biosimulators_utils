@@ -15,7 +15,9 @@ __all__ = [
 ]
 
 
-def build_cli(cli_name, cli_version, simulator_name, simulator_version, simulator_url, combine_archive_executer):
+def build_cli(cli_name=None, cli_version=None,
+              simulator_name=None, simulator_version=None, simulator_url=None,
+              combine_archive_executer=None):
     """ Create a BioSimulators-compliant command-line application for a biosimulation tool.
 
     The command-line application will have two inputs
@@ -23,17 +25,17 @@ def build_cli(cli_name, cli_version, simulator_name, simulator_version, simulato
     * A path to a COMBINE/OMEX archive that describes one or more simulations or one or more models
     * A path to a directory to store the ouputs of the execution of the simulations defined in the archive
 
-    The command-line application will also support two additional commands 
+    The command-line application will also support two additional commands
 
     * A command for printing help information about the command-line application (`-h`, `--help`)
     * A command for printing version information about the command-line application (`-v`, `--version`)
 
     Args:
         cli_name (:obj:`str`): name of the command-line program (e.g., `copasi`)
-        cli_version (:obj:`str`): version of the command-line application
+        cli_version (:obj:`str`, optional): version of the command-line application
         simulator_name (:obj:`str`): name of the simulator (e.g., `COPASI`)
-        simulator_version (:obj:`str`): version of the simulator
-        simulator_url (:obj:`str`): URL for information about the simulator
+        simulator_version (:obj:`str`, optional): version of the simulator
+        simulator_url (:obj:`str`, optional): URL for information about the simulator
         combine_archive_executer (:obj:`types.FunctionType`): a function which has two positional arguments
             * The path to the COMBINE/OMEX archive
             * The path to the directory to save the outputs of the simulations defined in the archive
@@ -46,13 +48,29 @@ def build_cli(cli_name, cli_version, simulator_name, simulator_version, simulato
     """
     python_version = '.'.join(str(i) for i in sys.version_info[0:3])
 
+    if not cli_name:
+        raise ValueError('CLI name must be defined')
+    if not simulator_name:
+        raise ValueError('Simulator name must be defined')
+    if not combine_archive_executer:
+        raise ValueError('COMBINE/OMEX archive execution method must be provided')
+
+    versions = []
+    if simulator_version:
+        versions.append(simulator_name + ': ' + simulator_version)
+    if cli_version:
+        versions.append('CLI: ' + cli_version)
+    versions.append('Python: ' + python_version)
+    version = ', '.join(versions)
+
     class BaseController(cement.Controller):
         """ Base controller for command line application """
 
         class Meta:
             label = 'base'
-            description = "BioSimulators-compliant command-line interface to the {} simulation program <{}>.".format(
-                simulator_name, simulator_url)
+            description = "BioSimulators-compliant command-line interface to the {} simulation program{}.".format(
+                simulator_name,
+                '<{}>'.format(simulator_url) if simulator_url else '')
             help = cli_name
             arguments = [
                 (
@@ -75,7 +93,7 @@ def build_cli(cli_name, cli_version, simulator_name, simulator_version, simulato
                     ['-v', '--version'],
                     dict(
                         action='version',
-                        version='{}: {}, CLI: {}, Python: {}'.format(simulator_name, simulator_version, cli_version, python_version),
+                        version=version,
                     ),
                 ),
             ]
