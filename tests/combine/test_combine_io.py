@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from biosimulators_utils.combine import data_model
 from biosimulators_utils.combine import io
+from biosimulators_utils.data_model import Person
 
 
 class ReadWriteTestCase(unittest.TestCase):
@@ -16,8 +17,8 @@ class ReadWriteTestCase(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
 
     def test(self):
-        author1 = data_model.CombineArchiveAuthor(given_name='first1', family_name='last1')
-        author2 = data_model.CombineArchiveAuthor(given_name='first2', family_name='last2')
+        author1 = Person(given_name='first1', family_name='last1')
+        author2 = Person(given_name='first2', family_name='last2')
 
         location = 'path_to_file'
         format = 'https://spec-url-for-format'

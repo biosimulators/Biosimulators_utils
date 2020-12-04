@@ -1,23 +1,13 @@
 import datetime
 import unittest
 from biosimulators_utils.combine import data_model
+from biosimulators_utils.data_model import Person
 
 
 class DataModelTestCase(unittest.TestCase):
-    def test_author(self):
-        author1 = data_model.CombineArchiveAuthor(given_name='first', family_name='last')
-        self.assertEqual(author1.given_name, 'first')
-        self.assertEqual(author1.family_name, 'last')
-        self.assertEqual(author1.to_tuple(), ('last', 'first'))
-
-        author2 = data_model.CombineArchiveAuthor(given_name='first', family_name='last')
-        author3 = data_model.CombineArchiveAuthor(given_name='last', family_name='first')
-        self.assertTrue(author1.is_equal(author2))
-        self.assertFalse(author1.is_equal(author3))
-
     def test_content(self):
-        author1 = data_model.CombineArchiveAuthor(given_name='first1', family_name='last1')
-        author2 = data_model.CombineArchiveAuthor(given_name='first2', family_name='last2')
+        author1 = Person(given_name='first1', family_name='last1')
+        author2 = Person(given_name='first2', family_name='last2')
 
         location = 'path_to_file'
         format = 'https://spec-url-for-format'
@@ -68,8 +58,8 @@ class DataModelTestCase(unittest.TestCase):
         self.assertFalse(content2.is_equal(content4))
 
     def test_archive(self):
-        author1 = data_model.CombineArchiveAuthor(given_name='first1', family_name='last1')
-        author2 = data_model.CombineArchiveAuthor(given_name='first2', family_name='last2')
+        author1 = Person(given_name='first1', family_name='last1')
+        author2 = Person(given_name='first2', family_name='last2')
 
         location = 'path_to_file'
         format = 'https://spec-url-for-format'

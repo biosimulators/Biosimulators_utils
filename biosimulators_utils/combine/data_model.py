@@ -1,4 +1,5 @@
 from ..utils import are_lists_equal
+from ..data_model import Person
 import abc
 import datetime
 
@@ -6,7 +7,6 @@ __all__ = [
     'CombineArchiveBase',
     'CombineArchive',
     'CombineArchiveContent',
-    'CombineArchiveAuthor',
 ]
 
 
@@ -15,7 +15,7 @@ class CombineArchiveBase(abc.ABC):
 
     Attributes:
         description (:obj:`str`): description
-        authors (:obj:`list` of :obj:`Author`): authors
+        authors (:obj:`list` of :obj:`Person`): authors
         created (:obj:`datetime.datetime`): created date
         updated (:obj:`datetime.datetime`): updated date
     """
@@ -28,7 +28,7 @@ class CombineArchive(CombineArchiveBase):
     Attributes:
         contents (:obj:`list` of :obj:`CombineArchiveContent`): contents of the archive
         description (:obj:`str`): description
-        authors (:obj:`list` of :obj:`Author`): authors
+        authors (:obj:`list` of :obj:`Person`): authors
         created (:obj:`datetime.datetime`): created date
         updated (:obj:`datetime.datetime`): updated date
     """
@@ -38,7 +38,7 @@ class CombineArchive(CombineArchiveBase):
         Args:
             contents (:obj:`list` of :obj:`CombineArchiveContent`, optional): contents of the archive
             description (:obj:`str`, optional): description
-            authors (:obj:`list` of :obj:`Author`, optional): authors
+            authors (:obj:`list` of :obj:`Person`, optional): authors
             created (:obj:`datetime.datetime`, optional): created date
             updated (:obj:`datetime.datetime`, optional): updated date
         """
@@ -102,7 +102,7 @@ class CombineArchiveContent(CombineArchiveBase):
         format (:obj:`str`): URL for the specification of the format of the content
         master (:obj:`bool`): :obj:`True`, if the content is the "primary" content of the parent archive
         description (:obj:`str`): description
-        authors (:obj:`list` of :obj:`Author`): authors
+        authors (:obj:`list` of :obj:`Person`): authors
         created (:obj:`datetime.datetime`): created date
         updated (:obj:`datetime.datetime`): updated date
     """
@@ -114,7 +114,7 @@ class CombineArchiveContent(CombineArchiveBase):
             format (:obj:`str`): URL for the specification of the format of the content
             master (:obj:`bool`): :obj:`True`, if the content is the "primary" content of the parent archive
             description (:obj:`str`, optional): description
-            authors (:obj:`list` of :obj:`Author`, optional): authors
+            authors (:obj:`list` of :obj:`Person`, optional): authors
             created (:obj:`datetime.datetime`, optional): created date
             updated (:obj:`datetime.datetime`, optional): updated date
         """
@@ -152,42 +152,3 @@ class CombineArchiveContent(CombineArchiveBase):
             and are_lists_equal(self.authors, other.authors) \
             and self.created == other.created \
             and self.updated == other.updated
-
-
-class CombineArchiveAuthor(object):
-    """ An author of a COMBINE/OMEX archive of a content item of a COMBINE/OMEX archive
-
-    Attributes:
-        given_name (:obj:`str`): given/first name
-        family_name (:obj:`str`): family/last name
-    """
-
-    def __init__(self, given_name=None, family_name=None):
-        """
-        Args:
-            given_name (:obj:`str`, optional): given/first name
-            family_name (:obj:`str`, optional): family/last name
-        """
-        self.given_name = given_name
-        self.family_name = family_name
-
-    def is_equal(self, other):
-        """ Determine if two authors are equal
-
-        Args:
-            other (:obj:`CombineArchiveAuthor`): another author
-
-        Returns:
-            :obj:`bool`: :obj:`True`, if two authors are equal
-        """
-        return self.__class__ == other.__class__ \
-            and self.given_name == other.given_name \
-            and self.family_name == other.family_name
-
-    def to_tuple(self):
-        """ Tuple representation of an author
-
-        Returns:
-            :obj:`tuple` of :obj:`str`: tuple representation of an author
-        """
-        return (self.family_name, self.given_name)

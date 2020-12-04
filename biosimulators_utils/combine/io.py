@@ -1,4 +1,5 @@
-from .data_model import CombineArchiveBase, CombineArchive, CombineArchiveContent, CombineArchiveAuthor
+from .data_model import CombineArchiveBase, CombineArchive, CombineArchiveContent
+from ..data_model import Person
 import dateutil.parser
 import libcombine
 import os
@@ -154,7 +155,7 @@ class CombineArchiveReader(object):
             obj.description = desc_comb.getDescription() or None
 
             for creator_comb in desc_comb.getCreators():
-                obj.authors.append(CombineArchiveAuthor(
+                obj.authors.append(Person(
                     given_name=creator_comb.getGivenName() or None,
                     family_name=creator_comb.getFamilyName() or None,
                 ))
