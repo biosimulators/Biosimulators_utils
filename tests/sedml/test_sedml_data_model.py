@@ -171,6 +171,8 @@ class DataModelTestCase(unittest.TestCase):
         )
 
         document = data_model.SedDocument(
+            level=1,
+            version=3,
             models=[model],
             simulations=[ss_simulation, one_step_simulation, time_course_simulation],
             tasks=[task],
@@ -218,6 +220,8 @@ class DataModelTestCase(unittest.TestCase):
         self.assertEqual(plot3d.to_tuple()[1][0][5][2][0][0], plot3d.surfaces[0].x_data.variables[0].id)
 
         self.assertEqual(document.to_tuple(), (
+            document.level,
+            document.version,
             (model.to_tuple(),),
             tuple(sorted((ss_simulation.to_tuple(), one_step_simulation.to_tuple(), time_course_simulation.to_tuple()))),
             (task.to_tuple(),),

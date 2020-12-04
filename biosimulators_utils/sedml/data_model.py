@@ -34,6 +34,8 @@ class SedDocument(object):
     """ A SED-ML document
 
     Attributes:
+        level (:obj:`int`): level
+        version (:obj:`int`): version
         models (:obj:`list` of :obj:`Model`): models
         simulations (:obj:`list` of :obj:`Simulation`): simulations
         tasks (:obj:`list` of :obj:`AbstractTask`): tasks
@@ -41,15 +43,19 @@ class SedDocument(object):
         outputs (:obj:`list` of :obj:`Output`): outputs
     """
 
-    def __init__(self, models=None, simulations=None, tasks=None, data_generators=None, outputs=None):
+    def __init__(self, level=1, version=3, models=None, simulations=None, tasks=None, data_generators=None, outputs=None):
         """
         Args:
+            level (:obj:`int`, optional): level
+            version (:obj:`int`, optional): version
             models (:obj:`list` of :obj:`Model`, optional): models
             simulations (:obj:`list` of :obj:`Simulation`, optional): simulations
             tasks (:obj:`list` of :obj:`AbstractTask`, optional): tasks
             data_generators (:obj:`list` of :obj:`DataGenerator`, optional): data generators
             outputs (:obj:`list` of :obj:`Output`, optional): outputs
         """
+        self.level = level
+        self.version = version
         self.models = models or []
         self.simulations = simulations or []
         self.tasks = tasks or []
@@ -63,6 +69,8 @@ class SedDocument(object):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (
+            self.level,
+            self.version,
             tuple(sorted(model.to_tuple() for model in self.models)),
             tuple(sorted(simulation.to_tuple() for simulation in self.simulations)),
             tuple(sorted(task.to_tuple() for task in self.tasks)),
@@ -80,6 +88,8 @@ class SedDocument(object):
             :obj:`bool`: :obj:`True`, if two SED-ML documents are equal
         """
         return self.__class__ == other.__class__ \
+            and self.level == other.level \
+            and self.version == other.version \
             and are_lists_equal(self.models, other.models) \
             and are_lists_equal(self.simulations, other.simulations) \
             and are_lists_equal(self.tasks, other.tasks) \
