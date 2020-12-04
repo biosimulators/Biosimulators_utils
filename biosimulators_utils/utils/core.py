@@ -1,4 +1,4 @@
-__all__ = ['are_lists_equal']
+__all__ = ['are_lists_equal', 'assert_exception']
 
 
 def are_lists_equal(a, b):
@@ -22,3 +22,17 @@ def are_lists_equal(a, b):
             return False
 
     return True
+
+
+def assert_exception(success, exception):
+    """ Raise an error if :obj:`success` is :obj:`False`
+
+    Args:
+        success (:obj:`bool`)
+        exception (:obj:`Exception`)
+
+    Raises:
+        :obj:`Exception`
+    """
+    if not success:
+        raise exception

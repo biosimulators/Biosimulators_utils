@@ -7,6 +7,7 @@ class TestCase(unittest.TestCase):
         class Obj(str):
             def is_equal(self, other):
                 return self == other
+
             def to_tuple(self):
                 return self
 
@@ -18,3 +19,8 @@ class TestCase(unittest.TestCase):
         self.assertFalse(utils.are_lists_equal([Obj('a'), Obj('b')], [Obj('a'), Obj('c')]))
 
         self.assertTrue(utils.are_lists_equal([Obj('a'), Obj('b')], [Obj('b'), Obj('a')]))
+
+    def test_assert_exception(self):
+        utils.assert_exception(True, Exception('message'))
+        with self.assertRaisesRegex(Exception, 'message'):
+            utils.assert_exception(False, Exception('message'))
