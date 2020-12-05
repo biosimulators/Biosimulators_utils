@@ -1,5 +1,6 @@
 from ..data_model import Person
 from ..utils.core import are_lists_equal
+import datetime
 
 __all__ = [
     'Metadata',
@@ -19,9 +20,11 @@ class Metadata(object):
         authors (:obj:`list` of :obj:`Person`): authors
         references (:obj:`ExternalReferences`): identifiers and citations
         license (:obj:`OntologyTerm`): license
+        created (:obj:`datetime.datetime`): created date-time
+        updated (:obj:`datetime.datetime`): updated date-time
     """
 
-    def __init__(self, description=None, tags=None, authors=None, references=None, license=None):
+    def __init__(self, description=None, tags=None, authors=None, references=None, license=None, created=None, updated=None):
         """
         Args:
             description (:obj:`str`, optional): description
@@ -29,12 +32,16 @@ class Metadata(object):
             authors (:obj:`list` of :obj:`Person`, optional): authors
             references (:obj:`ExternalReferences`, optional): identifiers and citations
             license (:obj:`OntologyTerm`, optional): license
+            created (:obj:`datetime.datetime`, optional): created date-time
+            updated (:obj:`datetime.datetime`, optional): updated date-time
         """
         self.description = description
         self.tags = tags or []
         self.authors = authors or []
         self.references = references
         self.license = license
+        self.created = created
+        self.updated = updated
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -45,7 +52,10 @@ class Metadata(object):
         return (self.description, tuple(self.tags),
                 tuple(sorted(author.to_tuple() for author in self.authors)),
                 self.references.to_tuple() if self.references else None,
-                self.license.to_tuple() if self.license else None)
+                self.license.to_tuple() if self.license else None,
+                self.created,
+                self.updated,
+                )
 
     def is_equal(self, other):
         """ Determine if metadata are equal
@@ -63,7 +73,9 @@ class Metadata(object):
             and ((self.references is None and self.references == other.references)
                  or (self.references is not None and self.references.is_equal(other.references))) \
             and ((self.license is None and self.license == other.license)
-                 or (self.license is not None and self.license.is_equal(other.license)))
+                 or (self.license is not None and self.license.is_equal(other.license))) \
+            and self.created == other.created \
+            and self.updated == other.updated
 
 
 class ExternalReferences(object):
