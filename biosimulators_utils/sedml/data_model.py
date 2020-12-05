@@ -1,3 +1,4 @@
+from ..biosimulations.data_model import Metadata
 from ..utils.core import are_lists_equal
 import abc
 import enum
@@ -41,9 +42,10 @@ class SedDocument(object):
         tasks (:obj:`list` of :obj:`AbstractTask`): tasks
         data_generators (:obj:`list` of :obj:`DataGenerator`): data generators
         outputs (:obj:`list` of :obj:`Output`): outputs
+        metadata (:obj:`Metadata`): metadata
     """
 
-    def __init__(self, level=1, version=3, models=None, simulations=None, tasks=None, data_generators=None, outputs=None):
+    def __init__(self, level=1, version=3, models=None, simulations=None, tasks=None, data_generators=None, outputs=None, metadata=None):
         """
         Args:
             level (:obj:`int`, optional): level
@@ -53,6 +55,7 @@ class SedDocument(object):
             tasks (:obj:`list` of :obj:`AbstractTask`, optional): tasks
             data_generators (:obj:`list` of :obj:`DataGenerator`, optional): data generators
             outputs (:obj:`list` of :obj:`Output`, optional): outputs
+            metadata (:obj:`Metadata`, optional): metadata
         """
         self.level = level
         self.version = version
@@ -61,6 +64,7 @@ class SedDocument(object):
         self.tasks = tasks or []
         self.data_generators = data_generators or []
         self.outputs = outputs or []
+        self.metadata = metadata
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -76,6 +80,7 @@ class SedDocument(object):
             tuple(sorted(task.to_tuple() for task in self.tasks)),
             tuple(sorted(data_generator.to_tuple() for data_generator in self.data_generators)),
             tuple(sorted(output.to_tuple() for output in self.outputs)),
+            self.metadata.to_tuple() if self.metadata else None,
         )
 
     def is_equal(self, other):
@@ -94,7 +99,9 @@ class SedDocument(object):
             and are_lists_equal(self.simulations, other.simulations) \
             and are_lists_equal(self.tasks, other.tasks) \
             and are_lists_equal(self.data_generators, other.data_generators) \
-            and are_lists_equal(self.outputs, other.outputs)
+            and are_lists_equal(self.outputs, other.outputs) \
+            and ((self.metadata is None and self.metadata == other.metadata)
+                 or (self.metadata is not None and self.metadata.is_equal(other.metadata)))
 
 
 class Simulation(abc.ABC):
@@ -263,17 +270,17 @@ class Algorithm(object):
 
     Attributes:
         kisao_id (:obj:`str`): KiSAO id (e.g., `KISAO_0000029`)
-        parameter_changes (:obj:`list` of :obj:`AlgorithmParameterChange`): parameter changes
+        changes (:obj:`list` of :obj:`AlgorithmParameterChange`): parameter changes
     """
 
-    def __init__(self, kisao_id=None, parameter_changes=None):
+    def __init__(self, kisao_id=None, changes=None):
         """
         Args:
             kisao_id (:obj:`str`, optional): KiSAO id (e.g., `KISAO_0000029`)
-            parameter_changes (:obj:`list` of :obj:`AlgorithmParameterChange`, optional): parameter changes
+            changes (:obj:`list` of :obj:`AlgorithmParameterChange`, optional): parameter changes
         """
         self.kisao_id = kisao_id
-        self.parameter_changes = parameter_changes or []
+        self.changes = changes or []
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -282,7 +289,7 @@ class Algorithm(object):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (self.kisao_id,
-                tuple(sorted(change.to_tuple() for change in self.parameter_changes)))
+                tuple(sorted(change.to_tuple() for change in self.changes)))
 
     def is_equal(self, other):
         """ Determine if algorithms are equal
@@ -295,7 +302,7 @@ class Algorithm(object):
         """
         return self.__class__ == other.__class__ \
             and self.kisao_id == other.kisao_id \
-            and are_lists_equal(self.parameter_changes, other.parameter_changes)
+            and are_lists_equal(self.changes, other.changes)
 
 
 class AlgorithmParameterChange(object):

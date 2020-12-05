@@ -1,3 +1,4 @@
+from biosimulators_utils.biosimulations.data_model import Metadata
 from biosimulators_utils.sedml import data_model
 import copy
 import unittest
@@ -21,7 +22,7 @@ class DataModelTestCase(unittest.TestCase):
             name='Simulation1',
             algorithm=data_model.Algorithm(
                 kisao_id='KISAO_0000029',
-                parameter_changes=[
+                changes=[
                     data_model.AlgorithmParameterChange(kisao_id='KISAO_0000001', new_value='1.234'),
                 ]),
         )
@@ -31,7 +32,7 @@ class DataModelTestCase(unittest.TestCase):
             name='Simulation1',
             algorithm=data_model.Algorithm(
                 kisao_id='KISAO_0000029',
-                parameter_changes=[
+                changes=[
                     data_model.AlgorithmParameterChange(kisao_id='KISAO_0000001', new_value='1.234'),
                 ]),
             step=10.)
@@ -41,7 +42,7 @@ class DataModelTestCase(unittest.TestCase):
             name='Simulation1',
             algorithm=data_model.Algorithm(
                 kisao_id='KISAO_0000029',
-                parameter_changes=[
+                changes=[
                     data_model.AlgorithmParameterChange(kisao_id='KISAO_0000001', new_value='1.234'),
                     data_model.AlgorithmParameterChange(kisao_id='KISAO_0000002', new_value='4.321'),
                 ]),
@@ -178,6 +179,7 @@ class DataModelTestCase(unittest.TestCase):
             tasks=[task],
             data_generators=[plot2d.curves[0].x_data],
             outputs=[report, plot2d, plot3d],
+            metadata=Metadata(),
         )
 
         self.assertEqual(
@@ -189,8 +191,8 @@ class DataModelTestCase(unittest.TestCase):
                     ss_simulation.algorithm.kisao_id,
                     (
                         (
-                            ss_simulation.algorithm.parameter_changes[0].kisao_id,
-                            ss_simulation.algorithm.parameter_changes[0].new_value,
+                            ss_simulation.algorithm.changes[0].kisao_id,
+                            ss_simulation.algorithm.changes[0].new_value,
                         ),
                     ),
                 ),
@@ -206,8 +208,8 @@ class DataModelTestCase(unittest.TestCase):
                     one_step_simulation.algorithm.kisao_id,
                     (
                         (
-                            one_step_simulation.algorithm.parameter_changes[0].kisao_id,
-                            one_step_simulation.algorithm.parameter_changes[0].new_value,
+                            one_step_simulation.algorithm.changes[0].kisao_id,
+                            one_step_simulation.algorithm.changes[0].new_value,
                         ),
                     ),
                 ),
@@ -227,6 +229,7 @@ class DataModelTestCase(unittest.TestCase):
             (task.to_tuple(),),
             (plot2d.curves[0].x_data.to_tuple(),),
             tuple(sorted((report.to_tuple(), plot2d.to_tuple(), plot3d.to_tuple()))),
+            document.metadata.to_tuple(),
         ))
 
         change = model.changes[0]
@@ -240,7 +243,7 @@ class DataModelTestCase(unittest.TestCase):
         model2.id = None
         self.assertFalse(model.is_equal(model2))
 
-        alg_change = time_course_simulation.algorithm.parameter_changes[0]
+        alg_change = time_course_simulation.algorithm.changes[0]
         alg_change_2 = copy.deepcopy(alg_change)
         self.assertTrue(alg_change.is_equal(alg_change_2))
         alg_change_2.new_value = None
