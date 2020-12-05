@@ -1,7 +1,7 @@
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
 from lxml import etree
-import mock
+from unittest import mock
 import os
 import shutil
 import tempfile
