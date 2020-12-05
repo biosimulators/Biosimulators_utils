@@ -946,26 +946,26 @@ class Curve(object):
         name (:obj:`str`): name
         x_scale (:obj:`AxisScale`): x axis scale
         y_scale (:obj:`AxisScale`): y axis scale
-        x_data (:obj:`DataGenerator`): x data
-        y_data (:obj:`DataGenerator`): y data
+        x_data_generator (:obj:`DataGenerator`): x data generator
+        y_data_generator (:obj:`DataGenerator`): y data generator
     """
 
-    def __init__(self, id=None, name=None, x_scale=None, y_scale=None, x_data=None, y_data=None):
+    def __init__(self, id=None, name=None, x_scale=None, y_scale=None, x_data_generator=None, y_data_generator=None):
         """
         Args:
             id (:obj:`str`, optional): id
             name (:obj:`str`, optional): name
             x_scale (:obj:`AxisScale`, optional): x axis scale
             y_scale (:obj:`AxisScale`, optional): y axis scale
-            x_data (:obj:`DataGenerator`, optional): x data
-            y_data (:obj:`DataGenerator`, optional): y data
+            x_data_generator (:obj:`DataGenerator`, optional): x data generator
+            y_data_generator (:obj:`DataGenerator`, optional): y data generator
         """
         self.id = id
         self.name = name
         self.x_scale = x_scale
         self.y_scale = y_scale
-        self.x_data = x_data
-        self.y_data = y_data
+        self.x_data_generator = x_data_generator
+        self.y_data_generator = y_data_generator
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -976,8 +976,8 @@ class Curve(object):
         return (self.id, self.name,
                 self.x_scale.value if self.x_scale else None,
                 self.y_scale.value if self.y_scale else None,
-                self.x_data.to_tuple() if self.x_data else None,
-                self.y_data.to_tuple() if self.y_data else None)
+                self.x_data_generator.to_tuple() if self.x_data_generator else None,
+                self.y_data_generator.to_tuple() if self.y_data_generator else None)
 
     def is_equal(self, other):
         """ Determine if curves are equal
@@ -993,10 +993,10 @@ class Curve(object):
             and self.name == other.name \
             and self.x_scale == other.x_scale \
             and self.y_scale == other.y_scale \
-            and ((self.x_data is None and self.x_data == other.x_data)
-                 or (self.x_data is not None and self.x_data.is_equal(other.x_data))) \
-            and ((self.y_data is None and self.y_data == other.y_data)
-                 or (self.y_data is not None and self.y_data.is_equal(other.y_data)))
+            and ((self.x_data_generator is None and self.x_data_generator == other.x_data_generator)
+                 or (self.x_data_generator is not None and self.x_data_generator.is_equal(other.x_data_generator))) \
+            and ((self.y_data_generator is None and self.y_data_generator == other.y_data_generator)
+                 or (self.y_data_generator is not None and self.y_data_generator.is_equal(other.y_data_generator)))
 
 
 class Surface(object):
@@ -1008,12 +1008,12 @@ class Surface(object):
         x_scale (:obj:`AxisScale`): x axis scale
         y_scale (:obj:`AxisScale`): y axis scale
         z_scale (:obj:`AxisScale`): z axis scale
-        x_data (:obj:`DataGenerator`): x data
-        y_data (:obj:`DataGenerator`): y data
-        z_data (:obj:`DataGenerator`): z data
+        x_data_generator (:obj:`DataGenerator`): x data generator
+        y_data_generator (:obj:`DataGenerator`): y data generator
+        z_data_generator (:obj:`DataGenerator`): z data generator
     """
 
-    def __init__(self, id=None, name=None, x_scale=None, y_scale=None, z_scale=None, x_data=None, y_data=None, z_data=None):
+    def __init__(self, id=None, name=None, x_scale=None, y_scale=None, z_scale=None, x_data_generator=None, y_data_generator=None, z_data_generator=None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1021,18 +1021,18 @@ class Surface(object):
             x_scale (:obj:`AxisScale`, optional): x axis scale
             y_scale (:obj:`AxisScale`, optional): y axis scale
             z_scale (:obj:`AxisScale`, optional): z axis scale
-            x_data (:obj:`DataGenerator`, optional): x data
-            y_data (:obj:`DataGenerator`, optional): y data
-            z_data (:obj:`DataGenerator`, optional): z data
+            x_data_generator (:obj:`DataGenerator`, optional): x data generator
+            y_data_generator (:obj:`DataGenerator`, optional): y data generator
+            z_data_generator (:obj:`DataGenerator`, optional): z data generator
         """
         self.id = id
         self.name = name
         self.x_scale = x_scale
         self.y_scale = y_scale
         self.z_scale = z_scale
-        self.x_data = x_data
-        self.y_data = y_data
-        self.z_data = z_data
+        self.x_data_generator = x_data_generator
+        self.y_data_generator = y_data_generator
+        self.z_data_generator = z_data_generator
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -1044,9 +1044,9 @@ class Surface(object):
                 self.x_scale.value if self.x_scale else None,
                 self.y_scale.value if self.y_scale else None,
                 self.z_scale.value if self.z_scale else None,
-                self.x_data.to_tuple() if self.x_data else None,
-                self.y_data.to_tuple() if self.y_data else None,
-                self.z_data.to_tuple() if self.z_data else None)
+                self.x_data_generator.to_tuple() if self.x_data_generator else None,
+                self.y_data_generator.to_tuple() if self.y_data_generator else None,
+                self.z_data_generator.to_tuple() if self.z_data_generator else None)
 
     def is_equal(self, other):
         """ Determine if surfaces are equal
@@ -1063,9 +1063,9 @@ class Surface(object):
             and self.x_scale == other.x_scale \
             and self.y_scale == other.y_scale \
             and self.z_scale == other.z_scale \
-            and ((self.x_data is None and self.x_data == other.x_data)
-                 or (self.x_data is not None and self.x_data.is_equal(other.x_data))) \
-            and ((self.y_data is None and self.y_data == other.y_data)
-                 or (self.y_data is not None and self.y_data.is_equal(other.y_data))) \
-            and ((self.z_data is None and self.z_data == other.z_data)
-                 or (self.z_data is not None and self.z_data.is_equal(other.z_data)))
+            and ((self.x_data_generator is None and self.x_data_generator == other.x_data_generator)
+                 or (self.x_data_generator is not None and self.x_data_generator.is_equal(other.x_data_generator))) \
+            and ((self.y_data_generator is None and self.y_data_generator == other.y_data_generator)
+                 or (self.y_data_generator is not None and self.y_data_generator.is_equal(other.y_data_generator))) \
+            and ((self.z_data_generator is None and self.z_data_generator == other.z_data_generator)
+                 or (self.z_data_generator is not None and self.z_data_generator.is_equal(other.z_data_generator)))

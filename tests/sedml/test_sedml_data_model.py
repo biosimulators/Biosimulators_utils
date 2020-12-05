@@ -85,7 +85,7 @@ class DataModelTestCase(unittest.TestCase):
                     id='curve1', name='Curve1',
                     x_scale=data_model.AxisScale.linear,
                     y_scale=data_model.AxisScale.log,
-                    x_data=data_model.DataGenerator(
+                    x_data_generator=data_model.DataGenerator(
                         id='xDataGen1',
                         name='XDataGen1',
                         variables=[
@@ -98,14 +98,14 @@ class DataModelTestCase(unittest.TestCase):
                         ],
                         math='xDataGenVar1 * xDataGenParam1',
                     ),
-                    y_data=None,
+                    y_data_generator=None,
                 ),
                 data_model.Curve(
                     id='curve2', name='Curve2',
                     x_scale=data_model.AxisScale.linear,
                     y_scale=data_model.AxisScale.log,
-                    x_data=None,
-                    y_data=data_model.DataGenerator(
+                    x_data_generator=None,
+                    y_data_generator=data_model.DataGenerator(
                         id='yDataGen1',
                         name='yDataGen1',
                         variables=[
@@ -130,7 +130,7 @@ class DataModelTestCase(unittest.TestCase):
                     x_scale=data_model.AxisScale.linear,
                     y_scale=data_model.AxisScale.log,
                     z_scale=data_model.AxisScale.linear,
-                    x_data=data_model.DataGenerator(
+                    x_data_generator=data_model.DataGenerator(
                         id='xDataGen1',
                         name='XDataGen1',
                         variables=[
@@ -143,8 +143,8 @@ class DataModelTestCase(unittest.TestCase):
                         ],
                         math='xDataGenVar1 * xDataGenParam1',
                     ),
-                    y_data=None,
-                    z_data=None,
+                    y_data_generator=None,
+                    z_data_generator=None,
                 ),
                 data_model.Surface(
                     id='curve2',
@@ -152,9 +152,9 @@ class DataModelTestCase(unittest.TestCase):
                     x_scale=data_model.AxisScale.linear,
                     y_scale=data_model.AxisScale.log,
                     z_scale=data_model.AxisScale.log,
-                    x_data=None,
-                    y_data=None,
-                    z_data=data_model.DataGenerator(
+                    x_data_generator=None,
+                    y_data_generator=None,
+                    z_data_generator=data_model.DataGenerator(
                         id='zDataGen1',
                         name='zDataGen1',
                         variables=[
@@ -177,7 +177,7 @@ class DataModelTestCase(unittest.TestCase):
             models=[model],
             simulations=[ss_simulation, one_step_simulation, time_course_simulation],
             tasks=[task],
-            data_generators=[plot2d.curves[0].x_data],
+            data_generators=[plot2d.curves[0].x_data_generator],
             outputs=[report, plot2d, plot3d],
             metadata=Metadata(),
         )
@@ -218,8 +218,8 @@ class DataModelTestCase(unittest.TestCase):
         )
 
         self.assertEqual(report.to_tuple()[0], report.id)
-        self.assertEqual(plot2d.to_tuple()[1][0][4][2][0][1], plot2d.curves[0].x_data.variables[0].name)
-        self.assertEqual(plot3d.to_tuple()[1][0][5][2][0][0], plot3d.surfaces[0].x_data.variables[0].id)
+        self.assertEqual(plot2d.to_tuple()[1][0][4][2][0][1], plot2d.curves[0].x_data_generator.variables[0].name)
+        self.assertEqual(plot3d.to_tuple()[1][0][5][2][0][0], plot3d.surfaces[0].x_data_generator.variables[0].id)
 
         self.assertEqual(document.to_tuple(), (
             document.level,
@@ -227,7 +227,7 @@ class DataModelTestCase(unittest.TestCase):
             (model.to_tuple(),),
             tuple(sorted((ss_simulation.to_tuple(), one_step_simulation.to_tuple(), time_course_simulation.to_tuple()))),
             (task.to_tuple(),),
-            (plot2d.curves[0].x_data.to_tuple(),),
+            (plot2d.curves[0].x_data_generator.to_tuple(),),
             tuple(sorted((report.to_tuple(), plot2d.to_tuple(), plot3d.to_tuple()))),
             document.metadata.to_tuple(),
         ))
@@ -302,7 +302,7 @@ class DataModelTestCase(unittest.TestCase):
         surface = copy.deepcopy(plot3d.surfaces[1])
         surface2 = copy.deepcopy(surface)
         self.assertTrue(surface.is_equal(surface2))
-        surface2.z_data = None
+        surface2.z_data_generator = None
         self.assertFalse(surface.is_equal(surface2))
 
         plot2d_2 = copy.deepcopy(plot2d)
