@@ -20,11 +20,9 @@ class ExecTestCase(unittest.TestCase):
     def test(self):
         changes = [
             data_model.ModelAttributeChange(
-                name='c1',
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']/@initialConcentration",
                 new_value='1.9'),
             data_model.ModelAttributeChange(
-                name='c1',
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']/@sboTerm",
                 new_value='SBO:0000001'),
         ]
@@ -52,7 +50,6 @@ class ExecTestCase(unittest.TestCase):
 
         changes = [
             data_model.ModelAttributeChange(
-                name='c1',
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
                 new_value='1.9'),
         ]
@@ -61,7 +58,6 @@ class ExecTestCase(unittest.TestCase):
 
         changes = [
             data_model.ModelAttributeChange(
-                name='c1',
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species/@initialConcentration",
                 new_value='1.9'),
         ]

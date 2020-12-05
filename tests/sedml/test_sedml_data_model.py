@@ -1,5 +1,6 @@
 from biosimulators_utils.biosimulations.data_model import Metadata
 from biosimulators_utils.sedml import data_model
+from biosimulators_utils.utils.core import none_sorted
 import copy
 import unittest
 
@@ -12,8 +13,8 @@ class DataModelTestCase(unittest.TestCase):
             source='model.sbml',
             language='urn:sedml:language:sbml',
             changes=[
-                data_model.ModelAttributeChange(name='Change1', target='/sbml:sbml/sbml:model[id=\'a\']/@id', new_value='234'),
-                data_model.ModelAttributeChange(name='Change1', target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_value='432'),
+                data_model.ModelAttributeChange(target='/sbml:sbml/sbml:model[id=\'a\']/@id', new_value='234'),
+                data_model.ModelAttributeChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_value='432'),
             ],
         )
 
@@ -218,17 +219,17 @@ class DataModelTestCase(unittest.TestCase):
         )
 
         self.assertEqual(report.to_tuple()[0], report.id)
-        self.assertEqual(plot2d.to_tuple()[1][0][4][2][0][1], plot2d.curves[0].x_data_generator.variables[0].name)
-        self.assertEqual(plot3d.to_tuple()[1][0][5][2][0][0], plot3d.surfaces[0].x_data_generator.variables[0].id)
+        self.assertEqual(plot2d.to_tuple()[2][0][4][2][0][1], plot2d.curves[0].x_data_generator.variables[0].name)
+        self.assertEqual(plot3d.to_tuple()[2][0][5][2][0][0], plot3d.surfaces[0].x_data_generator.variables[0].id)
 
         self.assertEqual(document.to_tuple(), (
             document.level,
             document.version,
             (model.to_tuple(),),
-            tuple(sorted((ss_simulation.to_tuple(), one_step_simulation.to_tuple(), time_course_simulation.to_tuple()))),
+            tuple(none_sorted((ss_simulation.to_tuple(), one_step_simulation.to_tuple(), time_course_simulation.to_tuple()))),
             (task.to_tuple(),),
             (plot2d.curves[0].x_data_generator.to_tuple(),),
-            tuple(sorted((report.to_tuple(), plot2d.to_tuple(), plot3d.to_tuple()))),
+            tuple(none_sorted((report.to_tuple(), plot2d.to_tuple(), plot3d.to_tuple()))),
             document.metadata.to_tuple(),
         ))
 

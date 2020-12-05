@@ -1,4 +1,4 @@
-from ..utils.core import are_lists_equal
+from ..utils.core import are_lists_equal, none_sorted
 from ..data_model import Person
 import abc
 import datetime
@@ -73,8 +73,8 @@ class CombineArchive(CombineArchiveBase):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation of a COMBINE/OMEX archive
         """
-        contents = tuple(sorted(content.to_tuple() for content in self.contents))
-        authors = tuple(sorted(author.to_tuple() for author in self.authors))
+        contents = tuple(none_sorted(content.to_tuple() for content in self.contents))
+        authors = tuple(none_sorted(author.to_tuple() for author in self.authors))
         return (contents, self.description, authors, self.created, self.updated)
 
     def is_equal(self, other):
@@ -132,7 +132,7 @@ class CombineArchiveContent(CombineArchiveBase):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation of a content item of a COMBINE/OMEX archive
         """
-        authors = tuple(sorted(author.to_tuple() for author in self.authors))
+        authors = tuple(none_sorted(author.to_tuple() for author in self.authors))
         return (self.location, self.format, self.master, self.description, authors, self.created, self.updated)
 
     def is_equal(self, other):

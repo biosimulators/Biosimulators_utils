@@ -24,3 +24,23 @@ class TestCase(unittest.TestCase):
         utils.assert_exception(True, Exception('message'))
         with self.assertRaisesRegex(Exception, 'message'):
             utils.assert_exception(False, Exception('message'))
+
+    def test_none_sort(self):
+        self.assertEqual(utils.none_comparator(None, ()), -1)
+        self.assertEqual(utils.none_comparator((), None), 1)
+        self.assertEqual(utils.none_comparator((), (None,)), -1)
+        self.assertEqual(utils.none_comparator((None,), ()), 1)
+        self.assertEqual(utils.none_comparator((None,), (None,)), 0)
+
+        self.assertEqual(utils.none_comparator(None, True), -1)
+        self.assertEqual(utils.none_comparator(True, None), 1)
+        self.assertEqual(utils.none_comparator(None, None), 0)
+
+        Comparator = utils.none_sort_key_gen()
+        self.assertTrue(Comparator(None) <= Comparator(None))
+        self.assertTrue(Comparator(None) >= Comparator(None))
+        self.assertTrue(Comparator(None) < Comparator(()))
+        self.assertTrue(Comparator(()) > Comparator(None))
+        self.assertTrue(Comparator(None) == Comparator(None))
+        self.assertTrue(Comparator(()) == Comparator(()))
+        self.assertTrue(Comparator(()) != Comparator(None))

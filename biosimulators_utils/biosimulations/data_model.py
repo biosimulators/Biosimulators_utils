@@ -1,5 +1,5 @@
 from ..data_model import Person
-from ..utils.core import are_lists_equal
+from ..utils.core import are_lists_equal, none_sorted
 import datetime
 
 __all__ = [
@@ -50,7 +50,7 @@ class Metadata(object):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (self.description, tuple(self.tags),
-                tuple(sorted(author.to_tuple() for author in self.authors)),
+                tuple(none_sorted(author.to_tuple() for author in self.authors)),
                 self.references.to_tuple() if self.references else None,
                 self.license.to_tuple() if self.license else None,
                 self.created,
@@ -68,7 +68,7 @@ class Metadata(object):
         """
         return self.__class__ == other.__class__ \
             and self.description == other.description \
-            and sorted(self.tags) == sorted(other.tags) \
+            and none_sorted(self.tags) == none_sorted(other.tags) \
             and are_lists_equal(self.authors, other.authors) \
             and ((self.references is None and self.references == other.references)
                  or (self.references is not None and self.references.is_equal(other.references))) \
@@ -102,8 +102,8 @@ class ExternalReferences(object):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (
-            tuple(sorted(identifier.to_tuple() for identifier in self.identifiers)),
-            tuple(sorted(citation.to_tuple() for citation in self.citations)),
+            tuple(none_sorted(identifier.to_tuple() for identifier in self.identifiers)),
+            tuple(none_sorted(citation.to_tuple() for citation in self.citations)),
         )
 
     def is_equal(self, other):
@@ -169,7 +169,7 @@ class Citation(object):
             self.issue,
             self.pages,
             self.year,
-            tuple(sorted(identifier.to_tuple() for identifier in self.identifiers)),
+            tuple(none_sorted(identifier.to_tuple() for identifier in self.identifiers)),
         )
 
     def is_equal(self, other):

@@ -1,5 +1,5 @@
 from ..biosimulations.data_model import Metadata
-from ..utils.core import are_lists_equal
+from ..utils.core import are_lists_equal, none_sorted
 import abc
 import enum
 
@@ -75,11 +75,11 @@ class SedDocument(object):
         return (
             self.level,
             self.version,
-            tuple(sorted(model.to_tuple() for model in self.models)),
-            tuple(sorted(simulation.to_tuple() for simulation in self.simulations)),
-            tuple(sorted(task.to_tuple() for task in self.tasks)),
-            tuple(sorted(data_generator.to_tuple() for data_generator in self.data_generators)),
-            tuple(sorted(output.to_tuple() for output in self.outputs)),
+            tuple(none_sorted(model.to_tuple() for model in self.models)),
+            tuple(none_sorted(simulation.to_tuple() for simulation in self.simulations)),
+            tuple(none_sorted(task.to_tuple() for task in self.tasks)),
+            tuple(none_sorted(data_generator.to_tuple() for data_generator in self.data_generators)),
+            tuple(none_sorted(output.to_tuple() for output in self.outputs)),
             self.metadata.to_tuple() if self.metadata else None,
         )
 
@@ -289,7 +289,7 @@ class Algorithm(object):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (self.kisao_id,
-                tuple(sorted(change.to_tuple() for change in self.changes)))
+                tuple(none_sorted(change.to_tuple() for change in self.changes)))
 
     def is_equal(self, other):
         """ Determine if algorithms are equal
@@ -377,7 +377,7 @@ class Model(object):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (self.id, self.name, self.source, self.language,
-                tuple(sorted(change.to_tuple() for change in self.changes)))
+                tuple(none_sorted(change.to_tuple() for change in self.changes)))
 
     def is_equal(self, other):
         """ Determine if models are equal
@@ -440,19 +440,17 @@ class ModelAttributeChange(ModelChange):
     """ A change of an attribute of a model
 
     Attributes:
-        name (:obj:`str`): name
         target (:obj:`str`): path to the model element that should be changed
         new_value (:obj:`str`): new value
     """
 
-    def __init__(self, name=None, target=None, new_value=None):
+    def __init__(self, target=None, new_value=None):
         """
         Args:
-            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the model element that should be changed
             new_value (:obj:`str`, optional): new value
         """
-        super(ModelAttributeChange, self).__init__(name=name, target=target)
+        super(ModelAttributeChange, self).__init__(target=target)
         self.new_value = new_value
 
     def to_tuple(self):
@@ -461,7 +459,7 @@ class ModelAttributeChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.name, self.target, self.new_value)
+        return (self.target, self.new_value)
 
     def is_equal(self, other):
         """ Determine if model attribute changes are equal
@@ -597,8 +595,8 @@ class DataGenerator(object):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (self.id, self.name,
-                tuple(sorted(variable.to_tuple() for variable in self.variables)),
-                tuple(sorted(parameter.to_tuple() for parameter in self.parameters)),
+                tuple(none_sorted(variable.to_tuple() for variable in self.variables)),
+                tuple(none_sorted(parameter.to_tuple() for parameter in self.parameters)),
                 self.math)
 
     def is_equal(self, other):
@@ -778,7 +776,7 @@ class Report(Output):
             datasets (:obj:`list` of :obj:`Dataset`, optional): datasets
         """
         super(Report, self).__init__(id=id, name=name)
-        self.datasets = datasets or None
+        self.datasets = datasets or []
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -787,7 +785,7 @@ class Report(Output):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (self.id, self.name,
-                tuple(sorted(dataset.to_tuple() for dataset in self.datasets)))
+                tuple(none_sorted(dataset.to_tuple() for dataset in self.datasets)))
 
     def is_equal(self, other):
         """ Determine if reports are equal
@@ -856,16 +854,19 @@ class Plot2D(Output):
     """ A 2D plot
 
     Attributes:
+        id (:obj:`str`): id
         name (:obj:`str`): name
         curves (:obj:`list` of :obj:`Curve`): curves
     """
 
-    def __init__(self, name=None, curves=None):
+    def __init__(self, id=None, name=None, curves=None):
         """
         Args:
+            id (:obj:`str`, optional): id
             name (:obj:`str`, optional): name
             curves (:obj:`list` of :obj:`Curve`, optional): curves
         """
+        self.id = id
         self.name = name
         self.curves = curves or []
 
@@ -875,8 +876,8 @@ class Plot2D(Output):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.name,
-                tuple(sorted(curve.to_tuple() for curve in self.curves)))
+        return (self.id, self.name,
+                tuple(none_sorted(curve.to_tuple() for curve in self.curves)))
 
     def is_equal(self, other):
         """ Determine if plots are equal
@@ -888,6 +889,7 @@ class Plot2D(Output):
             :obj:`bool`: :obj:`True`, if two plots are equal
         """
         return self.__class__ == other.__class__ \
+            and self.id == other.id \
             and self.name == other.name \
             and are_lists_equal(self.curves, other.curves)
 
@@ -896,16 +898,19 @@ class Plot3D(Output):
     """ A 3D plot
 
     Attributes:
+        id (:obj:`str`): id
         name (:obj:`str`): name
         surfaces (:obj:`list` of :obj:`Surface`): surfaces
     """
 
-    def __init__(self, name=None, surfaces=None):
+    def __init__(self, id=None, name=None, surfaces=None):
         """
         Args:
+            id (:obj:`str`, optional): id
             name (:obj:`str`, optional): name
             surfaces (:obj:`list` of :obj:`Surface`, optional): surfaces
         """
+        self.id = id
         self.name = name
         self.surfaces = surfaces or []
 
@@ -915,8 +920,8 @@ class Plot3D(Output):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.name,
-                tuple(sorted(surface.to_tuple() for surface in self.surfaces)))
+        return (self.id, self.name,
+                tuple(none_sorted(surface.to_tuple() for surface in self.surfaces)))
 
     def is_equal(self, other):
         """ Determine if plots are equal
@@ -928,6 +933,7 @@ class Plot3D(Output):
             :obj:`bool`: :obj:`True`, if two plots are equal
         """
         return self.__class__ == other.__class__ \
+            and self.id == other.id \
             and self.name == other.name \
             and are_lists_equal(self.surfaces, other.surfaces)
 
@@ -1013,7 +1019,9 @@ class Surface(object):
         z_data_generator (:obj:`DataGenerator`): z data generator
     """
 
-    def __init__(self, id=None, name=None, x_scale=None, y_scale=None, z_scale=None, x_data_generator=None, y_data_generator=None, z_data_generator=None):
+    def __init__(self, id=None, name=None,
+                 x_scale=None, y_scale=None, z_scale=None,
+                 x_data_generator=None, y_data_generator=None, z_data_generator=None):
         """
         Args:
             id (:obj:`str`, optional): id
