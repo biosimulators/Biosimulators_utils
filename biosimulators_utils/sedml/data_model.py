@@ -1,3 +1,11 @@
+""" Data model for SED
+
+:Author: Jonathan Karr <karr@mssm.edu>
+:Date: 2020-12-06
+:Copyright: 2020, Center for Reproducible Biomedical Modeling
+:License: MIT
+"""
+
 from ..biosimulations.data_model import Metadata
 from ..utils.core import are_lists_equal, none_sorted
 import abc

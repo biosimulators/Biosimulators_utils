@@ -1,3 +1,11 @@
+""" Miscellaneous utilities
+
+:Author: Jonathan Karr <karr@mssm.edu>
+:Date: 2020-12-06
+:Copyright: 2020, Center for Reproducible Biomedical Modeling
+:License: MIT
+"""
+
 import functools
 
 __all__ = ['are_lists_equal', 'none_sorted', 'assert_exception']

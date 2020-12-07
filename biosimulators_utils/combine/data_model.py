@@ -1,3 +1,11 @@
+""" Data model for COMBINE/OMEX archives
+
+:Author: Jonathan Karr <karr@mssm.edu>
+:Date: 2020-12-06
+:Copyright: 2020, Center for Reproducible Biomedical Modeling
+:License: MIT
+"""
+
 from ..utils.core import are_lists_equal, none_sorted
 from ..data_model import Person
 import abc

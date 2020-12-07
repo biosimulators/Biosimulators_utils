@@ -1,3 +1,11 @@
+""" Utilities for executing tasks in SED documents
+
+:Author: Jonathan Karr <karr@mssm.edu>
+:Date: 2020-12-06
+:Copyright: 2020, Center for Reproducible Biomedical Modeling
+:License: MIT
+"""
+
 from .data_model import ModelChange, ModelAttributeChange
 from lxml import etree
 import re

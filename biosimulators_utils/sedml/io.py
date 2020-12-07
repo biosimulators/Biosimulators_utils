@@ -1,3 +1,11 @@
+""" Utilities for reading and writing SED documents to SED-ML files
+
+:Author: Jonathan Karr <karr@mssm.edu>
+:Date: 2020-12-06
+:Copyright: 2020, Center for Reproducible Biomedical Modeling
+:License: MIT
+"""
+
 from . import data_model
 from .utils import validate_doc
 from ..biosimulations.data_model import Metadata, ExternalReferences, Citation

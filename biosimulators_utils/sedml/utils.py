@@ -1,3 +1,11 @@
+""" Utilities for working with SED documents
+
+:Author: Jonathan Karr <karr@mssm.edu>
+:Date: 2020-12-06
+:Copyright: 2020, Center for Reproducible Biomedical Modeling
+:License: MIT
+"""
+
 from .data_model import SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D
 import re
 

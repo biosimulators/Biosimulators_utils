@@ -1,3 +1,11 @@
+""" Utilities for logging
+
+:Author: Jonathan Karr <karr@mssm.edu>
+:Date: 2020-12-06
+:Copyright: 2020, Center for Reproducible Biomedical Modeling
+:License: MIT
+"""
+
 import logging
 import os
 
