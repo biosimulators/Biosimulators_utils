@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      
+
       - name: Install Python
         uses: actions/setup-python@v2
         with:
@@ -67,11 +67,11 @@ jobs:
       - name: Install the requirements for compiling the documentation
         run: python -m pip install -r docs-src/requirements.txt
 
-      - name: Compile the documentation 
+      - name: Compile the documentation
         run: |
           sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
           sphinx-build docs-src docs
-      
+
       - id: commit-docs
         name: Commit the compiled documentation
         if: github.ref == 'refs/heads/dev'
