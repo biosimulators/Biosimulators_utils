@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version3" level="1" version="3">
+  <listOfSimulations>
+    <steadyState id="sim" />
+    <steadyState id="sim" />
+  </listOfSimulations>
+  <listOfTasks>
+    <task id="task" simulationReference="sim" />
+  </listOfTasks>
+</sedML>

@@ -1,5 +1,8 @@
 from . import data_model
-from ..biosimulations.data_model import Metadata, Person, ExternalReferences, Citation, Identifier, OntologyTerm
+from .utils import validate_doc
+from ..biosimulations.data_model import Metadata, ExternalReferences, Citation
+from ..data_model import Person, Identifier, OntologyTerm
+from ..kisao.utils import normalize_kisao_id
 from xml.sax import saxutils
 import copy
 import dateutil.parser
@@ -25,34 +28,23 @@ class SedmlSimulationWriter(object):
         _obj_to_sed_obj_map (:obj:`object` => :obj:`object`): map from data model objects to their corresponding libSED-ML objects
     """
 
-    def run(self, doc, filename):
+    def __init__(self):
+        self._num_meta_id = None
+        self._doc_sed = None
+        self._obj_to_sed_obj_map = None
+
+    def run(self, doc, filename, validate_semantics=True):
         """ Save a SED document to an SED-ML XML file
 
         Args:
             doc (:obj:`data_model.SedDocument`): SED document
             filename (:obj:`str`): Path to save simulation experiment in SED-ML format
-        """
-        if next((True for model in doc.models if not model.id), False):
-            raise ValueError('Models must have ids')
-        if next((True for sim in doc.simulations if not sim.id), False):
-            raise ValueError('Simulations must have ids')
-        if next((True for data_gen in doc.data_generators if not data_gen.id), False):
-            raise ValueError('Data generators must have ids')
-        if next((True for task in doc.tasks if not task.id), False):
-            raise ValueError('Tasks must have ids')
-        if next((True for output in doc.outputs if not output.id), False):
-            raise ValueError('Outputs must have ids')
+            validate_semantics (:obj:`bool`, optional): if :obj:`True`, check that SED-ML is semantically valid
 
-        if len(set(model.id for model in doc.models)) < len(doc.models):
-            raise ValueError('Models must have unique ids')
-        if len(set(sim.id for sim in doc.simulations)) < len(doc.simulations):
-            raise ValueError('Simulations must have unique ids')
-        if len(set(data_gen.id for data_gen in doc.data_generators)) < len(doc.data_generators):
-            raise ValueError('Data generators must have unique ids')
-        if len(set(task.id for task in doc.tasks)) < len(doc.tasks):
-            raise ValueError('Tasks must have unique ids')
-        if len(set(output.id for output in doc.outputs)) < len(doc.outputs):
-            raise ValueError('Outputs must have unique ids')
+        Raises:
+            :obj:`NotImplementedError`: document uses an supported type of task or output
+        """
+        validate_doc(doc, validate_semantics=validate_semantics)
 
         self._num_meta_id = 0
         self._obj_to_sed_obj_map = {}
@@ -94,6 +86,7 @@ class SedmlSimulationWriter(object):
             doc (:obj:`data_model.SedDocument`): SED document
         """
         doc_sed = self._doc_sed = libsedml.SedDocument()
+        self._doc_sed = doc_sed
         self._obj_to_sed_obj_map[doc] = doc_sed
         if doc.level is not None:
             self._call_libsedml_method(doc_sed, 'setLevel', doc.level)
@@ -234,12 +227,12 @@ class SedmlSimulationWriter(object):
             self._call_libsedml_method(task_sed, 'setName', task.name)
 
         if task.model is not None:
-            if task.model.id is None:
+            if not task.model.id:  # pragma: no cover: already validated
                 raise ValueError('Model must have an id to be referenced')
             self._call_libsedml_method(task_sed, 'setModelReference', task.model.id)
 
         if task.simulation is not None:
-            if task.simulation.id is None:
+            if not task.simulation.id:  # pragma: no cover: already validated
                 raise ValueError('Simulation must have an id to be referenced')
             self._call_libsedml_method(task_sed, 'setSimulationReference', task.simulation.id)
 
@@ -291,12 +284,12 @@ class SedmlSimulationWriter(object):
             self._call_libsedml_method(var_sed, 'setTarget', var.target)
 
         if var.task is not None:
-            if var.task.id is None:
+            if not var.task.id:  # pragma: no cover: already validated
                 raise ValueError('Task must have an id to be referenced')
             self._call_libsedml_method(var_sed, 'setTaskReference', var.task.id)
 
         if var.model is not None:
-            if var.model.id is None:
+            if not var.model.id:  # pragma: no cover: already validated
                 raise ValueError('Model must have an id to be referenced')
             self._call_libsedml_method(var_sed, 'setModelReference', var.model.id)
 
@@ -346,7 +339,7 @@ class SedmlSimulationWriter(object):
             if dataset.label is not None:
                 self._call_libsedml_method(dataset_sed, 'setLabel', dataset.label)
             if dataset.data_generator is not None:
-                if dataset.data_generator.id is None:
+                if not dataset.data_generator.id:  # pragma: no cover: already validated
                     raise ValueError('Data generator must have an id to be referenced')
                 self._call_libsedml_method(dataset_sed, 'setDataReference', dataset.data_generator.id)
 
@@ -375,23 +368,16 @@ class SedmlSimulationWriter(object):
             if curve.name is not None:
                 self._call_libsedml_method(curve_sed, 'setName', curve.name)
 
-            if curve.x_scale == data_model.AxisScale.linear:
-                self._call_libsedml_method(curve_sed, 'setLogX', False)
-            elif curve.x_scale == data_model.AxisScale.log:
-                self._call_libsedml_method(curve_sed, 'setLogX', True)
-
-            if curve.y_scale == data_model.AxisScale.linear:
-                self._call_libsedml_method(curve_sed, 'setLogY', False)
-            elif curve.y_scale == data_model.AxisScale.log:
-                self._call_libsedml_method(curve_sed, 'setLogY', True)
+            self._set_axis_scale(curve, 'x')
+            self._set_axis_scale(curve, 'y')
 
             if curve.x_data_generator is not None:
-                if curve.x_data_generator.id is None:
+                if not curve.x_data_generator.id:  # pragma: no cover: already validated
                     raise ValueError('Data generator must have an id to be referenced')
                 self._call_libsedml_method(curve_sed, 'setXDataReference', curve.x_data_generator.id)
 
             if curve.y_data_generator is not None:
-                if curve.y_data_generator.id is None:
+                if not curve.y_data_generator.id:  # pragma: no cover: already validated
                     raise ValueError('Data generator must have an id to be referenced')
                 self._call_libsedml_method(curve_sed, 'setYDataReference', curve.y_data_generator.id)
 
@@ -420,35 +406,40 @@ class SedmlSimulationWriter(object):
             if surface.name is not None:
                 self._call_libsedml_method(surface_sed, 'setName', surface.name)
 
-            if surface.x_scale == data_model.AxisScale.linear:
-                self._call_libsedml_method(surface_sed, 'setLogX', False)
-            elif surface.x_scale == data_model.AxisScale.log:
-                self._call_libsedml_method(surface_sed, 'setLogX', True)
-
-            if surface.y_scale == data_model.AxisScale.linear:
-                self._call_libsedml_method(surface_sed, 'setLogY', False)
-            elif surface.y_scale == data_model.AxisScale.log:
-                self._call_libsedml_method(surface_sed, 'setLogY', True)
-
-            if surface.z_scale == data_model.AxisScale.linear:
-                self._call_libsedml_method(surface_sed, 'setLogZ', False)
-            elif surface.z_scale == data_model.AxisScale.log:
-                self._call_libsedml_method(surface_sed, 'setLogZ', True)
+            self._set_axis_scale(surface, 'x')
+            self._set_axis_scale(surface, 'y')
+            self._set_axis_scale(surface, 'z')
 
             if surface.x_data_generator is not None:
-                if surface.x_data_generator.id is None:
+                if not surface.x_data_generator.id:  # pragma: no cover: already validated
                     raise ValueError('Data generator must have an id to be referenced')
                 self._call_libsedml_method(surface_sed, 'setXDataReference', surface.x_data_generator.id)
 
             if surface.y_data_generator is not None:
-                if surface.y_data_generator.id is None:
+                if not surface.y_data_generator.id:  # pragma: no cover: already validated
                     raise ValueError('Data generator must have an id to be referenced')
                 self._call_libsedml_method(surface_sed, 'setYDataReference', surface.y_data_generator.id)
 
             if surface.z_data_generator is not None:
-                if surface.z_data_generator.id is None:
+                if not surface.z_data_generator.id:  # pragma: no cover: already validated
                     raise ValueError('Data generator must have an id to be referenced')
                 self._call_libsedml_method(surface_sed, 'setZDataReference', surface.z_data_generator.id)
+
+    def _set_axis_scale(self, obj, axis):
+        """ Set the scale of an axis of a curve of surface
+
+        Args:
+            obj (:obj:`data_model.Curve` or :obj:`data_model.Surface`): plot
+            axis (:obj:`str`): axis (`x`, `y`, or `z`)
+        """
+        obj_sed = self._obj_to_sed_obj_map[obj]
+        axis_scale = getattr(obj, axis.lower() + '_scale')
+        if axis_scale == data_model.AxisScale.linear:
+            self._call_libsedml_method(obj_sed, 'setLog' + axis.upper(), False)
+        elif axis_scale == data_model.AxisScale.log:
+            self._call_libsedml_method(obj_sed, 'setLog' + axis.upper(), True)
+        else:
+            raise NotImplementedError('Axis scale type {} is not supported'.format(axis_scale))
 
     def _export_doc(self, filename):
         """ Export a SED document to an XML file
@@ -472,6 +463,9 @@ class SedmlSimulationWriter(object):
         Args:
             obj (:obj:`object`): object
         """
+        if not obj.metadata:
+            return
+
         obj_sed = self._obj_to_sed_obj_map[obj]
 
         metadata = []
@@ -540,7 +534,7 @@ class SedmlSimulationWriter(object):
                     props_xml.append(XmlNode(prefix='bibo', name='pages', children=citation.pages))
                 if citation.year:
                     props_xml.append(XmlNode(prefix='dc', name='date', children=citation.year))
-                doi = next((identifier.id for identifier in citation.identifiers if identifier.namespace == 'doi'), None)
+                doi = next((identifier.id for identifier in citation.identifiers if identifier.namespace.lower() == 'doi'), None)
                 if doi:
                     props_xml.append(XmlNode(prefix='bibo', name='doi', children=doi))
 
@@ -558,33 +552,27 @@ class SedmlSimulationWriter(object):
             namespaces.add('bibo')
 
         if obj.metadata.license:
+            if obj.metadata.license.namespace:
+                children = '{}:{}'.format(obj.metadata.license.namespace, obj.metadata.license.id)
+            else:
+                children = obj.metadata.license.id
             metadata.append(XmlNode(
                 prefix='dcterms',
                 name='license',
-                children='{}:{}'.format(obj.metadata.license.namespace, obj.metadata.license.id),
+                children=children,
             ))
             namespaces.add('dcterms')
 
         metadata.append(XmlNode(prefix='dcterms', name='mediator', children='BioSimulators utils'))
         if obj.metadata.created is not None:
             metadata.append(XmlNode(prefix='dcterms', name='created',
-                                    children=obj._metadata.created.strftime('%Y-%m-%dT%H:%M:%SZ')))
+                                    children=obj.metadata.created.strftime('%Y-%m-%dT%H:%M:%SZ')))
         if obj.metadata.updated is not None:
             metadata.append(XmlNode(prefix='dcterms', name='date', type='update',
-                                    children=obj._metadata.updated.strftime('%Y-%m-%dT%H:%M:%SZ')))
+                                    children=obj.metadata.updated.strftime('%Y-%m-%dT%H:%M:%SZ')))
         namespaces.add('dcterms')
 
-        self._set_meta_id(obj_sed)
         self._add_annotation_to_obj(metadata, obj_sed, namespaces)
-
-    def _set_meta_id(self, obj_sed):
-        """ Generate and set a unique meta id for a SED object
-
-        Args:
-            obj_sed (:obj:`libsedml.SedBase`): SED object
-        """
-        self._num_meta_id += 1
-        self._call_libsedml_method(obj_sed, 'setMetaId', '_{:08d}'.format(self._num_meta_id))
 
     def _add_annotation_to_obj(self, nodes, obj_sed, namespaces):
         """ Add annotation to a SED object
@@ -595,11 +583,8 @@ class SedmlSimulationWriter(object):
             namespaces (:obj:`set` of :obj:`str`): list of namespaces
         """
         if nodes:
-            meta_id = obj_sed.getMetaId()
-            if meta_id:
-                about_xml = ' rdf:about="#{}"'.format(meta_id)
-            else:
-                about_xml = ''
+            meta_id = self._set_meta_id(obj_sed)
+            about_xml = ' rdf:about="#{}"'.format(meta_id)
 
             namespaces.add('rdf')
             namespaces_xml = []
@@ -626,6 +611,20 @@ class SedmlSimulationWriter(object):
                                            about_xml,
                                            ''.join(node.encode() for node in nodes)))
 
+    def _set_meta_id(self, obj_sed):
+        """ Generate and set a unique meta id for a SED object
+
+        Args:
+            obj_sed (:obj:`libsedml.SedBase`): SED object
+
+        Returns:
+            :obj:`str`: meta id
+        """
+        self._num_meta_id += 1
+        meta_id = '_{:08d}'.format(self._num_meta_id)
+        self._call_libsedml_method(obj_sed, 'setMetaId', meta_id)
+        return meta_id
+
     def _call_libsedml_method(self, obj_sed, method_name, *args, **kwargs):
         """ Call a method of a SED object and check if there's an error
 
@@ -651,11 +650,12 @@ class SedmlSimulationWriter(object):
 class SedmlSimulationReader(object):
     """ SED-ML reader """
 
-    def run(self, filename):
+    def run(self, filename, validate_semantics=True):
         """ Base class for reading a SED document
 
         Args:
             filename (:obj:`str`): path to SED-ML document
+            validate_semantics (:obj:`bool`, optional): if :obj:`True`, check that SED-ML is semantically valid
 
         Returns:
             :obj:`data_model.SedDocument`: SED document
@@ -669,29 +669,13 @@ class SedmlSimulationReader(object):
         """
         doc_sed = libsedml.readSedMLFromFile(filename)
         if doc_sed.getErrorLog().getNumFailsWithSeverity(libsedml.LIBSEDML_SEV_ERROR):
-            raise ValueError('libsedml error: {}'.format(doc_sed.getErrorLog().toString()))
+            raise ValueError('libSED-ML error: {}'.format(doc_sed.getErrorLog().toString()))
 
-        if next((True for model in doc_sed.getListOfModels() if not model.getId()), False):
-            raise ValueError('Models must have ids')
-        if next((True for sim in doc_sed.getListOfSimulations() if not sim.getId()), False):
-            raise ValueError('Simulations must have ids')
-        if next((True for data_gen in doc_sed.getListOfDataGenerators() if not data_gen.getId()), False):
-            raise ValueError('Data generators must have ids')
-        if next((True for task in doc_sed.getListOfTasks() if not task.getId()), False):
-            raise ValueError('Tasks must have ids')
-        if next((True for output in doc_sed.getListOfOutputs() if not output.getId()), False):
-            raise ValueError('Outputs must have ids')
+        for child_type in ('Models', 'Simulations', 'DataGenerators', 'Tasks', 'Outputs'):
+            get_children = getattr(doc_sed, 'getListOf' + child_type)
 
-        if len(set(model.getId() for model in doc_sed.getListOfModels())) < len(doc_sed.getListOfModels()):
-            raise ValueError('Models must have unique ids')
-        if len(set(sim.getId() for sim in doc_sed.getListOfSimulations())) < len(doc_sed.getListOfSimulations()):
-            raise ValueError('Simulations must have unique ids')
-        if len(set(data_gen.getId() for data_gen in doc_sed.getListOfDataGenerators())) < len(doc_sed.getListOfDataGenerators()):
-            raise ValueError('Data generators must have unique ids')
-        if len(set(task.getId() for task in doc_sed.getListOfTasks())) < len(doc_sed.getListOfTasks()):
-            raise ValueError('Tasks must have unique ids')
-        if len(set(output.getId() for output in doc_sed.getListOfOutputs())) < len(doc_sed.getListOfOutputs()):
-            raise ValueError('Outputs must have unique ids')
+            if next((True for child in get_children() if not child.getId()), False):
+                raise ValueError('{} must have ids'.format(child_type))  # pragma no cover: validated by libSED-ML
 
         doc = data_model.SedDocument(
             level=doc_sed.getLevel(),
@@ -710,7 +694,7 @@ class SedmlSimulationReader(object):
             model = data_model.Model()
             doc.models.append(model)
 
-            id_to_model_map[model_sed.getId()] = model
+            self._add_obj_to_id_to_obj_map(model_sed, model, id_to_model_map)
 
             model.id = model_sed.getId() or None
             model.name = model_sed.getName() or None
@@ -748,12 +732,12 @@ class SedmlSimulationReader(object):
                 if sim.output_end_time < sim.output_start_time:
                     raise ValueError('Output end time must be at least the output start time')
 
-            else:
+            else:  # pragma: no cover: already validated by libSED-ML
                 raise NotImplementedError('Simulation type {} is not supported'.format(sim_sed.__class__.__name__))
 
             doc.simulations.append(sim)
 
-            id_to_sim_map[sim_sed.getId()] = sim
+            self._add_obj_to_id_to_obj_map(sim_sed, sim, id_to_sim_map)
 
             sim.id = sim_sed.getId() or None
             sim.name = sim_sed.getName() or None
@@ -778,22 +762,13 @@ class SedmlSimulationReader(object):
             task = data_model.Task()
             doc.tasks.append(task)
 
-            id_to_task_map[task_sed.getId()] = task
+            self._add_obj_to_id_to_obj_map(task_sed, task, id_to_task_map)
 
             task.id = task_sed.getId() or None
             task.name = task_sed.getName() or None
 
-            model_id = task_sed.getModelReference() or None
-            if model_id:
-                task.model = id_to_model_map.get(model_id, None)
-                if not task.model:
-                    raise ValueError('Document does not contain a model with id "{}"'.format(model_id))
-
-            sim_id = task_sed.getSimulationReference() or None
-            if sim_id:
-                task.simulation = id_to_sim_map.get(sim_id, None)
-                if not task.simulation:
-                    raise ValueError('Document does not contain a simulation with id "{}"'.format(sim_id))
+            self._deserialize_reference(task_sed, task, 'model', 'Model', 'model', id_to_model_map)
+            self._deserialize_reference(task_sed, task, 'simulation', 'Simulation', 'simulation', id_to_sim_map)
 
         # data generators
         id_to_data_gen_map = {}
@@ -801,7 +776,7 @@ class SedmlSimulationReader(object):
             data_gen = data_model.DataGenerator()
             doc.data_generators.append(data_gen)
 
-            id_to_data_gen_map[data_gen_sed.getId()] = data_gen
+            self._add_obj_to_id_to_obj_map(data_gen_sed, data_gen, id_to_data_gen_map)
 
             data_gen.id = data_gen_sed.getId() or None
             data_gen.name = data_gen_sed.getName() or None
@@ -814,18 +789,9 @@ class SedmlSimulationReader(object):
                 var.name = var_sed.getName() or None
                 var.symbol = var_sed.getSymbol() or None
                 var.target = var_sed.getTarget() or None
-                
-                task_id = var_sed.getTaskReference() or None
-                if task_id:
-                    var.task = id_to_task_map.get(task_id, None)
-                    if not var.task:
-                        raise ValueError('Document does not contain a task with id "{}"'.format(task_id))
 
-                model_id = var_sed.getModelReference() or None
-                if model_id:
-                    var.model = id_to_model_map.get(model_id, None)
-                    if not var.model:
-                        raise ValueError('Document does not contain a model with id "{}"'.format(model_id))        
+                self._deserialize_reference(var_sed, var, 'task', 'Task', 'task', id_to_task_map)
+                self._deserialize_reference(var_sed, var, 'model', 'Model', 'model', id_to_model_map)
 
             for param_sed in data_gen_sed.getListOfParameters():
                 param = data_model.DataGeneratorParameter()
@@ -848,95 +814,114 @@ class SedmlSimulationReader(object):
                 output = data_model.Report()
 
                 for dataset_sed in output_sed.getListOfDataSets():
-                    dataset = data_model.Dataset() 
+                    dataset = data_model.Dataset()
                     output.datasets.append(dataset)
 
                     dataset.id = dataset_sed.getId() or None
                     dataset.name = dataset_sed.getName() or None
                     dataset.label = dataset_sed.getLabel() or None
-                    
-                    data_gen_id = dataset_sed.getDataReference() or None
-                    if data_gen_id:
-                        dataset.data_generator = id_to_data_gen_map.get(data_gen_id, None)
-                        if not dataset.data_generator:
-                            raise ValueError('Document does not contain a data generator with id "{}"'.format(data_gen_id))  
+
+                    self._deserialize_reference(dataset_sed, dataset, 'data generator', 'Data', 'data_generator', id_to_data_gen_map)
 
             elif isinstance(output_sed, libsedml.SedPlot2D):
                 output = data_model.Plot2D()
 
                 for curve_sed in output_sed.getListOfCurves():
-                    curve = data_model.Curve() 
+                    curve = data_model.Curve()
                     output.curves.append(curve)
 
                     curve.id = curve_sed.getId() or None
                     curve.name = curve_sed.getName() or None
-                    
+
                     curve.x_scale = data_model.AxisScale.log if curve_sed.getLogX() else data_model.AxisScale.linear
                     curve.y_scale = data_model.AxisScale.log if curve_sed.getLogY() else data_model.AxisScale.linear
 
-                    x_data_gen_id = curve_sed.getXDataReference() or None
-                    if x_data_gen_id:
-                        curve.x_data_generator = id_to_data_gen_map.get(x_data_gen_id, None)
-                        if not curve.x_data_generator:
-                            raise ValueError('Document does not contain a data generator with id "{}"'.format(x_data_gen_id))  
-
-                    y_data_gen_id = curve_sed.getYDataReference() or None
-                    if y_data_gen_id:
-                        curve.y_data_generator = id_to_data_gen_map.get(y_data_gen_id, None)
-                        if not curve.y_data_generator:
-                            raise ValueError('Document does not contain a data generator with id "{}"'.format(y_data_gen_id))  
+                    self._deserialize_reference(curve_sed, curve, 'data generator', 'XData', 'x_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(curve_sed, curve, 'data generator', 'YData', 'y_data_generator', id_to_data_gen_map)
 
             elif isinstance(output_sed, libsedml.SedPlot3D):
                 output = data_model.Plot3D()
 
                 for surface_sed in output_sed.getListOfSurfaces():
-                    surface = data_model.Surface() 
+                    surface = data_model.Surface()
                     output.surfaces.append(surface)
 
                     surface.id = surface_sed.getId() or None
                     surface.name = surface_sed.getName() or None
-                    
+
                     surface.x_scale = data_model.AxisScale.log if surface_sed.getLogX() else data_model.AxisScale.linear
                     surface.y_scale = data_model.AxisScale.log if surface_sed.getLogY() else data_model.AxisScale.linear
                     surface.z_scale = data_model.AxisScale.log if surface_sed.getLogZ() else data_model.AxisScale.linear
 
-                    x_data_gen_id = surface_sed.getXDataReference() or None
-                    if x_data_gen_id:
-                        surface.x_data_generator = id_to_data_gen_map.get(x_data_gen_id, None)
-                        if not surface.x_data_generator:
-                            raise ValueError('Document does not contain a data generator with id "{}"'.format(x_data_gen_id))  
+                    self._deserialize_reference(surface_sed, surface, 'data generator', 'XData', 'x_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(surface_sed, surface, 'data generator', 'YData', 'y_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(surface_sed, surface, 'data generator', 'ZData', 'z_data_generator', id_to_data_gen_map)
 
-                    y_data_gen_id = surface_sed.getYDataReference() or None
-                    if y_data_gen_id:
-                        surface.y_data_generator = id_to_data_gen_map.get(y_data_gen_id, None)
-                        if not surface.y_data_generator:
-                            raise ValueError('Document does not contain a data generator with id "{}"'.format(y_data_gen_id))  
-
-                    z_data_gen_id = surface_sed.getZDataReference() or None
-                    if z_data_gen_id:
-                        surface.z_data_generator = id_to_data_gen_map.get(z_data_gen_id, None)
-                        if not surface.z_data_generator:
-                            raise ValueError('Document does not contain a data generator with id "{}"'.format(z_data_gen_id))  
-
-            else:
+            else:  # pragma: no cover: already validated by libSED-ML
                 raise NotImplementedError('Output type {} is not supported'.format(output_sed.__class__.__name__))
-            
+
             doc.outputs.append(output)
 
-            id_to_output_map[output_sed.getId()] = output
+            self._add_obj_to_id_to_obj_map(output_sed, output, id_to_output_map)
 
             output.id = output_sed.getId() or None
             output.name = output_sed.getName() or None
 
+        # normalize KiSAO ids
+        for sim in doc.simulations:
+            if sim.algorithm:
+                if sim.algorithm.kisao_id:
+                    sim.algorithm.kisao_id = normalize_kisao_id(sim.algorithm.kisao_id)
+                for change in sim.algorithm.changes:
+                    if change.kisao_id:
+                        change.kisao_id = normalize_kisao_id(change.kisao_id)
+
+        # validate
+        validate_doc(doc, validate_semantics=validate_semantics)
+
         # return SED document
         return doc
+
+    def _add_obj_to_id_to_obj_map(self, obj_sed, obj, id_to_obj_map):
+        """ Add an object to an id to object map
+
+        Args:
+            obj_sed (:obj:`libsedml.SedBase`): SED object
+            obj (:obj:`object`): object
+            id_to_obj_map (:obj:`dict` of :obj:`str` to :obj:`object`): map from the ids of objects to objects
+        """
+        id = obj_sed.getId()
+        if id in id_to_obj_map:
+            id_to_obj_map[id] = None
+        else:
+            id_to_obj_map[id] = obj
+
+    def _deserialize_reference(self, obj_sed, obj, ref_type, sed_ref_getter, obj_attr, id_to_obj_map):
+        """ Deserialize a reference to another object
+
+        Args:
+            obj_sed (:obj:`libsedml.SedBase`): SED object
+            obj (:obj:`object`): object
+            ref_type (:obj:`str`): type of reference (e.g., `data generator`)
+            sed_ref_getter (:obj:`str`): SED reference getter (e.g., `XData`)
+            obj_attr (:obj:`str`): object attribute (e.g., `x_data_generator`)
+            id_to_obj_map (:obj:`dict` of :obj:`str` to :obj:`object`): map from the ids of objects to objects
+        """
+        obj_id = getattr(obj_sed, 'get' + sed_ref_getter + 'Reference')() or None
+        if obj_id:
+            if obj_id in id_to_obj_map:
+                setattr(obj, obj_attr, id_to_obj_map.get(obj_id, None))
+                if not getattr(obj, obj_attr):
+                    raise ValueError('Document has multiple {}s with id "{}"'.format(ref_type, obj_id))
+            else:
+                raise ValueError('Document does not contain a {} with id "{}"'.format(ref_type, obj_id))
 
     def _read_metadata(self, obj_sed):
         """ Read metadata from a SED object
 
         Args:
             obj_sed (:obj:`libsedml.SedBase`): SED object
-        
+
         Returns:
             :obj:`Metadata`: metadata
         """
@@ -993,27 +978,31 @@ class SedmlSimulationReader(object):
                                             elif prop.prefix == 'dc' and prop.name == 'date' and isinstance(prop.children, str):
                                                 citation.year = int(prop.children)
                                             elif prop.prefix == 'bibo' and prop.name == 'doi' and isinstance(prop.children, str):
-                                                citation.identifiers = Identifier(
-                                                    namespace="doi", id=prop.children, url="https://doi.org/" + prop.children)
+                                                citation.identifiers = [
+                                                    Identifier(
+                                                        namespace="doi", id=prop.children, url="https://doi.org/" + prop.children),
+                                                ]
                                         metadata.references.citations.append(citation)
             elif node.prefix == 'dcterms' and node.name == 'license' and isinstance(node.children, str):
-                if ':' not in node.children:
-                    raise SimulationIoError("License must be an SPDX id (SPDX:{ id })")
-                namespace, _, id = node.children.partition(':')
+                if ':' in node.children:
+                    namespace, _, id = node.children.partition(':')
+                else:
+                    namespace = None
+                    id = node.children
                 if namespace == 'SPDX':
                     url = 'https://spdx.org/licenses/{}.html'.format(id)
                 else:
                     url = None
                 metadata.license = OntologyTerm(namespace=namespace, id=id, url=url)
             elif node.prefix == 'dcterms' and node.name == 'created' and isinstance(node.children, str):
-                sim._metadata.created = dateutil.parser.parse(node.children)
+                metadata.created = dateutil.parser.parse(node.children)
             elif node.prefix == 'dcterms' and node.name == 'date' and node.type == 'update' and isinstance(node.children, str):
-                sim._metadata.updated = dateutil.parser.parse(node.children)
+                metadata.updated = dateutil.parser.parse(node.children)
 
         if not metadata.references.identifiers and not metadata.references.citations:
             metadata.references = None
 
-        if next((True for field in metadata.to_tuple() if field is not None), False):
+        if next((True for field in metadata.to_tuple() if field), False):
             return metadata
         else:
             return None
@@ -1046,11 +1035,10 @@ class SedmlSimulationReader(object):
                                         and description_xml.getAttrValue(i_attr) == '#' + obj_sed.getMetaId():
                                     description_about_obj = True
                                     break
-                            if not description_about_obj:
-                                continue
-                            for i_child_3 in range(description_xml.getNumChildren()):
-                                child = description_xml.getChild(i_child_3)
-                                nodes.append(self._decode_obj_from_xml(child))
+                            if description_about_obj:
+                                for i_child_3 in range(description_xml.getNumChildren()):
+                                    child = description_xml.getChild(i_child_3)
+                                    nodes.append(self._decode_obj_from_xml(child))
         return nodes
 
     def _decode_obj_from_xml(self, obj_xml):
@@ -1136,27 +1124,3 @@ class XmlNode(object):
                                    self.prefix, self.name)
 
 
-def normalize_kisao_id(id):
-    """ Normalize an id for a KiSAO term to the official pattern `KISAO_\d{7}`.
-
-    The official id pattern for KiSAO terms is `KISAO_\d{7}`. This is often confused with `KISAO:\d{7}` and `\d{7}`.
-    This function automatically converts these other patterns to the offfical pattern.
-
-    Args:
-        id (:obj:`str`): offical KiSAO id with pattern `KISAO_\d{7}` or a variant such as `KISAO:\d{7}` or `\d{7}`
-
-    Returns:
-        :obj:`str`: normalized KiSAO id that follows the official pattern `KISAO_\d{7}`
-    """
-    unnormalized_id = id
-
-    if id.startswith('KISAO:'):
-        id = 'KISAO_' + id[6:]
-
-    if not id.startswith('KISAO_'):
-        id = 'KISAO_' + id
-
-    if not re.match(r'KISAO_\d{7}', id):
-        warnings.warn("'{}' is likely not a KiSAO term".format(unnormalized_id), SimulationIoWarning)
-
-    return id

@@ -13,3 +13,10 @@ class DataModelTestCase(unittest.TestCase):
         author3 = data_model.Person(given_name='last', family_name='first')
         self.assertTrue(author1.is_equal(author2))
         self.assertFalse(author1.is_equal(author3))
+
+        identifier1 = data_model.Identifier(namespace='KISAO', id='KISAO_0000029')
+        identifier2 = data_model.Identifier(namespace='KISAO', id='KISAO_0000029')
+        identifier3 = data_model.Identifier(namespace='KISAO', id='KISAO_0000028')
+        self.assertTrue(identifier1.is_equal(identifier2))
+        self.assertFalse(identifier1.is_equal(identifier3))
+

@@ -1,15 +1,13 @@
 import unittest
 from biosimulators_utils.biosimulations import data_model
-from biosimulators_utils.data_model import Person
+from biosimulators_utils.data_model import Person, Identifier
 
 
 class DataModelTestCase(unittest.TestCase):
     def test(self):
-        identifier1 = data_model.Identifier(namespace='KISAO', id='KISAO_0000029')
-        identifier2 = data_model.Identifier(namespace='KISAO', id='KISAO_0000029')
-        identifier3 = data_model.Identifier(namespace='KISAO', id='KISAO_0000028')
-        self.assertTrue(identifier1.is_equal(identifier2))
-        self.assertFalse(identifier1.is_equal(identifier3))
+        identifier1 = Identifier(namespace='KISAO', id='KISAO_0000029')
+        identifier2 = Identifier(namespace='KISAO', id='KISAO_0000029')
+        identifier3 = Identifier(namespace='KISAO', id='KISAO_0000028')
 
         citation1 = data_model.Citation(title='title', authors='authors')
         citation2 = data_model.Citation(title='title', authors='authors')
