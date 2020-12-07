@@ -10,6 +10,7 @@ from ..biosimulations.data_model import Metadata  # noqa: F401
 from ..utils.core import are_lists_equal, none_sorted
 import abc
 import enum
+import numpy  # noqa: F401
 
 
 __all__ = [
@@ -36,6 +37,8 @@ __all__ = [
     'AxisScale',
     'Curve',
     'Surface',
+    'DataGeneratorVariableResults',
+    'OutputResults',
 ]
 
 
@@ -1085,3 +1088,29 @@ class Surface(object):
                  or (self.y_data_generator is not None and self.y_data_generator.is_equal(other.y_data_generator))) \
             and ((self.z_data_generator is None and self.z_data_generator == other.z_data_generator)
                  or (self.z_data_generator is not None and self.z_data_generator.is_equal(other.z_data_generator)))
+
+
+class DataGeneratorVariableResults(dict):
+    """ Dictionary that maps variables (:obj:`DataGeneratorVariable`) to their results (:obj:`numpy.ndarray`)
+
+    * Steady-state tasks of non-spatial models: results should be arrays of shape `(1,)`
+    * One-step tasks of non-spatial models: results should be arrays of shape ``(2,)`
+    * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_points + 1,)``
+    """
+    pass
+
+
+class OutputResults(dict):
+    """ Dictionary that maps outputs (e.g., :obj:`Report`) to their results (:obj:`pandas.DataFrame`) 
+
+    Indices (row labels)
+
+    * Reports: equal to the ids of the datasets if each report
+
+    Results:
+
+    * Steady-state tasks of non-spatial models: results should be arrays of shape `(number of datasets, 1)`
+    * One-step tasks of non-spatial models: results should be arrays of shape ``(number of datasets, 2)`
+    * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number of datasets, number_of_points + 1)``
+    """
+    pass

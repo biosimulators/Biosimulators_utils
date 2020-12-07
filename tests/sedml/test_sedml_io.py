@@ -408,9 +408,10 @@ class IoTestCase(unittest.TestCase):
                     id='plot',
                     curves=[
                         data_model.Curve(
+                            id='curve',
                             x_scale='sin',
-                            x_data_generator=data_model.DataGenerator(id='x_data_gen'),
-                            y_data_generator=data_model.DataGenerator(id='y_data_gen'),
+                            x_data_generator=data_model.DataGenerator(id='x_data_gen', math='x'),
+                            y_data_generator=data_model.DataGenerator(id='y_data_gen', math='y'),
                         ),
                     ]
                 ),

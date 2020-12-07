@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..sedml.data_model import Task, DataGeneratorVariable  # noqa: F401
+from ..sedml.data_model import Task, DataGeneratorVariable, OutputResults  # noqa: F401
 from .io import CombineArchiveReader
 import biosimulators_utils.sedml.exec
 import os
@@ -35,6 +35,12 @@ def exec_sedml_docs_in_archive(filename, sed_task_executer, out_dir, apply_xml_m
                     Args:
                        task (:obj:`Task`): task
                        variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables that should be recorded
+
+                    Returns:
+                        :obj:`tuple`:
+
+                            * :obj:`OutputResults`: results of outputs
+                            * :obj:`DataGeneratorVariableResults`: results of variables
                     '''
                     pass
 

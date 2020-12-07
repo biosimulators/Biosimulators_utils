@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from .data_model import SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D  # noqa: F401
+from .data_model import SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D, DataGeneratorVariable  # noqa: F401
 from lxml import etree
 import copy
 import re
@@ -121,41 +121,72 @@ def validate_doc(doc, validate_semantics=True):
                 validate_reference(task, 'Task {}'.format(task.id), 'simulation', 'simulation')
 
         for data_gen in doc.data_generators:
-            for i_var, var in enumerate(data_gen.variables):
+            for var in data_gen.variables:
+                if not var.id:
+                    raise ValueError('Variables must have ids')
                 if (not var.target and not var.symbol) or (var.target and var.symbol):
                     raise ValueError('Variables must define a target or symbol')
-                if var.target:
-                    validate_reference(var, 'Variable {} of data generator "{}"'.format(i_var + 1, data_gen.id), 'task', 'task')
-                    validate_reference(var, 'Variable {} of data generator "{}"'.format(i_var + 1, data_gen.id), 'model', 'model')
+                validate_reference(var, 'Variable {} of data generator "{}"'.format(var.id, data_gen.id), 'task', 'task')
+                validate_reference(var, 'Variable {} of data generator "{}"'.format(var.id, data_gen.id), 'model', 'model')
+
+                if var.model and var.task and var.task.model and var.task.model != var.model:
+                    raise ValueError('Model of variable {} of data generator "{}" and model of task must be consistent'.format(
+                        var.id, data_gen.id))
+            if not data_gen.math:
+                raise ValueError('Data generators must have math')
 
         for output in doc.outputs:
             if isinstance(output, Report):
-                for i_dataset, dataset in enumerate(output.datasets):
+                for dataset in output.datasets:
                     if not dataset.id:
                         raise ValueError('Datasets must have ids')
+                    if not dataset.label:
+                        raise ValueError('Datasets must have labels')
                     validate_reference(dataset, 'Dataset {} of report "{}"'.format(
-                        i_dataset + 1, output.id), 'data_generator', 'data data generator')
+                        dataset.id, output.id), 'data_generator', 'data data generator')
 
             elif isinstance(output, Plot2D):
-                for i_curve, curve in enumerate(output.curves):
+                for curve in output.curves:
+                    if not curve.id:
+                        raise ValueError('Curves must have ids')
                     validate_reference(curve, 'Curve {} of 2D plot "{}"'.format(
-                        i_curve + 1, output.id), 'x_data_generator', 'x data data generator')
+                        curve.id, output.id), 'x_data_generator', 'x data data generator')
                     validate_reference(curve, 'Curve {} of 2D plot "{}"'.format(
-                        i_curve + 1, output.id), 'y_data_generator', 'y data data generator')
+                        curve.id, output.id), 'y_data_generator', 'y data data generator')
 
             elif isinstance(output, Plot3D):
-                for i_surface, surface in enumerate(output.surfaces):
+                for surface in output.surfaces:
+                    if not surface.id:
+                        raise ValueError('Surfaces must have ids')
                     validate_reference(surface, 'Surface {} of 3D plot "{}"'.format(
-                        i_surface + 1, output.id), 'x_data_generator', 'x data data generator')
+                        surface.id, output.id), 'x_data_generator', 'x data data generator')
                     validate_reference(surface, 'Surface {} of 3D plot "{}"'.format(
-                        i_surface + 1, output.id), 'y_data_generator', 'y data data generator')
+                        surface.id, output.id), 'y_data_generator', 'y data data generator')
                     validate_reference(surface, 'Surface {} of 3D plot "{}"'.format(
-                        i_surface + 1, output.id), 'z_data_generator', 'z data data generator')
+                        surface.id, output.id), 'z_data_generator', 'z data data generator')
 
 
 def validate_reference(obj, obj_label, attr_name, attr_label):
     if not getattr(obj, attr_name):
         raise ValueError('{} must have a {}'.format(obj_label, attr_label))
+
+
+def get_variables_for_task(doc, task):
+    """ Get the variables that a task must record
+
+    Args:
+        doc (:obj:`SedDocument`): SED document
+        task (:obj:`Task`): task
+
+    Returns:
+        :obj:`list` of :obj:`DataGeneratorVariable`: variables that task must record
+    """
+    variables = set()
+    for data_gen in doc.data_generators:
+        for var in data_gen.variables:
+            if var.task == task:
+                variables.add(var)
+    return list(variables)
 
 
 def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename, pretty_print=False):
