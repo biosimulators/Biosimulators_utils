@@ -1122,5 +1122,3 @@ class XmlNode(object):
                 '</{}:{}>').format(self.prefix, self.name,
                                    type, value_xml,
                                    self.prefix, self.name)
-
-

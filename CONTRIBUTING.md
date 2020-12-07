@@ -46,7 +46,7 @@ Please use GitHub pull requests to submit changes. Each request should include a
 
 ## Releasing new versions
 
-Contact [info@biosimulators.org](mailto:info@biosimulators.org) to request release of new changes. 
+Contact [info@biosimulators.org](mailto:info@biosimulators.org) to request release of new changes.
 
 ## Reporting issues
 

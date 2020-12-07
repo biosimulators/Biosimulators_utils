@@ -4,9 +4,9 @@
     <listOfSpecies>
       <species compartment="compartment" id="Trim" initialConcentration="0.084410675" metaid="metaid_0000084" name="CDC28_Clb2_Sic1_Complex" sboTerm="SBO:0000296">
       </species>
-      <species compartment="compartment" id="Clb" initialConcentration="0.18453673" metaid="metaid_0000085" name="Clb2" sboTerm="SBO:0000245">        
+      <species compartment="compartment" id="Clb" initialConcentration="0.18453673" metaid="metaid_0000085" name="Clb2" sboTerm="SBO:0000245">
       </species>
-      <species compartment="compartment" id="Sic" initialConcentration="0.0035491784" metaid="metaid_0000086" name="Sic1" sboTerm="SBO:0000245">        
+      <species compartment="compartment" id="Sic" initialConcentration="0.0035491784" metaid="metaid_0000086" name="Sic1" sboTerm="SBO:0000245">
       </species>
     </listOfSpecies>
   </model>
