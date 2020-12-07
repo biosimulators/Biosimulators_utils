@@ -3,3 +3,5 @@ lxml
 python_dateutil
 python_libcombine
 python_libsedml
+requests
+yamldown
