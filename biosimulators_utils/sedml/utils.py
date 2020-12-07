@@ -10,7 +10,6 @@ from .data_model import SedDocument, ModelAttributeChange, Task, Report, Plot2D,
 from lxml import etree
 import copy
 import re
-import re
 
 __all__ = ['append_all_nested_children_to_doc', 'validate_doc', 'validate_reference', 'apply_changes_to_xml_model']
 
