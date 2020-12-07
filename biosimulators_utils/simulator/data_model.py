@@ -5,7 +5,7 @@ class SimulatorSubmission(object):
         id (:obj:`str`): id of simulator (e.g., `tellurium` or `vcell`)
         version (:obj:`str`): version of simulator (e.g., `2.1.6`)
         specifications_url (:obj:`str`): URL for the specifications of the version of the simulator
-            (e.g., `https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/2.1.6/biosimulators.json`)            
+            (e.g., `https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/2.1.6/biosimulators.json`)
     """
 
     def __init__(self, id=None, version=None, specifications_url=None):

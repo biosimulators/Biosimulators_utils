@@ -8,7 +8,7 @@
 
 import cement
 import sys
-import types
+import types  # noqa: F401
 
 __all__ = [
     'build_cli',

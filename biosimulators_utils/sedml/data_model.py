@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..biosimulations.data_model import Metadata
+from ..biosimulations.data_model import Metadata  # noqa: F401
 from ..utils.core import are_lists_equal, none_sorted
 import abc
 import enum

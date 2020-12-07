@@ -6,8 +6,6 @@
 :License: MIT
 """
 
-import functools
-
 __all__ = ['are_lists_equal', 'none_sorted', 'assert_exception']
 
 
@@ -81,7 +79,7 @@ def none_comparator(x, y):
             if cmp != 0:
                 return cmp
 
-        return 0 # pragma: no cover
+        return 0  # pragma: no cover
 
     if x is None:
         return -1

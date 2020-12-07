@@ -6,9 +6,9 @@
 :License: MIT
 """
 
-from ..data_model import Person, Identifier, OntologyTerm
+from ..data_model import Person, Identifier, OntologyTerm  # noqa: F401
 from ..utils.core import are_lists_equal, none_sorted
-import datetime
+import datetime  # noqa: F401
 
 __all__ = [
     'Metadata',

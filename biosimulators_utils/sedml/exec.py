@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from .data_model import ModelChange, ModelAttributeChange
+from .data_model import ModelAttributeChange
 from lxml import etree
 import re
 

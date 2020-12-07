@@ -15,7 +15,7 @@ GH_ISSUE_ENDPOINT = 'https://api.github.com/repos/biosimulators/Biosimulators/is
 
 
 def register_simulator_with_biosimulators(simulator, gh_username, gh_access_token):
-    """ Submit a version of a simulation tool for review for inclusion in the BioSimulators registry. 
+    """ Submit a version of a simulation tool for review for inclusion in the BioSimulators registry.
     This will create a GitHub issue which the BioSimulators Team will use to review your submission.
 
     This method requires a GitHub access and personal access token. This access token must have the `public_repo` scope.
@@ -23,7 +23,7 @@ def register_simulator_with_biosimulators(simulator, gh_username, gh_access_toke
     `GitHub documentation <https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token`>_.
 
     Args:
-        simulator (:obj:`SimulatorSubmission`): simulator        
+        simulator (:obj:`SimulatorSubmission`): simulator
         gh_username (:obj:`str`): GitHub username (e.g., `jonrkarr`)
         gh_access_token (:obj:`str`): GitHub personal access token.
 

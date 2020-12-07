@@ -7,9 +7,9 @@
 """
 
 from ..utils.core import are_lists_equal, none_sorted
-from ..data_model import Person
+from ..data_model import Person  # noqa: F401
 import abc
-import datetime
+import datetime  # noqa: F401
 
 __all__ = [
     'CombineArchiveBase',

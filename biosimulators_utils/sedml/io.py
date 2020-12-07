@@ -12,13 +12,9 @@ from ..biosimulations.data_model import Metadata, ExternalReferences, Citation
 from ..data_model import Person, Identifier, OntologyTerm
 from ..kisao.utils import normalize_kisao_id
 from xml.sax import saxutils
-import copy
 import dateutil.parser
 import enum
 import libsedml
-import os
-import re
-import warnings
 
 
 __all__ = [

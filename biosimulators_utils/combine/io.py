@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from .data_model import CombineArchiveBase, CombineArchive, CombineArchiveContent
+from .data_model import CombineArchiveBase, CombineArchive, CombineArchiveContent  # noqa: F401
 from ..data_model import Person
 import dateutil.parser
 import libcombine

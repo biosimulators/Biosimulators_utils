@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from .data_model import SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D
+from .data_model import SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D  # noqa: F401
 import re
 
 __all__ = ['validate_doc', 'validate_reference']
