@@ -1,6 +1,8 @@
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
 from biosimulators_utils.sedml import io
+from lxml import etree
+from unittest import mock
 import numpy
 import numpy.testing
 import os
@@ -151,7 +153,7 @@ class ExecTaskCase(unittest.TestCase):
             return results
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        output_results, var_results = exec.exec_doc(filename, execute_task, out_dir)
+        output_results, var_results = exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir)
 
         expected_var_results = data_model.DataGeneratorVariableResults({
             doc.data_generators[0].variables[0].id: numpy.array((1.,)),
@@ -182,3 +184,268 @@ class ExecTaskCase(unittest.TestCase):
         self.assertEqual(sorted(output_results.keys()), sorted(expected_output_results.keys()))
         for key in output_results.keys():
             self.assertTrue(output_results[key].equals(expected_output_results[key]))
+
+    def test_with_model_changes(self):
+        doc = data_model.SedDocument()
+
+        doc.models.append(data_model.Model(
+            id='model1',
+            source='model1.xml',
+            language='urn:sedml:language:sbml',
+            changes=[
+                data_model.ModelAttributeChange(
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
+                    new_value="2.0",
+                ),
+            ],
+        ))
+
+        doc.simulations.append(data_model.SteadyStateSimulation(
+            id='sim1',
+        ))
+
+        doc.tasks.append(data_model.Task(
+            id='task1',
+            model=doc.models[0],
+            simulation=doc.simulations[0],
+        ))
+
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen_1',
+            variables=[
+                data_model.DataGeneratorVariable(
+                    id='data_gen_1_var_1',
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
+                    task=doc.tasks[0],
+                    model=doc.models[0],
+                ),
+            ],
+            math='data_gen_1_var_1',
+        ))
+
+        doc.outputs.append(data_model.Report(
+            id='report_1',
+            datasets=[
+                data_model.Dataset(
+                    id='dataset_1',
+                    label='dataset_1',
+                    data_generator=doc.data_generators[0],
+                ),
+            ],
+        ))
+
+        filename = os.path.join(self.tmp_dir, 'test.sedml')
+        working_dir = os.path.dirname(filename)
+        io.SedmlSimulationWriter().run(doc, filename)
+
+        shutil.copyfile(
+            os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-three-species.xml'),
+            os.path.join(working_dir, 'model1.xml'))
+
+        print(doc.tasks[0].model.source)
+
+        def execute_task(task, variables):
+            print(task.model.source)
+            et = etree.parse(task.model.source)
+            obj_xpath, _, attr = variables[0].target.rpartition('/@')
+            obj = et.xpath(obj_xpath, namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'})[0]
+            results = data_model.DataGeneratorVariableResults()
+            results[doc.data_generators[0].variables[0].id] = numpy.array((float(obj.get(attr)),))
+            return results
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+
+        _, var_results = exec.exec_doc(filename, working_dir, execute_task, out_dir, apply_xml_model_changes=False)
+        numpy.testing.assert_equal(var_results[doc.data_generators[0].variables[0].id], numpy.array((1., )))
+
+        _, var_results = exec.exec_doc(filename, working_dir, execute_task, out_dir, apply_xml_model_changes=True)
+        numpy.testing.assert_equal(var_results[doc.data_generators[0].variables[0].id], numpy.array((2., )))
+
+    def test_errors(self):
+        # error: variable not recorded
+        doc = data_model.SedDocument()
+
+        doc.models.append(data_model.Model(
+            id='model1',
+            source='model1.xml',
+            language='urn:sedml:language:sbml',
+        ))
+
+        doc.simulations.append(data_model.SteadyStateSimulation(
+            id='sim1',
+        ))
+
+        doc.tasks.append(data_model.Task(
+            id='task1',
+            model=doc.models[0],
+            simulation=doc.simulations[0],
+        ))
+
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen_1',
+            variables=[
+                data_model.DataGeneratorVariable(
+                    id='data_gen_1_var_1',
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                    task=doc.tasks[0],
+                    model=doc.models[0],
+                ),
+            ],
+            math='data_gen_1_var_1',
+        ))
+
+        doc.outputs.append(data_model.Report(
+            id='report_1',
+            datasets=[
+                data_model.Dataset(
+                    id='dataset_1',
+                    label='dataset_1',
+                    data_generator=doc.data_generators[0],
+                ),
+            ],
+        ))
+
+        filename = os.path.join(self.tmp_dir, 'test.sedml')
+        io.SedmlSimulationWriter().run(doc, filename)
+
+        def execute_task(task, variables):
+            return data_model.DataGeneratorVariableResults()
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with self.assertRaisesRegex(ValueError, 'must be generated for task'):
+            exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir)
+
+        # error: unsupported type of task
+        doc = data_model.SedDocument()
+        doc.tasks.append(mock.Mock(
+            id='task_1_ss',
+        ))
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with self.assertRaisesRegex(NotImplementedError, 'not supported'):
+            exec.exec_doc(doc, '.', execute_task, out_dir)
+
+        # error: unsupported data generators
+        doc = data_model.SedDocument()
+
+        doc.models.append(data_model.Model(
+            id='model1',
+            source='model1.xml',
+            language='urn:sedml:language:sbml',
+        ))
+
+        doc.simulations.append(data_model.SteadyStateSimulation(
+            id='sim1',
+        ))
+
+        doc.tasks.append(data_model.Task(
+            id='task1',
+            model=doc.models[0],
+            simulation=doc.simulations[0],
+        ))
+
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen_1',
+            variables=[
+                data_model.DataGeneratorVariable(
+                    id='data_gen_1_var_1',
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                    task=doc.tasks[0],
+                    model=doc.models[0],
+                ),
+                data_model.DataGeneratorVariable(
+                    id='data_gen_1_var_2',
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                    task=doc.tasks[0],
+                    model=doc.models[0],
+                ),
+            ],
+            math='data_gen_1_var_1 * data_gen_1_var_2',
+        ))
+
+        doc.outputs.append(data_model.Report(
+            id='report_1',
+            datasets=[
+                data_model.Dataset(
+                    id='dataset_1',
+                    label='dataset_1',
+                    data_generator=doc.data_generators[0],
+                ),
+            ],
+        ))
+
+        def execute_task(task, variables):
+            results = data_model.DataGeneratorVariableResults()
+            results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
+            results[doc.data_generators[0].variables[1].id] = numpy.array((1.,))
+            return results
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with self.assertRaisesRegex(NotImplementedError, 'must be equal to a single variable'):
+            exec.exec_doc(doc, '.', execute_task, out_dir)
+
+        # error: inconsistent shapes
+        doc.data_generators = [
+            data_model.DataGenerator(
+                id='data_gen_1',
+                variables=[
+                    data_model.DataGeneratorVariable(
+                        id='data_gen_1_var_1',
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        task=doc.tasks[0],
+                        model=doc.models[0],
+                    ),
+                ],
+                math='data_gen_1_var_1',
+            ),
+            data_model.DataGenerator(
+                id='data_gen_1',
+                variables=[
+                    data_model.DataGeneratorVariable(
+                        id='data_gen_1_var_2',
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        task=doc.tasks[0],
+                        model=doc.models[0],
+                    ),
+                ],
+                math='data_gen_1_var_2',
+            ),
+        ]
+
+        doc.outputs = [
+            data_model.Report(
+                id='report_1',
+                datasets=[
+                    data_model.Dataset(
+                        id='dataset_1',
+                        label='dataset_1',
+                        data_generator=doc.data_generators[0],
+                    ),
+                    data_model.Dataset(
+                        id='dataset_2',
+                        label='dataset_2',
+                        data_generator=doc.data_generators[1],
+                    ),
+                ],
+            ),
+        ]
+
+        def execute_task(task, variables):
+            results = data_model.DataGeneratorVariableResults()
+            results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
+            results[doc.data_generators[1].variables[0].id] = numpy.array((1., 2.))
+            return results
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with self.assertRaisesRegex(ValueError, 'must have consistent shape'):
+            exec.exec_doc(doc, '.', execute_task, out_dir)
+
+        # error: unsupported outputs
+        doc.outputs = [
+            data_model.Plot2D(
+                id='plot',
+            ),
+        ]
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with self.assertRaisesRegex(NotImplementedError, 'not supported'):
+            exec.exec_doc(doc, '.', execute_task, out_dir)

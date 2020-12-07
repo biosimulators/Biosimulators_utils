@@ -44,7 +44,7 @@ class ExecCombineTestCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
-        def exec_doc(filename, task_executer, out_dir, apply_xml_model_changes=False):
+        def exec_doc(filename, working_dir, task_executer, out_dir, apply_xml_model_changes=False):
             if not os.path.isdir(out_dir):
                 os.makedirs(out_dir)
             with open(os.path.join(out_dir, 'report1.csv'), 'w') as file:
@@ -89,7 +89,7 @@ class ExecCombineTestCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
-        def exec_doc(filename, task_executer, out_dir, apply_xml_model_changes=False):
+        def exec_doc(filename, working_dir, task_executer, out_dir, apply_xml_model_changes=False):
             if not os.path.isdir(out_dir):
                 os.makedirs(out_dir)
             with open(os.path.join(out_dir, 'report1.csv'), 'w') as file:

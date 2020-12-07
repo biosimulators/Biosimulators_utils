@@ -6,9 +6,10 @@
 :License: MIT
 """
 
-from .data_model import Task, Report, DataGeneratorVariableResults, OutputResults
+from .data_model import SedDocument, Task, Report, DataGeneratorVariableResults, OutputResults  # noqa: F401
 from .io import SedmlSimulationReader
 from .utils import apply_changes_to_xml_model, get_variables_for_task
+import copy
 import numpy
 import os
 import pandas
@@ -21,11 +22,12 @@ __all__ = [
 ]
 
 
-def exec_doc(filename, task_executer, out_dir, apply_xml_model_changes=False):
+def exec_doc(doc, working_dir, task_executer, out_dir, apply_xml_model_changes=False):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
-        filename (:obj:`str`): path to SED-ML file
+        doc (:obj:`SedDocument` of :obj:`str`): SED document or a path to SED-ML file which defines a SED document
+        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
         task_executer (:obj:`types.FunctionType`): function to execute each task in the SED-ML file.
             The function must implement the following interface::
 
@@ -48,10 +50,12 @@ def exec_doc(filename, task_executer, out_dir, apply_xml_model_changes=False):
         apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file before
             calling :obj:`task_executer`.
     """
-    doc = SedmlSimulationReader().run(filename)
+    if not isinstance(doc, SedDocument):
+        doc = SedmlSimulationReader().run(doc)
+    else:
+        doc = copy.deepcopy(doc)
 
     # apply changes to models
-    working_dir = os.path.dirname(filename)
     modified_model_filenames = []
     for model in doc.models:
         if not os.path.isabs(model.source):
@@ -67,7 +71,7 @@ def exec_doc(filename, task_executer, out_dir, apply_xml_model_changes=False):
 
             model.source = modified_model_filename
 
-            modified_model_filenames.append(modified_model_file)
+            modified_model_filenames.append(modified_model_filename)
 
     # execute simulations
     variable_results = DataGeneratorVariableResults()

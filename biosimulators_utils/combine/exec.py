@@ -61,7 +61,10 @@ def exec_sedml_docs_in_archive(filename, sed_task_executer, out_dir, apply_xml_m
     # execute SED-ML files: execute tasks and save outputs
     for content in exec_content:
         if content.format == SEDML_SPECIFICATIONS_URL:
-            biosimulators_utils.sedml.exec.exec_doc(os.path.join(archive_tmp_dir, content.location),
+            filename = os.path.join(archive_tmp_dir, content.location)
+            working_dir = os.path.dirname(filename)
+            biosimulators_utils.sedml.exec.exec_doc(filename,
+                                                    working_dir,
                                                     sed_task_executer,
                                                     os.path.join(out_dir, os.path.splitext(content.location)[0]),
                                                     apply_xml_model_changes=apply_xml_model_changes)
