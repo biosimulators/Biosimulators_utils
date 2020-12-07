@@ -7,10 +7,12 @@
 """
 
 from .data_model import SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D  # noqa: F401
+from lxml import etree
 import copy
 import re
+import re
 
-__all__ = ['append_all_nested_children_to_doc', 'validate_doc', 'validate_reference']
+__all__ = ['append_all_nested_children_to_doc', 'validate_doc', 'validate_reference', 'apply_changes_to_xml_model']
 
 
 def append_all_nested_children_to_doc(doc):
@@ -154,3 +156,46 @@ def validate_doc(doc, validate_semantics=True):
 def validate_reference(obj, obj_label, attr_name, attr_label):
     if not getattr(obj, attr_name):
         raise ValueError('{} must have a {}'.format(obj_label, attr_label))
+
+
+def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename, pretty_print=False):
+    """ Modify an XML-encoded model according to the model attribute changes in a simulation
+
+    Args:
+        changes (:obj:`list` of :obj:`ModelAttributeChange`): changes
+        in_model_filename (:obj:`str`): path to model
+        out_model_filename (:obj:`str`): path to save modified model
+        pretty_print (:obj:`bool`, optional): if :obj:`True`, pretty print output
+    """
+    # read model
+    et = etree.parse(in_model_filename)
+
+    # get namespaces
+    root = et.getroot()
+    namespaces = root.nsmap
+    if None in namespaces:
+        namespaces.pop(None)
+        match = re.match(r'^{(.*?)}(.*?)$', root.tag)
+        if match:
+            namespaces[match.group(2)] = match.group(1)
+
+    # apply changes
+    for change in changes:
+        if not isinstance(change, ModelAttributeChange):
+            raise NotImplementedError('Change{} of type {} is not supported'.format(
+                ' ' + change.name if change.name else '', change.__class__.__name__))
+
+        # get object to change
+        obj_xpath, sep, attr = change.target.rpartition('/@')
+        if sep != '/@':
+            raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
+        objs = et.xpath(obj_xpath, namespaces=namespaces)
+        if len(objs) != 1:
+            raise ValueError('xpath {} must match a single object in {}'.format(obj_xpath, in_model_filename))
+        obj = objs[0]
+
+        # change value
+        obj.set(attr, change.new_value)
+
+    # write model
+    et.write(out_model_filename, xml_declaration=True, encoding="utf-8", standalone=False, pretty_print=pretty_print)
