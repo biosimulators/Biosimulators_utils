@@ -156,7 +156,8 @@ class ExecTaskCase(unittest.TestCase):
             return results
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        output_results, var_results = exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir)
+        output_results, var_results = exec.exec_doc(filename, os.path.dirname(
+            filename), execute_task, out_dir, report_format=ReportFormat.CSV)
 
         expected_var_results = DataGeneratorVariableResults({
             doc.data_generators[0].variables[0].id: numpy.array((1.,)),
@@ -192,6 +193,16 @@ class ExecTaskCase(unittest.TestCase):
         self.assertTrue(output_results[doc.outputs[0].id].equals(df))
 
         df = ReportReader().run(out_dir, doc.outputs[1].id, format=ReportFormat.CSV)
+        self.assertTrue(output_results[doc.outputs[1].id].equals(df))
+
+        # save in HDF5 format
+        shutil.rmtree(out_dir)
+        exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir, report_format=ReportFormat.HDF5)
+
+        df = ReportReader().run(out_dir, doc.outputs[0].id, format=ReportFormat.HDF5)
+        self.assertTrue(output_results[doc.outputs[0].id].equals(df))
+
+        df = ReportReader().run(out_dir, doc.outputs[1].id, format=ReportFormat.HDF5)
         self.assertTrue(output_results[doc.outputs[1].id].equals(df))
 
     def test_with_model_changes(self):
@@ -251,10 +262,7 @@ class ExecTaskCase(unittest.TestCase):
             os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-three-species.xml'),
             os.path.join(working_dir, 'model1.xml'))
 
-        print(doc.tasks[0].model.source)
-
         def execute_task(task, variables):
-            print(task.model.source)
             et = etree.parse(task.model.source)
             obj_xpath, _, attr = variables[0].target.rpartition('/@')
             obj = et.xpath(obj_xpath, namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'})[0]

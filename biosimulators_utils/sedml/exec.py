@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..report.data_model import DataGeneratorVariableResults, OutputResults
+from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat
 from ..report.io import ReportWriter
 from .data_model import SedDocument, Task, Report
 from .io import SedmlSimulationReader
@@ -24,7 +24,8 @@ __all__ = [
 ]
 
 
-def exec_doc(doc, working_dir, task_executer, out_dir, apply_xml_model_changes=False):
+def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
+             apply_xml_model_changes=False, report_format=ReportFormat.CSV):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -48,9 +49,17 @@ def exec_doc(doc, working_dir, task_executer, out_dir, apply_xml_model_changes=F
                     '''
                     pass
 
-        out_dir (:obj:`str`): directory to store the outputs
+        out_path (:obj:`str`): path to store the outputs
+
+            * CSV: directory in which to save outputs to files
+              ``{out_path}/{rel_out_path}/{report.id}.csv``
+            * HDF5: directory in which to save a single HDF5 file (``{out_path}/reports.h5``),
+              with reports at keys ``{rel_out_path}/{report.id}`` within the HDF5 file
+
+        rel_out_path (:obj:`str`, optional): path relative to :obj:`out_path` to store the outputs
         apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file before
             calling :obj:`task_executer`.
+        report_format (:obj:`ReportFormat`, optional): report format (e.g., CSV or HDF5)
     """
     if not isinstance(doc, SedDocument):
         doc = SedmlSimulationReader().run(doc)
@@ -115,7 +124,10 @@ def exec_doc(doc, working_dir, task_executer, out_dir, apply_xml_model_changes=F
             output_df = pandas.DataFrame(numpy.array(dataset_results), index=dataset_ids)
             report_results[output.id] = output_df
 
-            ReportWriter().run(output_df, out_dir, output.id)
+            ReportWriter().run(output_df,
+                               base_out_path,
+                               os.path.join(rel_out_path, output.id) if rel_out_path else output.id,
+                               format=report_format)
 
         else:
             raise NotImplementedError('Outputs of type {} are not supported'.format(output.__class__.__name__))

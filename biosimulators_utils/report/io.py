@@ -6,7 +6,6 @@
 :License: MIT
 """
 
-from ..sedml.data_model import Report
 from .data_model import ReportFormat
 import os
 import pandas
@@ -47,11 +46,12 @@ class ReportWriter(object):
                            header=False)
 
         elif format == ReportFormat.HDF5:
-            results.to_hdf(base_path,
+            filename = os.path.join(base_path, 'reports.h5')
+            if not os.path.isdir(base_path):
+                os.makedirs(base_path)
+            results.to_hdf(filename,
                            key=rel_path,
-                           header=False,
                            format='table',
-                           data_columns=True,
                            complevel=9,
                            complib='zlib',
                            mode='a',
@@ -68,7 +68,7 @@ class ReportReader(object):
     def run(self, base_path, rel_path, format=ReportFormat.CSV):
         """ Read a report for a file
 
-        Args:            
+        Args:
             base_path (:obj:`str`): path to save results
 
                 * CSV: parent directory to save results
@@ -93,16 +93,10 @@ class ReportReader(object):
             return df
 
         elif format == ReportFormat.HDF5:
-            results.to_hdf(base_path,
-                           key=rel_path,
-                           header=False,
-                           format='table',
-                           data_columns=True,
-                           complevel=9,
-                           complib='zlib',
-                           mode='a',
-                           append=False,
-                           )
+            filename = os.path.join(base_path, 'reports.h5')
+            return pandas.read_hdf(filename,
+                                   key=rel_path,
+                                   )
 
         else:
             raise NotImplementedError('Report format {} is not supported'.format(format))

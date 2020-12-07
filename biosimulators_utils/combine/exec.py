@@ -6,8 +6,8 @@
 :License: MIT
 """
 
-from ..report.data_model import DataGeneratorVariableResults, OutputResults  # noqa: F401
-from ..sedml.data_model import Task, DataGeneratorVariable
+from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat  # noqa: F401
+from ..sedml.data_model import Task, DataGeneratorVariable  # noqa: F401
 from .io import CombineArchiveReader
 import biosimulators_utils.sedml.exec
 import os
@@ -22,7 +22,7 @@ __all__ = [
 SEDML_SPECIFICATIONS_URL = 'http://identifiers.org/combine.specifications/sed-ml'
 
 
-def exec_sedml_docs_in_archive(filename, sed_task_executer, out_dir, apply_xml_model_changes=False):
+def exec_sedml_docs_in_archive(filename, sed_task_executer, out_path, apply_xml_model_changes=False, report_format=ReportFormat.CSV):
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
 
     Args:
@@ -45,9 +45,16 @@ def exec_sedml_docs_in_archive(filename, sed_task_executer, out_dir, apply_xml_m
                     '''
                     pass
 
-        out_dir (:obj:`str`): directory to store the outputs of the archive
+        out_path (:obj:`str`): path to store the outputs of the archive
+
+            * CSV: directory in which to save outputs to files
+              ``{out_path}/{relative-path-to-SED-ML-file-within-archive}/{report.id}.csv``
+            * HDF5: directory in which to save a single HDF5 file (``{out_path}/reports.h5``),
+              with reports at keys ``{relative-path-to-SED-ML-file-within-archive}/{report.id}`` within the HDF5 file
+
         apply_xml_model_changes (:obj:`bool`): if :obj:`True`, apply any model changes specified in the SED-ML files before
             calling :obj:`task_executer`.
+        report_format (:obj:`ReportFormat`, optional): report format (e.g., CSV or HDF5)
     """
     # create temporary directory to unpack archive
     archive_tmp_dir = tempfile.mkdtemp()
@@ -62,13 +69,17 @@ def exec_sedml_docs_in_archive(filename, sed_task_executer, out_dir, apply_xml_m
     # execute SED-ML files: execute tasks and save outputs
     for content in exec_content:
         if content.format == SEDML_SPECIFICATIONS_URL:
+            if os.path.isabs(content.location):
+                raise ValueError('Content locations must be relative')
             filename = os.path.join(archive_tmp_dir, content.location)
             working_dir = os.path.dirname(filename)
             biosimulators_utils.sedml.exec.exec_doc(filename,
                                                     working_dir,
                                                     sed_task_executer,
-                                                    os.path.join(out_dir, os.path.splitext(content.location)[0]),
-                                                    apply_xml_model_changes=apply_xml_model_changes)
+                                                    out_path,
+                                                    os.path.splitext(os.path.relpath(filename, archive_tmp_dir))[0],
+                                                    apply_xml_model_changes=apply_xml_model_changes,
+                                                    report_format=report_format)
 
     # cleanup temporary files
     shutil.rmtree(archive_tmp_dir)
