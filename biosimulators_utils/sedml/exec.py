@@ -6,7 +6,9 @@
 :License: MIT
 """
 
-from .data_model import SedDocument, Task, Report, DataGeneratorVariableResults, OutputResults  # noqa: F401
+from ..report.data_model import DataGeneratorVariableResults, OutputResults
+from ..report.io import ReportWriter
+from .data_model import SedDocument, Task, Report
 from .io import SedmlSimulationReader
 from .utils import apply_changes_to_xml_model, get_variables_for_task
 import copy
@@ -110,14 +112,10 @@ def exec_doc(doc, working_dir, task_executer, out_dir, apply_xml_model_changes=F
             if len(dataset_shapes) > 1:
                 raise ValueError('Data generators for report {} must have consistent shapes'.format(output.id))
 
-            if not os.path.isdir(out_dir):
-                os.makedirs(out_dir)
-            out_filename = os.path.join(out_dir, output.id + '.csv')
-
             output_df = pandas.DataFrame(numpy.array(dataset_results), index=dataset_ids)
-            output_df.to_csv(out_filename, header=False)
-
             report_results[output.id] = output_df
+
+            ReportWriter().run(output_df, out_dir, output.id)
 
         else:
             raise NotImplementedError('Outputs of type {} are not supported'.format(output.__class__.__name__))

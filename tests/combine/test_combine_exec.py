@@ -56,7 +56,7 @@ class ExecCombineTestCase(unittest.TestCase):
             exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir)
 
         self.assertEqual(os.listdir(out_dir), ['sim'])
-        self.assertEqual(os.listdir(os.path.join(out_dir, 'sim')), ['report1.csv', 'report2.csv'])
+        self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'sim'))), sorted(['report1.csv', 'report2.csv']))
         with open(os.path.join(out_dir, 'sim', 'report1.csv'), 'r') as file:
             self.assertEqual(file.read(), 'ABC')
         with open(os.path.join(out_dir, 'sim', 'report2.csv'), 'r') as file:
@@ -103,7 +103,7 @@ class ExecCombineTestCase(unittest.TestCase):
         self.assertEqual(os.listdir(out_dir), ['dir1'])
         self.assertEqual(os.listdir(os.path.join(out_dir, 'dir1')), ['dir2'])
         self.assertEqual(os.listdir(os.path.join(out_dir, 'dir1', 'dir2')), ['sim'])
-        self.assertEqual(os.listdir(os.path.join(out_dir, 'dir1', 'dir2', 'sim')), ['report1.csv', 'report2.csv'])
+        self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'dir1', 'dir2', 'sim'))), sorted(['report1.csv', 'report2.csv']))
         with open(os.path.join(out_dir, 'dir1', 'dir2', 'sim', 'report1.csv'), 'r') as file:
             self.assertEqual(file.read(), 'ABC')
         with open(os.path.join(out_dir, 'dir1', 'dir2', 'sim', 'report2.csv'), 'r') as file:

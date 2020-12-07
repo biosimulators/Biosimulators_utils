@@ -6,12 +6,18 @@
 :License: MIT
 """
 
-from .data_model import SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D, DataGeneratorVariable  # noqa: F401
+from .data_model import (SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D,  # noqa: F401
+                         DataGeneratorVariable)
 from lxml import etree
 import copy
 import re
 
-__all__ = ['append_all_nested_children_to_doc', 'validate_doc', 'validate_reference', 'apply_changes_to_xml_model']
+__all__ = [
+    'append_all_nested_children_to_doc',
+    'validate_doc',
+    'validate_reference',
+    'apply_changes_to_xml_model',
+]
 
 
 def append_all_nested_children_to_doc(doc):

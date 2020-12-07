@@ -6,7 +6,8 @@
 :License: MIT
 """
 
-from ..sedml.data_model import Task, DataGeneratorVariable, OutputResults  # noqa: F401
+from ..report.data_model import DataGeneratorVariableResults, OutputResults  # noqa: F401
+from ..sedml.data_model import Task, DataGeneratorVariable
 from .io import CombineArchiveReader
 import biosimulators_utils.sedml.exec
 import os

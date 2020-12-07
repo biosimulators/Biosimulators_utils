@@ -1,6 +1,9 @@
+from biosimulators_utils.report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat
+from biosimulators_utils.report.io import ReportReader
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
 from biosimulators_utils.sedml import io
+from biosimulators_utils.sedml import utils
 from lxml import etree
 from unittest import mock
 import numpy
@@ -143,7 +146,7 @@ class ExecTaskCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(doc, filename)
 
         def execute_task(task, variables):
-            results = data_model.DataGeneratorVariableResults()
+            results = DataGeneratorVariableResults()
             if task.id == 'task_1_ss':
                 results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
                 results[doc.data_generators[1].variables[0].id] = numpy.array((2.,))
@@ -155,7 +158,7 @@ class ExecTaskCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'results')
         output_results, var_results = exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir)
 
-        expected_var_results = data_model.DataGeneratorVariableResults({
+        expected_var_results = DataGeneratorVariableResults({
             doc.data_generators[0].variables[0].id: numpy.array((1.,)),
             doc.data_generators[1].variables[0].id: numpy.array((2.,)),
             doc.data_generators[2].variables[0].id: numpy.array((3.,  4.,  5.,  6.,  7.,  8.)),
@@ -165,7 +168,7 @@ class ExecTaskCase(unittest.TestCase):
         for key in var_results.keys():
             numpy.testing.assert_equal(var_results[key], expected_var_results[key])
 
-        expected_output_results = data_model.OutputResults({
+        expected_output_results = OutputResults({
             doc.outputs[0].id: pandas.DataFrame(
                 numpy.array([
                     numpy.array((1., )),
@@ -184,6 +187,12 @@ class ExecTaskCase(unittest.TestCase):
         self.assertEqual(sorted(output_results.keys()), sorted(expected_output_results.keys()))
         for key in output_results.keys():
             self.assertTrue(output_results[key].equals(expected_output_results[key]))
+
+        df = ReportReader().run(out_dir, doc.outputs[0].id, format=ReportFormat.CSV)
+        self.assertTrue(output_results[doc.outputs[0].id].equals(df))
+
+        df = ReportReader().run(out_dir, doc.outputs[1].id, format=ReportFormat.CSV)
+        self.assertTrue(output_results[doc.outputs[1].id].equals(df))
 
     def test_with_model_changes(self):
         doc = data_model.SedDocument()
@@ -249,7 +258,7 @@ class ExecTaskCase(unittest.TestCase):
             et = etree.parse(task.model.source)
             obj_xpath, _, attr = variables[0].target.rpartition('/@')
             obj = et.xpath(obj_xpath, namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'})[0]
-            results = data_model.DataGeneratorVariableResults()
+            results = DataGeneratorVariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((float(obj.get(attr)),))
             return results
 
@@ -309,7 +318,7 @@ class ExecTaskCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(doc, filename)
 
         def execute_task(task, variables):
-            return data_model.DataGeneratorVariableResults()
+            return DataGeneratorVariableResults()
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(ValueError, 'must be generated for task'):
@@ -374,7 +383,7 @@ class ExecTaskCase(unittest.TestCase):
         ))
 
         def execute_task(task, variables):
-            results = data_model.DataGeneratorVariableResults()
+            results = DataGeneratorVariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[0].variables[1].id] = numpy.array((1.,))
             return results
@@ -430,7 +439,7 @@ class ExecTaskCase(unittest.TestCase):
         ]
 
         def execute_task(task, variables):
-            results = data_model.DataGeneratorVariableResults()
+            results = DataGeneratorVariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[1].variables[0].id] = numpy.array((1., 2.))
             return results
