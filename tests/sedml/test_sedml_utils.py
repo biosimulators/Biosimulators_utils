@@ -82,3 +82,17 @@ class SedmlUtilsTestCase(unittest.TestCase):
         utils.append_all_nested_children_to_doc(doc)
         with self.assertRaisesRegex(ValueError, 'must define a target or symbol'):
             utils.validate_doc(doc)
+
+        doc = data_model.SedDocument(
+            outputs=[
+                data_model.Report(
+                    id='Report',
+                    datasets=[
+                        data_model.Dataset(
+                        )
+                    ],
+                ),
+            ],
+        )
+        with self.assertRaisesRegex(ValueError, 'must have ids'):
+            utils.validate_doc(doc)

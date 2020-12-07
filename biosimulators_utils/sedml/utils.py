@@ -129,6 +129,8 @@ def validate_doc(doc, validate_semantics=True):
         for output in doc.outputs:
             if isinstance(output, Report):
                 for i_dataset, dataset in enumerate(output.datasets):
+                    if not dataset.id:
+                        raise ValueError('Datasets must have ids')
                     validate_reference(dataset, 'Dataset {} of report "{}"'.format(
                         i_dataset + 1, output.id), 'data_generator', 'data data generator')
 
