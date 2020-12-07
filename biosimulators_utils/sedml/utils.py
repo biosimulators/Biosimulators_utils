@@ -7,9 +7,63 @@
 """
 
 from .data_model import SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D  # noqa: F401
+import copy
 import re
 
-__all__ = ['validate_doc', 'validate_reference']
+__all__ = ['append_all_nested_children_to_doc', 'validate_doc', 'validate_reference']
+
+
+def append_all_nested_children_to_doc(doc):
+    """ Append all nested children to a SED document
+
+    Args:
+        doc (:obj:`SedDocument`): SED document
+    """
+    data_generators = set(doc.data_generators)
+    tasks = set(doc.tasks)
+    simulations = set(doc.simulations)
+    models = set(doc.models)
+
+    for output in doc.outputs:
+        if isinstance(output, Report):
+            for dataset in output.datasets:
+                if dataset.data_generator:
+                    data_generators.add(dataset.data_generator)
+
+        elif isinstance(output, Plot2D):
+            for curve in output.curves:
+                if curve.x_data_generator:
+                    data_generators.add(curve.x_data_generator)
+                if curve.y_data_generator:
+                    data_generators.add(curve.y_data_generator)
+
+        elif isinstance(output, Plot3D):
+            for surface in output.surfaces:
+                if surface.x_data_generator:
+                    data_generators.add(surface.x_data_generator)
+                if surface.y_data_generator:
+                    data_generators.add(surface.y_data_generator)
+                if surface.z_data_generator:
+                    data_generators.add(surface.z_data_generator)
+
+    for data_gen in data_generators:
+        for var in data_gen.variables:
+            if var.task:
+                tasks.add(var.task)
+            if var.model:
+                models.add(var.model)
+
+    for task in tasks:
+        if isinstance(task, Task):
+            if task.model:
+                models.add(task.model)
+            if task.simulation:
+                simulations.add(task.simulation)
+
+    doc.models += list(models - set(doc.models))
+    doc.simulations += list(simulations - set(doc.simulations))
+    doc.tasks += list(tasks - set(doc.tasks))
+    doc.data_generators += list(data_generators - set(doc.data_generators))
 
 
 def validate_doc(doc, validate_semantics=True):
@@ -22,6 +76,7 @@ def validate_doc(doc, validate_semantics=True):
     Raises:
         :obj:`ValueError`: if document is invalid (e.g., required ids missing or ids not unique)
     """
+    # validate that required ids exist and are unique
     for child_type in ('models', 'simulations', 'data_generators', 'tasks', 'outputs'):
         children = getattr(doc, child_type)
 
@@ -35,6 +90,15 @@ def validate_doc(doc, validate_semantics=True):
                 raise ValueError('{} must have unique ids'.format(child_type))
 
     if validate_semantics:
+        # validate the models, simulations, tasks, data generators are children of the SED document
+        doc_copy = copy.deepcopy(doc)
+        append_all_nested_children_to_doc(doc_copy)
+
+        for child_type in ('models', 'simulations', 'tasks', 'data_generators'):
+            if len(getattr(doc, child_type)) != len(getattr(doc_copy, child_type)):
+                raise ValueError('{} must be direct children of SED document'.format(child_type))
+
+        # validate that model attribute changes have targets
         for model in doc.models:
             for change in model.changes:
                 if isinstance(change, ModelAttributeChange):

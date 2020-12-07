@@ -28,6 +28,7 @@ class SedmlUtilsTestCase(unittest.TestCase):
                 ),
             ],
         )
+        utils.append_all_nested_children_to_doc(doc)
         with self.assertRaisesRegex(ValueError, 'invalid KiSAO id'):
             utils.validate_doc(doc)
 
@@ -46,6 +47,7 @@ class SedmlUtilsTestCase(unittest.TestCase):
                 ),
             ],
         )
+        utils.append_all_nested_children_to_doc(doc)
         with self.assertRaisesRegex(ValueError, 'invalid KiSAO id'):
             utils.validate_doc(doc)
 
@@ -60,6 +62,7 @@ class SedmlUtilsTestCase(unittest.TestCase):
                 ),
             ],
         )
+        utils.append_all_nested_children_to_doc(doc)
         with self.assertRaisesRegex(ValueError, 'must define a target or symbol'):
             utils.validate_doc(doc)
 
@@ -76,5 +79,6 @@ class SedmlUtilsTestCase(unittest.TestCase):
                 ),
             ],
         )
+        utils.append_all_nested_children_to_doc(doc)
         with self.assertRaisesRegex(ValueError, 'must define a target or symbol'):
             utils.validate_doc(doc)

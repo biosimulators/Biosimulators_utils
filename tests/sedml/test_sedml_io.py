@@ -2,6 +2,7 @@ from biosimulators_utils.data_model import Person, Identifier, OntologyTerm
 from biosimulators_utils.biosimulations.data_model import Metadata, ExternalReferences, Citation
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import io
+from biosimulators_utils.sedml import utils
 from unittest import mock
 import datetime
 import dateutil.tz
@@ -408,13 +409,14 @@ class IoTestCase(unittest.TestCase):
                     curves=[
                         data_model.Curve(
                             x_scale='sin',
-                            x_data_generator=data_model.DataGenerator(),
-                            y_data_generator=data_model.DataGenerator(),
+                            x_data_generator=data_model.DataGenerator(id='x_data_gen'),
+                            y_data_generator=data_model.DataGenerator(id='y_data_gen'),
                         ),
                     ]
                 ),
             ],
         )
+        utils.append_all_nested_children_to_doc(document)
         with self.assertRaises(NotImplementedError):
             io.SedmlSimulationWriter().run(document, None)
 
@@ -442,11 +444,25 @@ class IoTestCase(unittest.TestCase):
 
     def test_write_error_invalid_refs(self):
         document = data_model.SedDocument(tasks=[data_model.Task(id='task', simulation=data_model.UniformTimeCourseSimulation(id='sim'))])
+        utils.append_all_nested_children_to_doc(document)
         with self.assertRaisesRegex(ValueError, 'must have a model'):
             io.SedmlSimulationWriter().run(document, None)
 
         document = data_model.SedDocument(tasks=[data_model.Task(id='task', model=data_model.Model(id='model'))])
+        utils.append_all_nested_children_to_doc(document)
         with self.assertRaisesRegex(ValueError, 'must have a simulation'):
+            io.SedmlSimulationWriter().run(document, None)
+
+        document = data_model.SedDocument(
+            tasks=[
+                data_model.Task(
+                    id='task',
+                    model=data_model.Model(id='model'),
+                    simulation=data_model.UniformTimeCourseSimulation(id='sim'),
+                ),
+            ],
+        )
+        with self.assertRaisesRegex(ValueError, 'must be direct children'):
             io.SedmlSimulationWriter().run(document, None)
 
     def test_read_error_invalid_refs(self):
