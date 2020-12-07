@@ -1,6 +1,8 @@
 from .data_model import SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D
 import re
 
+__all__ = ['validate_doc', 'validate_reference']
+
 
 def validate_doc(doc, validate_semantics=True):
     """ Validate a SED document

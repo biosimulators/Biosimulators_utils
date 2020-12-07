@@ -1,6 +1,7 @@
 import re
 import warnings
 
+__all__ = ['normalize_kisao_id']
 
 def normalize_kisao_id(id):
     """ Normalize an id for a KiSAO term to the official pattern `KISAO_\d{7}`.
