@@ -1,3 +1,4 @@
+from biosimulators_utils.archive.io import ArchiveReader
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent
 from biosimulators_utils.combine.exec import exec_sedml_docs_in_archive
 from biosimulators_utils.combine.io import CombineArchiveWriter
@@ -58,11 +59,11 @@ class ExecCombineTestCase(unittest.TestCase):
         with mock.patch('biosimulators_utils.sedml.exec.exec_doc', side_effect=exec_doc):
             exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir)
 
-        self.assertEqual(os.listdir(out_dir), ['sim'])
-        self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'sim'))), sorted(['report1.csv', 'report2.csv']))
-        with open(os.path.join(out_dir, 'sim', 'report1.csv'), 'r') as file:
+        self.assertEqual(sorted(os.listdir(out_dir)), ['reports.zip', 'sim.sedml'])
+        self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'sim.sedml'))), sorted(['report1.csv', 'report2.csv']))
+        with open(os.path.join(out_dir, 'sim.sedml', 'report1.csv'), 'r') as file:
             self.assertEqual(file.read(), 'ABC')
-        with open(os.path.join(out_dir, 'sim', 'report2.csv'), 'r') as file:
+        with open(os.path.join(out_dir, 'sim.sedml', 'report2.csv'), 'r') as file:
             self.assertEqual(file.read(), 'DEF')
 
     def test_2(self):
@@ -105,13 +106,24 @@ class ExecCombineTestCase(unittest.TestCase):
         with mock.patch('biosimulators_utils.sedml.exec.exec_doc', side_effect=exec_doc):
             exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir)
 
-        self.assertEqual(os.listdir(out_dir), ['dir1'])
+        self.assertEqual(sorted(os.listdir(out_dir)), sorted(['reports.zip', 'dir1']))
         self.assertEqual(os.listdir(os.path.join(out_dir, 'dir1')), ['dir2'])
-        self.assertEqual(os.listdir(os.path.join(out_dir, 'dir1', 'dir2')), ['sim'])
-        self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'dir1', 'dir2', 'sim'))), sorted(['report1.csv', 'report2.csv']))
-        with open(os.path.join(out_dir, 'dir1', 'dir2', 'sim', 'report1.csv'), 'r') as file:
+        self.assertEqual(os.listdir(os.path.join(out_dir, 'dir1', 'dir2')), ['sim.sedml'])
+        self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'dir1', 'dir2', 'sim.sedml'))), sorted(['report1.csv', 'report2.csv']))
+        with open(os.path.join(out_dir, 'dir1', 'dir2', 'sim.sedml', 'report1.csv'), 'r') as file:
             self.assertEqual(file.read(), 'ABC')
-        with open(os.path.join(out_dir, 'dir1', 'dir2', 'sim', 'report2.csv'), 'r') as file:
+        with open(os.path.join(out_dir, 'dir1', 'dir2', 'sim.sedml', 'report2.csv'), 'r') as file:
+            self.assertEqual(file.read(), 'DEF')
+
+        archive_dir = os.path.join(self.tmp_dir, 'archive')
+        archive = ArchiveReader().run(os.path.join(out_dir, 'reports.zip'), archive_dir)
+        self.assertEqual(sorted(file.archive_path for file in archive.files), sorted([
+            'dir1/dir2/sim.sedml/report1.csv',
+            'dir1/dir2/sim.sedml/report2.csv',
+            ]))
+        with open(os.path.join(archive_dir, 'dir1', 'dir2', 'sim.sedml', 'report1.csv'), 'r') as file:
+            self.assertEqual(file.read(), 'ABC')
+        with open(os.path.join(archive_dir, 'dir1', 'dir2', 'sim.sedml', 'report2.csv'), 'r') as file:
             self.assertEqual(file.read(), 'DEF')
 
     def test_error(self):

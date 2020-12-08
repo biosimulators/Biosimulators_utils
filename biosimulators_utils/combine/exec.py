@@ -6,6 +6,9 @@
 :License: MIT
 """
 
+from ..archive.io import ArchiveWriter
+from ..archive.utils import build_archive_from_paths
+from ..config import CSV_REPORTS_PATH, PDF_PLOTS_PATH
 from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import Task, DataGeneratorVariable  # noqa: F401
 from .io import CombineArchiveReader
@@ -78,9 +81,20 @@ def exec_sedml_docs_in_archive(filename, sed_task_executer, out_path, apply_xml_
                                                     working_dir,
                                                     sed_task_executer,
                                                     out_path,
-                                                    os.path.splitext(os.path.relpath(filename, archive_tmp_dir))[0],
+                                                    os.path.relpath(filename, archive_tmp_dir),
                                                     apply_xml_model_changes=apply_xml_model_changes,
                                                     report_formats=report_formats)
+
+    # bundle CSV files of reports into zip archive
+    if ReportFormat.CSV in report_formats:
+        archive = build_archive_from_paths([os.path.join(out_path, '**', '*.csv')], out_path)
+        if archive.files:
+            ArchiveWriter().run(archive, os.path.join(out_path, CSV_REPORTS_PATH))
+
+    # bundle PDF files of plots into zip archive
+    archive = build_archive_from_paths([os.path.join(out_path, '**', '*.pdf')], out_path)
+    if archive.files:
+        ArchiveWriter().run(archive, os.path.join(out_path, PDF_PLOTS_PATH))
 
     # cleanup temporary files
     shutil.rmtree(archive_tmp_dir)
