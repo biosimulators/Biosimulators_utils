@@ -16,7 +16,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="2.1.3. biosimulators_utils.sedml package" href="biosimulators_utils.sedml.html" />
+    <link rel="next" title="2.1.3. biosimulators_utils.kisao package" href="biosimulators_utils.kisao.html" />
     <link rel="prev" title="2.1.1. biosimulators_utils.biosimulations package" href="biosimulators_utils.biosimulations.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -54,9 +54,11 @@
 <li class="toctree-l2 current"><a class="reference internal" href="biosimulators_utils.html#subpackages">2.1. Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.biosimulations.html">2.1.1. biosimulators_utils.biosimulations package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">2.1.2. biosimulators_utils.combine package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.sedml.html">2.1.3. biosimulators_utils.sedml package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.simulator.html">2.1.4. biosimulators_utils.simulator package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.utils.html">2.1.5. biosimulators_utils.utils package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.kisao.html">2.1.3. biosimulators_utils.kisao package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.report.html">2.1.4. biosimulators_utils.report package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.sedml.html">2.1.5. biosimulators_utils.sedml package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.simulator.html">2.1.6. biosimulators_utils.simulator package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.utils.html">2.1.7. biosimulators_utils.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#submodules">2.2. Submodules</a></li>
@@ -84,7 +86,7 @@
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="biosimulators_utils.html"><span class="section-number">2. </span>biosimulators_utils package</a><ul>
       <li>Previous: <a href="biosimulators_utils.biosimulations.html" title="previous chapter"><span class="section-number">2.1.1. </span>biosimulators_utils.biosimulations package</a></li>
-      <li>Next: <a href="biosimulators_utils.sedml.html" title="next chapter"><span class="section-number">2.1.3. </span>biosimulators_utils.sedml package</a></li>
+      <li>Next: <a href="biosimulators_utils.kisao.html" title="next chapter"><span class="section-number">2.1.3. </span>biosimulators_utils.kisao package</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -122,6 +124,21 @@
 </div>
 <div class="section" id="module-biosimulators_utils.combine.data_model">
 <span id="biosimulators-utils-combine-data-model-module"></span><h2><span class="section-number">2.1.2.2. </span>biosimulators_utils.combine.data_model module<a class="headerlink" href="#module-biosimulators_utils.combine.data_model" title="Permalink to this headline">¶</a></h2>
+<p>Data model for COMBINE/OMEX archives</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-06</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
 <dl class="py class">
 <dt id="biosimulators_utils.combine.data_model.CombineArchive">
 <em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.combine.data_model.</code><code class="sig-name descname">CombineArchive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contents</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">authors</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">created</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">updated</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchive" title="Permalink to this definition">¶</a></dt>
@@ -399,8 +416,84 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-biosimulators_utils.combine.exec">
+<span id="biosimulators-utils-combine-exec-module"></span><h2><span class="section-number">2.1.2.3. </span>biosimulators_utils.combine.exec module<a class="headerlink" href="#module-biosimulators_utils.combine.exec" title="Permalink to this headline">¶</a></h2>
+<p>Utilities for executing tasks in SED-ML files in COMBINE/OMEX archives</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-06</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="biosimulators_utils.combine.exec.exec_sedml_docs_in_archive">
+<code class="sig-prename descclassname">biosimulators_utils.combine.exec.</code><code class="sig-name descname">exec_sedml_docs_in_archive</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">sed_task_executer</em>, <em class="sig-param">out_path</em>, <em class="sig-param">apply_xml_model_changes=False</em>, <em class="sig-param">report_format=&lt;ReportFormat.CSV: 'CSV'&gt;</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.exec.exec_sedml_docs_in_archive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to COMBINE archive</p></li>
+<li><p><strong>sed_task_executer</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.FunctionType</span></code>) – <p>function to execute each SED task in each SED-ML file in the archive.
+The function must implement the following interface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">exec_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Execute a simulation and return its results</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">       task (:obj:`Task`): task</span>
+<span class="sd">       variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables that should be recorded</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        :obj:`tuple`:</span>
+
+<span class="sd">            * :obj:`OutputResults`: results of outputs</span>
+<span class="sd">            * :obj:`DataGeneratorVariableResults`: results of variables</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>out_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – <p>path to store the outputs of the archive</p>
+<ul>
+<li><p>CSV: directory in which to save outputs to files
+<code class="docutils literal notranslate"><span class="pre">{out_path}/{relative-path-to-SED-ML-file-within-archive}/{report.id}.csv</span></code></p></li>
+<li><p>HDF5: directory in which to save a single HDF5 file (<code class="docutils literal notranslate"><span class="pre">{out_path}/reports.h5</span></code>),
+with reports at keys <code class="docutils literal notranslate"><span class="pre">{relative-path-to-SED-ML-file-within-archive}/{report.id}</span></code> within the HDF5 file</p></li>
+</ul>
+</p></li>
+<li><p><strong>apply_xml_model_changes</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, apply any model changes specified in the SED-ML files before
+calling <code class="xref py py-obj docutils literal notranslate"><span class="pre">task_executer</span></code>.</p></li>
+<li><p><strong>report_format</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ReportFormat</span></code>, optional) – report format (e.g., CSV or HDF5)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-biosimulators_utils.combine.io">
-<span id="biosimulators-utils-combine-io-module"></span><h2><span class="section-number">2.1.2.3. </span>biosimulators_utils.combine.io module<a class="headerlink" href="#module-biosimulators_utils.combine.io" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-combine-io-module"></span><h2><span class="section-number">2.1.2.4. </span>biosimulators_utils.combine.io module<a class="headerlink" href="#module-biosimulators_utils.combine.io" title="Permalink to this headline">¶</a></h2>
+<p>Utilities for reading and writing COMBINE/OMEX archives</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-06</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
 <dl class="py class">
 <dt id="biosimulators_utils.combine.io.CombineArchiveReader">
 <em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.combine.io.</code><code class="sig-name descname">CombineArchiveReader</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/io.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.io.CombineArchiveReader" title="Permalink to this definition">¶</a></dt>
