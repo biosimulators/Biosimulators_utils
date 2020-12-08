@@ -157,7 +157,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         output_results, var_results = exec.exec_doc(filename, os.path.dirname(
-            filename), execute_task, out_dir, report_format=ReportFormat.CSV)
+            filename), execute_task, out_dir, report_formats=[ReportFormat.CSV])
 
         expected_var_results = DataGeneratorVariableResults({
             doc.data_generators[0].variables[0].id: numpy.array((1.,)),
@@ -197,7 +197,7 @@ class ExecTaskCase(unittest.TestCase):
 
         # save in HDF5 format
         shutil.rmtree(out_dir)
-        exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir, report_format=ReportFormat.HDF5)
+        exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir, report_formats=[ReportFormat.HDF5])
 
         df = ReportReader().run(out_dir, doc.outputs[0].id, format=ReportFormat.HDF5)
         self.assertTrue(output_results[doc.outputs[0].id].equals(df))

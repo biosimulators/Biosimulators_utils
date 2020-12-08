@@ -25,7 +25,7 @@ __all__ = [
 
 
 def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
-             apply_xml_model_changes=False, report_format=ReportFormat.CSV):
+             apply_xml_model_changes=False, report_formats=[ReportFormat.CSV, ReportFormat.HDF5]):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -59,7 +59,7 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
         rel_out_path (:obj:`str`, optional): path relative to :obj:`out_path` to store the outputs
         apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file before
             calling :obj:`task_executer`.
-        report_format (:obj:`ReportFormat`, optional): report format (e.g., CSV or HDF5)
+        report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., CSV or HDF5)
     """
     if not isinstance(doc, SedDocument):
         doc = SedmlSimulationReader().run(doc)
@@ -124,10 +124,11 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
             output_df = pandas.DataFrame(numpy.array(dataset_results), index=dataset_ids)
             report_results[output.id] = output_df
 
-            ReportWriter().run(output_df,
-                               base_out_path,
-                               os.path.join(rel_out_path, output.id) if rel_out_path else output.id,
-                               format=report_format)
+            for report_format in report_formats:
+                ReportWriter().run(output_df,
+                                   base_out_path,
+                                   os.path.join(rel_out_path, output.id) if rel_out_path else output.id,
+                                   format=report_format)
 
         else:
             raise NotImplementedError('Outputs of type {} are not supported'.format(output.__class__.__name__))

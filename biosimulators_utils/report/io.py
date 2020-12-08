@@ -19,7 +19,7 @@ __all__ = [
 class ReportWriter(object):
     """ Class for writing reports of simulation results """
 
-    def run(self, results, base_path, rel_path, format=ReportFormat.CSV):
+    def run(self, results, base_path, rel_path, format=ReportFormat.HDF5):
         """ Save a report
 
         Args:

@@ -22,7 +22,8 @@ __all__ = [
 SEDML_SPECIFICATIONS_URL = 'http://identifiers.org/combine.specifications/sed-ml'
 
 
-def exec_sedml_docs_in_archive(filename, sed_task_executer, out_path, apply_xml_model_changes=False, report_format=ReportFormat.CSV):
+def exec_sedml_docs_in_archive(filename, sed_task_executer, out_path, apply_xml_model_changes=False,
+                               report_formats=[ReportFormat.CSV, ReportFormat.HDF5]):
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
 
     Args:
@@ -54,7 +55,7 @@ def exec_sedml_docs_in_archive(filename, sed_task_executer, out_path, apply_xml_
 
         apply_xml_model_changes (:obj:`bool`): if :obj:`True`, apply any model changes specified in the SED-ML files before
             calling :obj:`task_executer`.
-        report_format (:obj:`ReportFormat`, optional): report format (e.g., CSV or HDF5)
+        report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., CSV or HDF5)
     """
     # create temporary directory to unpack archive
     archive_tmp_dir = tempfile.mkdtemp()
@@ -79,7 +80,7 @@ def exec_sedml_docs_in_archive(filename, sed_task_executer, out_path, apply_xml_
                                                     out_path,
                                                     os.path.splitext(os.path.relpath(filename, archive_tmp_dir))[0],
                                                     apply_xml_model_changes=apply_xml_model_changes,
-                                                    report_format=report_format)
+                                                    report_formats=report_formats)
 
     # cleanup temporary files
     shutil.rmtree(archive_tmp_dir)

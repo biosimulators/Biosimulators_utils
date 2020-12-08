@@ -46,7 +46,7 @@ class ExecCombineTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
         def exec_doc(filename, working_dir, task_executer, base_out_dir,
-                     rel_path, apply_xml_model_changes=False, report_format=ReportFormat.CSV):
+                     rel_path, apply_xml_model_changes=False, report_formats=[ReportFormat.CSV]):
             out_dir = os.path.join(base_out_dir, rel_path)
             if not os.path.isdir(out_dir):
                 os.makedirs(out_dir)
@@ -93,7 +93,7 @@ class ExecCombineTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
         def exec_doc(filename, working_dir, task_executer, base_out_dir, rel_path='.',
-                     apply_xml_model_changes=False, report_format=ReportFormat.CSV):
+                     apply_xml_model_changes=False, report_formats=[ReportFormat.CSV]):
             out_dir = os.path.join(base_out_dir, rel_path)
             if not os.path.isdir(out_dir):
                 os.makedirs(out_dir)
@@ -142,7 +142,7 @@ class ExecCombineTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
         def exec_doc(filename, working_dir, task_executer, base_out_dir, rel_path='.',
-                     apply_xml_model_changes=False, report_format=ReportFormat.CSV):
+                     apply_xml_model_changes=False, report_formats=[ReportFormat.CSV]):
             out_dir = os.path.join(base_out_dir, rel_path)
             if not os.path.isdir(out_dir):
                 os.makedirs(out_dir)
