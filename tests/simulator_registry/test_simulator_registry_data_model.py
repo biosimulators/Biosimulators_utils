@@ -1,4 +1,4 @@
-from biosimulators_utils.simulator import data_model
+from biosimulators_utils.simulator_registry import data_model
 import unittest
 
 

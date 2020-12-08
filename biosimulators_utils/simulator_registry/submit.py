@@ -7,14 +7,15 @@
 """
 
 from .data_model import SimulatorSubmission
-import io
 import requests
-import yamldown
 
 GH_ISSUE_ENDPOINT = 'https://api.github.com/repos/biosimulators/Biosimulators/issues'
 
 
-def register_simulator_with_biosimulators(simulator, gh_username, gh_access_token):
+__all__ = ['submit_simulator_to_biosimulators_registry', 'build_gh_issue_body']
+
+
+def submit_simulator_to_biosimulators_registry(simulator, gh_username, gh_access_token):
     """ Submit a version of a simulation tool for review for inclusion in the BioSimulators registry.
     This will create a GitHub issue which the BioSimulators Team will use to review your submission.
 
@@ -65,21 +66,3 @@ def build_gh_issue_body(simulator):
         "",
         "---",
     ])
-
-
-def parse_gh_issue_body(body):
-    """ Get the YAML-structured data in an issue
-
-    Args:
-       body (:obj:`str`): body of a GitHub issue for the submission of a simulator
-
-    Returns:
-        :obj:`SimulatorSubmission`: simulator
-    """
-    body = io.StringIO(body.replace('\r', ''))
-    data, _ = yamldown.load(body)
-    return SimulatorSubmission(
-        id=data.get('id', None) or None,
-        version=data.get('version', None) or None,
-        specifications_url=data.get('specificationsUrl', None) or None,
-    )

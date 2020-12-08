@@ -1,3 +1,21 @@
+""" Data model for submitting simulators to the BioSimulators registry
+
+:Author: Jonathan Karr <karr@mssm.edu>
+:Date: 2020-12-06
+:Copyright: 2020, Center for Reproducible Biomedical Modeling
+:License: MIT
+"""
+
+import enum
+
+
+class IssueLabel(str, enum.Enum):
+    validated = 'Validated'
+    invalid = 'Invalid'
+    approved = 'Approved'
+    action_error = 'Action error'
+
+
 class SimulatorSubmission(object):
     """ Submission of a simulator to the BioSimulators registry
 
