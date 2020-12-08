@@ -174,7 +174,8 @@ class TestCase(unittest.TestCase):
                 namespace='KISAO',
                 id='KISAO_0000029',
                 url=('https://www.ebi.ac.uk/ols/ontologies/kisao/terms?iri='
-                     'http%3A%2F%2Fwww.biomodels.net%2Fkisao%2FKISAO%23' + 'KISAO_0000029'),
+                     'http%3A%2F%2Fwww.biomodels.net%2Fkisao%2FKISAO%23'
+                     'KISAO_0000029'),
             ),
         ))
 
@@ -190,3 +191,58 @@ class TestCase(unittest.TestCase):
 
         with self.assertRaises(NotImplementedError):
             utils.parse_value(None, None)
+
+    def test_roundtrip_value(self):
+        self.assertEqual(utils.parse_value(utils.format_value(True, ValueType.boolean), ValueType.boolean), True)
+        self.assertEqual(utils.parse_value(utils.format_value(False, ValueType.boolean), ValueType.boolean), False)
+
+        self.assertEqual(utils.parse_value(utils.format_value(1, ValueType.integer), ValueType.integer), 1)
+
+        self.assertEqual(utils.parse_value(utils.format_value(1., ValueType.float), ValueType.float), 1.0)
+        self.assertEqual(utils.parse_value(utils.format_value(1.1, ValueType.float), ValueType.float), 1.1)
+
+        self.assertEqual(utils.parse_value(utils.format_value('1.1', ValueType.string), ValueType.string), '1.1')
+
+        self.assertTrue(utils.parse_value(utils.format_value(
+            OntologyTerm(namespace='KISAO', id='KISAO_0000029'), ValueType.kisao_id), ValueType.kisao_id).is_equal(
+            OntologyTerm(
+                namespace='KISAO',
+                id='KISAO_0000029',
+                url=('https://www.ebi.ac.uk/ols/ontologies/kisao/terms?iri='
+                     'http%3A%2F%2Fwww.biomodels.net%2Fkisao%2FKISAO%23'
+                     'KISAO_0000029'))))
+
+        self.assertEqual(utils.parse_value(utils.format_value([1, 2], ValueType.list), ValueType.list), [1, 2])
+
+        self.assertEqual(utils.parse_value(utils.format_value({"a": 1}, ValueType.object), ValueType.object), {"a": 1})
+
+        self.assertEqual(utils.parse_value(utils.format_value(True, ValueType.any), ValueType.any), True)
+        self.assertEqual(utils.parse_value(utils.format_value(1, ValueType.any), ValueType.any), 1)
+        self.assertEqual(utils.parse_value(utils.format_value(1., ValueType.any), ValueType.any), 1.0)
+        self.assertEqual(utils.parse_value(utils.format_value('1', ValueType.any), ValueType.any), '1')
+        self.assertEqual(utils.parse_value(utils.format_value({"a": 1}, ValueType.any), ValueType.any), {"a": 1})
+        self.assertEqual(utils.parse_value(utils.format_value([1, 2], ValueType.any), ValueType.any), [1, 2])
+
+    def test_roundtrip_value_2(self):
+        self.assertEqual(utils.format_value(utils.parse_value('true', ValueType.boolean), ValueType.boolean), 'true')
+        self.assertEqual(utils.format_value(utils.parse_value('false', ValueType.boolean), ValueType.boolean), 'false')
+
+        self.assertEqual(utils.format_value(utils.parse_value('1', ValueType.integer), ValueType.integer), '1')
+
+        self.assertEqual(utils.format_value(utils.parse_value('1.0', ValueType.float), ValueType.float), '1.0')
+        self.assertEqual(utils.format_value(utils.parse_value('1.1', ValueType.float), ValueType.float), '1.1')
+
+        self.assertEqual(utils.format_value(utils.parse_value('1.1', ValueType.string), ValueType.string), '1.1')
+
+        self.assertEqual(utils.format_value(utils.parse_value('KISAO_0000029', ValueType.kisao_id), ValueType.kisao_id), 'KISAO_0000029')
+
+        self.assertEqual(utils.format_value(utils.parse_value('[1, 2]', ValueType.list), ValueType.list), '[1, 2]')
+
+        self.assertEqual(utils.format_value(utils.parse_value('{"a": 1}', ValueType.object), ValueType.object), '{"a": 1}')
+
+        self.assertEqual(utils.format_value(utils.parse_value('true', ValueType.any), ValueType.any), 'true')
+        self.assertEqual(utils.format_value(utils.parse_value('1', ValueType.any), ValueType.any), '1')
+        self.assertEqual(utils.format_value(utils.parse_value('1.0', ValueType.any), ValueType.any), '1.0')
+        self.assertEqual(utils.format_value(utils.parse_value('1', ValueType.any), ValueType.any), '1')
+        self.assertEqual(utils.format_value(utils.parse_value('{"a": 1}', ValueType.any), ValueType.any), '{"a": 1}')
+        self.assertEqual(utils.format_value(utils.parse_value('[1, 2]', ValueType.any), ValueType.any), '[1, 2]')
