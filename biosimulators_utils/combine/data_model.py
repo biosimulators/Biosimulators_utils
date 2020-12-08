@@ -115,12 +115,12 @@ class CombineArchiveContent(CombineArchiveBase):
         updated (:obj:`datetime.datetime`): updated date
     """
 
-    def __init__(self, location, format, master=False, description=None, authors=None, created=None, updated=None):
+    def __init__(self, location=None, format=None, master=False, description=None, authors=None, created=None, updated=None):
         """
         Args:
-            location (:obj:`str`): path to the content
-            format (:obj:`str`): URL for the specification of the format of the content
-            master (:obj:`bool`): :obj:`True`, if the content is the "primary" content of the parent archive
+            location (:obj:`str`, optional): path to the content
+            format (:obj:`str`, optional): URL for the specification of the format of the content
+            master (:obj:`bool`, optional): :obj:`True`, if the content is the "primary" content of the parent archive
             description (:obj:`str`, optional): description
             authors (:obj:`list` of :obj:`Person`, optional): authors
             created (:obj:`datetime.datetime`, optional): created date
