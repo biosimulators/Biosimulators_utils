@@ -210,7 +210,7 @@ class SedmlSimulationWriter(object):
             obj (:obj:`data_model.Algorithm` or :obj:`data_model.AlgorithmParameterChange`): SED object
         """
         obj_sed = self._obj_to_sed_obj_map[obj]
-        self._call_libsedml_method(obj_sed, 'setKisaoID', obj.kisao_id)
+        self._call_libsedml_method(obj_sed, 'setKisaoID', obj.kisao_id.replace('_', ':'))
 
     def _add_task_to_doc(self, task):
         """ Add a task to a SED document
