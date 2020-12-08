@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from .data_model import SimulatorSubmission
+from .data_model import SimulatorSubmission  # noqa: F401
 import requests
 
 GH_ISSUE_ENDPOINT = 'https://api.github.com/repos/biosimulators/Biosimulators/issues'

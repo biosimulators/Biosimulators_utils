@@ -11,7 +11,7 @@ import functools
 import io
 import os
 import requests
-import types
+import types  # noqa: F401
 import yamldown
 
 __all__ = [
@@ -50,7 +50,7 @@ class GitHubActionErrorHandling(object):
             error_msg (:obj:`str`): error message to display to users
             caught_error_labels (:obj:`list` of :obj:`str`): labels to apply to caught errors
             uncaught_error_labels (:obj:`list` of :obj:`str`): labels to apply to uncaught errors
-            func (:obj:`types.FunctionType`): decorated function            
+            func (:obj:`types.FunctionType`): decorated function
         """
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
