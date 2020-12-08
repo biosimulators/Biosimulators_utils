@@ -6,7 +6,14 @@
 :License: MIT
 """
 
-__all__ = ['are_lists_equal', 'none_sorted', 'assert_exception']
+from ..data_model import ValueType, OntologyTerm
+import json
+import re
+
+__all__ = [
+    'are_lists_equal', 'none_sorted', 'assert_exception',
+    'validate_value', 'validate_str_value', 'format_value', 'parse_value',
+]
 
 
 def are_lists_equal(a, b):
@@ -116,3 +123,131 @@ def assert_exception(success, exception):
     """
     if not success:
         raise exception
+
+
+def validate_value(val, type):
+    """ Determine if a value is a valid instance of type :obj:`type`
+
+    Args:
+        val (:obj:`object`): value
+        type (:obj:`ValueType`): type
+
+    Returns:
+        :obj:`bool`: :obj:`True`, if a value is a valid instance of type :obj:`type`
+    """
+    if type == ValueType.boolean:
+        return isinstance(val, bool)
+    if type == ValueType.integer:
+        return isinstance(val, int) and not isinstance(val, bool)
+    if type == ValueType.float:
+        return isinstance(val, float)
+    if type == ValueType.string:
+        return isinstance(val, str)
+    if type == ValueType.kisao_id:
+        return isinstance(val, OntologyTerm) and val.namespace == 'KISAO' and re.match(r'^KISAO_\d{7}$', val.id) is not None
+    if type == ValueType.list:
+        return isinstance(val, list)
+    if type == ValueType.object:
+        return isinstance(val, dict)
+    if type == ValueType.any:
+        return True
+    raise NotImplementedError('Type {} is not supported'.format(type))
+
+
+def validate_str_value(str_val, type):
+    """ Determine if a value is a valid string representation of type :obj:`type`
+
+    Args:
+        str_val (:obj:`str`): string representation of a value
+        type (:obj:`ValueType`): type
+
+    Returns:
+        :obj:`bool`: :obj:`True`, if a value is a valid string representation of type :obj:`type`
+    """
+    if type == ValueType.boolean:
+        return str_val.lower() in ['true', 'false', '0', '1']
+    if type == ValueType.integer:
+        try:
+            int(str_val)
+            return True
+        except ValueError:
+            return False
+    if type == ValueType.float:
+        try:
+            float(str_val)
+            return True
+        except ValueError:
+            return False
+    if type == ValueType.string:
+        return True
+    if type == ValueType.kisao_id:
+        return re.match(r'^KISAO_\d{7}$', str_val)
+    if type == ValueType.list:
+        try:
+            return isinstance(json.loads(str_val), list)
+        except json.JSONDecodeError:
+            return False
+    if type == ValueType.object:
+        try:
+            return isinstance(json.loads(str_val), dict)
+        except json.JSONDecodeError:
+            return False
+    if type == ValueType.any:
+        try:
+            json.loads(str_val)
+            return True
+        except json.JSONDecodeError:
+            return False
+    raise NotImplementedError('Type {} is not supported'.format(type))
+
+
+def format_value(val, type):
+    """ Format a value as a string (e.g., for use with an attribute of an XML object)
+
+    Args:
+        val (:obj:`object`): value
+        type (:obj:`ValueType`): type
+
+    Returns:
+        :obj:`str`: string representation of the value
+    """
+    if type == ValueType.boolean:
+        return str(val).lower()
+    if type == ValueType.integer or type == ValueType.float:
+        return str(val)
+    if type == ValueType.string:
+        return val
+    if type == ValueType.kisao_id:
+        return val.id
+    if type == ValueType.list or type == ValueType.object or type == ValueType.any:
+        return json.dumps(val)
+    raise NotImplementedError('Type {} is not supported'.format(type))
+
+
+def parse_value(str_val, type):
+    """ Parse the string representation of a value (e.g., for use with an attribute of an XML object)
+
+    Args:
+        str_val (:obj:`str`): string representation of the value
+        type (:obj:`ValueType`): type
+
+    Returns:
+        :obj:`object`: Python representation of the value
+    """
+    if type == ValueType.boolean:
+        return str_val.lower() == 'true' or str_val.lower() == '1'
+    if type == ValueType.integer:
+        return int(str_val)
+    if type == ValueType.float:
+        return float(str_val)
+    if type == ValueType.string:
+        return str_val
+    if type == ValueType.kisao_id:
+        return OntologyTerm(
+            namespace='KISAO',
+            id=str_val,
+            url='https://www.ebi.ac.uk/ols/ontologies/kisao/terms?iri=http%3A%2F%2Fwww.biomodels.net%2Fkisao%2FKISAO%23' + str_val,
+        )
+    if type == ValueType.list or type == ValueType.object or type == ValueType.any:
+        return json.loads(str_val)
+    raise NotImplementedError('Type {} is not supported'.format(type))

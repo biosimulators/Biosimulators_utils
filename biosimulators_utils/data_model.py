@@ -6,10 +6,13 @@
 :License: MIT
 """
 
+import enum
+
 __all__ = [
     'Person',
     'Identifier',
     'OntologyTerm',
+    'ValueType',
 ]
 
 
@@ -102,3 +105,15 @@ class Identifier(object):
 class OntologyTerm(Identifier):
     """ Term in an ontology """
     pass
+
+
+class ValueType(str, enum.Enum):
+    """ A type of value (e.g., of a model attribute change or algorithm parameter change) """
+    boolean = 'boolean'
+    integer = 'integer'
+    float = 'float'
+    string = 'string'
+    kisao_id = 'kisaoId'
+    list = 'list'
+    object = 'object'
+    any = 'any'
