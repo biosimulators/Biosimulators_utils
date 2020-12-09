@@ -95,10 +95,11 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
 
     # move HDF5 file to desired location
     if os.path.isfile(os.path.join(tmp_out_dir, config.HDF5_REPORTS_PATH)):
-        os.rename(
+        shutil.copyfile(
             os.path.join(tmp_out_dir, config.HDF5_REPORTS_PATH),
             os.path.join(out_dir, config.HDF5_REPORTS_PATH),
         )
+        os.remove(os.path.join(tmp_out_dir, config.HDF5_REPORTS_PATH))
 
     # bundle CSV files of reports into zip archive
     if ReportFormat.CSV in report_formats:

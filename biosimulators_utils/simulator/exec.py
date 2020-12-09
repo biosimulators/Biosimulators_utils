@@ -12,7 +12,9 @@ try:
 except ModuleNotFoundError:
     docker = None
 import os
+import shutil
 import subprocess
+import tempfile
 
 __all__ = [
     'exec_sedml_docs_in_archive_with_simulator_cli',
@@ -77,29 +79,36 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, ou
     get_simulator_docker_image(docker_image, pull=pull_docker_image)
 
     # run image
+    in_dir = tempfile.mkdtemp()
+    if os.path.isfile(archive_filename):
+        shutil.copyfile(archive_filename, os.path.join(in_dir, os.path.basename(archive_filename)))
+
     if not os.path.isdir(out_dir):
         os.makedirs(out_dir)
     image_in_dir = docker_image_path_sep.join((docker_image_temp_dir, 'in'))
     image_out_dir = docker_image_path_sep.join((docker_image_temp_dir, 'out'))
-    try:
-        subprocess.check_call(
-            [
-                'docker',
-                'run',
-                '-t',
-                '--rm',
-                '--mount', 'type=bind,source={},target={},readonly'.format(
-                    os.path.abspath(os.path.dirname(archive_filename)), image_in_dir),
-                '--mount', 'type=bind,source={},target={}'.format(
-                    os.path.abspath(out_dir), image_out_dir),
-                '--user', str(os.getuid()),
-                docker_image,
-            ] +
-            build_cli_args(
-                docker_image_path_sep.join((image_in_dir, os.path.basename(archive_filename))),
-                image_out_dir,
-            ),
+
+    args = (
+        [
+            'docker',
+            'run',
+            '-t',
+            '--rm',
+            '--mount', 'type=bind,source={},target={},readonly'.format(
+                in_dir, image_in_dir),
+            '--mount', 'type=bind,source={},target={}'.format(
+                os.path.abspath(out_dir), image_out_dir),
+            '--user', str(os.getuid()),
+            docker_image,
+        ] +
+        build_cli_args(
+            docker_image_path_sep.join((image_in_dir, os.path.basename(archive_filename))),
+            image_out_dir,
         )
+    )
+
+    try:
+        subprocess.check_call(args)
 
     except FileNotFoundError:
         raise RuntimeError("Docker could not be found")
@@ -111,6 +120,9 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, ou
     except Exception as exception:
         raise RuntimeError("The image '{}' could not execute the archive:\n\n  {}".format(
             docker_image, str(exception).replace('\n', '\n  ')))
+
+    finally:
+        shutil.rmtree(in_dir)
 
 
 def build_cli_args(archive_filename, out_dir):
