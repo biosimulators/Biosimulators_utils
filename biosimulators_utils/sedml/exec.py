@@ -43,10 +43,7 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
                        variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables that should be recorded
 
                     Returns:
-                        :obj:`tuple`:
-
-                            * :obj:`OutputResults`: results of outputs
-                            * :obj:`DataGeneratorVariableResults`: results of variables
+                       :obj:`DataGeneratorVariableResults`: results of variables
                     '''
                     pass
 

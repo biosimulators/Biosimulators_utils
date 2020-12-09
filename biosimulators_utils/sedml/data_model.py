@@ -14,6 +14,8 @@ import numpy  # noqa: F401
 
 
 __all__ = [
+    'ModelLanguage',
+    'DataGeneratorVariableSymbol',
     'SedDocument',
     'Simulation',
     'SteadyStateSimulation',
@@ -38,6 +40,20 @@ __all__ = [
     'Curve',
     'Surface',
 ]
+
+
+class ModelLanguage(str, enum.Enum):
+    """ Model language """
+    BGNL = 'urn:sedml:language:bgnl'
+    CellML = 'urn:sedml:language:cellml'
+    NeuroML = 'urn:sedml:language:neuroml'
+    SBML = 'urn:sedml:language:sbml'
+    VCML = 'urn:sedml:language:vcml'
+
+
+DataGeneratorVariableSymbol(str, enum.Enum):
+    """ Variable sumbol """
+    time = 'urn:sedml:symbol:time'
 
 
 class SedDocument(object):

@@ -42,10 +42,7 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
                        variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables that should be recorded
 
                     Returns:
-                        :obj:`tuple`:
-
-                            * :obj:`OutputResults`: results of outputs
-                            * :obj:`DataGeneratorVariableResults`: results of variables
+                       :obj:`DataGeneratorVariableResults`: results of variables
                     '''
                     pass
 
