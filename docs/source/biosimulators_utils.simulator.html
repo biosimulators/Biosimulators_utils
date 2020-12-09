@@ -183,6 +183,70 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-biosimulators_utils.simulator.exec">
+<span id="biosimulators-utils-simulator-exec-module"></span><h2><span class="section-number">2.1.8.3. </span>biosimulators_utils.simulator.exec module<a class="headerlink" href="#module-biosimulators_utils.simulator.exec" title="Permalink to this headline">¶</a></h2>
+<p>Utilities for executing command-line interfaces to simulators and
+containers that contain command-line interfaces to simulators</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-06</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_containerized_simulator">
+<code class="sig-prename descclassname">biosimulators_utils.simulator.exec.</code><code class="sig-name descname">exec_sedml_docs_in_archive_with_containerized_simulator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">archive_filename</span></em>, <em class="sig-param"><span class="n">out_dir</span></em>, <em class="sig-param"><span class="n">docker_image</span></em>, <em class="sig-param"><span class="n">docker_image_temp_dir</span><span class="o">=</span><span class="default_value">'/tmp'</span></em>, <em class="sig-param"><span class="n">docker_image_path_sep</span><span class="o">=</span><span class="default_value">'/'</span></em>, <em class="sig-param"><span class="n">environment</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_containerized_simulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use a containerized simulator tool to execute the tasks specified in a
+COMBINE/OMEX archive and generate the reports specified in the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to a COMBINE/OMEX archive</p></li>
+<li><p><strong>out_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – directory where outputs should be saved</p></li>
+<li><p><strong>docker_image</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – tag (e.g., <code class="docutils literal notranslate"><span class="pre">biosimulators/tellurium</span></code>) or
+URL (<a href="#id1"><span class="problematic" id="id2">``</span></a>ghcr.io/biosimulators/tellurium`) for a Docker image of a simulator</p></li>
+<li><p><strong>docker_image_temp_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – Path to the temporary directory within the Docker image
+(e.g., <code class="docutils literal notranslate"><span class="pre">/tmp</span></code> for Linux images, <code class="docutils literal notranslate"><span class="pre">C:\Users\{</span> <span class="pre">user</span> <span class="pre">}\AppData\Local\Temp</span></code> for Windows images).
+The path can either be an absolute path or a path relative to the working directory of the image.</p></li>
+<li><p><strong>docker_image_path_sep</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – Path separator for the image (e.g., <code class="docutils literal notranslate"><span class="pre">/</span></code> for
+Linux, Mac OS, Unix images; <code class="docutils literal notranslate"><span class="pre">\</span></code> for Windows images)</p></li>
+<li><p><strong>environment</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – environment variables for executing the Docker image</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – if the execution failed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_simulator_cli">
+<code class="sig-prename descclassname">biosimulators_utils.simulator.exec.</code><code class="sig-name descname">exec_sedml_docs_in_archive_with_simulator_cli</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">archive_filename</span></em>, <em class="sig-param"><span class="n">out_dir</span></em>, <em class="sig-param"><span class="n">simulator_command</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_simulator_cli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use a command-line interface to a simulation tool to execute the tasks specified in archive
+COMBINE/OMEX archive and generate the reports specified in the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to a COMBINE/OMEX archive</p></li>
+<li><p><strong>out_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – directory where outputs should be saved</p></li>
+<li><p><strong>simulator_command</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – system command for the simulator to execute</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – if the execution failed</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 </div>
 
 
