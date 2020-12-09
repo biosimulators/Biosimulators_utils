@@ -59,12 +59,7 @@ class ExecCombineTestCase(unittest.TestCase):
         with mock.patch('biosimulators_utils.sedml.exec.exec_doc', side_effect=exec_doc):
             exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir)
 
-        self.assertEqual(sorted(os.listdir(out_dir)), ['reports.zip', 'sim.sedml'])
-        self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'sim.sedml'))), sorted(['report1.csv', 'report2.csv']))
-        with open(os.path.join(out_dir, 'sim.sedml', 'report1.csv'), 'r') as file:
-            self.assertEqual(file.read(), 'ABC')
-        with open(os.path.join(out_dir, 'sim.sedml', 'report2.csv'), 'r') as file:
-            self.assertEqual(file.read(), 'DEF')
+        self.assertEqual(sorted(os.listdir(out_dir)), ['reports.zip'])
 
     def test_2(self):
         updated = datetime.datetime(2020, 1, 2, 1, 2, 3, tzinfo=dateutil.tz.tzutc())
@@ -106,14 +101,7 @@ class ExecCombineTestCase(unittest.TestCase):
         with mock.patch('biosimulators_utils.sedml.exec.exec_doc', side_effect=exec_doc):
             exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir)
 
-        self.assertEqual(sorted(os.listdir(out_dir)), sorted(['reports.zip', 'dir1']))
-        self.assertEqual(os.listdir(os.path.join(out_dir, 'dir1')), ['dir2'])
-        self.assertEqual(os.listdir(os.path.join(out_dir, 'dir1', 'dir2')), ['sim.sedml'])
-        self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'dir1', 'dir2', 'sim.sedml'))), sorted(['report1.csv', 'report2.csv']))
-        with open(os.path.join(out_dir, 'dir1', 'dir2', 'sim.sedml', 'report1.csv'), 'r') as file:
-            self.assertEqual(file.read(), 'ABC')
-        with open(os.path.join(out_dir, 'dir1', 'dir2', 'sim.sedml', 'report2.csv'), 'r') as file:
-            self.assertEqual(file.read(), 'DEF')
+        self.assertEqual(sorted(os.listdir(out_dir)), sorted(['reports.zip']))
 
         archive_dir = os.path.join(self.tmp_dir, 'archive')
         archive = ArchiveReader().run(os.path.join(out_dir, 'reports.zip'), archive_dir)

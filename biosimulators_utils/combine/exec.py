@@ -8,7 +8,7 @@
 
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
-from ..config import CSV_REPORTS_PATH, PDF_PLOTS_PATH
+from ..config import HDF5_REPORTS_PATH, CSV_REPORTS_PATH, PDF_PLOTS_PATH
 from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import Task, DataGeneratorVariable  # noqa: F401
 from .io import CombineArchiveReader
@@ -71,6 +71,7 @@ def exec_sedml_docs_in_archive(filename, sed_task_executer, out_path, apply_xml_
     exec_content = [master_content] if master_content else archive.contents
 
     # execute SED-ML files: execute tasks and save outputs
+    tmp_out_path = tempfile.mkdtemp()
     for content in exec_content:
         if content.format == SEDML_SPECIFICATIONS_URL:
             if os.path.isabs(content.location):
@@ -80,21 +81,33 @@ def exec_sedml_docs_in_archive(filename, sed_task_executer, out_path, apply_xml_
             biosimulators_utils.sedml.exec.exec_doc(filename,
                                                     working_dir,
                                                     sed_task_executer,
-                                                    out_path,
+                                                    tmp_out_path,
                                                     os.path.relpath(filename, archive_tmp_dir),
                                                     apply_xml_model_changes=apply_xml_model_changes,
                                                     report_formats=report_formats)
 
+    # arrange outputs
+    if not os.path.isdir(out_path):
+        os.makedirs(out_path)
+
+    # move HDF5 file to desired location
+    if os.path.isfile(os.path.join(tmp_out_path, HDF5_REPORTS_PATH)):
+        os.rename(
+            os.path.join(tmp_out_path, HDF5_REPORTS_PATH),
+            os.path.join(out_path, HDF5_REPORTS_PATH),
+        )
+
     # bundle CSV files of reports into zip archive
     if ReportFormat.CSV in report_formats:
-        archive = build_archive_from_paths([os.path.join(out_path, '**', '*.csv')], out_path)
+        archive = build_archive_from_paths([os.path.join(tmp_out_path, '**', '*.csv')], tmp_out_path)
         if archive.files:
             ArchiveWriter().run(archive, os.path.join(out_path, CSV_REPORTS_PATH))
 
     # bundle PDF files of plots into zip archive
-    archive = build_archive_from_paths([os.path.join(out_path, '**', '*.pdf')], out_path)
+    archive = build_archive_from_paths([os.path.join(tmp_out_path, '**', '*.pdf')], tmp_out_path)
     if archive.files:
         ArchiveWriter().run(archive, os.path.join(out_path, PDF_PLOTS_PATH))
 
     # cleanup temporary files
     shutil.rmtree(archive_tmp_dir)
+    shutil.rmtree(tmp_out_path)
