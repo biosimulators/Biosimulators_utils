@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..config import HDF5_REPORTS_PATH
+from ..config import get_config
 from .data_model import ReportFormat
 import os
 import pandas
@@ -47,7 +47,7 @@ class ReportWriter(object):
                            header=False)
 
         elif format == ReportFormat.HDF5:
-            filename = os.path.join(base_path, HDF5_REPORTS_PATH)
+            filename = os.path.join(base_path, get_config().HDF5_REPORTS_PATH)
             if not os.path.isdir(base_path):
                 os.makedirs(base_path)
             results.to_hdf(filename,
@@ -94,7 +94,7 @@ class ReportReader(object):
             return df
 
         elif format == ReportFormat.HDF5:
-            filename = os.path.join(base_path, HDF5_REPORTS_PATH)
+            filename = os.path.join(base_path, get_config().HDF5_REPORTS_PATH)
             return pandas.read_hdf(filename,
                                    key=rel_path,
                                    )

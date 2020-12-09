@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..config import REPORT_FORMATS
+from ..config import get_config
 from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat
 from ..report.io import ReportWriter
 from .data_model import SedDocument, Task, Report
@@ -66,7 +66,7 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
         doc = copy.deepcopy(doc)
 
     if report_formats is None:
-        report_formats = [ReportFormat(format_value) for format_value in REPORT_FORMATS]
+        report_formats = [ReportFormat(format_value) for format_value in get_config().REPORT_FORMATS]
 
     # apply changes to models
     modified_model_filenames = []

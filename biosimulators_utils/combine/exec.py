@@ -8,7 +8,7 @@
 
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
-from ..config import REPORT_FORMATS, HDF5_REPORTS_PATH, CSV_REPORTS_PATH, PDF_PLOTS_PATH
+from ..config import get_config
 from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import Task, DataGeneratorVariable  # noqa: F401
 from .data_model import CombineArchiveContentFormatPattern
@@ -30,7 +30,7 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
 
     Args:
-        archive_filename (:obj:`str`): path to COMBINE archive
+        archive_filename (:obj:`str`): path to COMBINE/OMEX archive
         sed_task_executer (:obj:`types.FunctionType`): function to execute each SED task in each SED-ML file in the archive.
             The function must implement the following interface::
 
@@ -57,9 +57,11 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
             calling :obj:`task_executer`.
         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., CSV or HDF5)
     """
+    config = get_config()
+
     # process arguments
     if report_formats is None:
-        report_formats = [ReportFormat(format_value) for format_value in REPORT_FORMATS]
+        report_formats = [ReportFormat(format_value) for format_value in config.REPORT_FORMATS]
 
     # create temporary directory to unpack archive
     archive_tmp_dir = tempfile.mkdtemp()
@@ -92,22 +94,22 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
         os.makedirs(out_dir)
 
     # move HDF5 file to desired location
-    if os.path.isfile(os.path.join(tmp_out_dir, HDF5_REPORTS_PATH)):
+    if os.path.isfile(os.path.join(tmp_out_dir, config.HDF5_REPORTS_PATH)):
         os.rename(
-            os.path.join(tmp_out_dir, HDF5_REPORTS_PATH),
-            os.path.join(out_dir, HDF5_REPORTS_PATH),
+            os.path.join(tmp_out_dir, config.HDF5_REPORTS_PATH),
+            os.path.join(out_dir, config.HDF5_REPORTS_PATH),
         )
 
     # bundle CSV files of reports into zip archive
     if ReportFormat.CSV in report_formats:
         archive = build_archive_from_paths([os.path.join(tmp_out_dir, '**', '*.csv')], tmp_out_dir)
         if archive.files:
-            ArchiveWriter().run(archive, os.path.join(out_dir, CSV_REPORTS_PATH))
+            ArchiveWriter().run(archive, os.path.join(out_dir, config.CSV_REPORTS_PATH))
 
     # bundle PDF files of plots into zip archive
     archive = build_archive_from_paths([os.path.join(tmp_out_dir, '**', '*.pdf')], tmp_out_dir)
     if archive.files:
-        ArchiveWriter().run(archive, os.path.join(out_dir, PDF_PLOTS_PATH))
+        ArchiveWriter().run(archive, os.path.join(out_dir, config.PDF_PLOTS_PATH))
 
     # cleanup temporary files
     shutil.rmtree(archive_tmp_dir)
