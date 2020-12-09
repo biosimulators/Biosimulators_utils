@@ -88,8 +88,10 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, ou
                 'run',
                 '-t',
                 '--rm',
-                '--mount', 'type=bind,source={},target={}'.format(os.path.abspath(os.path.dirname(archive_filename)), image_in_dir),
-                '--mount', 'type=bind,source={},target={}'.format(os.path.abspath(out_dir), image_out_dir),
+                '--mount', 'type=bind,source={},target={},readonly'.format(
+                    os.path.abspath(os.path.dirname(archive_filename)), image_in_dir),
+                '--mount', 'type=bind,source={},target={}'.format(
+                    os.path.abspath(out_dir), image_out_dir),
                 '--user', str(os.getuid()),
                 docker_image,
             ] +
