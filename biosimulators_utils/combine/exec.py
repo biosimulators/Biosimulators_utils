@@ -11,9 +11,11 @@ from ..archive.utils import build_archive_from_paths
 from ..config import REPORT_FORMATS, HDF5_REPORTS_PATH, CSV_REPORTS_PATH, PDF_PLOTS_PATH
 from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import Task, DataGeneratorVariable  # noqa: F401
+from .data_model import CombineArchiveContentFormatPattern
 from .io import CombineArchiveReader
 import biosimulators_utils.sedml.exec
 import os
+import re
 import tempfile
 import shutil
 import types  # noqa: F401
@@ -21,8 +23,6 @@ import types  # noqa: F401
 __all__ = [
     'exec_sedml_docs_in_archive',
 ]
-
-SEDML_SPECIFICATIONS_URL = 'http://identifiers.org/combine.specifications/sed-ml'
 
 
 def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, apply_xml_model_changes=False,
@@ -74,7 +74,7 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
     # execute SED-ML files: execute tasks and save outputs
     tmp_out_dir = tempfile.mkdtemp()
     for content in exec_content:
-        if content.format == SEDML_SPECIFICATIONS_URL:
+        if re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format):
             if os.path.isabs(content.location):
                 raise ValueError('Content locations must be relative')
             content_filename = os.path.join(archive_tmp_dir, content.location)

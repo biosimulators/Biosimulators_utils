@@ -10,11 +10,14 @@ from ..utils.core import are_lists_equal, none_sorted
 from ..data_model import Person  # noqa: F401
 import abc
 import datetime  # noqa: F401
+import enum
 
 __all__ = [
     'CombineArchiveBase',
     'CombineArchive',
     'CombineArchiveContent',
+    'CombineArchiveContentFormat',
+    'CombineArchiveContentFormatPattern',
 ]
 
 
@@ -160,3 +163,21 @@ class CombineArchiveContent(CombineArchiveBase):
             and are_lists_equal(self.authors, other.authors) \
             and self.created == other.created \
             and self.updated == other.updated
+
+
+class CombineArchiveContentFormat(str, enum.Enum):
+    """ Format for the content of COMBINE/OMEX archives """
+    BNGL = 'http://bionetgen.org/'
+    CellML = 'http://identifiers.org/combine.specifications/cellml'
+    SBGN = 'http://identifiers.org/combine.specifications/sbgn'
+    SBML = 'http://identifiers.org/combine.specifications/sbml'
+    SED_ML = 'http://identifiers.org/combine.specifications/sed-ml'
+
+
+class CombineArchiveContentFormatPattern(str, enum.Enum):
+    """ Format for the content of COMBINE/OMEX archives """
+    BNGL = r'^https?://bionetgen\.org($|/)'
+    CellML = r'^https?://identifiers\.org/combine\.specifications/cellml($|\.)'
+    SBGN = r'^https?://identifiers\.org/combine\.specifications/sbgn($|\.)'
+    SBML = r'^https?://identifiers\.org/combine\.specifications/sbml(\.level\-\d+\.version\-\d+)?$'
+    SED_ML = r'^https?://identifiers\.org/combine\.specifications/sed\-?ml(\.level\-\d+\.version\-\d+)?$'
