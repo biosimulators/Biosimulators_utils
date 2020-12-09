@@ -51,7 +51,7 @@ class ModelLanguage(str, enum.Enum):
     VCML = 'urn:sedml:language:vcml'
 
 
-DataGeneratorVariableSymbol(str, enum.Enum):
+class DataGeneratorVariableSymbol(str, enum.Enum):
     """ Variable sumbol """
     time = 'urn:sedml:symbol:time'
 
