@@ -400,6 +400,43 @@ class ExecTaskCase(unittest.TestCase):
         with self.assertRaisesRegex(NotImplementedError, 'must be equal to a single variable'):
             exec.exec_doc(doc, '.', execute_task, out_dir)
 
+        # error: inconsistent math
+        doc.data_generators = [
+            data_model.DataGenerator(
+                id='data_gen_1',
+                variables=[
+                    data_model.DataGeneratorVariable(
+                        id='data_gen_1_var_1',
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        task=doc.tasks[0],
+                        model=doc.models[0],
+                    ),
+                ],
+                math='xx',
+            ),
+        ]
+        doc.outputs = [
+            data_model.Report(
+                id='report_1',
+                datasets=[
+                    data_model.Dataset(
+                        id='dataset_1',
+                        label='dataset_1',
+                        data_generator=doc.data_generators[0],
+                    ),
+                ]
+            )
+        ]
+
+        def execute_task(task, variables):
+            results = DataGeneratorVariableResults()
+            results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
+            return results
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with self.assertRaisesRegex(ValueError, 'equal to the id of the variable'):
+            exec.exec_doc(doc, '.', execute_task, out_dir)
+
         # error: inconsistent shapes
         doc.data_generators = [
             data_model.DataGenerator(

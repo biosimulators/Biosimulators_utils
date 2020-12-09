@@ -115,6 +115,12 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
             for dataset in output.datasets:
                 if len(dataset.data_generator.variables) != 1 or dataset.data_generator.parameters:
                     raise NotImplementedError('Data generator {} must be equal to a single variable'.format(dataset.data_generator.id))
+                if (
+                    len(dataset.data_generator.variables) == 1
+                    and not dataset.data_generator.parameters
+                    and dataset.data_generator.math != dataset.data_generator.variables[0].id
+                ):
+                    raise ValueError('Math of data generator must be equal to the id of the variable')
                 dataset_ids.append(dataset.id)
                 var_res = variable_results[dataset.data_generator.variables[0].id]
                 dataset_results.append(var_res)
