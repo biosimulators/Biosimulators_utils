@@ -6,14 +6,14 @@ import unittest
 
 class CliTestCase(unittest.TestCase):
     def setUp(self):
-        def exec_combine_archive(archive_filename, outputs_dirname):
+        def exec_sedml_docs_in_combine_archive(archive_filename, outputs_dirname):
             if archive_filename:
                 print(archive_filename)
             if outputs_dirname:
                 raise Exception(outputs_dirname)
         self.App = build_cli('test-simulator', '4.5.6',
                              'Test Simulator', '1.2.3', 'https://test-simulator.org',
-                             exec_combine_archive)
+                             exec_sedml_docs_in_combine_archive)
 
     def test_help(self):
         with self.assertRaises(SystemExit) as cm:
@@ -65,18 +65,18 @@ class CliTestCase(unittest.TestCase):
                 self.assertEqual(captured.stderr.get_text(), '')
 
     def test_error(self):
-        def exec_combine_archive(archive_filename, outputs_dirname):
+        def exec_sedml_docs_in_combine_archive(archive_filename, outputs_dirname):
             pass
 
         with self.assertRaises(ValueError):
             self.App = build_cli(None, '4.5.6',
                                  'Test Simulator', '1.2.3', 'https://test-simulator.org',
-                                 exec_combine_archive)
+                                 exec_sedml_docs_in_combine_archive)
 
         with self.assertRaises(ValueError):
             self.App = build_cli('test-simulator', '4.5.6',
                                  None, '1.2.3', 'https://test-simulator.org',
-                                 exec_combine_archive)
+                                 exec_sedml_docs_in_combine_archive)
 
         with self.assertRaises(ValueError):
             self.App = build_cli('test-simulator', '4.5.6',

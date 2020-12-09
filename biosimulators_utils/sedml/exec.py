@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ..config import REPORT_FORMATS
 from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat
 from ..report.io import ReportWriter
 from .data_model import SedDocument, Task, Report
@@ -25,7 +26,7 @@ __all__ = [
 
 
 def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
-             apply_xml_model_changes=False, report_formats=[ReportFormat.CSV, ReportFormat.HDF5]):
+             apply_xml_model_changes=False, report_formats=None):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -61,10 +62,14 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
             calling :obj:`task_executer`.
         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., CSV or HDF5)
     """
+    # process arguments
     if not isinstance(doc, SedDocument):
         doc = SedmlSimulationReader().run(doc)
     else:
         doc = copy.deepcopy(doc)
+
+    if report_formats is None:
+        report_formats = [ReportFormat(format_value) for format_value in REPORT_FORMATS]
 
     # apply changes to models
     modified_model_filenames = []
