@@ -2,6 +2,7 @@ from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiv
 from biosimulators_utils.simulator import exec
 from unittest import mock
 import capturer
+import docker
 import os
 import shutil
 import subprocess
@@ -66,6 +67,18 @@ class SimulatorExecTestCase(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "The command 'tellurium' could not execute the archive:\n\n  Other error"):
             with mock.patch('subprocess.check_call', side_effect=check_call):
                 exec.exec_sedml_docs_in_archive_with_simulator_cli(archive_filename, outputs_dir, simulator_cmd)
+
+    def test_get_simulator_docker_image(self):
+        docker_client = docker.from_env()
+        docker_client.images.pull('hello-world')
+        exec.get_simulator_docker_image('hello-world', pull=False)
+        exec.get_simulator_docker_image('hello-world', pull=True)
+
+        with self.assertRaises(docker.errors.ImageNotFound):
+            exec.get_simulator_docker_image('unknown', pull=False)
+
+        with self.assertRaises(docker.errors.ImageNotFound):
+            exec.get_simulator_docker_image('unknown', pull=True)
 
     def test_exec_sedml_docs_in_archive_with_containerized_simulator(self):
         archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.omex')

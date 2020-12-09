@@ -49,7 +49,7 @@ def exec_sedml_docs_in_archive_with_simulator_cli(archive_filename, out_dir, sim
 
 def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, out_dir, docker_image,
                                                             docker_image_temp_dir='/tmp', docker_image_path_sep='/',
-                                                            environment=None):
+                                                            environment=None, pull_docker_image=True):
     """ Use a containerized simulator tool to execute the tasks specified in a
     COMBINE/OMEX archive and generate the reports specified in the archive
 
@@ -64,6 +64,8 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, ou
         docker_image_path_sep (:obj:`str`, optional): Path separator for the image (e.g., ``/`` for
             Linux, Mac OS, Unix images; ``\\`` for Windows images)
         environment (:obj:`dict`, optional): environment variables for executing the Docker image
+        pull_docker_image (:obj:`bool`, optional): if :obj:`True`, pull the Docker image (if the image isn't
+            available locally, this will cause the image to be downloaded; this will cause the image to be updated)
 
     Raises:
         :obj:`RuntimeError`: if the execution failed
@@ -71,11 +73,8 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, ou
     if not docker:
         raise ModuleNotFoundError("No module named 'docker'")
 
-    # get Docker client
-    docker_client = docker.from_env()
-
     # pull image
-    docker_client.images.pull(docker_image)
+    get_simulator_docker_image(docker_image, pull=pull_docker_image)
 
     # run image
     if not os.path.isdir(out_dir):
@@ -126,3 +125,34 @@ def build_cli_args(archive_filename, out_dir):
         '-i', archive_filename,
         '-o', out_dir,
     ]
+
+
+def get_simulator_docker_image(tag, pull=True):
+    """ Get a Docker image for a simulator
+
+    Args:
+        tag (:obj:`str`): tag (e.g., ``biosimulators/tellurium``) or
+            URL (``ghcr.io/biosimulators/tellurium`) for a Docker image of a simulator
+    Returns:
+        :obj:`docker.models.images.Image`: Docker image
+    """
+    docker_client = docker.from_env()
+
+    try:
+        image = docker_client.images.get(tag)
+        if pull:
+            try:
+                image = docker_client.images.pull(tag)
+            except:  # pragma: no cover
+                pass
+
+    except:
+        if pull:
+            try:
+                image = docker_client.images.pull(tag)
+            except:
+                raise docker.errors.ImageNotFound("Image '{}' for simulator could not be pulled".format(tag))
+        else:
+            raise docker.errors.ImageNotFound("Image '{}' for simulator is not available locally".format(tag))
+
+    return image
