@@ -1,6 +1,7 @@
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent
 from biosimulators_utils.simulator import exec
 from unittest import mock
+import capturer
 import os
 import shutil
 import subprocess
@@ -67,5 +68,43 @@ class SimulatorExecTestCase(unittest.TestCase):
                 exec.exec_sedml_docs_in_archive_with_simulator_cli(archive_filename, outputs_dir, simulator_cmd)
 
     def test_exec_sedml_docs_in_archive_with_containerized_simulator(self):
-        # exec.exec_sedml_docs_in_archive_with_containerized_simulator()
-        pass
+        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.omex')
+        outputs_dir = os.path.join(self.tmp_dir, 'results')
+        docker_image = 'ghcr.io/biosimulators/tellurium:latest'
+
+        with capturer.CaptureOutput(merged=False, relay=False) as captured:
+            exec.exec_sedml_docs_in_archive_with_containerized_simulator(
+                archive_filename, outputs_dir, docker_image)
+            self.assertNotEqual(captured.stdout.get_text(), '')
+            self.assertEqual(captured.stderr.get_text(), '')
+
+        self.assertNotEqual(os.listdir(self.tmp_dir), [])
+
+    def test_test_exec_sedml_docs_in_archive_with_containerized_simulator_errors(self):
+        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.omex')
+        outputs_dir = os.path.join(self.tmp_dir, 'results')
+        docker_image = 'ghcr.io/biosimulators/tellurium:latest'
+
+        def check_call(cmd):
+            raise FileNotFoundError(1, 'Not found', cmd)
+
+        with mock.patch('subprocess.check_call', side_effect=check_call):
+            with self.assertRaises(RuntimeError):
+                exec.exec_sedml_docs_in_archive_with_containerized_simulator(
+                    archive_filename, outputs_dir, docker_image)
+
+        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'does-not-exist.omex')
+        outputs_dir = os.path.join(self.tmp_dir, 'results')
+        docker_image = 'ghcr.io/biosimulators/tellurium:latest'
+
+        with self.assertRaises(RuntimeError):
+            exec.exec_sedml_docs_in_archive_with_containerized_simulator(
+                archive_filename, outputs_dir, docker_image)
+
+        def check_call(cmd):
+            raise Exception('Other error')
+
+        with mock.patch('subprocess.check_call', side_effect=check_call):
+            with self.assertRaises(RuntimeError):
+                exec.exec_sedml_docs_in_archive_with_containerized_simulator(
+                    archive_filename, outputs_dir, docker_image)
