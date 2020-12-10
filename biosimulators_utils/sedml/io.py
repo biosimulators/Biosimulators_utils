@@ -7,7 +7,7 @@
 """
 
 from . import data_model
-from .utils import validate_doc
+from .validation import validate_doc
 from ..biosimulations.data_model import Metadata, ExternalReferences, Citation
 from ..data_model import Person, Identifier, OntologyTerm
 from ..kisao.utils import normalize_kisao_id
