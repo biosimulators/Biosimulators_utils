@@ -164,14 +164,14 @@ def get_simulator_docker_image(tag, pull=True):
         if pull:
             try:
                 image = docker_client.images.pull(tag)
-            except:  # pragma: no cover
+            except Exception:  # pragma: no cover
                 pass
 
-    except:
+    except Exception:
         if pull:
             try:
                 image = docker_client.images.pull(tag)
-            except:
+            except Exception:
                 raise docker.errors.ImageNotFound("Image '{}' for simulator could not be pulled".format(tag))
         else:
             raise docker.errors.ImageNotFound("Image '{}' for simulator is not available locally".format(tag))
