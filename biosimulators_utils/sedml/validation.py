@@ -196,9 +196,9 @@ def validate_model_change_types(changes, types):
     for change in changes:
         if not isinstance(change, types):
             raise NotImplementedError("".join([
-                'Model changes of type {} are not supported. ',
+                'Model changes of type {} are not supported. '.format(change.__class__.__name__),
                 'Model changes must be instances of one of of the following types:\n  - {}'.format(
-                    change.__class__.__name__, '\n  - '.join(type.__name__ for type in types)),
+                    '\n  - '.join(type.__name__ for type in types)),
 
             ]))
 
@@ -242,8 +242,7 @@ def validate_uniform_time_course_simulation(simulation):
                 simulation.output_end_time, simulation.output_start_time))
 
         if math.floor(simulation.number_of_points) != simulation.number_of_points:
-            raise ValueError('Number of points must be an integer.'.format(
-                simulation.output_start_time, simulation.initial_time))
+            raise ValueError('Number of points must be an integer.')
 
 
 def validate_data_generator_variables(variables):
