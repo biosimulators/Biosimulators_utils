@@ -129,9 +129,11 @@ jobs:
       - id: commit-docs
         name: Commit the compiled documentation
         run: |
-          git pull
           git config --local user.email "biosimulators.daemon@gmail.com"
           git config --local user.name "biosimulatorsdaemon"
+          git stash
+          git pull
+          git stash pop
           git add docs
           set +e
           git commit -m "Updating compiled documentation"
