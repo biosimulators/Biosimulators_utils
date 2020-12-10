@@ -33,13 +33,13 @@ class OutputResults(dict):
 
         * Data:
 
-            * Steady-state tasks of non-spatial models: results should be arrays of shape `(number of datasets, 1)`
-            * One-step tasks of non-spatial models: results should be arrays of shape ``(number of datasets, 2)`
-            * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number of datasets, number_of_points + 1)``
+            * Steady-state tasks of non-spatial models: results should be arrays of shape `(number of data sets, 1)`
+            * One-step tasks of non-spatial models: results should be arrays of shape ``(number of data sets, 2)`
+            * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number of data sets, number_of_points + 1)``
 
         * Indices (row labels)
 
-            * Reports: equal to the ids of the datasets if each report
+            * Reports: equal to the ids of the data sets if each report
     """
     pass
 

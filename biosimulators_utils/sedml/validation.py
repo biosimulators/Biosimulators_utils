@@ -96,13 +96,13 @@ def validate_doc(doc, validate_semantics=True):
 
         for output in doc.outputs:
             if isinstance(output, Report):
-                for dataset in output.datasets:
-                    if not dataset.id:
-                        raise ValueError('Datasets must have ids')
-                    if not dataset.label:
-                        raise ValueError('Datasets must have labels')
-                    validate_reference(dataset, 'Dataset {} of report "{}"'.format(
-                        dataset.id, output.id), 'data_generator', 'data data generator')
+                for data_set in output.data_sets:
+                    if not data_set.id:
+                        raise ValueError('Data sets must have ids')
+                    if not data_set.label:
+                        raise ValueError('Data sets must have labels')
+                    validate_reference(data_set, 'Data set {} of report "{}"'.format(
+                        data_set.id, output.id), 'data_generator', 'data data generator')
 
             elif isinstance(output, Plot2D):
                 for curve in output.curves:

@@ -32,12 +32,12 @@ class ArchiveWriter(object):
 class ArchiveReader(object):
     """ Class for reading zip archives """
 
-    def run(self, archive_filename, out_dir):
+    def run(self, archive_filename, out_dir=None):
         """ Unpack the files in a zip archive
 
         Args:
             archive_filename (:obj:`str`): path to zip file
-            out_dir (:obj:`str`): path to unpack files
+            out_dir (:obj:`str`, optional): path to unpack files
 
         Returns:
             archive (:obj:`Archive`): files unbundled from zip archive
@@ -45,6 +45,10 @@ class ArchiveReader(object):
         archive = Archive()
         with zipfile.ZipFile(archive_filename, mode='r') as zip_file:
             for member in zip_file.namelist():
-                archive.files.append(ArchiveFile(local_path=os.path.join(out_dir, member), archive_path=member))
-            zip_file.extractall(out_dir)
+                archive.files.append(ArchiveFile(
+                    archive_path=member,
+                    local_path=os.path.join(out_dir, member) if out_dir else None,
+                ))
+            if out_dir:
+                zip_file.extractall(out_dir)
         return archive

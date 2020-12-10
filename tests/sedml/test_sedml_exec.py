@@ -112,13 +112,13 @@ class ExecTaskCase(unittest.TestCase):
 
         doc.outputs.append(data_model.Report(
             id='report_1',
-            datasets=[
-                data_model.Dataset(
+            data_sets=[
+                data_model.DataSet(
                     id='dataset_1',
                     label='dataset_1',
                     data_generator=doc.data_generators[0],
                 ),
-                data_model.Dataset(
+                data_model.DataSet(
                     id='dataset_2',
                     label='dataset_2',
                     data_generator=doc.data_generators[1],
@@ -128,13 +128,13 @@ class ExecTaskCase(unittest.TestCase):
 
         doc.outputs.append(data_model.Report(
             id='report_2',
-            datasets=[
-                data_model.Dataset(
+            data_sets=[
+                data_model.DataSet(
                     id='dataset_3',
                     label='dataset_3',
                     data_generator=doc.data_generators[2],
                 ),
-                data_model.Dataset(
+                data_model.DataSet(
                     id='dataset_4',
                     label='dataset_4',
                     data_generator=doc.data_generators[3],
@@ -245,8 +245,8 @@ class ExecTaskCase(unittest.TestCase):
 
         doc.outputs.append(data_model.Report(
             id='report_1',
-            datasets=[
-                data_model.Dataset(
+            data_sets=[
+                data_model.DataSet(
                     id='dataset_1',
                     label='dataset_1',
                     data_generator=doc.data_generators[0],
@@ -313,8 +313,8 @@ class ExecTaskCase(unittest.TestCase):
 
         doc.outputs.append(data_model.Report(
             id='report_1',
-            datasets=[
-                data_model.Dataset(
+            data_sets=[
+                data_model.DataSet(
                     id='dataset_1',
                     label='dataset_1',
                     data_generator=doc.data_generators[0],
@@ -381,8 +381,8 @@ class ExecTaskCase(unittest.TestCase):
 
         doc.outputs.append(data_model.Report(
             id='report_1',
-            datasets=[
-                data_model.Dataset(
+            data_sets=[
+                data_model.DataSet(
                     id='dataset_1',
                     label='dataset_1',
                     data_generator=doc.data_generators[0],
@@ -418,8 +418,8 @@ class ExecTaskCase(unittest.TestCase):
         doc.outputs = [
             data_model.Report(
                 id='report_1',
-                datasets=[
-                    data_model.Dataset(
+                data_sets=[
+                    data_model.DataSet(
                         id='dataset_1',
                         label='dataset_1',
                         data_generator=doc.data_generators[0],
@@ -468,13 +468,13 @@ class ExecTaskCase(unittest.TestCase):
         doc.outputs = [
             data_model.Report(
                 id='report_1',
-                datasets=[
-                    data_model.Dataset(
+                data_sets=[
+                    data_model.DataSet(
                         id='dataset_1',
                         label='dataset_1',
                         data_generator=doc.data_generators[0],
                     ),
-                    data_model.Dataset(
+                    data_model.DataSet(
                         id='dataset_2',
                         label='dataset_2',
                         data_generator=doc.data_generators[1],

@@ -332,20 +332,20 @@ class SedmlSimulationWriter(object):
         if report.name is not None:
             self._call_libsedml_method(report_sed, 'setName', report.name)
 
-        for dataset in report.datasets:
+        for data_set in report.data_sets:
             dataset_sed = report_sed.createDataSet()
-            self._obj_to_sed_obj_map[dataset] = dataset_sed
+            self._obj_to_sed_obj_map[data_set] = dataset_sed
 
-            if dataset.id is not None:
-                self._call_libsedml_method(dataset_sed, 'setId', dataset.id)
-            if dataset.name is not None:
-                self._call_libsedml_method(dataset_sed, 'setName', dataset.name)
-            if dataset.label is not None:
-                self._call_libsedml_method(dataset_sed, 'setLabel', dataset.label)
-            if dataset.data_generator is not None:
-                if not dataset.data_generator.id:  # pragma: no cover: already validated
+            if data_set.id is not None:
+                self._call_libsedml_method(dataset_sed, 'setId', data_set.id)
+            if data_set.name is not None:
+                self._call_libsedml_method(dataset_sed, 'setName', data_set.name)
+            if data_set.label is not None:
+                self._call_libsedml_method(dataset_sed, 'setLabel', data_set.label)
+            if data_set.data_generator is not None:
+                if not data_set.data_generator.id:  # pragma: no cover: already validated
                     raise ValueError('Data generator must have an id to be referenced')
-                self._call_libsedml_method(dataset_sed, 'setDataReference', dataset.data_generator.id)
+                self._call_libsedml_method(dataset_sed, 'setDataReference', data_set.data_generator.id)
 
     def _add_plot2d_to_doc(self, plot):
         """ Add a 2D plot to a SED document
@@ -818,14 +818,14 @@ class SedmlSimulationReader(object):
                 output = data_model.Report()
 
                 for dataset_sed in output_sed.getListOfDataSets():
-                    dataset = data_model.Dataset()
-                    output.datasets.append(dataset)
+                    data_set = data_model.DataSet()
+                    output.data_sets.append(data_set)
 
-                    dataset.id = dataset_sed.getId() or None
-                    dataset.name = dataset_sed.getName() or None
-                    dataset.label = dataset_sed.getLabel() or None
+                    data_set.id = dataset_sed.getId() or None
+                    data_set.name = dataset_sed.getName() or None
+                    data_set.label = dataset_sed.getLabel() or None
 
-                    self._deserialize_reference(dataset_sed, dataset, 'data generator', 'Data', 'data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(dataset_sed, data_set, 'data generator', 'Data', 'data_generator', id_to_data_gen_map)
 
             elif isinstance(output_sed, libsedml.SedPlot2D):
                 output = data_model.Plot2D()

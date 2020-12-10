@@ -81,8 +81,8 @@ class IoTestCase(unittest.TestCase):
         report = data_model.Report(
             id='report1',
             name='Report1',
-            datasets=[
-                data_model.Dataset(
+            data_sets=[
+                data_model.DataSet(
                     id='dataset1',
                     name='Dataset1',
                     label='Dataset-1',
@@ -278,7 +278,7 @@ class IoTestCase(unittest.TestCase):
             simulations=[time_course_simulation],
             tasks=[task1],
             data_generators=(
-                [d.data_generator for d in report.datasets]
+                [d.data_generator for d in report.data_sets]
             ),
             outputs=[report],
             metadata=Metadata(
@@ -331,7 +331,7 @@ class IoTestCase(unittest.TestCase):
             simulations=[ss_simulation, one_step_simulation, time_course_simulation],
             tasks=[task1, task2],
             data_generators=(
-                [d.data_generator for d in report.datasets]
+                [d.data_generator for d in report.data_sets]
                 + [c.x_data_generator for c in plot2d.curves]
                 + [c.y_data_generator for c in plot2d.curves]
                 + [s.x_data_generator for s in plot3d.surfaces]

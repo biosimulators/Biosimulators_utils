@@ -33,7 +33,7 @@ __all__ = [
     'DataGeneratorParameter',
     'Output',
     'Report',
-    'Dataset',
+    'DataSet',
     'Plot2D',
     'Plot3D',
     'AxisScale',
@@ -790,18 +790,18 @@ class Report(Output):
     Attributes:
         id (:obj:`str`): id
         name (:obj:`str`): name
-        datasets (:obj:`list` of :obj:`Dataset`): datasets
+        data_sets (:obj:`list` of :obj:`DataSet`): data sets
     """
 
-    def __init__(self, id=None, name=None, datasets=None):
+    def __init__(self, id=None, name=None, data_sets=None):
         """
         Args:
             id (:obj:`str`, optional): id
             name (:obj:`str`, optional): name
-            datasets (:obj:`list` of :obj:`Dataset`, optional): datasets
+            data_sets (:obj:`list` of :obj:`DataSet`, optional): data sets
         """
         super(Report, self).__init__(id=id, name=name)
-        self.datasets = datasets or []
+        self.data_sets = data_sets or []
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -810,7 +810,7 @@ class Report(Output):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (self.id, self.name,
-                tuple(none_sorted(dataset.to_tuple() for dataset in self.datasets)))
+                tuple(none_sorted(data_set.to_tuple() for data_set in self.data_sets)))
 
     def is_equal(self, other):
         """ Determine if reports are equal
@@ -822,11 +822,11 @@ class Report(Output):
             :obj:`bool`: :obj:`True`, if two reports are equal
         """
         return super(Report, self).is_equal(other) \
-            and are_lists_equal(self.datasets, other.datasets)
+            and are_lists_equal(self.data_sets, other.data_sets)
 
 
-class Dataset(object):
-    """ A dataset in a report
+class DataSet(object):
+    """ A data set in a report
 
     Attributes:
         id (:obj:`str`): id
@@ -858,13 +858,13 @@ class Dataset(object):
                 self.data_generator.to_tuple() if self.data_generator is not None else None)
 
     def is_equal(self, other):
-        """ Determine if datasets are equal
+        """ Determine if data sets are equal
 
         Args:
-            other (:obj:`Dataset`): another content item
+            other (:obj:`DataSet`): another content item
 
         Returns:
-            :obj:`bool`: :obj:`True`, if two datasets are equal
+            :obj:`bool`: :obj:`True`, if two data sets are equal
         """
         return self.__class__ == other.__class__ \
             and self.id == other.id \

@@ -30,9 +30,9 @@ def append_all_nested_children_to_doc(doc):
 
     for output in doc.outputs:
         if isinstance(output, Report):
-            for dataset in output.datasets:
-                if dataset.data_generator:
-                    data_generators.add(dataset.data_generator)
+            for data_set in output.data_sets:
+                if data_set.data_generator:
+                    data_generators.add(data_set.data_generator)
 
         elif isinstance(output, Plot2D):
             for curve in output.curves:

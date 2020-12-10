@@ -57,8 +57,8 @@ class DataModelTestCase(unittest.TestCase):
         report = data_model.Report(
             id='report1',
             name='Report1',
-            datasets=[
-                data_model.Dataset(
+            data_sets=[
+                data_model.DataSet(
                     id='dataset1',
                     name='Dataset1',
                     label='Dataset-1',
@@ -271,19 +271,19 @@ class DataModelTestCase(unittest.TestCase):
         task2.id = None
         self.assertFalse(task.is_equal(task2))
 
-        var = copy.deepcopy(report.datasets[0].data_generator.variables[0])
+        var = copy.deepcopy(report.data_sets[0].data_generator.variables[0])
         var2 = copy.deepcopy(var)
         self.assertTrue(var.is_equal(var2))
         var2.target = None
         self.assertFalse(var.is_equal(var2))
 
-        data_generator = copy.deepcopy(report.datasets[0].data_generator)
+        data_generator = copy.deepcopy(report.data_sets[0].data_generator)
         data_generator_2 = copy.deepcopy(data_generator)
         self.assertTrue(data_generator.is_equal(data_generator_2))
         data_generator_2.variables = []
         self.assertFalse(data_generator.is_equal(data_generator_2))
 
-        data_set = copy.deepcopy(report.datasets[0])
+        data_set = copy.deepcopy(report.data_sets[0])
         data_set_2 = copy.deepcopy(data_set)
         self.assertTrue(data_set.is_equal(data_set_2))
         data_set_2.label = None
@@ -291,7 +291,7 @@ class DataModelTestCase(unittest.TestCase):
 
         report2 = copy.deepcopy(report)
         self.assertTrue(report.is_equal(report2))
-        report2.datasets = []
+        report2.data_sets = []
         self.assertFalse(report.is_equal(report2))
 
         curve = copy.deepcopy(plot2d.curves[0])

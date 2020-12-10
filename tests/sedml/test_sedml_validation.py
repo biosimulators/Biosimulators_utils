@@ -100,8 +100,8 @@ class ValidationTestCase(unittest.TestCase):
             outputs=[
                 data_model.Report(
                     id='Report',
-                    datasets=[
-                        data_model.Dataset(
+                    data_sets=[
+                        data_model.DataSet(
                         )
                     ],
                 ),
@@ -114,8 +114,8 @@ class ValidationTestCase(unittest.TestCase):
             outputs=[
                 data_model.Report(
                     id='Report',
-                    datasets=[
-                        data_model.Dataset(
+                    data_sets=[
+                        data_model.DataSet(
                             id='dataset',
                         )
                     ],
