@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.8. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.0.8 documentation</title>
+    <title>2.1.8. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.0 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -203,7 +203,7 @@ containers that contain command-line interfaces to simulators</p>
 </dl>
 <dl class="py function">
 <dt id="biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_containerized_simulator">
-<code class="sig-prename descclassname">biosimulators_utils.simulator.exec.</code><code class="sig-name descname">exec_sedml_docs_in_archive_with_containerized_simulator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">archive_filename</span></em>, <em class="sig-param"><span class="n">out_dir</span></em>, <em class="sig-param"><span class="n">docker_image</span></em>, <em class="sig-param"><span class="n">docker_image_temp_dir</span><span class="o">=</span><span class="default_value">'/tmp'</span></em>, <em class="sig-param"><span class="n">docker_image_path_sep</span><span class="o">=</span><span class="default_value">'/'</span></em>, <em class="sig-param"><span class="n">environment</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_containerized_simulator" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">biosimulators_utils.simulator.exec.</code><code class="sig-name descname">exec_sedml_docs_in_archive_with_containerized_simulator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">archive_filename</span></em>, <em class="sig-param"><span class="n">out_dir</span></em>, <em class="sig-param"><span class="n">docker_image</span></em>, <em class="sig-param"><span class="n">docker_image_temp_dir</span><span class="o">=</span><span class="default_value">'/tmp'</span></em>, <em class="sig-param"><span class="n">docker_image_path_sep</span><span class="o">=</span><span class="default_value">'/'</span></em>, <em class="sig-param"><span class="n">environment</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pull_docker_image</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_containerized_simulator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use a containerized simulator tool to execute the tasks specified in a
 COMBINE/OMEX archive and generate the reports specified in the archive</p>
 <dl class="field-list simple">
@@ -219,6 +219,8 @@ The path can either be an absolute path or a path relative to the working direct
 <li><p><strong>docker_image_path_sep</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – Path separator for the image (e.g., <code class="docutils literal notranslate"><span class="pre">/</span></code> for
 Linux, Mac OS, Unix images; <code class="docutils literal notranslate"><span class="pre">\</span></code> for Windows images)</p></li>
 <li><p><strong>environment</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – environment variables for executing the Docker image</p></li>
+<li><p><strong>pull_docker_image</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, pull the Docker image (if the image isn’t
+available locally, this will cause the image to be downloaded; this will cause the image to be updated)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
