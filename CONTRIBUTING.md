@@ -55,7 +55,7 @@ Below are instructions for releasing a new version:
 3. Commit this change to `biosimulators_utils/_version.py`.
 4. Add a tag for the new version by running `git tag { version }`. `version` should be equal to the value of the
    `__version__` variable in `biosimulators_utils/_version.py`.
-5. Push these commits and the new tag to GitHub by running `git push --tags`.
+5. Push these commits and the new tag to GitHub by running `git push && git push --tags`.
 6. This push will trigger a GitHub action which will execute the following tasks:
    * Create a GitHub release for the version.
    * Push the release to PyPI.
