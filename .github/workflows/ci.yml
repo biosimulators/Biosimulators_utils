@@ -93,7 +93,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 1
+          ref: dev
 
       - name: Install Python
         uses: actions/setup-python@v2
@@ -132,7 +133,7 @@ jobs:
           git config --local user.email "biosimulators.daemon@gmail.com"
           git config --local user.name "biosimulatorsdaemon"
           git stash
-          git pull --ff-only
+          git pull
           git stash pop
           git add docs
           set +e
@@ -149,7 +150,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          branch: dev
 
       # Create GitHub release
       - name: Create GitHub release
