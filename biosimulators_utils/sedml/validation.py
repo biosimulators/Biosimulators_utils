@@ -202,6 +202,10 @@ def validate_model_change_types(changes, types):
 
             ]))
 
+        if isinstance(change, ModelAttributeChange):
+            if not change.target:
+                raise ValueError('Model change attributes must define a target')
+
 
 def validate_simulation_type(simulation, types):
     """ Check that simulation is a time course simulation

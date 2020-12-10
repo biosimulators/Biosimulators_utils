@@ -207,7 +207,7 @@ class ValidationTestCase(unittest.TestCase):
     def _validate_task(self, task, variables):
         validation.validate_task(task)
         validation.validate_model_language(task.model.language, data_model.ModelLanguage.SBML)
-        validation.validate_model_change_types(task.model.changes, ())
+        validation.validate_model_change_types(task.model.changes, (data_model.ModelAttributeChange, ))
         validation.validate_simulation_type(task.simulation, (data_model.UniformTimeCourseSimulation, ))
         validation.validate_uniform_time_course_simulation(task.simulation)
         validation.validate_data_generator_variables(variables)
@@ -256,9 +256,13 @@ class ValidationTestCase(unittest.TestCase):
         with self.assertRaisesRegex(NotImplementedError, 'is not supported. Model language must be'):
             self._validate_task(task, variables)
         task.model.language = data_model.ModelLanguage.SBML
-        task.model.changes = [data_model.ModelAttributeChange()]
+        task.model.changes = [mock.Mock()]
 
         with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
+            self._validate_task(task, variables)
+        task.model.changes = [data_model.ModelAttributeChange()]
+
+        with self.assertRaisesRegex(ValueError, 'must define a target'):
             self._validate_task(task, variables)
         task.model.changes = []
 
