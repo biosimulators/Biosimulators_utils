@@ -18,8 +18,8 @@ class DataGeneratorVariableResults(dict):
     * Keys (:obj:`str`): ids of variables (:obj:`DataGeneratorVariable`)
     * Values (:obj:`numpy.ndarray`): result of each variable
 
-        * Steady-state tasks of non-spatial models: results should be arrays of shape `(1,)`
-        * One-step tasks of non-spatial models: results should be arrays of shape ``(2,)`
+        * Steady-state tasks of non-spatial models: results should be arrays of shape ``(1,)``
+        * One-step tasks of non-spatial models: results should be arrays of shape ``(2,)``
         * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_points + 1,)``
     """
     pass
@@ -33,8 +33,8 @@ class OutputResults(dict):
 
         * Data:
 
-            * Steady-state tasks of non-spatial models: results should be arrays of shape `(number of data sets, 1)`
-            * One-step tasks of non-spatial models: results should be arrays of shape ``(number of data sets, 2)`
+            * Steady-state tasks of non-spatial models: results should be arrays of shape ``(number of data sets, 1)``
+            * One-step tasks of non-spatial models: results should be arrays of shape ``(number of data sets, 2)``
             * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number of data sets, number_of_points + 1)``
 
         * Indices (row labels)

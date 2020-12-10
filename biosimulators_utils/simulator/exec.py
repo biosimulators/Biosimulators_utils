@@ -59,7 +59,7 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, ou
         archive_filename (:obj:`str`): path to a COMBINE/OMEX archive
         out_dir (:obj:`str`): directory where outputs should be saved
         docker_image (:obj:`str`): tag (e.g., ``biosimulators/tellurium``) or
-            URL (``ghcr.io/biosimulators/tellurium`) for a Docker image of a simulator
+            URL (``ghcr.io/biosimulators/tellurium``) for a Docker image of a simulator
         docker_image_temp_dir (:obj:`str`, optional): Path to the temporary directory within the Docker image
             (e.g., ``/tmp`` for Linux images, ``C:\\Users\\{ user }\\AppData\\Local\\Temp`` for Windows images).
             The path can either be an absolute path or a path relative to the working directory of the image.
