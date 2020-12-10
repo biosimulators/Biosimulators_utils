@@ -132,7 +132,7 @@ jobs:
           git config --local user.email "biosimulators.daemon@gmail.com"
           git config --local user.name "biosimulatorsdaemon"
           git stash
-          git pull
+          git pull --ff-only
           git stash pop
           git add docs
           set +e
