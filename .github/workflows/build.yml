@@ -1,16 +1,27 @@
-name: Lint, test, and compile documentation
+name: Continuous integration
 
 on:
-  push:
-    branches: '**'
-    tags-ignore: '*.*'
+  - push
 
 jobs:
+  getVersionNumber:
+    name: Get version number
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version-number.outputs.version }}
+    steps:
+      - id: get-version-number
+        name: Get version number
+        env:
+          TAG: ${{ github.ref }}
+        run: |
+          version="${TAG/refs\/tags\//}"
+          echo "::set-output name=version::$version"
+
   build:
     name: Lint, test, and compile documentation
     runs-on: ubuntu-latest
-    outputs:
-      docsChanged: ${{ steps.commit-docs.outputs.docsChanged }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -63,7 +74,50 @@ jobs:
           flags: unittests
           file: ./coverage.xml
 
-      # compile documentation and push to repo
+      # compile documentation
+      - name: Install the requirements for compiling the documentation
+        run: python -m pip install -r docs-src/requirements.txt
+
+      - name: Compile the documentation
+        run: |
+          sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
+          sphinx-build docs-src docs
+
+  release:
+    name: Release a new version
+    needs: [getVersionNumber, build]
+    runs-on: ubuntu-latest
+    outputs:
+      docsChanged: ${{ steps.commit-docs.outputs.docsChanged }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+
+      - name: Setup pip cache
+        uses: actions/cache@v2
+        with:
+          path: /opt/hostedtoolcache/Python
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements.optional.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install pip and setuptools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade setuptools
+
+      # install package
+      - name: Install the package
+        run: python -m pip install .[all]
+
+      # compile and push documentation
       - name: Install the requirements for compiling the documentation
         run: python -m pip install -r docs-src/requirements.txt
 
@@ -74,7 +128,6 @@ jobs:
 
       - id: commit-docs
         name: Commit the compiled documentation
-        if: github.ref == 'refs/heads/dev'
         run: |
           git pull
           git config --local user.email "biosimulators.daemon@gmail.com"
@@ -90,8 +143,50 @@ jobs:
           echo "::set-output name=docsChanged::$docsChanged"
 
       - name: Push the compiled documentation
-        if: github.ref == 'refs/heads/dev' && steps.commit-docs.outputs.docsChanged == '1'
+        if: steps.commit-docs.outputs.docsChanged == '1'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
+
+      # Create GitHub release
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.getVersionNumber.outputs.version }}
+          release_name: Release ${{ needs.getVersionNumber.outputs.version }}
+
+      # Create PyPI release
+      - name: Install pandoc
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends wget
+
+          wget https://github.com/jgm/pandoc/releases -O /tmp/pandocVersions.html
+          urlPart=`grep "\.deb" /tmp/pandocVersions.html | head -n 1 | cut -d'/' -f2-7 | cut -d'"' -f1`
+          wget "https://github.com/$urlPart" -O /tmp/pandoc.deb
+          sudo dpkg -i /tmp/pandoc.deb
+          rm /tmp/pandocVersions.html
+          rm /tmp/pandoc.deb
+
+      - name: Convert README to .rst format
+        run: pandoc --from=gfm --output=README.rst --to=rst README.md
+
+      - name: Install twine
+        run: |
+          python -m pip install wheel twine
+
+      - name: Create packages to upload to PyPI
+        run: |
+          python setup.py sdist
+          python setup.py bdist_wheel
+
+      - name: Upload packages to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          twine upload dist/*
+
