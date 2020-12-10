@@ -88,6 +88,12 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, ou
     image_in_dir = docker_image_path_sep.join((docker_image_temp_dir, 'in'))
     image_out_dir = docker_image_path_sep.join((docker_image_temp_dir, 'out'))
 
+    env_args = []
+    if environment:
+        for key, val in environment.items():
+            env_args.append('--env')
+            env_args.append('{}={}'.format(key, val))
+
     args = (
         [
             'docker',
@@ -99,9 +105,10 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, ou
             '--mount', 'type=bind,source={},target={}'.format(
                 os.path.abspath(out_dir), image_out_dir),
             '--user', str(os.getuid()),
-            docker_image,
-        ] +
-        build_cli_args(
+        ]
+        + env_args
+        + [docker_image]
+        + build_cli_args(
             docker_image_path_sep.join((image_in_dir, os.path.basename(archive_filename))),
             image_out_dir,
         )
