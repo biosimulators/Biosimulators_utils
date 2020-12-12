@@ -99,13 +99,18 @@ class ExecCombineTestCase(unittest.TestCase):
                 file.write('ABC')
             with open(os.path.join(out_dir, 'report2.csv'), 'w') as file:
                 file.write('DEF')
+            with open(os.path.join(out_dir, 'plot1.pdf'), 'w') as file:
+                file.write('GHI')
+            with open(os.path.join(out_dir, 'plot2.pdf'), 'w') as file:
+                file.write('JKL')
 
         with mock.patch('biosimulators_utils.sedml.exec.exec_doc', side_effect=exec_doc):
             exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir)
 
-        self.assertEqual(sorted(os.listdir(out_dir)), sorted(['reports.zip']))
+        self.assertEqual(sorted(os.listdir(out_dir)), sorted(['reports.zip', 'plots.zip']))
 
         archive_dir = os.path.join(self.tmp_dir, 'archive')
+
         archive = ArchiveReader().run(os.path.join(out_dir, 'reports.zip'), archive_dir)
         self.assertEqual(sorted(file.archive_path for file in archive.files), sorted([
             'dir1/dir2/sim.sedml/report1.csv',
@@ -115,6 +120,16 @@ class ExecCombineTestCase(unittest.TestCase):
             self.assertEqual(file.read(), 'ABC')
         with open(os.path.join(archive_dir, 'dir1', 'dir2', 'sim.sedml', 'report2.csv'), 'r') as file:
             self.assertEqual(file.read(), 'DEF')
+
+        archive = ArchiveReader().run(os.path.join(out_dir, 'plots.zip'), archive_dir)
+        self.assertEqual(sorted(file.archive_path for file in archive.files), sorted([
+            'dir1/dir2/sim.sedml/plot1.pdf',
+            'dir1/dir2/sim.sedml/plot2.pdf',
+        ]))
+        with open(os.path.join(archive_dir, 'dir1', 'dir2', 'sim.sedml', 'plot1.pdf'), 'r') as file:
+            self.assertEqual(file.read(), 'GHI')
+        with open(os.path.join(archive_dir, 'dir1', 'dir2', 'sim.sedml', 'plot2.pdf'), 'r') as file:
+            self.assertEqual(file.read(), 'JKL')
 
     def test_error(self):
         updated = datetime.datetime(2020, 1, 2, 1, 2, 3, tzinfo=dateutil.tz.tzutc())
