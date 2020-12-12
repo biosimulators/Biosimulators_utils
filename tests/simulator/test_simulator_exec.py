@@ -1,8 +1,10 @@
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent
 from biosimulators_utils.simulator import exec
 from unittest import mock
+import builtins
 import capturer
 import docker
+import importlib
 import os
 import shutil
 import subprocess
@@ -87,13 +89,24 @@ class SimulatorExecTestCase(unittest.TestCase):
 
         with capturer.CaptureOutput(merged=False, relay=False) as captured:
             exec.exec_sedml_docs_in_archive_with_containerized_simulator(
-                archive_filename, outputs_dir, docker_image)
+                archive_filename, outputs_dir, docker_image,
+                environment={'ARG_1': 'val-1'})
             self.assertNotEqual(captured.stdout.get_text(), '')
             self.assertEqual(captured.stderr.get_text(), '')
 
         self.assertNotEqual(os.listdir(self.tmp_dir), [])
 
-    def test_test_exec_sedml_docs_in_archive_with_containerized_simulator_errors(self):
+        with self.assertRaises(NotImplementedError):
+            with mock.patch('os.name', 'nt'):
+                exec.exec_sedml_docs_in_archive_with_containerized_simulator(
+                    archive_filename, outputs_dir, docker_image)
+
+        with mock.patch('subprocess.check_call', return_value=True):
+            exec.exec_sedml_docs_in_archive_with_containerized_simulator(
+                archive_filename, outputs_dir, docker_image,
+                user_to_exec_within_container='my-user')
+
+    def test_exec_sedml_docs_in_archive_with_containerized_simulator_errors(self):
         archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.omex')
         outputs_dir = os.path.join(self.tmp_dir, 'results')
         docker_image = 'ghcr.io/biosimulators/tellurium:latest'
@@ -121,3 +134,19 @@ class SimulatorExecTestCase(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 exec.exec_sedml_docs_in_archive_with_containerized_simulator(
                     archive_filename, outputs_dir, docker_image)
+
+    def test_docker_not_available(self):
+        builtin_import = builtins.__import__
+
+        def import_mock(name, *args):
+            if name == 'docker':
+                raise ModuleNotFoundError
+            return builtin_import(name, *args)
+
+        with mock.patch('builtins.__import__', side_effect=import_mock):
+            importlib.reload(exec)
+
+            with self.assertRaises(ModuleNotFoundError):
+                exec.exec_sedml_docs_in_archive_with_containerized_simulator(None, None, None)
+
+        importlib.reload(exec)
