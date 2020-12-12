@@ -184,7 +184,8 @@ class SedmlSimulationWriter(object):
             self._set_kisao_id(alg)
 
         for change in alg.changes:
-            self._add_param_change_to_alg(alg, change)
+            if change.new_value is not None:
+                self._add_param_change_to_alg(alg, change)
 
     def _add_param_change_to_alg(self, alg, change):
         """ Add simulation algorithm parameter change to a SED document
