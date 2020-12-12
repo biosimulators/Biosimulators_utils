@@ -9,6 +9,7 @@
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config
+from ..plot.data_model import PlotFormat  # noqa: F401
 from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import Task, DataGeneratorVariable  # noqa: F401
 from .data_model import CombineArchiveContentFormatPattern
@@ -26,7 +27,8 @@ __all__ = [
 
 
 def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, apply_xml_model_changes=False,
-                               report_formats=None):
+                               report_formats=None, plot_formats=None,
+                               bundle_outputs=None, keep_individual_outputs=None):
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
 
     Args:
@@ -55,13 +57,25 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
 
         apply_xml_model_changes (:obj:`bool`): if :obj:`True`, apply any model changes specified in the SED-ML files before
             calling :obj:`task_executer`.
-        report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., CSV or HDF5)
+        report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
+        plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): report format (e.g., pdf)
+        bundle_outputs (:obj:`bool`, optional): if :obj:`True`, bundle outputs into archives for reports and plots
+        keep_individual_outputs (:obj:`bool`, optional): if :obj:`True`, keep individual output files
     """
     config = get_config()
 
     # process arguments
     if report_formats is None:
         report_formats = [ReportFormat(format_value) for format_value in config.REPORT_FORMATS]
+
+    if plot_formats is None:
+        plot_formats = [PlotFormat(format_value) for format_value in config.PLOT_FORMATS]
+
+    if bundle_outputs is None:
+        bundle_outputs = config.BUNDLE_OUTPUTS
+
+    if keep_individual_outputs is None:
+        keep_individual_outputs = config.KEEP_INDIVIDUAL_OUTPUTS
 
     # create temporary directory to unpack archive
     archive_tmp_dir = tempfile.mkdtemp()
@@ -87,29 +101,41 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
                                                     tmp_out_dir,
                                                     os.path.relpath(content_filename, archive_tmp_dir),
                                                     apply_xml_model_changes=apply_xml_model_changes,
-                                                    report_formats=report_formats)
+                                                    report_formats=report_formats,
+                                                    plot_formats=plot_formats)
 
     # arrange outputs
     if not os.path.isdir(out_dir):
         os.makedirs(out_dir)
 
     # move HDF5 file to desired location
-    tmp_hdf5_path = os.path.join(tmp_out_dir, config.HDF5_REPORTS_PATH)
-    out_hdf5_path = os.path.join(out_dir, config.HDF5_REPORTS_PATH)
+    tmp_hdf5_path = os.path.join(tmp_out_dir, config.H5_REPORTS_PATH)
+    out_hdf5_path = os.path.join(out_dir, config.H5_REPORTS_PATH)
     if os.path.isfile(tmp_hdf5_path):
         shutil.move(tmp_hdf5_path, out_hdf5_path)
 
-    # bundle CSV files of reports into zip archive
-    if ReportFormat.CSV in report_formats:
-        archive = build_archive_from_paths([os.path.join(tmp_out_dir, '**', '*.csv')], tmp_out_dir)
+    if bundle_outputs:
+        # bundle CSV files of reports into zip archive
+        archive_paths = [os.path.join(tmp_out_dir, '**', '*.' + format.value) for format in report_formats if format != ReportFormat.h5]
+        archive = build_archive_from_paths(archive_paths, tmp_out_dir)
         if archive.files:
-            ArchiveWriter().run(archive, os.path.join(out_dir, config.CSV_REPORTS_PATH))
+            ArchiveWriter().run(archive, os.path.join(out_dir, config.REPORTS_PATH))
 
-    # bundle PDF files of plots into zip archive
-    archive = build_archive_from_paths([os.path.join(tmp_out_dir, '**', '*.pdf')], tmp_out_dir)
-    if archive.files:
-        ArchiveWriter().run(archive, os.path.join(out_dir, config.PDF_PLOTS_PATH))
+        # bundle PDF files of plots into zip archive
+        archive_paths = [os.path.join(tmp_out_dir, '**', '*.' + format.value) for format in plot_formats]
+        archive = build_archive_from_paths(archive_paths, tmp_out_dir)
+        if archive.files:
+            ArchiveWriter().run(archive, os.path.join(out_dir, config.PLOTS_PATH))
 
     # cleanup temporary files
+    if keep_individual_outputs:
+        if os.path.isdir(out_dir):
+            for file_or_dir in os.listdir(tmp_out_dir):
+                shutil.move(os.path.join(tmp_out_dir, file_or_dir), out_dir)
+        else:  # pragma: no cover # unreachable because the above code creates :obj:`out_dir` if it doesn't exist
+            shutil.move(tmp_out_dir, out_dir)
+
+    else:
+        shutil.rmtree(tmp_out_dir)
+
     shutil.rmtree(archive_tmp_dir)
-    shutil.rmtree(tmp_out_dir)

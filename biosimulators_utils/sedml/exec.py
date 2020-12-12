@@ -7,6 +7,7 @@
 """
 
 from ..config import get_config
+from ..plot.data_model import PlotFormat
 from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat
 from ..report.io import ReportWriter
 from .data_model import SedDocument, Task, Report
@@ -26,7 +27,7 @@ __all__ = [
 
 
 def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
-             apply_xml_model_changes=False, report_formats=None):
+             apply_xml_model_changes=False, report_formats=None, plot_formats=None):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -57,7 +58,8 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
         rel_out_path (:obj:`str`, optional): path relative to :obj:`out_path` to store the outputs
         apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file before
             calling :obj:`task_executer`.
-        report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., CSV or HDF5)
+        report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
+        plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
     """
     # process arguments
     if not isinstance(doc, SedDocument):
@@ -67,6 +69,9 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
 
     if report_formats is None:
         report_formats = [ReportFormat(format_value) for format_value in get_config().REPORT_FORMATS]
+
+    if plot_formats is None:
+        plot_formats = [PlotFormat(format_value) for format_value in get_config().PLOT_FORMATS]
 
     # apply changes to models
     modified_model_filenames = []

@@ -20,7 +20,7 @@ __all__ = [
 class ReportWriter(object):
     """ Class for writing reports of simulation results """
 
-    def run(self, results, base_path, rel_path, format=ReportFormat.HDF5):
+    def run(self, results, base_path, rel_path, format=ReportFormat.h5):
         """ Save a report
 
         Args:
@@ -38,16 +38,16 @@ class ReportWriter(object):
             format (:obj:`ReportFormat`, optional): report format
         """
 
-        if format == ReportFormat.CSV:
-            filename = os.path.join(base_path, rel_path + '.csv')
+        if format == ReportFormat.csv:
+            filename = os.path.join(base_path, rel_path + '.' + format.value)
             out_dir = os.path.dirname(filename)
             if not os.path.isdir(out_dir):
                 os.makedirs(out_dir)
             results.to_csv(filename,
                            header=False)
 
-        elif format == ReportFormat.HDF5:
-            filename = os.path.join(base_path, get_config().HDF5_REPORTS_PATH)
+        elif format == ReportFormat.h5:
+            filename = os.path.join(base_path, get_config().H5_REPORTS_PATH)
             if not os.path.isdir(base_path):
                 os.makedirs(base_path)
             results.to_hdf(filename,
@@ -66,7 +66,7 @@ class ReportWriter(object):
 class ReportReader(object):
     """ Class for reading reports of simulation results """
 
-    def run(self, base_path, rel_path, format=ReportFormat.CSV):
+    def run(self, base_path, rel_path, format=ReportFormat.csv):
         """ Read a report for a file
 
         Args:
@@ -85,16 +85,16 @@ class ReportReader(object):
         Returns:
             :obj:`pandas.DataFrame`: report results
         """
-        if format == ReportFormat.CSV:
-            filename = os.path.join(base_path, rel_path + '.csv')
+        if format == ReportFormat.csv:
+            filename = os.path.join(base_path, rel_path + '.' + format.value)
             df = pandas.read_csv(filename,
                                  index_col=0,
                                  header=None)
             df.columns = pandas.RangeIndex(start=0, stop=df.shape[1], step=1)
             return df
 
-        elif format == ReportFormat.HDF5:
-            filename = os.path.join(base_path, get_config().HDF5_REPORTS_PATH)
+        elif format == ReportFormat.h5:
+            filename = os.path.join(base_path, get_config().H5_REPORTS_PATH)
             return pandas.read_hdf(filename,
                                    key=rel_path,
                                    )

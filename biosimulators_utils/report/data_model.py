@@ -1,4 +1,4 @@
-""" Data model for report
+""" Data model for reports
 
 :Author: Jonathan Karr <karr@mssm.edu>
 :Date: 2020-12-06
@@ -46,5 +46,7 @@ class OutputResults(dict):
 
 class ReportFormat(str, enum.Enum):
     """ Format of a report """
-    CSV = 'CSV'
-    HDF5 = 'HDF5'
+    csv = 'csv'
+    h5 = 'h5'
+    hdf = 'h5'
+    hdf5 = 'h5'
