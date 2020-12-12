@@ -83,7 +83,7 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(
         :obj:`RuntimeError`: if the execution failed
     """
     if not docker:
-        raise ModuleNotFoundError("No module named 'docker'")
+        raise ModuleNotFoundError("No module named 'docker'. Docker and the Python Docker package must be installed.")
 
     # pull image
     get_simulator_docker_image(docker_image, pull=pull_docker_image)
