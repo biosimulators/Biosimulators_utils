@@ -49,9 +49,11 @@ def exec_sedml_docs_in_archive_with_simulator_cli(archive_filename, out_dir, sim
             simulator_command, str(exception).replace('\n', '\n  ')))
 
 
-def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, out_dir, docker_image,
-                                                            docker_image_temp_dir='/tmp', docker_image_path_sep='/',
-                                                            environment=None, pull_docker_image=True):
+def exec_sedml_docs_in_archive_with_containerized_simulator(
+        archive_filename, out_dir, docker_image,
+        docker_image_temp_dir='/tmp', docker_image_path_sep='/',
+        environment=None, pull_docker_image=True,
+        user_to_exec_within_container='_CURRENT_USER_', allocate_tty=True, remove_docker_container=True):
     """ Use a containerized simulator tool to execute the tasks specified in a
     COMBINE/OMEX archive and generate the reports specified in the archive
 
@@ -68,6 +70,14 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, ou
         environment (:obj:`dict`, optional): environment variables for executing the Docker image
         pull_docker_image (:obj:`bool`, optional): if :obj:`True`, pull the Docker image (if the image isn't
             available locally, this will cause the image to be downloaded; this will cause the image to be updated)
+        user_to_exec_within_container (:obj:`str`, optional): username or user id to execute commands within the Docker container
+
+            * Use ``_CURRENT_USER_`` to indicate that the Docker container should execute commands as the current user (``os.getuid()``)
+            * Use the format ``<name|uid>[:<group|gid>]`` to indicate any other user/group that the Docker container should use to
+              execute commands
+
+        allocate_tty (:obj:`bool`, optional): if :obj:`True`, allocate a pseudo-TTY
+        remove_docker_container (:obj:`bool`, optional): if :obj:`True`, automatically remove the container when it exits
 
     Raises:
         :obj:`RuntimeError`: if the execution failed
@@ -88,32 +98,35 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(archive_filename, ou
     image_in_dir = docker_image_path_sep.join((docker_image_temp_dir, 'in'))
     image_out_dir = docker_image_path_sep.join((docker_image_temp_dir, 'out'))
 
-    env_args = []
+    # setup Docker run arguments
+    args = ['docker', 'run']
+
+    args.extend(['--mount', 'type=bind,source={},target={},readonly'.format(in_dir, image_in_dir)])
+    args.extend(['--mount', 'type=bind,source={},target={}'.format(os.path.abspath(out_dir), image_out_dir)])
+
     if environment:
         for key, val in environment.items():
-            env_args.append('--env')
-            env_args.append('{}={}'.format(key, val))
+            args.extend(['--env', '{}={}'.format(key, val)])
 
-    args = (
-        [
-            'docker',
-            'run',
-            '-t',
-            '--rm',
-            '--mount', 'type=bind,source={},target={},readonly'.format(
-                in_dir, image_in_dir),
-            '--mount', 'type=bind,source={},target={}'.format(
-                os.path.abspath(out_dir), image_out_dir),
-            '--user', str(os.getuid()),
-        ]
-        + env_args
-        + [docker_image]
-        + build_cli_args(
-            docker_image_path_sep.join((image_in_dir, os.path.basename(archive_filename))),
-            image_out_dir,
-        )
-    )
+    if user_to_exec_within_container:
+        if user_to_exec_within_container == '_CURRENT_USER_':
+            args.extend(['--user', str(os.getuid())])
+        else:
+            args.extend(['--user', user_to_exec_within_container])
 
+    if allocate_tty:
+        args.append('--tty')
+
+    if remove_docker_container:
+        args.append('--rm')
+
+    args.append(docker_image)
+    args.extend(build_cli_args(
+        docker_image_path_sep.join((image_in_dir, os.path.basename(archive_filename))),
+        image_out_dir,
+    ))
+
+    # run image
     try:
         subprocess.check_call(args)
 
