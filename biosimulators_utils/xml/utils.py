@@ -22,6 +22,7 @@ def get_num_matches_to_xpaths(filename, x_paths):
             number of objects in the XML file that match the XPath
     """
     # read XML file
+    print(filename)
     etree = lxml.etree.parse(filename)
 
     # get namespaces
@@ -36,7 +37,11 @@ def get_num_matches_to_xpaths(filename, x_paths):
     # determine number of objects that match each XPath
     x_path_counts = {}
     for x_path in x_paths:
-        x_path_counts[x_path] = len(etree.xpath(x_path, namespaces=namespaces))
+        try:
+            objects = etree.xpath(x_path, namespaces=namespaces)
+            x_path_counts[x_path] = len(objects)
+        except Exception:
+            x_path_counts[x_path] = 0
 
     # return number of objects that match each XPath
     return x_path_counts

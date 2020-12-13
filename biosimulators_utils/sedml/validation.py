@@ -268,4 +268,11 @@ def validate_data_generator_variable_xpaths(variables, model_source):
         variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables
         model_source (:obj:`str`): path to XML model file
     """
-    validate_xpaths_ref_to_unique_objects(model_source, [var.target for var in variables])
+    x_paths = []
+    for variable in variables:
+        if variable.target:
+            x_path = variable.target
+            if '/@' in x_path:
+                x_path, _, _ = x_path.rpartition('/@')
+            x_paths.append(x_path)
+    validate_xpaths_ref_to_unique_objects(model_source, x_paths)

@@ -311,6 +311,7 @@ class ValidationTestCase(unittest.TestCase):
             data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Clg']"),
             data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']"),
             data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='BUD']"),
+            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']/@reducedCosts"),
         ]
         validation.validate_data_generator_variable_xpaths(variables, model_source)
 

@@ -27,6 +27,8 @@ class XmlUtilsTestCase(unittest.TestCase):
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
             "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='BUD']",
             "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='not_exist']",
+            "/invalid:target",
+            "--invalid--",
         ])
 
         expected_counts = {
@@ -48,6 +50,8 @@ class XmlUtilsTestCase(unittest.TestCase):
             '/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species': 19,
             "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='BUD']": 1,
             "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='not_exist']": 0,
+            "/invalid:target": 0,
+            "--invalid--": 0,
         }
         for key, count in counts.items():
             self.assertEqual(count, expected_counts[key], key)
