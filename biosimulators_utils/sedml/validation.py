@@ -260,13 +260,18 @@ def validate_data_generator_variables(variables):
             raise ValueError('Variable must define a symbol or target')
 
 
-def validate_data_generator_variable_xpaths(variables, model_source):
+def validate_data_generator_variable_xpaths(variables, model_source, attr='id'):
     """ Validate that the target of each data generator variable matches one object in
     an XML-encoded model
 
     Args:
         variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables
         model_source (:obj:`str`): path to XML model file
+        attr (:obj:`str`, optional): attribute to get values of
+
+    Returns:
+        :obj:`dict` of :obj:`str` to :obj:`str`: dictionary that maps each XPath to the
+            value of the attribute of the object in the XML file that matches the XPath
     """
     x_paths = []
     for variable in variables:
@@ -275,4 +280,4 @@ def validate_data_generator_variable_xpaths(variables, model_source):
             if '/@' in x_path:
                 x_path, _, _ = x_path.rpartition('/@')
             x_paths.append(x_path)
-    validate_xpaths_ref_to_unique_objects(model_source, x_paths)
+    return validate_xpaths_ref_to_unique_objects(model_source, x_paths, attr=attr)
