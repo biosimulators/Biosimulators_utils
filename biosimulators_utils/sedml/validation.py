@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ..xml.utils import validate_xpaths_ref_to_unique_objects
 from .data_model import (Task, ModelLanguage, ModelChange, ModelAttributeChange,  # noqa: F401
                          Simulation, UniformTimeCourseSimulation, DataGeneratorVariable,
                          Report, Plot2D, Plot3D)
@@ -257,3 +258,14 @@ def validate_data_generator_variables(variables):
     for variable in variables:
         if (variable.symbol and variable.target) or (not variable.symbol and not variable.target):
             raise ValueError('Variable must define a symbol or target')
+
+
+def validate_data_generator_variable_xpaths(variables, model_source):
+    """ Validate that the target of each data generator variable matches one object in
+    an XML-encoded model
+
+    Args:
+        variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables
+        model_source (:obj:`str`): path to XML model file
+    """
+    validate_xpaths_ref_to_unique_objects(model_source, [var.target for var in variables])

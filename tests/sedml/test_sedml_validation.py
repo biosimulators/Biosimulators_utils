@@ -299,3 +299,29 @@ class ValidationTestCase(unittest.TestCase):
         ]
         with self.assertRaisesRegex(ValueError, 'must define a symbol or target'):
             self._validate_task(task, variables)
+
+    def test_validate_data_generator_variable_xpaths(self):
+        model_source = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.xml')
+
+        variables = [
+            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='BE']"),
+            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='PSwe1M']"),
+            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Swe1M']"),
+            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Swe1']"),
+            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Clg']"),
+            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']"),
+            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='BUD']"),
+        ]
+        validation.validate_data_generator_variable_xpaths(variables, model_source)
+
+        variables = [
+            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='not_exist']"),
+        ]
+        with self.assertRaises(ValueError):
+            validation.validate_data_generator_variable_xpaths(variables, model_source)
+
+        variables = [
+            data_model.DataGeneratorVariable(target='/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species'),
+        ]
+        with self.assertRaises(ValueError):
+            validation.validate_data_generator_variable_xpaths(variables, model_source)
