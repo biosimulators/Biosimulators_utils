@@ -134,6 +134,7 @@ jobs:
         run: |
           git config --local user.email "biosimulators.daemon@gmail.com"
           git config --local user.name "biosimulatorsdaemon"
+          git config pull.rebase false
           git stash
           git pull
           git stash pop

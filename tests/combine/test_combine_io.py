@@ -73,5 +73,38 @@ class ReadWriteTestCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Invalid COMBINE archive'):
             io.CombineArchiveReader.run(os.path.join(self.temp_dir, 'test2.omex'), out_dir)
 
+    @unittest.expectedFailure
+    def test_no_updated_date(self):
+        location = 'path_to_file'
+        format = 'https://spec-url-for-format'
+        description = 'Example content'
+        authors = []
+        now = None
+        content = data_model.CombineArchiveContent(
+            '1.txt', format, False, description=description, created=None, updated=now)
+
+        archive = data_model.CombineArchive([content], description=description, authors=authors, created=None, updated=now)
+
+        archive_file = os.path.join(self.temp_dir, 'test.omex')
+        in_dir = os.path.join(self.temp_dir, 'in')
+        out_dir = os.path.join(self.temp_dir, 'out')
+        os.mkdir(in_dir)
+        os.mkdir(out_dir)
+
+        with open(os.path.join(in_dir, content.location), 'w') as file:
+            file.write('a')
+
         with self.assertRaisesRegex(NotImplementedError, 'libcombine does not support undefined updated dates'):
-            io.CombineArchiveWriter.run(archive3, in_dir, archive_file)
+            io.CombineArchiveWriter.run(archive, in_dir, archive_file)
+
+        io.CombineArchiveWriter.run(archive, in_dir, archive_file)
+
+        archive_b = io.CombineArchiveReader.run(archive_file, out_dir)
+        self.assertTrue(archive.is_equal(archive_b))
+
+        self.assertEqual(sorted(os.listdir(out_dir)), sorted([
+            content.location,
+            'manifest.xml', 'metadata.rdf', 'metadata_1.rdf',
+        ]))
+        with open(os.path.join(out_dir, content.location), 'r') as file:
+            self.assertEqual('a', file.read())

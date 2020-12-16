@@ -81,12 +81,12 @@ class CombineArchiveWriter(object):
             date_comb = libcombine.Date()
             date_comb.setDateAsString(obj.created.strftime('%Y-%m-%dT%H:%M:%SZ'))
             desc_comb.setCreated(date_comb)
-        if not obj.updated:
-            raise NotImplementedError('libcombine does not support undefined updated dates')
         if obj.updated:
             date_comb = libcombine.Date()
             date_comb.setDateAsString(obj.updated.strftime('%Y-%m-%dT%H:%M:%SZ'))
             desc_comb.getModified().append(date_comb)
+        else:
+            raise NotImplementedError('libcombine does not support undefined updated dates')
         archive_comb.addMetadata(filename, desc_comb)
 
 
