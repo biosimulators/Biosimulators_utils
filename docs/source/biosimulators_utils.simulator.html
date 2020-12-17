@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.9. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.9 documentation</title>
+    <title>2.1.9. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.10 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -185,8 +185,68 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-biosimulators_utils.simulator.data_model">
+<span id="biosimulators-utils-simulator-data-model-module"></span><h2><span class="section-number">2.1.9.3. </span>biosimulators_utils.simulator.data_model module<a class="headerlink" href="#module-biosimulators_utils.simulator.data_model" title="Permalink to this headline">¶</a></h2>
+<p>Data model for simulators</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-06</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt id="biosimulators_utils.simulator.data_model.SoftwareInterface">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.simulator.data_model.</code><code class="sig-name descname">SoftwareInterface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Software interface</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.SoftwareInterface.biosimulators_docker_image">
+<code class="sig-name descname">biosimulators_docker_image</code><em class="property"> = 'BioSimulators Docker image'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.biosimulators_docker_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.SoftwareInterface.command_line">
+<code class="sig-name descname">command_line</code><em class="property"> = 'command-line application'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.command_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.SoftwareInterface.desktop_application">
+<code class="sig-name descname">desktop_application</code><em class="property"> = 'desktop application'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.desktop_application" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.SoftwareInterface.library">
+<code class="sig-name descname">library</code><em class="property"> = 'library'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.library" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.SoftwareInterface.mobile_application">
+<code class="sig-name descname">mobile_application</code><em class="property"> = 'mobile application'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.mobile_application" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.SoftwareInterface.web_application">
+<code class="sig-name descname">web_application</code><em class="property"> = 'web application'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.web_application" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.SoftwareInterface.web_service">
+<code class="sig-name descname">web_service</code><em class="property"> = 'web service'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.web_service" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-biosimulators_utils.simulator.exec">
-<span id="biosimulators-utils-simulator-exec-module"></span><h2><span class="section-number">2.1.9.3. </span>biosimulators_utils.simulator.exec module<a class="headerlink" href="#module-biosimulators_utils.simulator.exec" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-exec-module"></span><h2><span class="section-number">2.1.9.4. </span>biosimulators_utils.simulator.exec module<a class="headerlink" href="#module-biosimulators_utils.simulator.exec" title="Permalink to this headline">¶</a></h2>
 <p>Utilities for executing command-line interfaces to simulators and
 containers that contain command-line interfaces to simulators</p>
 <dl class="field-list simple">
@@ -261,7 +321,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 </div>
 <div class="section" id="module-biosimulators_utils.simulator.specs">
-<span id="biosimulators-utils-simulator-specs-module"></span><h2><span class="section-number">2.1.9.4. </span>biosimulators_utils.simulator.specs module<a class="headerlink" href="#module-biosimulators_utils.simulator.specs" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-specs-module"></span><h2><span class="section-number">2.1.9.5. </span>biosimulators_utils.simulator.specs module<a class="headerlink" href="#module-biosimulators_utils.simulator.specs" title="Permalink to this headline">¶</a></h2>
 <p>Utilities for reading the specifications of a simulator</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
