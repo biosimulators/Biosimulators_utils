@@ -7,6 +7,7 @@
 """
 
 from ..sedml.data_model import Algorithm, AlgorithmParameterChange
+from .data_model import SoftwareInterface
 import json
 
 
@@ -25,16 +26,19 @@ def gen_algorithms_from_specs(specifications):
 
     algs = {}
     for alg_spec in specifications.get('algorithms', []):
-        alg = Algorithm()
-        alg.kisao_id = alg_spec.get('kisaoId', {}).get('id', None)
-        algs[alg.kisao_id] = alg
+        if SoftwareInterface.biosimulators_docker_image.value in alg_spec['availableSoftwareInterfaceTypes']:
 
-        param_specs = alg_spec.get('parameters', None)
-        if param_specs:
-            for param_spec in param_specs:
-                alg.changes.append(AlgorithmParameterChange(
-                    kisao_id=param_spec.get('kisaoId', {}).get('id', None),
-                    new_value=param_spec.get('value', None),
-                ))
+            alg = Algorithm()
+            alg.kisao_id = alg_spec.get('kisaoId', {}).get('id', None)
+            algs[alg.kisao_id] = alg
+
+            param_specs = alg_spec.get('parameters', None)
+            if param_specs:
+                for param_spec in param_specs:
+                    if SoftwareInterface.biosimulators_docker_image.value in param_spec['availableSoftwareInterfaceTypes']:
+                        alg.changes.append(AlgorithmParameterChange(
+                            kisao_id=param_spec.get('kisaoId', {}).get('id', None),
+                            new_value=param_spec.get('value', None),
+                        ))
 
     return algs
