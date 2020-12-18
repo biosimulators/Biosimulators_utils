@@ -9,7 +9,10 @@ import unittest
 
 class ImageTestCase(unittest.TestCase):
     def test_login_to_docker_registry(self):
-        image.login_to_docker_registry('ghcr.io', os.getenv("GHCR_USERNAME"), os.getenv("GHCR_TOKEN"))
+        image.login_to_docker_registry(
+            os.getenv("DOCKER_REGISTRY_URL"),
+            os.getenv("DOCKER_REGISTRY_TOKEN"),
+            os.getenv("DOCKER_REGISTRY_USERNAME"))
 
     def test_pull_docker_image(self):
         image.pull_docker_image('hello-world')
