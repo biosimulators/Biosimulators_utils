@@ -151,6 +151,25 @@ class ValidationTestCase(unittest.TestCase):
                     id='var',
                     target='target',
                     task=doc.tasks[0],
+                    model=None,
+                )
+            ],
+            math='var',
+        ))
+        validation.validate_doc(doc)
+
+        doc = data_model.SedDocument()
+        doc.models.append(data_model.Model(id='model1'))
+        doc.models.append(data_model.Model(id='model2'))
+        doc.simulations.append(data_model.SteadyStateSimulation(id='sim'))
+        doc.tasks.append(data_model.Task(id='task', model=doc.models[0], simulation=doc.simulations[0]))
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen',
+            variables=[
+                data_model.DataGeneratorVariable(
+                    id='var',
+                    target='target',
+                    task=doc.tasks[0],
                     model=doc.models[1],
                 )
             ],

@@ -87,7 +87,7 @@ def validate_doc(doc, validate_semantics=True):
                 if (not var.target and not var.symbol) or (var.target and var.symbol):
                     raise ValueError('Variables must define a target or symbol')
                 validate_reference(var, 'Variable {} of data generator "{}"'.format(var.id, data_gen.id), 'task', 'task')
-                validate_reference(var, 'Variable {} of data generator "{}"'.format(var.id, data_gen.id), 'model', 'model')
+                # model reference not validated because its optional in this context
 
                 if var.model and var.task and var.task.model and var.task.model != var.model:
                     raise ValueError('Model of variable {} of data generator "{}" and model of task must be consistent'.format(
