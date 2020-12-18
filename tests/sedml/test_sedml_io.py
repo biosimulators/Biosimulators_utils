@@ -513,3 +513,13 @@ class IoTestCase(unittest.TestCase):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'invalid-task-simulation-reference.sedml')
         with self.assertRaises(ValueError):
             io.SedmlSimulationReader().run(filename)
+
+    def test_write_read_sedml_from_biomodels(self):
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'BIOMD0000000673_sim.sedml')
+        doc = io.SedmlSimulationReader().run(filename)
+
+        filename_2 = os.path.join(self.tmp_dir, 'test.sedml')
+        io.SedmlSimulationWriter().run(doc, filename_2)
+        doc_2 = io.SedmlSimulationReader().run(filename_2)
+
+        self.assertTrue(doc_2.is_equal(doc))
