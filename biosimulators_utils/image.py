@@ -46,7 +46,7 @@ def pull_docker_image(url):
     """
     docker_client = docker.from_env()
     try:
-        return docker_client.images.pull(url)[0]
+        return docker_client.images.pull(url)
     except docker.errors.NotFound:
         raise docker.errors.NotFound('{} is not a tag or URL for a Docker image.'.format(url))
     except Exception as error:
