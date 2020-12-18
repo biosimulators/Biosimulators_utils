@@ -10,11 +10,15 @@ import unittest
 class ImageTestCase(unittest.TestCase):
     def test_login_to_docker_registry(self):
         image.login_to_docker_registry(
-            os.getenv("DOCKER_REGISTRY_URL"),
-            os.getenv("DOCKER_REGISTRY_TOKEN"),
-            os.getenv("DOCKER_REGISTRY_USERNAME"))
+            None,
+            os.getenv("DOCKER_HUB_USERNAME"),
+            os.getenv("DOCKER_HUB_TOKEN"))
 
     def test_pull_docker_image(self):
+        image.login_to_docker_registry(
+            None,
+            os.getenv("DOCKER_HUB_USERNAME"),
+            os.getenv("DOCKER_HUB_TOKEN"))
         image.pull_docker_image('hello-world')
 
         with self.assertRaises(docker.errors.NotFound):
@@ -24,6 +28,10 @@ class ImageTestCase(unittest.TestCase):
             image.pull_docker_image('---undefined---')
 
     def test_tag_and_push_docker_image(self):
+        image.login_to_docker_registry(
+            None,
+            os.getenv("DOCKER_HUB_USERNAME"),
+            os.getenv("DOCKER_HUB_TOKEN"))
         img = image.pull_docker_image('hello-world')
 
         response = '{"error": "x"}'
