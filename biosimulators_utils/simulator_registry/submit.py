@@ -49,20 +49,22 @@ def submit_simulator_to_biosimulators_registry(simulator, gh_username, gh_access
     response.raise_for_status()
 
 
-def build_gh_issue_body(simulator):
+def build_gh_issue_body(submission):
     """ Build the body of a GitHub issue for the submission of a simulator
 
     Args:
-        simulator (:obj:`SimulatorSubmission`): simulator
+        submission (:obj:`SimulatorSubmission`): simulator
 
     Returns:
         :obj:`str`: body for a GitHub issue for the submission of a simulator
     """
     return "\n".join([
         "---",
-        "id: {}".format(simulator.id),
-        "version: {}".format(simulator.version),
-        "specificationsUrl: {}".format(simulator.specifications_url),
+        "id: {}".format(submission.id),
+        "version: {}".format(submission.version),
+        "specificationsUrl: {}".format(submission.specifications_url),
+        "validateImage: {}".format(submission.validate_image),
+        "commitSimulator: {}".format(submission.commit_simulator),
         "",
         "---",
     ])
