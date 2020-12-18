@@ -9,7 +9,6 @@
 import docker
 import json
 import os
-import requests
 import subprocess
 
 __all__ = [
