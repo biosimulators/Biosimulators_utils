@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.9. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.10 documentation</title>
+    <title>2.1.9. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.11 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -69,6 +69,7 @@
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#submodules">2.2. Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.config">2.3. biosimulators_utils.config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.data_model">2.4. biosimulators_utils.data_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.image">2.5. biosimulators_utils.image module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">3. About BioSimulators utils</a></li>
@@ -320,8 +321,50 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-biosimulators_utils.simulator.io">
+<span id="biosimulators-utils-simulator-io-module"></span><h2><span class="section-number">2.1.9.5. </span>biosimulators_utils.simulator.io module<a class="headerlink" href="#module-biosimulators_utils.simulator.io" title="Permalink to this headline">¶</a></h2>
+<p>Methods for reading specifications of simulators</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-06</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="biosimulators_utils.simulator.io.read_simulator_specs">
+<code class="sig-prename descclassname">biosimulators_utils.simulator.io.</code><code class="sig-name descname">read_simulator_specs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/io.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.io.read_simulator_specs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the specifications of a simulator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>url</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – URL for the specifications of a simulator</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>specifications of a simulator</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>requests.RequestException</strong> – if the specifications could not be retrieved</p></li>
+<li><p><strong>simplejson.errors.JSONDecodeError</strong> – if the specifications are not propertly encoded into JSON</p></li>
+<li><p><strong>ValueError</strong> – if the specifications are not consistent with the BioSimulators schema</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-biosimulators_utils.simulator.specs">
-<span id="biosimulators-utils-simulator-specs-module"></span><h2><span class="section-number">2.1.9.5. </span>biosimulators_utils.simulator.specs module<a class="headerlink" href="#module-biosimulators_utils.simulator.specs" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-specs-module"></span><h2><span class="section-number">2.1.9.6. </span>biosimulators_utils.simulator.specs module<a class="headerlink" href="#module-biosimulators_utils.simulator.specs" title="Permalink to this headline">¶</a></h2>
 <p>Utilities for reading the specifications of a simulator</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
