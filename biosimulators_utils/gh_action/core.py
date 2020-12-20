@@ -29,25 +29,30 @@ class GitHubActionCaughtError(Exception):
 class GitHubActionErrorHandling(object):
     """ Methods for handing errors in the execution of GitHu actions """
     @classmethod
-    def catch_errors(cls, issue_number, error_msg='Sorry. We encountered an unexpected error. Our team will review the error.',
-                     caught_error_labels=None, uncaught_error_labels=None):
+    def catch_errors(cls, issue_number,
+                     uncaught_exception_msg_func=None,
+                     caught_error_labels=None,
+                     uncaught_error_labels=None):
         """ Generator for a decorator for CI actions that catches errors and reports them as comments to an issue
 
         Args:
             issue_number (:obj:`str`): issue number
-            error_msg (:obj:`str`, optional): error message to display to users
+            uncaught_exception_msg_func (:obj:`types.FunctionType`, optional): function to calculate error message to display to users
             caught_error_labels (:obj:`list` of :obj:`str`, optional): labels to apply to caught errors
             uncaught_error_labels (:obj:`list` of :obj:`str`, optional): labels to apply to uncaught errors
         """
-        return functools.partial(cls._catch_errors, issue_number, error_msg, caught_error_labels or [], uncaught_error_labels or [])
+        if uncaught_exception_msg_func is None:
+            uncaught_exception_msg_func = cls.get_uncaught_exception_msg
+        return functools.partial(cls._catch_errors, issue_number, uncaught_exception_msg_func,
+                                 caught_error_labels or [], uncaught_error_labels or [])
 
     @staticmethod
-    def _catch_errors(issue_number, error_msg, caught_error_labels, uncaught_error_labels, func):
+    def _catch_errors(issue_number, uncaught_exception_msg_func, caught_error_labels, uncaught_error_labels, func):
         """ Decorator for CI actions that catches errors and reports them as comments to an issue
 
         Args:
             issue_number (:obj:`str`): issue number
-            error_msg (:obj:`str`): error message to display to users
+            uncaught_exception_msg_func (:obj:`types.FunctionType`, optional): function to calculate error message to display to users
             caught_error_labels (:obj:`list` of :obj:`str`): labels to apply to caught errors
             uncaught_error_labels (:obj:`list` of :obj:`str`): labels to apply to uncaught errors
             func (:obj:`types.FunctionType`): decorated function
@@ -59,13 +64,28 @@ class GitHubActionErrorHandling(object):
             except GitHubActionCaughtError:
                 GitHubAction.add_labels_to_issue(issue_number, caught_error_labels)
                 raise
-            except Exception as error:
+            except Exception as exception:
                 GitHubAction.add_labels_to_issue(issue_number, uncaught_error_labels)
                 GitHubAction.add_error_comment_to_issue(issue_number,
-                                                        error_msg + '\n\n  ' + str(error).replace('\n', '\n  '),
+                                                        uncaught_exception_msg_func(exception),
                                                         raise_error=False)
                 raise
         return wrapper
+
+    def get_uncaught_exception_msg(exception):
+        """ Create an error message to display to users for all exceptions not caught during the
+        exception of the :obj:`run` method for a GitHub action workflow (exceptions of all types
+        except :obj:`GitHubActionCaughtError`)
+
+        Args:
+            exception (:obj:`Exception`): a failure encountered during the exception of the :obj:`run`
+                method for the workflow
+
+        Returns:
+            :obj:`str`: error message to display to users
+        """
+        return ('Sorry. We encountered an unexpected error. Our team will review the error.' +
+                '\n\n  ' + str(exception).replace('\n', '\n  '))
 
 
 class GitHubAction(abc.ABC):
