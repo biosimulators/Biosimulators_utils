@@ -22,7 +22,6 @@ class DataModelTestCase(unittest.TestCase):
 
         self.assertEqual(sim1.to_tuple(), (sim1.id, sim1.version, sim1.specifications_url,
                                            sim1.validate_image, sim1.commit_simulator,
-                                           sim1.validated, sim1.approved, sim1.committed,
                                            ))
 
         self.assertTrue(sim1.is_equal(sim2))

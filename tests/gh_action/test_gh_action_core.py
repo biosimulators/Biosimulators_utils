@@ -96,6 +96,19 @@ class GitHubActionTestCase(unittest.TestCase):
             with mock.patch('requests.patch', side_effect=requests_method):
                 action.close_issue('4')
 
+            def requests_get(url, auth):
+                self.assertEqual(url, 'https://api.github.com/repos/biosimulators/Biosimulators/issues/4/labels')
+                self.assertEqual(auth, (env['GH_ISSUES_USER'], env['GH_ISSUES_ACCESS_TOKEN']))
+                return mock.Mock(raise_for_status=lambda: None, json=lambda: [{'name': 'x'}, {'name': 'y'}, {'name': 'z'}])
+
+            def requests_delete_1(url, auth):
+                self.assertEqual(url, 'https://api.github.com/repos/biosimulators/Biosimulators/issues/4/labels/y')
+                self.assertEqual(auth, (env['GH_ISSUES_USER'], env['GH_ISSUES_ACCESS_TOKEN']))
+                return mock.Mock(raise_for_status=lambda: None)
+            with mock.patch('requests.get', side_effect=requests_get):
+                with mock.patch('requests.delete', side_effect=requests_delete_1):
+                    action.reset_issue_labels('4', ['y'])
+
             # error handling: caught error
             class Action(GitHubAction):
                 @GitHubActionErrorHandling.catch_errors(GitHubAction.get_issue_number(),

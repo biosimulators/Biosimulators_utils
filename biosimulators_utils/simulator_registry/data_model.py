@@ -38,18 +38,12 @@ class SimulatorSubmission(object):
             specifications_url (:obj:`str`, optional): URL for the specifications of the version of the simulator
             validate_image (:obj:`bool`, optional): if :obj:`True`, validate Docker image
             commit_simulator (:obj:`bool`, optional): if :obj:`True`, commit simulator to database
-            validated (:obj:`bool`, optional): :obj:`True`, if the simulator has been validated
-            approved (:obj:`bool`, optional): :obj:`True`, if the simulator has been approved for committment to the BioSimulators registry
-            committed (:obj:`bool`, optional): :obj:`True`, if the simulator has been committed to the BioSimulators registry
         """
         self.id = id
         self.version = version
         self.specifications_url = specifications_url
         self.validate_image = validate_image
         self.commit_simulator = commit_simulator
-        self.validated = validated
-        self.approved = approved
-        self.committed = committed
 
     def to_tuple(self):
         """ Tuple representation of a person
@@ -57,8 +51,7 @@ class SimulatorSubmission(object):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation of a person
         """
-        return (self.id, self.version, self.specifications_url, self.validate_image, self.commit_simulator,
-                self.validated, self.approved, self.committed)
+        return (self.id, self.version, self.specifications_url, self.validate_image, self.commit_simulator)
 
     def is_equal(self, other):
         """ Determine if two submissions are equal
@@ -74,7 +67,4 @@ class SimulatorSubmission(object):
             and self.version == other.version \
             and self.specifications_url == other.specifications_url \
             and self.validate_image == other.validate_image \
-            and self.commit_simulator == other.commit_simulator \
-            and self.validated == other.validated \
-            and self.approved == other.approved \
-            and self.committed == other.committed
+            and self.commit_simulator == other.commit_simulator

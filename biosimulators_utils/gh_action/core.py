@@ -209,6 +209,20 @@ class GitHubAction(abc.ABC):
         response.raise_for_status()
 
     @classmethod
+    def reset_issue_labels(cls, issue_number, labels_to_remove):
+        """ Reset the labels for an issue
+
+        Args:
+            issue_number (:obj:`str`): issue number
+            labels_to_remove (:obj:`list` of :obj:`str`): labels to remove
+        """
+        labels = cls.get_labels_for_issue(issue_number)
+        labels_to_remove = set(labels).intersection(set(labels_to_remove))
+
+        for label in labels_to_remove:
+            cls.remove_label_from_issue(issue_number, label)
+
+    @classmethod
     def add_comment_to_issue(cls, issue_number, comment):
         """ Post a comment to the GitHub issue
 
