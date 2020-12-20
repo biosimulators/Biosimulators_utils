@@ -37,7 +37,7 @@ def submit_simulator_to_biosimulators_registry(simulator, gh_username, gh_access
     }
 
     data = {
-        "labels": ["Submit simulator"],
+        "labels": ["Validate/submit simulator"],
         "title": "Submit {} {}".format(simulator.id, simulator.version),
         "body": build_gh_issue_body(simulator),
     }
