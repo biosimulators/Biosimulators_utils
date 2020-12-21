@@ -111,8 +111,7 @@ class GitHubActionTestCase(unittest.TestCase):
 
             # error handling: caught error
             class Action(GitHubAction):
-                @GitHubActionErrorHandling.catch_errors(GitHubAction.get_issue_number(),
-                                                        caught_error_labels=['invalid'],
+                @GitHubActionErrorHandling.catch_errors(caught_error_labels=['invalid'],
                                                         uncaught_error_labels=['action_error'])
                 def run(self):
                     raise GitHubActionCaughtError()
@@ -128,8 +127,7 @@ class GitHubActionTestCase(unittest.TestCase):
 
             # error handling: uncaught error
             class Action(GitHubAction):
-                @GitHubActionErrorHandling.catch_errors(GitHubAction.get_issue_number(),
-                                                        caught_error_labels=['invalid'],
+                @GitHubActionErrorHandling.catch_errors(caught_error_labels=['invalid'],
                                                         uncaught_error_labels=['action_error'])
                 def run(self):
                     raise ValueError('Details about error')

@@ -37,7 +37,7 @@ class ImageTestCase(unittest.TestCase):
         response = '{"error": "x"}'
         docker_client = mock.Mock(images=mock.Mock(push=lambda tag: response))
         with mock.patch('docker.from_env', return_value=docker_client):
-            with self.assertRaises(Exception):
+            with self.assertRaisesRegex(Exception, 'Unable to push image to'):
                 image.tag_and_push_docker_image(img, 'hello-world-2')
 
     def test_convert_docker_image_to_singularity(self):

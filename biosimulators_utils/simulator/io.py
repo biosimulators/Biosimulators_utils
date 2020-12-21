@@ -39,7 +39,7 @@ def read_simulator_specs(url):
         specs = response.json()
     except simplejson.errors.JSONDecodeError as error:
         raise ValueError(''.join([
-            'Simulator specifications from {} could not be parsed.'.format(url),
+            'Simulator specifications from {} could not be parsed. '.format(url),
             'Specifications must be encoded into JSON.\n\n  {}'.format(str(error).replace('\n', '\n  ')),
         ]))
 
@@ -50,7 +50,7 @@ def read_simulator_specs(url):
         response.raise_for_status()
     except requests.RequestException as error:
         raise ValueError(''.join([
-            'Simulator specifications from {} are not valid.'.format(url),
+            'Simulator specifications from {} are not valid. '.format(url),
             'Specifications must be adhere to the BioSimulators schema. Documentation is available at {}.\n\n  {}'.format(
                 api_endpoint, str(error).replace('\n', '\n  ')),
         ]))
