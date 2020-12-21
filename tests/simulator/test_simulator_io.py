@@ -1,12 +1,29 @@
 from biosimulators_utils.simulator.io import read_simulator_specs
 from unittest import mock
+import os
 import requests
 import simplejson.errors
 import unittest
+import tempfile
 
 
 class SimulatorIoTestCase(unittest.TestCase):
-    def test(self):
+    def test_file   (self):
+        url = 'https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/dev/biosimulators.json'
+        response = requests.get(url)
+        response.raise_for_status()
+        file, filename = tempfile.mkstemp(suffix='.json')
+        os.close(file)
+        with open(filename, 'wb') as file:
+            file.write(response.content)
+        specs = read_simulator_specs(filename)
+        os.remove(filename)
+
+        with self.assertRaisesRegex(ValueError, 'must be encoded into JSON'):
+            path = __file__
+            read_simulator_specs(path)
+
+    def test_url(self):
         url = 'https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/dev/biosimulators.json'
         specs = read_simulator_specs(url)
 
@@ -14,7 +31,7 @@ class SimulatorIoTestCase(unittest.TestCase):
             url = 'https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/dev/__undefined__'
             read_simulator_specs(url)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, 'must be encoded into JSON'):
             url = 'https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/dev/README.md'
             read_simulator_specs(url)
 
