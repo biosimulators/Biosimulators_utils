@@ -66,7 +66,8 @@ def tag_and_push_docker_image(docker_client, image, tag):
     response = docker_client.images.push(tag)
     response = json.loads(response.rstrip().split('\n')[-1])
     if 'error' in response:
-        raise Exception('Unable to push image to {}'.format(tag))
+        raise Exception('Unable to push image to {}\n  {}'.format(
+            tag, response.get('errorDetail', {}).get('message', response['error'])))
 
 
 def convert_docker_image_to_singularity(docker_image, singularity_filename=None):
