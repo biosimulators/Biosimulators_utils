@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.4. biosimulators_utils.gh_action package &#8212; BioSimulators utils 0.1.11 documentation</title>
+    <title>2.1.4. biosimulators_utils.gh_action package &#8212; BioSimulators utils 0.1.12 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -394,6 +394,20 @@
 </dd></dl>
 
 <dl class="py method">
+<dt id="biosimulators_utils.gh_action.core.GitHubAction.reset_issue_labels">
+<em class="property">classmethod </em><code class="sig-name descname">reset_issue_labels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em>, <em class="sig-param"><span class="n">labels_to_remove</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.reset_issue_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the labels for an issue</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p></li>
+<li><p><strong>labels_to_remove</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – labels to remove</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.run">
 <em class="property">abstract </em><code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.run" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -414,16 +428,35 @@
 <p>Methods for handing errors in the execution of GitHu actions</p>
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubActionErrorHandling.catch_errors">
-<em class="property">classmethod </em><code class="sig-name descname">catch_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em>, <em class="sig-param"><span class="n">error_msg</span><span class="o">=</span><span class="default_value">'Sorry. We encountered an unexpected error. Our team will review the error.'</span></em>, <em class="sig-param"><span class="n">caught_error_labels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">uncaught_error_labels</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling.catch_errors" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">catch_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uncaught_exception_msg_func</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">caught_error_labels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">uncaught_error_labels</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling.catch_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generator for a decorator for CI actions that catches errors and reports them as comments to an issue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p></li>
-<li><p><strong>error_msg</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – error message to display to users</p></li>
+<li><p><strong>uncaught_exception_msg_func</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.FunctionType</span></code>, optional) – function to calculate error message to display to users</p></li>
 <li><p><strong>caught_error_labels</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – labels to apply to caught errors</p></li>
 <li><p><strong>uncaught_error_labels</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – labels to apply to uncaught errors</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.gh_action.core.GitHubActionErrorHandling.get_uncaught_exception_msg">
+<code class="sig-name descname">get_uncaught_exception_msg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling.get_uncaught_exception_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an error message to display to users for all exceptions not caught during the
+exception of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code> method for a GitHub action workflow (exceptions of all types
+except <a class="reference internal" href="#biosimulators_utils.gh_action.core.GitHubActionCaughtError" title="biosimulators_utils.gh_action.core.GitHubActionCaughtError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GitHubActionCaughtError</span></code></a>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exception</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>) – a failure encountered during the exception of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>
+method for the workflow</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>error message to display to users</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
 </dd></dl>
