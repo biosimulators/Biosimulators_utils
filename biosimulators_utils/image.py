@@ -35,16 +35,16 @@ def login_to_docker_registry(registry, username, password):
     return docker_client
 
 
-def pull_docker_image(url):
+def pull_docker_image(docker_client, url):
     """ Pull Docker image
 
     Args:
+        docker_client (:obj:`docker.client.DockerClient`): Docker client
         url (:obj:`str`): URL for Docker image
 
     Returns:
         :obj:`docker.models.images.Image`: Docker image
     """
-    docker_client = docker.from_env()
     try:
         return docker_client.images.pull(url)
     except docker.errors.NotFound:
@@ -54,15 +54,15 @@ def pull_docker_image(url):
             url, str(error).replace('\n', '\n  ')))
 
 
-def tag_and_push_docker_image(image, tag):
+def tag_and_push_docker_image(docker_client, image, tag):
     """ Tag and push Docker image
 
     Args:
+        docker_client (:obj:`docker.client.DockerClient`): Docker client
         image (:obj:`docker.models.images.Image`): Docker image
         tag (:obj:`str`): tag
     """
     assert image.tag(tag)
-    docker_client = docker.from_env()
     response = docker_client.images.push(tag)
     response = json.loads(response.rstrip().split('\n')[-1])
     if 'error' in response:
