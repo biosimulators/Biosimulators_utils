@@ -109,6 +109,14 @@ class GitHubActionTestCase(unittest.TestCase):
                 with mock.patch('requests.delete', side_effect=requests_delete_1):
                     action.reset_issue_labels('4', ['y'])
 
+            def requests_post(url, json=None, auth=None, headers=None):
+                self.assertEqual(url, 'https://api.github.com/repos/biosimulators/Biosimulators/issues/4/assignees')
+                self.assertEqual(auth, (env['GH_ISSUES_USER'], env['GH_ISSUES_ACCESS_TOKEN']))
+                self.assertEqual(json, {'assignees': ['userid']})
+                return mock.Mock(raise_for_status=lambda: None)
+            with mock.patch('requests.post', side_effect=requests_post):
+                action.assign_issue('4', ['userid'])
+
             # error handling: caught error
             class Action(GitHubAction):
                 @GitHubActionErrorHandling.catch_errors(caught_error_labels=['invalid'],

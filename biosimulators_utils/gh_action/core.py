@@ -100,6 +100,7 @@ class GitHubAction(abc.ABC):
     ISSUE_ENDPOINT = 'https://api.github.com/repos/{}/issues/{}'
     ISSUE_COMMENTS_ENDPOINT = 'https://api.github.com/repos/{}/issues/{}/comments'
     ISSUE_LABELS_ENDPOINT = 'https://api.github.com/repos/{}/issues/{}/labels'
+    ISSUE_ASIGNEES_ENDPOINT = 'https://api.github.com/repos/{}/issues/{}/assignees'
 
     def __init__(self):
         self.gh_auth = self.get_gh_auth()
@@ -288,3 +289,17 @@ class GitHubAction(abc.ABC):
         user = os.getenv('GH_ISSUES_USER')
         access_token = os.getenv('GH_ISSUES_ACCESS_TOKEN')
         return (user, access_token)
+
+    @classmethod
+    def assign_issue(cls, issue_number, users):
+        """ Assign an issue to a list of users
+
+        Args:
+            issue_number (:obj:`str`): issue number
+            users (:obj:`list` of :obj:`str`): GitHub ids of users to assign to issue
+        """
+        response = requests.post(
+            cls.ISSUE_ASIGNEES_ENDPOINT.format(cls.get_gh_repo(), issue_number),
+            auth=cls.get_gh_auth(),
+            json={'assignees': users})
+        response.raise_for_status()
