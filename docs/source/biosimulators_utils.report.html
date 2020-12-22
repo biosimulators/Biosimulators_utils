@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.7. biosimulators_utils.report package &#8212; BioSimulators utils 0.1.12 documentation</title>
+    <title>2.1.7. biosimulators_utils.report package &#8212; BioSimulators utils 0.1.13 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -248,8 +248,33 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class for reading reports of simulation results</p>
 <dl class="py method">
+<dt id="biosimulators_utils.report.io.ReportReader.get_ids">
+<code class="sig-name descname">get_ids</code><span class="sig-paren">(</span><em class="sig-param">base_path</em>, <em class="sig-param">format=&lt;ReportFormat.h5: 'h5'&gt;</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/report/io.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.report.io.ReportReader.get_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the ids of the reports in a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – <p>path to save results</p>
+<ul>
+<li><p>CSV: parent directory to save results</p></li>
+<li><p>HDF5: file to save results</p></li>
+</ul>
+</p></li>
+<li><p><strong>format</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ReportFormat</span></code>, optional) – report format</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ids of reports</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="biosimulators_utils.report.io.ReportReader.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">base_path</em>, <em class="sig-param">rel_path</em>, <em class="sig-param">format=&lt;ReportFormat.csv: 'csv'&gt;</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/report/io.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.report.io.ReportReader.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">base_path</em>, <em class="sig-param">rel_path</em>, <em class="sig-param">format=&lt;ReportFormat.h5: 'h5'&gt;</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/report/io.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.report.io.ReportReader.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a report for a file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
