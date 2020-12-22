@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.4. biosimulators_utils.gh_action package &#8212; BioSimulators utils 0.1.13 documentation</title>
+    <title>2.1.4. biosimulators_utils.gh_action package &#8212; BioSimulators utils 0.1.14 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -201,6 +201,11 @@
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt id="biosimulators_utils.gh_action.core.GitHubAction.ISSUE_ASIGNEES_ENDPOINT">
+<code class="sig-name descname">ISSUE_ASIGNEES_ENDPOINT</code><em class="property"> = 'https://api.github.com/repos/{}/issues/{}/assignees'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_ASIGNEES_ENDPOINT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.ISSUE_COMMENTS_ENDPOINT">
 <code class="sig-name descname">ISSUE_COMMENTS_ENDPOINT</code><em class="property"> = 'https://api.github.com/repos/{}/issues/{}/comments'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_COMMENTS_ENDPOINT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -256,6 +261,20 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p></li>
 <li><p><strong>labels</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – labels to add to the issue</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.gh_action.core.GitHubAction.assign_issue">
+<em class="property">classmethod </em><code class="sig-name descname">assign_issue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em>, <em class="sig-param"><span class="n">users</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.assign_issue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign an issue to a list of users</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p></li>
+<li><p><strong>users</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – GitHub ids of users to assign to issue</p></li>
 </ul>
 </dd>
 </dl>
