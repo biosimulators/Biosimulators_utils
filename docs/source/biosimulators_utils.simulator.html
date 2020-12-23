@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.9. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.17 documentation</title>
+    <title>2.1.9. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.18 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -340,11 +340,14 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 </dl>
 <dl class="py function">
 <dt id="biosimulators_utils.simulator.io.read_simulator_specs">
-<code class="sig-prename descclassname">biosimulators_utils.simulator.io.</code><code class="sig-name descname">read_simulator_specs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_or_url</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/io.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.io.read_simulator_specs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">biosimulators_utils.simulator.io.</code><code class="sig-name descname">read_simulator_specs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_or_url</span></em>, <em class="sig-param"><span class="n">patch</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/io.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.io.read_simulator_specs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the specifications of a simulator</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path_or_url</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – file path or URL for the specifications of a simulator</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_or_url</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – file path or URL for the specifications of a simulator</p></li>
+<li><p><strong>patch</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – values of properties to supersede those in <code class="xref py py-obj docutils literal notranslate"><span class="pre">path_or_url</span></code></p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>specifications of a simulator</p>
