@@ -1,4 +1,5 @@
-from biosimulators_utils.gh_action.core import GitHubAction, GitHubActionErrorHandling, GitHubActionCaughtError
+from biosimulators_utils.gh_action.core import GitHubAction, GitHubActionErrorHandling
+from biosimulators_utils.gh_action.data_model import Comment, GitHubActionCaughtError
 from unittest import mock
 import os
 import unittest
@@ -86,7 +87,7 @@ class GitHubActionTestCase(unittest.TestCase):
                 return mock.Mock(raise_for_status=lambda: None)
             with mock.patch('requests.post', side_effect=requests_method):
                 with self.assertRaises(GitHubActionCaughtError):
-                    action.add_error_comment_to_issue('4', 'xxxx')
+                    action.add_error_comment_to_issue('4', [Comment(text='xxxx', error=True)])
 
             def requests_method(url, auth, json):
                 self.assertEqual(url, 'https://api.github.com/repos/biosimulators/Biosimulators/issues/4')
@@ -155,11 +156,11 @@ class GitHubActionTestCase(unittest.TestCase):
                     else:
                         self.unittest_self.assertEqual(url, 'https://api.github.com/repos/biosimulators/Biosimulators/issues/4/comments')
                         print(json['body'])
-                        self.unittest_self.assertEqual(json['body'], (
+                        self.unittest_self.assertEqual(json['body'], (                            
+                            'Sorry. We encountered an unexpected error. Our team will review the error.\n'
+                            '\n'
                             '```diff\n'
-                            '- Sorry. We encountered an unexpected error. Our team will review the error.\n'
-                            '- \n'
-                            '-   Details about error\n'
+                            '- Details about error\n'
                             '```\n'))
                     self.unittest_self.assertEqual(auth, (env['GH_ISSUES_USER'], env['GH_ISSUES_ACCESS_TOKEN']))
                     return mock.Mock(raise_for_status=lambda: None)

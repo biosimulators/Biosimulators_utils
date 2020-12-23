@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from .data_model import Comment, GitHubActionCaughtError
 import abc
 import functools
 import io
@@ -17,13 +18,7 @@ import yamldown
 __all__ = [
     'GitHubAction',
     'GitHubActionErrorHandling',
-    'GitHubActionCaughtError',
 ]
-
-
-class GitHubActionCaughtError(Exception):
-    """ An error caught during the execution of a GitHub action """
-    pass  # pragma: no cover
 
 
 class GitHubActionErrorHandling(object):
@@ -83,8 +78,10 @@ class GitHubActionErrorHandling(object):
         Returns:
             :obj:`str`: error message to display to users
         """
-        return ('Sorry. We encountered an unexpected error. Our team will review the error.' +
-                '\n\n  ' + str(exception).replace('\n', '\n  '))
+        return [
+            Comment(text='Sorry. We encountered an unexpected error. Our team will review the error.'),
+            Comment(str(exception), error=True),
+        ]
 
 
 class GitHubAction(abc.ABC):
@@ -234,24 +231,43 @@ class GitHubAction(abc.ABC):
         response.raise_for_status()
 
     @classmethod
-    def add_error_comment_to_issue(cls, issue_number, comment, raise_error=True):
+    def add_error_comment_to_issue(cls, issue_number, comments, raise_error=True):
         """ Post an error to the GitHub issue
 
         Args:
             issue_number (:obj:`str`): issue number
-            comment (:obj:`str`): comment
+            comments (:obj:`list` of :obj:`Comment`): comment
             raise_error (:obj:`bool`, optional): if :obj:`True`, raise error
 
         Raises:
             :obj:`ValueError`
         """
-        cls.add_comment_to_issue(issue_number, ''.join([
+        formatted_text = []
+        for comment in comments:
+            if comment.error:
+                formatted_text.append(cls.format_error_comment(comment.text))
+            else:
+                formatted_text.append(comment.text)
+
+        cls.add_comment_to_issue(issue_number, '\n\n'.join(formatted_text))
+        if raise_error:
+            raise GitHubActionCaughtError('\n\n'.join(comment.text for comment in comments))
+
+    @classmethod
+    def format_error_comment(cls, comment):
+        """ Format comment to display as error
+
+        Args:
+            comment (:obj:`str`): comment to format as error
+
+        Returns:
+            :obj:`str`: formatted comment
+        """
+        return ''.join([
             '```diff\n',
             '- ' + comment.rstrip().replace('\n', '\n- ') + '\n',
             '```\n',
-        ]))
-        if raise_error:
-            raise GitHubActionCaughtError(comment)
+        ])
 
     @classmethod
     def close_issue(cls, issue_number):
