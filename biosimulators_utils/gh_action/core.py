@@ -93,8 +93,6 @@ class GitHubAction(abc.ABC):
     Attributes:
         gh_auth (:obj:`tuple` of :obj:`str`): authorization for GitHub (user and access token
         gh_repo (:obj:`str`): owner and name of the repository which triggered the action
-        gh_action_run_id (:obj:`str`): GitHub action run id
-        gh_action_run_url (:obj:`str`): URL for the GitHub action run
     """
     GH_ACTION_RUN_URL = 'https://github.com/{}/actions/runs/{}'
     ISSUE_ENDPOINT = 'https://api.github.com/repos/{}/issues/{}'
@@ -105,8 +103,6 @@ class GitHubAction(abc.ABC):
     def __init__(self):
         self.gh_auth = self.get_gh_auth()
         self.gh_repo = self.get_gh_repo()
-        self.gh_action_run_id = self.get_gh_action_run_id()
-        self.gh_action_run_url = self.GH_ACTION_RUN_URL.format(self.gh_repo, self.gh_action_run_id)
 
     @abc.abstractmethod
     def run(self):
@@ -278,6 +274,17 @@ class GitHubAction(abc.ABC):
             :obj:`str`: GitHub action run id
         """
         return os.getenv('GH_ACTION_RUN_ID')
+
+    @classmethod
+    def get_gh_action_run_url(cls):
+        """ Get the URL for a GitHub action run
+
+        Returns:
+            :obj:`str`: URL for a GitHub action run
+        """
+        gh_repo = cls.get_gh_repo()
+        gh_action_run_id = cls.get_gh_action_run_id()
+        return cls.GH_ACTION_RUN_URL.format(gh_repo, gh_action_run_id)
 
     @staticmethod
     def get_gh_auth():

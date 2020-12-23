@@ -21,8 +21,8 @@ class GitHubActionTestCase(unittest.TestCase):
             action = Action()
             self.assertEqual(action.gh_auth, (env['GH_ISSUES_USER'], env['GH_ISSUES_ACCESS_TOKEN']))
             self.assertEqual(action.gh_repo, env['GH_REPO'])
-            self.assertEqual(action.gh_action_run_id, env['GH_ACTION_RUN_ID'])
-            self.assertEqual(action.gh_action_run_url, 'https://github.com/biosimulators/Biosimulators/actions/runs/1000000')
+            self.assertEqual(action.get_gh_action_run_id(), env['GH_ACTION_RUN_ID'])
+            self.assertEqual(action.get_gh_action_run_url(), 'https://github.com/biosimulators/Biosimulators/actions/runs/1000000')
 
             self.assertEqual(action.get_issue_number(), env['GH_ISSUE_NUMBER'])
 
