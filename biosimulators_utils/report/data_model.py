@@ -9,7 +9,20 @@
 import enum
 
 
-__all__ = ['DataGeneratorVariableResults', 'OutputResults', 'ReportFormat']
+__all__ = ['DataGeneratorResults', 'DataGeneratorVariableResults', 'OutputResults', 'ReportFormat']
+
+
+class DataGeneratorResults(dict):
+    """ Dictionary that maps the ids of data generators (:obj:`DataGenerator`) to their results (:obj:`numpy.ndarray`)
+
+    * Keys (:obj:`str`): ids of data generators (:obj:`DataGenerator`)
+    * Values (:obj:`numpy.ndarray`): result of each variable
+
+        * Steady-state tasks of non-spatial models: results should be arrays of shape ``(1,)``
+        * One-step tasks of non-spatial models: results should be arrays of shape ``(2,)``
+        * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_points + 1,)``
+    """
+    pass
 
 
 class DataGeneratorVariableResults(dict):
