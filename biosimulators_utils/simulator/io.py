@@ -13,11 +13,12 @@ import requests
 import simplejson.errors
 
 
-def read_simulator_specs(path_or_url):
+def read_simulator_specs(path_or_url, patch=None):
     """ Read the specifications of a simulator
 
     Args:
         path_or_url (:obj:`str`): file path or URL for the specifications of a simulator
+        patch (:obj:`dict`, optional): values of properties to supersede those in :obj:`path_or_url`
 
     Returns:
         :obj:`dict`: specifications of a simulator
@@ -54,6 +55,11 @@ def read_simulator_specs(path_or_url):
                 'Simulator specifications from {} could not be parsed. '.format(path_or_url),
                 'Specifications must be encoded into JSON.\n\n  {}'.format(str(error).replace('\n', '\n  ')),
             ]))
+
+    # apply patch
+    if patch:
+        for key, val in patch.items():
+            specs[key] = val
 
     # validate specifications
     api_endpoint = get_config().BIOSIMULATORS_API_ENDPOINT

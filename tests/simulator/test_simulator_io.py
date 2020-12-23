@@ -25,7 +25,8 @@ class SimulatorIoTestCase(unittest.TestCase):
 
     def test_url(self):
         url = 'https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/dev/biosimulators.json'
-        specs = read_simulator_specs(url)
+        specs = read_simulator_specs(url, patch={'version': '0.0.0'})
+        self.assertEqual(specs['version'], '0.0.0')
 
         with self.assertRaises(requests.RequestException):
             url = 'https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/dev/__undefined__'
