@@ -24,11 +24,13 @@ class SimulatorSubmission(object):
         version (:obj:`str`): version of simulator (e.g., `2.1.6`)
         specifications_url (:obj:`str`): URL for the specifications of the version of the simulator
             (e.g., `https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/2.1.6/biosimulators.json`)
+        specifications_patch (:obj:`dict`): superseding specifications to those at :obj:`specifications_url`
         validate_image (:obj:`bool`): if :obj:`True`, validate Docker image
         commit_simulator (:obj:`bool`): if :obj:`True`, commit simulator to database
     """
 
     def __init__(self, id=None, version=None, specifications_url=None,
+                 specifications_patch=None,
                  validate_image=False, commit_simulator=False,
                  validated=False, approved=False, committed=False):
         """
@@ -36,12 +38,14 @@ class SimulatorSubmission(object):
             id (:obj:`str`, optional): id of simulator
             version (:obj:`str`, optional): version of simulator
             specifications_url (:obj:`str`, optional): URL for the specifications of the version of the simulator
+            specifications_patch (:obj:`dict`, optional): superseding specifications to those at :obj:`specifications_url`
             validate_image (:obj:`bool`, optional): if :obj:`True`, validate Docker image
             commit_simulator (:obj:`bool`, optional): if :obj:`True`, commit simulator to database
         """
         self.id = id
         self.version = version
         self.specifications_url = specifications_url
+        self.specifications_patch = specifications_patch or {}
         self.validate_image = validate_image
         self.commit_simulator = commit_simulator
 
@@ -51,7 +55,7 @@ class SimulatorSubmission(object):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation of a person
         """
-        return (self.id, self.version, self.specifications_url, self.validate_image, self.commit_simulator)
+        return (self.id, self.version, self.specifications_url, self.specifications_patch, self.validate_image, self.commit_simulator)
 
     def is_equal(self, other):
         """ Determine if two submissions are equal
@@ -66,5 +70,6 @@ class SimulatorSubmission(object):
             and self.id == other.id \
             and self.version == other.version \
             and self.specifications_url == other.specifications_url \
+            and self.specifications_patch == other.specifications_patch \
             and self.validate_image == other.validate_image \
             and self.commit_simulator == other.commit_simulator

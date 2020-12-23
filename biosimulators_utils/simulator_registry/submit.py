@@ -63,6 +63,7 @@ def build_gh_issue_body(submission):
         "id: {}".format(submission.id),
         "version: {}".format(submission.version),
         "specificationsUrl: {}".format(submission.specifications_url),
+        "specificationsPatch: {}".format(submission.specifications_patch),
         "validateImage: {}".format(submission.validate_image),
         "commitSimulator: {}".format(submission.commit_simulator),
         "",

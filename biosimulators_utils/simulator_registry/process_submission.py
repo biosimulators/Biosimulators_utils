@@ -42,6 +42,7 @@ def get_simulator_submission_from_gh_issue_body_data(body_data):
     id = body_data.get('id', None) or None
     version = body_data.get('version', None) or None
     specifications_url = body_data.get('specificationsUrl', None) or None
+    specifications_patch = body_data.get('specificationsPatch', {}) or {}
     validate_image = body_data.get('validateImage', False)
     commit_simulator = body_data.get('commitSimulator', False)
 
@@ -57,11 +58,11 @@ def get_simulator_submission_from_gh_issue_body_data(body_data):
     if not specifications_url:
         errors.append("Simulator submissions must provide a URL where the specifications of the simulator can be downloaded.")
 
-    allowed_keys = set(['id', 'version', 'specificationsUrl', 'validateImage', 'commitSimulator'])
+    allowed_keys = set(['id', 'version', 'specificationsUrl', 'specificationsPatch', 'validateImage', 'commitSimulator'])
     extra_keys = set(body_data.keys()).difference(allowed_keys)
     if extra_keys:
         errors.append(('Simulator submissions should only use the keys '
-                       '"id", "version", "specificationsUrl", "validateImage", and "commitSimulator". '
+                       '"id", "version", "specificationsUrl", "specificationsPatch", validateImage", and "commitSimulator". '
                        'The following keys are not valid:\n  - {}'.format('\n  - '.join(sorted(extra_keys)))))
 
     if errors:
@@ -69,4 +70,5 @@ def get_simulator_submission_from_gh_issue_body_data(body_data):
 
     # return submission
     return SimulatorSubmission(id=id, version=version, specifications_url=specifications_url,
+                               specifications_patch=specifications_patch,
                                validate_image=validate_image, commit_simulator=commit_simulator)
