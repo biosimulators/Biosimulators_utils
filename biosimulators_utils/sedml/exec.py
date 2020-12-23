@@ -27,7 +27,8 @@ __all__ = [
 
 
 def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
-             apply_xml_model_changes=False, report_formats=None, plot_formats=None):
+             apply_xml_model_changes=False, report_formats=None, plot_formats=None,
+             indent=0):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -60,6 +61,7 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
             calling :obj:`task_executer`.
         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
         plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
+        indent (:obj:`int`, optional): degree to indent status messages
     """
     # process arguments
     if not isinstance(doc, SedDocument):
@@ -93,7 +95,13 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
 
     # execute simulations
     variable_results = DataGeneratorVariableResults()
-    for task in doc.tasks:
+    doc.tasks.sort(key=lambda task: task.id)
+    print('{}Found {} tasks\n{}{}'.format(' ' * 2 * indent,
+                                          len(doc.tasks),
+                                          ' ' * 2 * (indent + 1),
+                                          ('\n' + ' ' * 2 * (indent + 1)).join([task.id for task in doc.tasks])))
+    for i_task, task in enumerate(doc.tasks):
+        print('{}Executing task {}: {}'.format(' ' * 2 * indent, i_task + 1, task.id))
         if isinstance(task, Task):
             # get a list of the variables that the task needs to record
             task_vars = get_variables_for_task(doc, task)

@@ -48,7 +48,8 @@ class ExecCombineTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
         def exec_doc(filename, working_dir, task_executer, base_out_dir,
-                     rel_path, apply_xml_model_changes=False, report_formats=None, plot_formats=None):
+                     rel_path, apply_xml_model_changes=False, report_formats=None, plot_formats=None,
+                     indent=0):
             out_dir = os.path.join(base_out_dir, rel_path)
             if not os.path.isdir(out_dir):
                 os.makedirs(out_dir)
@@ -97,7 +98,8 @@ class ExecCombineTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
         def exec_doc(filename, working_dir, task_executer, base_out_dir, rel_path='.',
-                     apply_xml_model_changes=False, report_formats=[ReportFormat.csv], plot_formats=[PlotFormat.pdf]):
+                     apply_xml_model_changes=False, report_formats=[ReportFormat.csv], plot_formats=[PlotFormat.pdf],
+                     indent=0):
             out_dir = os.path.join(base_out_dir, rel_path)
             if not os.path.isdir(out_dir):
                 os.makedirs(out_dir)
@@ -177,7 +179,8 @@ class ExecCombineTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
         def exec_doc(filename, working_dir, task_executer, base_out_dir, rel_path='.',
-                     apply_xml_model_changes=False, report_formats=[ReportFormat.csv], plot_formats=[]):
+                     apply_xml_model_changes=False, report_formats=[ReportFormat.csv], plot_formats=[],
+                     indent=0):
             out_dir = os.path.join(base_out_dir, rel_path)
             if not os.path.isdir(out_dir):
                 os.makedirs(out_dir)

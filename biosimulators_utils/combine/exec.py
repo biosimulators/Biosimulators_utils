@@ -88,21 +88,29 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
     exec_content = [master_content] if master_content else archive.contents
 
     # execute SED-ML files: execute tasks and save outputs
-    tmp_out_dir = tempfile.mkdtemp()
+    sedml_contents = []
     for content in exec_content:
         if re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format):
             if os.path.isabs(content.location):
                 raise ValueError('Content locations must be relative')
-            content_filename = os.path.join(archive_tmp_dir, content.location)
-            working_dir = os.path.dirname(content_filename)
-            biosimulators_utils.sedml.exec.exec_doc(content_filename,
-                                                    working_dir,
-                                                    sed_task_executer,
-                                                    tmp_out_dir,
-                                                    os.path.relpath(content_filename, archive_tmp_dir),
-                                                    apply_xml_model_changes=apply_xml_model_changes,
-                                                    report_formats=report_formats,
-                                                    plot_formats=plot_formats)
+            sedml_contents.append(content)
+    sedml_contents.sort(key=lambda content: content.location)
+
+    tmp_out_dir = tempfile.mkdtemp()
+    print('Found {} SED-ML files:\n  {}'.format(len(sedml_contents), '\n  '.join(content.location for content in sedml_contents)))
+    for i_content, content in enumerate(sedml_contents):
+        print('Executing SED-ML file {}: {}'.format(i_content, content.location))
+        content_filename = os.path.join(archive_tmp_dir, content.location)
+        working_dir = os.path.dirname(content_filename)
+        biosimulators_utils.sedml.exec.exec_doc(content_filename,
+                                                working_dir,
+                                                sed_task_executer,
+                                                tmp_out_dir,
+                                                os.path.relpath(content_filename, archive_tmp_dir),
+                                                apply_xml_model_changes=apply_xml_model_changes,
+                                                report_formats=report_formats,
+                                                plot_formats=plot_formats,
+                                                indent=1)
 
     # arrange outputs
     if not os.path.isdir(out_dir):
