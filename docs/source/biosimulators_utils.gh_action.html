@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.4. biosimulators_utils.gh_action package &#8212; BioSimulators utils 0.1.16 documentation</title>
+    <title>2.1.4. biosimulators_utils.gh_action package &#8212; BioSimulators utils 0.1.17 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -174,28 +174,6 @@
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="biosimulators_utils.gh_action.core.GitHubAction.gh_action_run_id">
-<code class="sig-name descname">gh_action_run_id</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.gh_action_run_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>GitHub action run id</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="biosimulators_utils.gh_action.core.GitHubAction.gh_action_run_url">
-<code class="sig-name descname">gh_action_run_url</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.gh_action_run_url" title="Permalink to this definition">¶</a></dt>
-<dd><p>URL for the GitHub action run</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.GH_ACTION_RUN_URL">
 <code class="sig-name descname">GH_ACTION_RUN_URL</code><em class="property"> = 'https://github.com/{}/actions/runs/{}'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.GH_ACTION_RUN_URL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -315,6 +293,20 @@
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>GitHub action run id</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_url">
+<em class="property">classmethod </em><code class="sig-name descname">get_gh_action_run_url</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the URL for a GitHub action run</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>URL for a GitHub action run</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
