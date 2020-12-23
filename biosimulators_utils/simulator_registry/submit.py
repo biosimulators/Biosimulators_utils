@@ -7,6 +7,7 @@
 """
 
 from .data_model import SimulatorSubmission  # noqa: F401
+import json
 import requests
 
 GH_ISSUE_ENDPOINT = 'https://api.github.com/repos/biosimulators/Biosimulators/issues'
@@ -63,7 +64,7 @@ def build_gh_issue_body(submission):
         "id: {}".format(submission.id),
         "version: {}".format(submission.version),
         "specificationsUrl: {}".format(submission.specifications_url),
-        "specificationsPatch: {}".format(submission.specifications_patch),
+        "specificationsPatch: {}".format(json.dumps(submission.specifications_patch)),
         "validateImage: {}".format(submission.validate_image),
         "commitSimulator: {}".format(submission.commit_simulator),
         "",
