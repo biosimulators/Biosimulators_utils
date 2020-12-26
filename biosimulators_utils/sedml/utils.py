@@ -6,9 +6,13 @@
 :License: MIT
 """
 
+from ..report.data_model import DataGeneratorVariableResults  # noqa: F401
 from .data_model import (SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D,  # noqa: F401
-                         DataGeneratorVariable)
+                         DataGenerator, DataGeneratorVariable, MATHEMATICAL_FUNCTIONS)
 from lxml import etree
+import evalidate
+import math
+import numpy
 import re
 
 __all__ = [
@@ -129,3 +133,67 @@ def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename, p
 
     # write model
     et.write(out_model_filename, xml_declaration=True, encoding="utf-8", standalone=False, pretty_print=pretty_print)
+
+
+def calc_data_generator_results(data_generator, variable_results):
+    """ Calculate the results of a data generator from the results of its variables
+
+    Args:
+        data_generator (:obj:`DataGenerator`): data generator
+        variable_results (:obj:`DataGeneratorVariableResults`): results for the variables of the data generator
+
+    Returns:
+        :obj:`numpy.ndarray`: result of data generator
+    """
+    var_shapes = set()
+    for var in data_generator.variables:
+        var_res = variable_results[var.id]
+        var_shapes.add(var_res.shape)
+
+    if len(var_shapes) > 1:
+        raise ValueError('Variables for data generator {} must have consistent shapes'.format(data_generator.id))
+
+    math_node = evalidate.evalidate(data_generator.math,
+                                    addnodes=[
+                                        'Eq', 'NotEq', 'Gt', 'Lt', 'GtE', 'LtE',
+                                        'Sub', 'Mult', 'Div' 'Pow',
+                                        'And', 'Or', 'Not',
+                                        'BitAnd', 'BitOr', 'BitXor',
+                                        'Call',
+                                    ],
+                                    funcs=MATHEMATICAL_FUNCTIONS.keys())
+    compiled_math = compile(math_node, '<data_generator.math>', 'eval')
+
+    workspace = {
+        'true': True,
+        'false': False,
+        'notanumber': math.nan,
+        'pi': math.pi,
+        'infinity': math.inf,
+        'exponentiale': math.e,
+    }
+    for param in data_generator.parameters:
+        workspace[param.id] = param.value
+
+    if not var_shapes:
+        try:
+            value = eval(compiled_math, MATHEMATICAL_FUNCTIONS, workspace)
+        except Exception as exception:
+            raise ValueError('Expression for data generator {} could not be evaluated:\n  {}'.format(
+                data_generator.id, str(exception)))
+        result = numpy.array(value)
+
+    else:
+        shape = list(var_shapes)[0]
+        result = numpy.full(shape, numpy.nan)
+        for i_el in range(result.size):
+            for var in data_generator.variables:
+                var_res = variable_results[var.id]
+                workspace[var.id] = variable_results[var.id][i_el]
+            try:
+                result[i_el] = eval(compiled_math, MATHEMATICAL_FUNCTIONS, workspace)
+            except Exception as exception:
+                raise ValueError('Expression for data generator {} could not be evaluated:\n  {}'.format(
+                    data_generator.id, str(exception)))
+
+    return result

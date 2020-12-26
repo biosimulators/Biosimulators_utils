@@ -483,18 +483,29 @@ class IoTestCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Document has multiple tasks with id'):
             io.SedmlSimulationReader().run(filename)
 
-    def test_read_error_unsupported_classes(self):
+    def test_read_warning_unsupported_classes(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'data-description.sedml')
-        with self.assertRaises(NotImplementedError):
+        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'data descriptions are not yet supported'):
             io.SedmlSimulationReader().run(filename)
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'add-xml.sedml')
-        with self.assertRaises(NotImplementedError):
-            io.SedmlSimulationReader().run(filename)
+        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because it requires types of changes'):
+            doc = io.SedmlSimulationReader().run(filename)
+        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because it requires types of model changes'):
+            doc = io.SedmlSimulationReader().run(filename)
+        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because it requires SED features'):
+            doc = io.SedmlSimulationReader().run(filename)
+        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because it requires types of model changes'):
+            doc = io.SedmlSimulationReader().run(filename)
+        self.assertEqual(doc.models, [])
+        self.assertEqual(doc.tasks, [])
+        self.assertEqual(doc.data_generators, [])
+        self.assertEqual(len(doc.outputs), 3)
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'repeated-task.sedml')
-        with self.assertRaises(NotImplementedError):
+        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because tasks of type'):
             io.SedmlSimulationReader().run(filename)
+        self.assertEqual(doc.tasks, [])
 
     def test_read_error_simulation_times(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'initialTime-more-than-outputStartTime.sedml')

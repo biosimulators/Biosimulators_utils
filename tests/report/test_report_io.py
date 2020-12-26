@@ -44,3 +44,6 @@ class ReportIoTestCase(unittest.TestCase):
                 'a/b/report5',
                 'a/b/report6',
             ]))
+
+        with self.assertRaisesRegex(NotImplementedError, 'is not supported'):
+            io.ReportReader().get_ids(filename, format=None)

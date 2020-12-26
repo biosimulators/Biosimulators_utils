@@ -3,6 +3,8 @@ from biosimulators_utils.sedml import utils
 from biosimulators_utils.utils.core import are_lists_equal
 from lxml import etree
 from unittest import mock
+import numpy
+import numpy.testing
 import os
 import shutil
 import tempfile
@@ -153,3 +155,53 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         ]
         with self.assertRaises(ValueError):
             utils.apply_changes_to_xml_model(changes, self.FIXTURE_FILENAME, None)
+
+    def test_calc_data_generator_results(self):
+        data_gen = data_model.DataGenerator(
+            id='data_gen_1',
+            variables=[
+                data_model.DataGeneratorVariable(id='var_1'),
+                data_model.DataGeneratorVariable(id='var_2'),
+            ],
+            parameters=[
+                data_model.DataGeneratorParameter(id='param_1', value=2.),
+            ],
+            math='var_1 * var_2 + param_1',
+        )
+        var_results = {
+            data_gen.variables[0].id: numpy.array([1, 2, 3]),
+            data_gen.variables[1].id: numpy.array([2, 3, 4]),
+        }
+        numpy.testing.assert_allclose(utils.calc_data_generator_results(data_gen, var_results),
+                                      var_results[data_gen.variables[0].id] * var_results[data_gen.variables[1].id] + 2.)
+
+        data_gen_no_vars = data_model.DataGenerator(
+            id='data_gen_1',
+            parameters=[
+                data_model.DataGeneratorParameter(id='param_1', value=2.),
+            ],
+            math='param_1',
+        )
+        var_results_no_vars = {}
+        numpy.testing.assert_allclose(utils.calc_data_generator_results(data_gen_no_vars, var_results_no_vars),
+                                      numpy.array(2.))
+
+        # errors
+        data_gen.math = 'var_1 * var_3 + param_1'
+        var_results = {
+            data_gen.variables[0].id: numpy.array([1, 2, 3]),
+            data_gen.variables[1].id: numpy.array([2, 3, 4]),
+        }
+        with self.assertRaises(ValueError):
+            utils.calc_data_generator_results(data_gen, var_results)
+
+        data_gen_no_vars.math = 'param_2'
+        with self.assertRaises(ValueError):
+            utils.calc_data_generator_results(data_gen_no_vars, var_results_no_vars)
+
+        var_results = {
+            data_gen.variables[0].id: numpy.array([1, 2]),
+            data_gen.variables[1].id: numpy.array([2, 3, 4]),
+        }
+        with self.assertRaises(ValueError):
+            utils.calc_data_generator_results(data_gen, var_results)

@@ -8,17 +8,18 @@
 
 from ..config import get_config
 from ..plot.data_model import PlotFormat
-from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat
+from ..report.data_model import DataGeneratorVariableResults, DataGeneratorResults, OutputResults, ReportFormat
 from ..report.io import ReportWriter
-from .data_model import SedDocument, Task, Report
+from .data_model import SedDocument, Task, Report, Plot2D, Plot3D, SedmlFeatureNotSupportedWarning
 from .io import SedmlSimulationReader
-from .utils import apply_changes_to_xml_model, get_variables_for_task
+from .utils import apply_changes_to_xml_model, get_variables_for_task, calc_data_generator_results
 import copy
 import numpy
 import os
 import pandas
 import tempfile
 import types  # noqa: F401
+import warnings
 
 
 __all__ = [
@@ -117,6 +118,11 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
         else:
             raise NotImplementedError('Tasks of type {} are not supported'.format(task.__class__.__name__))
 
+    # calculate data generators
+    data_gen_results = DataGeneratorResults()
+    for data_gen in doc.data_generators:
+        data_gen_results[data_gen.id] = calc_data_generator_results(data_gen, variable_results)
+
     # generate outputs
     report_results = OutputResults()
     for output in doc.outputs:
@@ -126,18 +132,10 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
             dataset_shapes = set()
 
             for data_set in output.data_sets:
-                if len(data_set.data_generator.variables) != 1 or data_set.data_generator.parameters:
-                    raise NotImplementedError('Data generator {} must be equal to a single variable'.format(data_set.data_generator.id))
-                if (
-                    len(data_set.data_generator.variables) == 1
-                    and not data_set.data_generator.parameters
-                    and data_set.data_generator.math != data_set.data_generator.variables[0].id
-                ):
-                    raise ValueError('Math of data generator must be equal to the id of the variable')
                 dataset_ids.append(data_set.id)
-                var_res = variable_results[data_set.data_generator.variables[0].id]
-                dataset_results.append(var_res)
-                dataset_shapes.add(var_res.shape)
+                data_gen_res = data_gen_results[data_set.data_generator.id]
+                dataset_results.append(data_gen_res)
+                dataset_shapes.add(data_gen_res.shape)
 
             if len(dataset_shapes) > 1:
                 raise ValueError('Data generators for report {} must have consistent shapes'.format(output.id))
@@ -150,6 +148,16 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
                                    base_out_path,
                                    os.path.join(rel_out_path, output.id) if rel_out_path else output.id,
                                    format=report_format)
+
+        elif isinstance(output, Plot2D):
+            warnings.warn('Output {} skipped because outputs of type {} are not yet supported'.format(
+                output.id, output.__class__.__name__), SedmlFeatureNotSupportedWarning)
+            # write_plot_2d()
+
+        elif isinstance(output, Plot3D):
+            warnings.warn('Output {} skipped because outputs of type {} are not yet supported'.format(
+                output.id, output.__class__.__name__), SedmlFeatureNotSupportedWarning)
+            # write_plot_3d()
 
         else:
             raise NotImplementedError('Outputs of type {} are not supported'.format(output.__class__.__name__))

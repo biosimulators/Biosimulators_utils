@@ -151,6 +151,7 @@ def validate_task(task):
 
     # check that model file exists
     if not task.model.source or not os.path.isfile(task.model.source):
+        # todo: allow references to other other models, URLs and identifiers.org ids
         raise FileNotFoundError("Model source '{}' must be a file".format(task.model.source or ''))
 
     # check that task has model

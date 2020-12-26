@@ -397,8 +397,7 @@ class ExecTaskCase(unittest.TestCase):
             return results
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertRaisesRegex(NotImplementedError, 'must be equal to a single variable'):
-            exec.exec_doc(doc, '.', execute_task, out_dir)
+        exec.exec_doc(doc, '.', execute_task, out_dir)
 
         # error: inconsistent math
         doc.data_generators = [
@@ -434,10 +433,55 @@ class ExecTaskCase(unittest.TestCase):
             return results
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertRaisesRegex(ValueError, 'equal to the id of the variable'):
+        with self.assertRaisesRegex(ValueError, 'could not be evaluated'):
             exec.exec_doc(doc, '.', execute_task, out_dir)
 
-        # error: inconsistent shapes
+        # error: variables have inconsistent shapes
+        doc.data_generators = [
+            data_model.DataGenerator(
+                id='data_gen_1',
+                variables=[
+                    data_model.DataGeneratorVariable(
+                        id='data_gen_1_var_1',
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        task=doc.tasks[0],
+                        model=doc.models[0],
+                    ),
+                    data_model.DataGeneratorVariable(
+                        id='data_gen_1_var_2',
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_2']/@concentration",
+                        task=doc.tasks[0],
+                        model=doc.models[0],
+                    ),
+                ],
+                math='data_gen_1_var_1 * data_gen_1_var_2',
+            ),
+        ]
+
+        doc.outputs = [
+            data_model.Report(
+                id='report_1',
+                data_sets=[
+                    data_model.DataSet(
+                        id='dataset_1',
+                        label='dataset_1',
+                        data_generator=doc.data_generators[0],
+                    ),
+                ],
+            ),
+        ]
+
+        def execute_task(task, variables):
+            results = DataGeneratorVariableResults()
+            results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
+            results[doc.data_generators[0].variables[1].id] = numpy.array((1., 2.))
+            return results
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with self.assertRaisesRegex(ValueError, 'must have consistent shape'):
+            exec.exec_doc(doc, '.', execute_task, out_dir)
+
+        # error: data generators have inconsistent shapes
         doc.data_generators = [
             data_model.DataGenerator(
                 id='data_gen_1',
@@ -452,16 +496,16 @@ class ExecTaskCase(unittest.TestCase):
                 math='data_gen_1_var_1',
             ),
             data_model.DataGenerator(
-                id='data_gen_1',
+                id='data_gen_2',
                 variables=[
                     data_model.DataGeneratorVariable(
-                        id='data_gen_1_var_2',
+                        id='data_gen_2_var_2',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                         task=doc.tasks[0],
                         model=doc.models[0],
                     ),
                 ],
-                math='data_gen_1_var_2',
+                math='data_gen_2_var_2',
             ),
         ]
 
@@ -496,10 +540,22 @@ class ExecTaskCase(unittest.TestCase):
         # error: unsupported outputs
         doc.outputs = [
             data_model.Plot2D(
-                id='plot',
+                id='plot_2d',
+            ),
+            data_model.Plot3D(
+                id='plot_3d',
             ),
         ]
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertRaisesRegex(NotImplementedError, 'not supported'):
+        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because outputs of type'):
+            exec.exec_doc(doc, '.', execute_task, out_dir)
+
+        # error: unsupported outputs
+        doc.outputs = [
+            None
+        ]
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
             exec.exec_doc(doc, '.', execute_task, out_dir)

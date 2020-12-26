@@ -10,6 +10,8 @@ from ..biosimulations.data_model import Metadata  # noqa: F401
 from ..utils.core import are_lists_equal, none_sorted
 import abc
 import enum
+import math
+import mpmath
 import numpy  # noqa: F401
 
 
@@ -39,6 +41,8 @@ __all__ = [
     'AxisScale',
     'Curve',
     'Surface',
+    'EmptySedmlWarning',
+    'SedmlFeatureNotSupportedWarning',
 ]
 
 
@@ -744,6 +748,42 @@ class DataGeneratorParameter(object):
             and self.value == other.value
 
 
+MATHEMATICAL_FUNCTIONS = {
+    'root': lambda x, n: x**(1 / float(n)),
+    'abs': abs,
+    'exp': math.exp,
+    'ln': math.log,
+    'log': math.log,
+    'floor': math.floor,
+    'ceiling': math.ceil,
+    'factorial': math.factorial,
+    'sin': math.sin,
+    'cos': math.cos,
+    'tan': math.tan,
+    'sec': mpmath.sec,
+    'csc': mpmath.csc,
+    'cot': mpmath.cot,
+    'sinh': math.sinh,
+    'cosh': math.cosh,
+    'tanh': math.tanh,
+    'sech': mpmath.sech,
+    'csch': mpmath.csch,
+    'coth': mpmath.coth,
+    'arcsin': math.asin,
+    'arccos': math.acos,
+    'arctan': math.atan,
+    'arcsec': mpmath.asec,
+    'arccsc': mpmath.acsc,
+    'arccot': mpmath.acot,
+    'arcsinh': math.asinh,
+    'arccosh': math.acosh,
+    'arctanh': math.atanh,
+    'arcsech': mpmath.asech,
+    'arccsch': mpmath.acsch,
+    'arccoth': mpmath.acoth,
+}
+
+
 class Output(abc.ABC):
     """ An output
 
@@ -1102,3 +1142,17 @@ class Surface(object):
                  or (self.y_data_generator is not None and self.y_data_generator.is_equal(other.y_data_generator))) \
             and ((self.z_data_generator is None and self.z_data_generator == other.z_data_generator)
                  or (self.z_data_generator is not None and self.z_data_generator.is_equal(other.z_data_generator)))
+
+
+class EmptySedmlWarning(UserWarning):
+    """ Warning issued when a report or plot contains no datasets, curves, or surfaces. """
+    pass  # pragma: no cover
+
+
+class SedmlFeatureNotSupportedWarning(UserWarning):
+    """ Warning issued when a feature of SED document is skipped because it requires a SED feature that is not
+    yet support. The warning is only used when skipping a portion of a document doesn't affect the semantic
+    meaning of the unskipped portions of the document (e.g., skipping generating a plot doesn't adversely
+    affect reports).
+    """
+    pass  # pragma: no cover
