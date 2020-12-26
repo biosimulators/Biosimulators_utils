@@ -874,7 +874,7 @@ class SedmlSimulationReader(object):
 
                 if not output.data_sets:
                     warnings.warn('Report {} does not contain any datasets'.format(output.id),
-                                  data_model.EmptySedmlWarning)
+                                  data_model.IllogicalSedmlWarning)
 
             elif isinstance(output_sed, libsedml.SedPlot2D):
                 output = data_model.Plot2D()
@@ -901,7 +901,7 @@ class SedmlSimulationReader(object):
 
                 if not output.curves:
                     warnings.warn('Plot {} does not contain any curves'.format(output.id),
-                                  data_model.EmptySedmlWarning)
+                                  data_model.IllogicalSedmlWarning)
 
             elif isinstance(output_sed, libsedml.SedPlot3D):
                 output = data_model.Plot3D()
@@ -931,7 +931,7 @@ class SedmlSimulationReader(object):
 
                 if not output.surfaces:
                     warnings.warn('Plot {} does not contain any surfaces'.format(output.id),
-                                  data_model.EmptySedmlWarning)
+                                  data_model.IllogicalSedmlWarning)
 
             else:  # pragma: no cover: already validated by libSED-ML
                 # this is an error rather than a warning because SED doesn't define any other types of outputs

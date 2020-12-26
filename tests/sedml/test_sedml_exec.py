@@ -537,6 +537,62 @@ class ExecTaskCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'must have consistent shape'):
             exec.exec_doc(doc, '.', execute_task, out_dir)
 
+        # warning: data set labels are not unique
+        doc.data_generators = [
+            data_model.DataGenerator(
+                id='data_gen_1',
+                variables=[
+                    data_model.DataGeneratorVariable(
+                        id='data_gen_1_var_1',
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        task=doc.tasks[0],
+                        model=doc.models[0],
+                    ),
+                ],
+                math='data_gen_1_var_1',
+            ),
+            data_model.DataGenerator(
+                id='data_gen_2',
+                variables=[
+                    data_model.DataGeneratorVariable(
+                        id='data_gen_2_var_2',
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        task=doc.tasks[0],
+                        model=doc.models[0],
+                    ),
+                ],
+                math='data_gen_2_var_2',
+            ),
+        ]
+
+        doc.outputs = [
+            data_model.Report(
+                id='report_1',
+                data_sets=[
+                    data_model.DataSet(
+                        id='dataset_1',
+                        label='dataset_label',
+                        data_generator=doc.data_generators[0],
+                    ),
+                    data_model.DataSet(
+                        id='dataset_2',
+                        label='dataset_label',
+                        data_generator=doc.data_generators[1],
+                    ),
+                ],
+            ),
+        ]
+
+        def execute_task(task, variables):
+            results = DataGeneratorVariableResults()
+            results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
+            results[doc.data_generators[1].variables[0].id] = numpy.array((2., 3.))
+            return results
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with self.assertWarnsRegex(data_model.IllogicalSedmlWarning, 'should have unique ids'):
+            exec.exec_doc(doc, '.', execute_task, out_dir)
+
         # error: unsupported outputs
         doc.outputs = [
             data_model.Plot2D(

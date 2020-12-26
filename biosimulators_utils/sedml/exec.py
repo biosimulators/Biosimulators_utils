@@ -10,7 +10,7 @@ from ..config import get_config
 from ..plot.data_model import PlotFormat
 from ..report.data_model import DataGeneratorVariableResults, DataGeneratorResults, OutputResults, ReportFormat
 from ..report.io import ReportWriter
-from .data_model import SedDocument, Task, Report, Plot2D, Plot3D, SedmlFeatureNotSupportedWarning
+from .data_model import SedDocument, Task, Report, Plot2D, Plot3D, SedmlFeatureNotSupportedWarning, IllogicalSedmlWarning
 from .io import SedmlSimulationReader
 from .utils import apply_changes_to_xml_model, get_variables_for_task, calc_data_generator_results
 import copy
@@ -127,12 +127,12 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
     report_results = OutputResults()
     for output in doc.outputs:
         if isinstance(output, Report):
-            dataset_ids = []
+            dataset_labels = []
             dataset_results = []
             dataset_shapes = set()
 
             for data_set in output.data_sets:
-                dataset_ids.append(data_set.id)
+                dataset_labels.append(data_set.label)
                 data_gen_res = data_gen_results[data_set.data_generator.id]
                 dataset_results.append(data_gen_res)
                 dataset_shapes.add(data_gen_res.shape)
@@ -140,7 +140,11 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
             if len(dataset_shapes) > 1:
                 raise ValueError('Data generators for report {} must have consistent shapes'.format(output.id))
 
-            output_df = pandas.DataFrame(numpy.array(dataset_results), index=dataset_ids)
+            if len(set(dataset_labels)) < len(dataset_labels):
+                warnings.warn('To facilitate machine interpretation, data sets should have unique ids',
+                              IllogicalSedmlWarning)
+
+            output_df = pandas.DataFrame(numpy.array(dataset_results), index=dataset_labels)
             report_results[output.id] = output_df
 
             for report_format in report_formats:

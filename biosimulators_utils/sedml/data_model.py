@@ -41,7 +41,7 @@ __all__ = [
     'AxisScale',
     'Curve',
     'Surface',
-    'EmptySedmlWarning',
+    'IllogicalSedmlWarning',
     'SedmlFeatureNotSupportedWarning',
 ]
 
@@ -1144,8 +1144,10 @@ class Surface(object):
                  or (self.z_data_generator is not None and self.z_data_generator.is_equal(other.z_data_generator)))
 
 
-class EmptySedmlWarning(UserWarning):
-    """ Warning issued when a report or plot contains no datasets, curves, or surfaces. """
+class IllogicalSedmlWarning(UserWarning):
+    """ Warning issued when a SED document is illogical such as when a report or plot contains
+    no datasets, curves, or surfaces.
+    """
     pass  # pragma: no cover
 
 
