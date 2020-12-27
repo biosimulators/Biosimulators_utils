@@ -2,6 +2,7 @@ cement
 evalidate
 lxml
 matplotlib
+mpmath
 numpy
 pandas
 python_dateutil
