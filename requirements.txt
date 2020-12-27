@@ -7,6 +7,7 @@ pandas
 python_dateutil
 python_libcombine >= 0.2.9
 python_libsedml
+pyyaml
 requests
 seaborn
 simplejson

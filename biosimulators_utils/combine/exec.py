@@ -9,14 +9,16 @@
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config
+from ..exec_status.data_model import ExecutionStatus
+from ..exec_status.utils import init_combine_archive_exec_status
 from ..plot.data_model import PlotFormat  # noqa: F401
 from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import Task, DataGeneratorVariable  # noqa: F401
-from .data_model import CombineArchiveContentFormatPattern
+from ..sedml.io import SedmlSimulationReader  # noqa: F401
 from .io import CombineArchiveReader
+from .utils import get_sedml_contents, get_summary_sedml_contents
 import biosimulators_utils.sedml.exec
 import os
-import re
 import tempfile
 import shutil
 import types  # noqa: F401
@@ -84,23 +86,29 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
     archive = CombineArchiveReader.run(archive_filename, archive_tmp_dir)
 
     # determine files to execute
-    master_content = archive.get_master_content()
-    exec_content = [master_content] if master_content else archive.contents
+    sedml_contents = get_sedml_contents(archive)
 
-    # execute SED-ML files: execute tasks and save outputs
-    sedml_contents = []
-    for content in exec_content:
-        if re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format):
-            if os.path.isabs(content.location):
-                raise ValueError('Content locations must be relative')
-            sedml_contents.append(content)
-    sedml_contents.sort(key=lambda content: content.location)
+    # print summary of SED documents
+    print(get_summary_sedml_contents(archive, archive_tmp_dir))
 
+    # create output directory
+    if not os.path.isdir(out_dir):
+        os.makedirs(out_dir)
+
+    # initialize status and output
+    exec_status = init_combine_archive_exec_status(archive, archive_tmp_dir)
+    exec_status.status = ExecutionStatus.RUNNING
+    exec_status.out_dir = out_dir
+    exec_status.export()
+
+    # execute SED-ML files: execute tasks and save output
     tmp_out_dir = tempfile.mkdtemp()
-    print('Found {} SED-ML files:\n  {}'.format(len(sedml_contents), '\n  '.join(content.location for content in sedml_contents)))
     for i_content, content in enumerate(sedml_contents):
-        print('Executing SED-ML file {}: {}'.format(i_content, content.location))
         content_filename = os.path.join(archive_tmp_dir, content.location)
+        content_id = os.path.relpath(content_filename, archive_tmp_dir)
+
+        print('Executing SED-ML file {}: {}'.format(i_content, content_id))
+
         working_dir = os.path.dirname(content_filename)
         biosimulators_utils.sedml.exec.exec_doc(content_filename,
                                                 working_dir,
@@ -110,11 +118,8 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
                                                 apply_xml_model_changes=apply_xml_model_changes,
                                                 report_formats=report_formats,
                                                 plot_formats=plot_formats,
+                                                exec_status=exec_status.sed_documents[content_id],
                                                 indent=1)
-
-    # arrange outputs
-    if not os.path.isdir(out_dir):
-        os.makedirs(out_dir)
 
     # move HDF5 file to desired location
     tmp_hdf5_path = os.path.join(tmp_out_dir, config.H5_REPORTS_PATH)
@@ -147,3 +152,7 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
         shutil.rmtree(tmp_out_dir)
 
     shutil.rmtree(archive_tmp_dir)
+
+    # update status
+    exec_status.status = ExecutionStatus.SUCCEEDED
+    exec_status.export()

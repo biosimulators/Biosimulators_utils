@@ -12,12 +12,13 @@ class Config(object):
         PLOTS_PATH (:obj:`str`): path to save zip archive of plots relative to base output directory
         BUNDLE_OUTPUTS (:obj:`bool`): indicates whether bundles of report and plot outputs should be produced
         KEEP_INDIVIDUAL_OUTPUTS (:obj:`bool`): indicates whether the individual output files should be kept
+        EXEC_STATUS_PATH (:obj:`str`): path to save the execution status of a COMBINE/OMEX archive
         BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
     """
 
     def __init__(self, REPORT_FORMATS, PLOT_FORMATS,
                  H5_REPORTS_PATH, REPORTS_PATH, PLOTS_PATH, BUNDLE_OUTPUTS, KEEP_INDIVIDUAL_OUTPUTS,
-                 BIOSIMULATORS_API_ENDPOINT):
+                 EXEC_STATUS_PATH, BIOSIMULATORS_API_ENDPOINT):
         """
         Args:
             REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
@@ -27,6 +28,7 @@ class Config(object):
             PLOTS_PATH (:obj:`str`): path to save zip archive of plots relative to base output directory
             BUNDLE_OUTPUTS (:obj:`bool`): indicates whether bundles of report and plot outputs should be produced
             KEEP_INDIVIDUAL_OUTPUTS (:obj:`bool`): indicates whether the individual output files should be kept
+            EXEC_STATUS_PATH (:obj:`str`): path to save the execution status of a COMBINE/OMEX archive
             BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
         """
         self.REPORT_FORMATS = REPORT_FORMATS
@@ -36,6 +38,7 @@ class Config(object):
         self.PLOTS_PATH = PLOTS_PATH
         self.BUNDLE_OUTPUTS = BUNDLE_OUTPUTS
         self.KEEP_INDIVIDUAL_OUTPUTS = KEEP_INDIVIDUAL_OUTPUTS
+        self.EXEC_STATUS_PATH = EXEC_STATUS_PATH
         self.BIOSIMULATORS_API_ENDPOINT = BIOSIMULATORS_API_ENDPOINT
 
 
@@ -53,5 +56,6 @@ def get_config():
         PLOTS_PATH=os.environ.get('PLOTS_PATH', 'plots.zip'),
         BUNDLE_OUTPUTS=os.environ.get('BUNDLE_OUTPUTS', '1').lower() in ['1', 'true'],
         KEEP_INDIVIDUAL_OUTPUTS=os.environ.get('KEEP_INDIVIDUAL_OUTPUTS', '1').lower() in ['1', 'true'],
+        EXEC_STATUS_PATH=os.environ.get('EXEC_STATUS_PATH', 'status.yml'),
         BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', 'https://api.biosimulators.org/'),
     )

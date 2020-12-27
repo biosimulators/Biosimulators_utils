@@ -1,3 +1,6 @@
+from biosimulators_utils.config import get_config
+from biosimulators_utils.exec_status.data_model import (
+    ExecutionStatus, CombineArchiveExecutionStatus, SedDocumentExecutionStatus, TaskExecutionStatus, ReportExecutionStatus)
 from biosimulators_utils.report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
 from biosimulators_utils.sedml import data_model
@@ -22,7 +25,7 @@ class ExecTaskCase(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.tmp_dir)
 
-    def test(self):
+    def test_successful(self):
         doc = data_model.SedDocument()
 
         doc.models.append(data_model.Model(
@@ -121,7 +124,7 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.DataSet(
                     id='dataset_2',
                     label='dataset_2',
-                    data_generator=doc.data_generators[1],
+                    data_generator=doc.data_generators[2],
                 ),
             ],
         ))
@@ -132,11 +135,33 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.DataSet(
                     id='dataset_3',
                     label='dataset_3',
-                    data_generator=doc.data_generators[2],
+                    data_generator=doc.data_generators[1],
                 ),
                 data_model.DataSet(
                     id='dataset_4',
                     label='dataset_4',
+                    data_generator=doc.data_generators[3],
+                ),
+            ],
+        ))
+
+        doc.outputs.append(data_model.Report(
+            id='report_3',
+            data_sets=[
+                data_model.DataSet(
+                    id='dataset_5',
+                    label='dataset_5',
+                    data_generator=doc.data_generators[0],
+                ),
+            ],
+        ))
+
+        doc.outputs.append(data_model.Report(
+            id='report_4',
+            data_sets=[
+                data_model.DataSet(
+                    id='dataset_6',
+                    label='dataset_6',
                     data_generator=doc.data_generators[3],
                 ),
             ],
@@ -148,11 +173,11 @@ class ExecTaskCase(unittest.TestCase):
         def execute_task(task, variables):
             results = DataGeneratorVariableResults()
             if task.id == 'task_1_ss':
-                results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
-                results[doc.data_generators[1].variables[0].id] = numpy.array((2.,))
+                results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
+                results[doc.data_generators[1].variables[0].id] = numpy.array((3., 4.))
             else:
-                results[doc.data_generators[2].variables[0].id] = numpy.array((3., 4., 5., 6., 7., 8.))
-                results[doc.data_generators[3].variables[0].id] = numpy.array((9., 10., 11., 12., 13., 14.))
+                results[doc.data_generators[2].variables[0].id] = numpy.array((5., 6.))
+                results[doc.data_generators[3].variables[0].id] = numpy.array((7., 8.))
             return results
 
         out_dir = os.path.join(self.tmp_dir, 'results')
@@ -160,10 +185,10 @@ class ExecTaskCase(unittest.TestCase):
             filename), execute_task, out_dir, report_formats=[ReportFormat.csv], plot_formats=[])
 
         expected_var_results = DataGeneratorVariableResults({
-            doc.data_generators[0].variables[0].id: numpy.array((1.,)),
-            doc.data_generators[1].variables[0].id: numpy.array((2.,)),
-            doc.data_generators[2].variables[0].id: numpy.array((3.,  4.,  5.,  6.,  7.,  8.)),
-            doc.data_generators[3].variables[0].id: numpy.array((9., 10., 11., 12., 13., 14.)),
+            doc.data_generators[0].variables[0].id: numpy.array((1., 2.)),
+            doc.data_generators[1].variables[0].id: numpy.array((3., 4.)),
+            doc.data_generators[2].variables[0].id: numpy.array((5., 6.)),
+            doc.data_generators[3].variables[0].id: numpy.array((7., 8.)),
         })
         self.assertEqual(sorted(var_results.keys()), sorted(expected_var_results.keys()))
         for key in var_results.keys():
@@ -172,17 +197,29 @@ class ExecTaskCase(unittest.TestCase):
         expected_output_results = OutputResults({
             doc.outputs[0].id: pandas.DataFrame(
                 numpy.array([
-                    numpy.array((1., )),
-                    numpy.array((2., )),
+                    numpy.array((1., 2.)),
+                    numpy.array((5., 6.)),
                 ]),
                 index=['dataset_1', 'dataset_2'],
             ),
             doc.outputs[1].id: pandas.DataFrame(
                 numpy.array([
-                    numpy.array((3.,  4.,  5.,  6.,  7.,  8.)),
-                    numpy.array((9., 10., 11., 12., 13., 14.)),
+                    numpy.array((3., 4.)),
+                    numpy.array((7., 8.)),
                 ]),
                 index=['dataset_3', 'dataset_4'],
+            ),
+            doc.outputs[2].id: pandas.DataFrame(
+                numpy.array([
+                    numpy.array((1., 2.)),
+                ]),
+                index=['dataset_5'],
+            ),
+            doc.outputs[3].id: pandas.DataFrame(
+                numpy.array([
+                    numpy.array((7., 8.)),
+                ]),
+                index=['dataset_6'],
             ),
         })
         self.assertEqual(sorted(output_results.keys()), sorted(expected_output_results.keys()))
@@ -204,6 +241,77 @@ class ExecTaskCase(unittest.TestCase):
 
         df = ReportReader().run(out_dir, doc.outputs[1].id, format=ReportFormat.h5)
         self.assertTrue(output_results[doc.outputs[1].id].equals(df))
+
+        # track execution status
+        shutil.rmtree(out_dir)
+        exec_status = SedDocumentExecutionStatus(
+            status=ExecutionStatus.QUEUED,
+            tasks={
+                'task_1_ss': TaskExecutionStatus(status=ExecutionStatus.QUEUED),
+                'task_2_time_course': TaskExecutionStatus(status=ExecutionStatus.QUEUED),
+            },
+            outputs={
+                'report_1': ReportExecutionStatus(status=ExecutionStatus.QUEUED, data_sets={
+                    'dataset_1': ExecutionStatus.QUEUED,
+                    'dataset_2': ExecutionStatus.QUEUED,
+                }),
+                'report_2': ReportExecutionStatus(status=ExecutionStatus.QUEUED, data_sets={
+                    'dataset_3': ExecutionStatus.QUEUED,
+                    'dataset_4': ExecutionStatus.QUEUED,
+                }),
+                'report_3': ReportExecutionStatus(status=ExecutionStatus.QUEUED, data_sets={
+                    'dataset_5': ExecutionStatus.QUEUED,
+                }),
+                'report_4': ReportExecutionStatus(status=ExecutionStatus.QUEUED, data_sets={
+                    'dataset_6': ExecutionStatus.QUEUED,
+                })
+            },
+        )
+        exec_status.combine_archive_status = CombineArchiveExecutionStatus(out_dir=out_dir)
+        exec_status.tasks['task_1_ss'].document_status = exec_status
+        exec_status.tasks['task_2_time_course'].document_status = exec_status
+        exec_status.outputs['report_1'].document_status = exec_status
+        exec_status.outputs['report_2'].document_status = exec_status
+        exec_status.outputs['report_3'].document_status = exec_status
+        exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir, report_formats=[ReportFormat.h5], plot_formats=[],
+                      exec_status=exec_status)
+        print(exec_status.to_dict())
+        self.assertEqual(exec_status.to_dict(), {
+            'status': 'SUCCEEDED',
+            'tasks': {
+                'task_1_ss': {'status': 'SUCCEEDED'},
+                'task_2_time_course': {'status': 'SUCCEEDED'},
+            },
+            'outputs': {
+                'report_1': {
+                    'status': 'SUCCEEDED',
+                    'dataSets': {
+                        'dataset_1': 'SUCCEEDED',
+                        'dataset_2': 'SUCCEEDED',
+                    },
+                },
+                'report_2': {
+                    'status': 'SUCCEEDED',
+                    'dataSets': {
+                        'dataset_3': 'SUCCEEDED',
+                        'dataset_4': 'SUCCEEDED',
+                    },
+                },
+                'report_3': {
+                    'status': 'SUCCEEDED',
+                    'dataSets': {
+                        'dataset_5': 'SUCCEEDED',
+                    },
+                },
+                'report_4': {
+                    'status': 'SUCCEEDED',
+                    'dataSets': {
+                        'dataset_6': 'SUCCEEDED',
+                    },
+                },
+            },
+        })
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, get_config().EXEC_STATUS_PATH)))
 
     def test_with_model_changes(self):
         doc = data_model.SedDocument()
