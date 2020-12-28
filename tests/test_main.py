@@ -51,8 +51,8 @@ class CliTestCase(unittest.TestCase):
     def test_exec_modeling_project(self):
         with biosimulators_utils.__main__.App(argv=[
             'exec',
-            'ghcr.io/biosimulators/tellurium:latest',
-            '-i', os.path.join(os.path.dirname(__file__), 'fixtures', 'BIOMD0000000297.omex'),
+            'ghcr.io/biosimulators/copasi:latest',
+            '-i', os.path.join(os.path.dirname(__file__), 'fixtures', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex'),
             '-o', os.path.join(self.tmp_dir, 'results'),
             '--env', 'KEY1=value1', 'KEY2=value2',
             '--user', str(os.getuid()),
@@ -60,10 +60,7 @@ class CliTestCase(unittest.TestCase):
             app.run()
 
         outputs = os.listdir(os.path.join(self.tmp_dir, 'results'))
-        self.assertIn('simulation_1', outputs)
-
-        outputs = os.listdir(os.path.join(self.tmp_dir, 'results', 'simulation_1'))
-        self.assertIn('simulation_1.csv', outputs)
+        self.assertIn('reports.h5', outputs)
 
     def test_exec_modeling_project_error_handling(self):
         with self.assertRaisesRegex(SystemExit, 'must be pairs of keys and values'):
