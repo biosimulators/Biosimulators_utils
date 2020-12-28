@@ -86,22 +86,25 @@ def get_summary_sedml_contents(archive, archive_dir, include_non_executing_docs=
         summary += '  {}:\n'.format(content_id)
 
         sorted_tasks = sorted(doc.tasks, key=lambda task: task.id)
-        sorted_outputs = sorted(doc.outputs, key=lambda output: output.id)
+        sorted_reports = sorted((output for output in doc.outputs if isinstance(output, Report)), key=lambda output: output.id)
+        sorted_plots = sorted((output for output in doc.outputs if isinstance(output, (Plot2D, Plot3D))), key=lambda output: output.id)
 
-        summary += '    Tasks:\n'
-        for task in sorted_tasks:
-            summary += '      {}\n'.format(task.id)
+        if sorted_tasks:
+            summary += '    Tasks ({}):\n'.format(len(sorted_tasks))
+            for task in sorted_tasks:
+                summary += '      {}\n'.format(task.id)
 
-        summary += '    Reports\n'
-        for output in sorted_outputs:
-            if isinstance(output, Report):
+        if sorted_reports:
+            summary += '    Reports ({}):\n'.format(len(sorted_reports))
+            for output in sorted_reports:
                 summary += '      {}: {} data sets\n'.format(output.id, len(output.data_sets))
 
-        summary += '    Plots\n'
-        for output in sorted_outputs:
-            if isinstance(output, Plot2D):
-                summary += '      {}: {} curves\n'.format(output.id, len(output.curves))
-            elif isinstance(output, Plot3D):
-                summary += '      {}: {} surfaces\n'.format(output.id, len(output.surfaces))
+        if sorted_plots:
+            summary += '    Plots ({}):\n'.format(len(sorted_plots))
+            for output in sorted_plots:
+                if isinstance(output, Plot2D):
+                    summary += '      {}: {} curves\n'.format(output.id, len(output.curves))
+                elif isinstance(output, Plot3D):
+                    summary += '      {}: {} surfaces\n'.format(output.id, len(output.surfaces))
 
     return summary
