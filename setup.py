@@ -48,4 +48,9 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
     ],
+    entry_points={
+        'console_scripts': [
+            'biosimulators-utils = biosimulators_utils.__main__:main',
+        ],
+    },
 )
