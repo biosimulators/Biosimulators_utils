@@ -1,0 +1,466 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2.1.4. biosimulators_utils.exec_status package &#8212; BioSimulators utils 0.1.20 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.1.5. biosimulators_utils.gh_action package" href="biosimulators_utils.gh_action.html" />
+    <link rel="prev" title="2.1.3. biosimulators_utils.combine package" href="biosimulators_utils.combine.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">BioSimulators utils</a></h1>
+
+
+
+<p class="blurb">Utilities for building standardized command-line interfaces for biosimulation tools</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosimulators&repo=Biosimulators_utils&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation instructions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="biosimulators_utils.html">2. API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="biosimulators_utils.html#subpackages">2.1. Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.archive.html">2.1.1. biosimulators_utils.archive package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.biosimulations.html">2.1.2. biosimulators_utils.biosimulations package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.combine.html">2.1.3. biosimulators_utils.combine package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">2.1.4. biosimulators_utils.exec_status package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.gh_action.html">2.1.5. biosimulators_utils.gh_action package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.kisao.html">2.1.6. biosimulators_utils.kisao package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.plot.html">2.1.7. biosimulators_utils.plot package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.report.html">2.1.8. biosimulators_utils.report package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.sedml.html">2.1.9. biosimulators_utils.sedml package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.simulator.html">2.1.10. biosimulators_utils.simulator package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.simulator_registry.html">2.1.11. biosimulators_utils.simulator_registry package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.utils.html">2.1.12. biosimulators_utils.utils package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.xml.html">2.1.13. biosimulators_utils.xml package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#submodules">2.2. Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.config">2.3. biosimulators_utils.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.data_model">2.4. biosimulators_utils.data_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.image">2.5. biosimulators_utils.image module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">3. About BioSimulators utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">4. Index</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://biosimulators.org">BioSimulators</a></li>
+    
+    <li class="toctree-l1"><a href="https://run.biosimulations.org">runBioSimulations</a></li>
+    
+    <li class="toctree-l1"><a href="https://biosimulations.org">BioSimulations</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="biosimulators_utils.html"><span class="section-number">2. </span>biosimulators_utils package</a><ul>
+      <li>Previous: <a href="biosimulators_utils.combine.html" title="previous chapter"><span class="section-number">2.1.3. </span>biosimulators_utils.combine package</a></li>
+      <li>Next: <a href="biosimulators_utils.gh_action.html" title="next chapter"><span class="section-number">2.1.5. </span>biosimulators_utils.gh_action package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-biosimulators_utils.exec_status">
+<span id="biosimulators-utils-exec-status-package"></span><h1><span class="section-number">2.1.4. </span>biosimulators_utils.exec_status package<a class="headerlink" href="#module-biosimulators_utils.exec_status" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2><span class="section-number">2.1.4.1. </span>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-biosimulators_utils.exec_status.data_model">
+<span id="biosimulators-utils-exec-status-data-model-module"></span><h2><span class="section-number">2.1.4.2. </span>biosimulators_utils.exec_status.data_model module<a class="headerlink" href="#module-biosimulators_utils.exec_status.data_model" title="Permalink to this headline">¶</a></h2>
+<p>Data model for the execution status of COMBINE/OMEX archives</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-06</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt id="biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.exec_status.data_model.</code><code class="sig-name descname">CombineArchiveExecutionStatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sed_documents</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Execution status of a COMBINE/OMEX archive</p>
+<dl>
+<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus" title="biosimulators_utils.exec_status.data_model.ExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionStatus</span></code></a>): execution status of the archive
+sed_documents (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus" title="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentExecutionStatus</span></code></a>): execution status of each</p>
+<blockquote>
+<div><p>SED document in the archive</p>
+</div></blockquote>
+<p>out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): directory to export status</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus.export">
+<code class="sig-name descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to a file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a JSON-compatible representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>JSON-compatible representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.exec_status.data_model.ExecutionStatus">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.exec_status.data_model.</code><code class="sig-name descname">ExecutionStatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Execution status of a component of a COMBINE/OMEX archive</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.exec_status.data_model.ExecutionStatus.QUEUED">
+<code class="sig-name descname">QUEUED</code><em class="property"> = 'QUEUED'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus.QUEUED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.exec_status.data_model.ExecutionStatus.RUNNING">
+<code class="sig-name descname">RUNNING</code><em class="property"> = 'RUNNING'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus.RUNNING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.exec_status.data_model.ExecutionStatus.SUCCEEDED">
+<code class="sig-name descname">SUCCEEDED</code><em class="property"> = 'SUCCEEDED'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus.SUCCEEDED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.exec_status.data_model.OutputExecutionStatus">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.exec_status.data_model.</code><code class="sig-name descname">OutputExecutionStatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">document_status</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.OutputExecutionStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Execution status of a SED output</p>
+<dl class="simple">
+<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus" title="biosimulators_utils.exec_status.data_model.ExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionStatus</span></code></a>): execution status of the archive
+document_status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus" title="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentExecutionStatus</span></code></a>): execution status of parent SED document</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.OutputExecutionStatus.export">
+<code class="sig-name descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.OutputExecutionStatus.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to a file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.OutputExecutionStatus.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.OutputExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a JSON-compatible representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>JSON-compatible representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.exec_status.data_model.Plot2DExecutionStatus">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.exec_status.data_model.</code><code class="sig-name descname">Plot2DExecutionStatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">curves</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">document_status</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.Plot2DExecutionStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.exec_status.data_model.OutputExecutionStatus" title="biosimulators_utils.exec_status.data_model.OutputExecutionStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.exec_status.data_model.OutputExecutionStatus</span></code></a></p>
+<p>Execution status of a 2D SED plot</p>
+<dl>
+<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus" title="biosimulators_utils.exec_status.data_model.ExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionStatus</span></code></a>): execution status of the archive
+curves (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus" title="biosimulators_utils.exec_status.data_model.ExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionStatus</span></code></a>): execution status of each</p>
+<blockquote>
+<div><p>curve</p>
+</div></blockquote>
+<p>document_status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus" title="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentExecutionStatus</span></code></a>): execution status of parent SED document</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.Plot2DExecutionStatus.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.Plot2DExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a JSON-compatible representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>JSON-compatible representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.exec_status.data_model.Plot3DExecutionStatus">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.exec_status.data_model.</code><code class="sig-name descname">Plot3DExecutionStatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">surfaces</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">document_status</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.Plot3DExecutionStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.exec_status.data_model.OutputExecutionStatus" title="biosimulators_utils.exec_status.data_model.OutputExecutionStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.exec_status.data_model.OutputExecutionStatus</span></code></a></p>
+<p>Execution status of a 3D SED plot</p>
+<dl>
+<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus" title="biosimulators_utils.exec_status.data_model.ExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionStatus</span></code></a>): execution status of the archive
+surfaces (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus" title="biosimulators_utils.exec_status.data_model.ExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionStatus</span></code></a>): execution status of each</p>
+<blockquote>
+<div><p>surface</p>
+</div></blockquote>
+<p>document_status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus" title="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentExecutionStatus</span></code></a>): execution status of parent SED document</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.Plot3DExecutionStatus.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.Plot3DExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a JSON-compatible representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>JSON-compatible representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.exec_status.data_model.ReportExecutionStatus">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.exec_status.data_model.</code><code class="sig-name descname">ReportExecutionStatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_sets</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">document_status</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ReportExecutionStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.exec_status.data_model.OutputExecutionStatus" title="biosimulators_utils.exec_status.data_model.OutputExecutionStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.exec_status.data_model.OutputExecutionStatus</span></code></a></p>
+<p>Execution status of a SED report</p>
+<dl>
+<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus" title="biosimulators_utils.exec_status.data_model.ExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionStatus</span></code></a>): execution status of the archive
+data_sets (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus" title="biosimulators_utils.exec_status.data_model.ExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionStatus</span></code></a>): execution status of each</p>
+<blockquote>
+<div><p>data set</p>
+</div></blockquote>
+<p>document_status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus" title="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentExecutionStatus</span></code></a>): execution status of parent SED document</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.ReportExecutionStatus.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ReportExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a JSON-compatible representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>JSON-compatible representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.exec_status.data_model.</code><code class="sig-name descname">SedDocumentExecutionStatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tasks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">combine_archive_status</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Execution status of a SED document</p>
+<dl>
+<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus" title="biosimulators_utils.exec_status.data_model.ExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionStatus</span></code></a>): execution status of the archive
+tasks (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.exec_status.data_model.TaskExecutionStatus" title="biosimulators_utils.exec_status.data_model.TaskExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskExecutionStatus</span></code></a>): execution status of each</p>
+<blockquote>
+<div><p>task</p>
+</div></blockquote>
+<dl class="simple">
+<dt>outputs (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.exec_status.data_model.OutputExecutionStatus" title="biosimulators_utils.exec_status.data_model.OutputExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OutputExecutionStatus</span></code></a>): execution status of each</dt><dd><p>output</p>
+</dd>
+</dl>
+<p>combine_archive_status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus" title="biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveExecutionStatus</span></code></a>): execution status of parent COMBINE/OMEX archive</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus.export">
+<code class="sig-name descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to a file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a JSON-compatible representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>JSON-compatible representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.exec_status.data_model.TaskExecutionStatus">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.exec_status.data_model.</code><code class="sig-name descname">TaskExecutionStatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">document_status</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.TaskExecutionStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Execution status of a SED task</p>
+<dl class="simple">
+<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus" title="biosimulators_utils.exec_status.data_model.ExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionStatus</span></code></a>): execution status of the task
+document_status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus" title="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentExecutionStatus</span></code></a>): execution status of parent SED document</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.TaskExecutionStatus.export">
+<code class="sig-name descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.TaskExecutionStatus.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to a file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.TaskExecutionStatus.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.TaskExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a JSON-compatible representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>JSON-compatible representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-biosimulators_utils.exec_status.utils">
+<span id="biosimulators-utils-exec-status-utils-module"></span><h2><span class="section-number">2.1.4.3. </span>biosimulators_utils.exec_status.utils module<a class="headerlink" href="#module-biosimulators_utils.exec_status.utils" title="Permalink to this headline">¶</a></h2>
+<p>Utilities for working with COMBINE/OMEX archives</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-06</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="biosimulators_utils.exec_status.utils.init_combine_archive_exec_status">
+<code class="sig-prename descclassname">biosimulators_utils.exec_status.utils.</code><code class="sig-name descname">init_combine_archive_exec_status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">archive</span></em>, <em class="sig-param"><span class="n">archive_dir</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.utils.init_combine_archive_exec_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the execution status of the SED documents in a COMBINE/OMEX archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>) – COMBINE/OMEX archive</p></li>
+<li><p><strong>archive_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path where the content of the archive is located</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>initial execution status of the SED documents in an archive</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveExecutionStatus</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2020, BioSimulators Team.
+      
+      |
+      <a href="../_sources/source/biosimulators_utils.exec_status.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/biosimulators/Biosimulators_utils" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
