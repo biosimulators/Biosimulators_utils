@@ -19,6 +19,7 @@ from .io import CombineArchiveReader
 from .utils import get_sedml_contents, get_summary_sedml_contents
 from .warnings import NoSedmlWarning
 import biosimulators_utils.sedml.exec
+import glob
 import os
 import tempfile
 import shutil
@@ -106,7 +107,6 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
     exec_status.export()
 
     # execute SED-ML files: execute tasks and save output
-    tmp_out_dir = tempfile.mkdtemp()
     for i_content, content in enumerate(sedml_contents):
         content_filename = os.path.join(archive_tmp_dir, content.location)
         content_id = os.path.relpath(content_filename, archive_tmp_dir)
@@ -117,7 +117,7 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
         biosimulators_utils.sedml.exec.exec_doc(content_filename,
                                                 working_dir,
                                                 sed_task_executer,
-                                                tmp_out_dir,
+                                                out_dir,
                                                 os.path.relpath(content_filename, archive_tmp_dir),
                                                 apply_xml_model_changes=apply_xml_model_changes,
                                                 report_formats=report_formats,
@@ -125,35 +125,41 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
                                                 exec_status=exec_status.sed_documents[content_id],
                                                 indent=1)
 
-    # move HDF5 file to desired location
-    tmp_hdf5_path = os.path.join(tmp_out_dir, config.H5_REPORTS_PATH)
-    out_hdf5_path = os.path.join(out_dir, config.H5_REPORTS_PATH)
-    if os.path.isfile(tmp_hdf5_path):
-        shutil.move(tmp_hdf5_path, out_hdf5_path)
-
     if bundle_outputs:
         # bundle CSV files of reports into zip archive
-        archive_paths = [os.path.join(tmp_out_dir, '**', '*.' + format.value) for format in report_formats if format != ReportFormat.h5]
-        archive = build_archive_from_paths(archive_paths, tmp_out_dir)
+        archive_paths = [os.path.join(out_dir, '**', '*.' + format.value) for format in report_formats if format != ReportFormat.h5]
+        archive = build_archive_from_paths(archive_paths, out_dir)
         if archive.files:
             ArchiveWriter().run(archive, os.path.join(out_dir, config.REPORTS_PATH))
 
         # bundle PDF files of plots into zip archive
-        archive_paths = [os.path.join(tmp_out_dir, '**', '*.' + format.value) for format in plot_formats]
-        archive = build_archive_from_paths(archive_paths, tmp_out_dir)
+        archive_paths = [os.path.join(out_dir, '**', '*.' + format.value) for format in plot_formats]
+        archive = build_archive_from_paths(archive_paths, out_dir)
         if archive.files:
             ArchiveWriter().run(archive, os.path.join(out_dir, config.PLOTS_PATH))
 
     # cleanup temporary files
-    if keep_individual_outputs:
-        if os.path.isdir(out_dir):
-            for file_or_dir in os.listdir(tmp_out_dir):
-                shutil.move(os.path.join(tmp_out_dir, file_or_dir), out_dir)
-        else:  # pragma: no cover # unreachable because the above code creates :obj:`out_dir` if it doesn't exist
-            shutil.move(tmp_out_dir, out_dir)
+    if not keep_individual_outputs:
+        path_patterns = (
+            [os.path.join(out_dir, '**', '*.' + format.value) for format in report_formats if format != ReportFormat.h5]
+            + [os.path.join(out_dir, '**', '*.' + format.value) for format in plot_formats]
+        )
+        for path_pattern in path_patterns:
+            for path in glob.glob(path_pattern, recursive=True):
+                os.remove(path)
 
-    else:
-        shutil.rmtree(tmp_out_dir)
+        for dir_path, dir_names, file_names in os.walk(out_dir, topdown=False):
+            for dir_name in list(dir_names):
+                full_dir_name = os.path.join(dir_path, dir_name)
+                if not os.path.isdir(full_dir_name):
+                    dir_names.remove(dir_name)
+                elif not os.listdir(full_dir_name):
+                    # not reachable because directory would
+                    # have already been removed by the iteration for the directory
+                    shutil.rmtree(full_dir_name)  # pragma: no cover
+                    dir_names.remove(dir_name)  # pragma: no cover
+            if not dir_names and not file_names:
+                shutil.rmtree(dir_path)
 
     shutil.rmtree(archive_tmp_dir)
 

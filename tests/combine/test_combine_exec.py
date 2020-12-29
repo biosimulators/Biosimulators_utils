@@ -77,7 +77,7 @@ class ExecCombineTestCase(unittest.TestCase):
         archive.contents[0].format = 'unknown'
         CombineArchiveWriter().run(archive, in_dir, archive_filename)
         with self.assertWarnsRegex(NoSedmlWarning, 'does not contain any executing SED-ML files'):
-            with mock.patch('biosimulators_utils.sedml.exec.exec_doc', side_effect=exec_doc):            
+            with mock.patch('biosimulators_utils.sedml.exec.exec_doc', side_effect=exec_doc):
                 exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir,
                                            report_formats=[ReportFormat.h5, ReportFormat.csv],
                                            plot_formats=[],
@@ -160,11 +160,18 @@ class ExecCombineTestCase(unittest.TestCase):
 
         # don't bundle outputs, don't keep individual outputs
         out_dir = os.path.join(self.tmp_dir, 'outputs-2')
+        os.makedirs(out_dir)
+        os.makedirs(os.path.join(out_dir, 'dir1'))
+        with open(os.path.join(out_dir, 'extra-file'), 'w'):
+            pass
+        with open(os.path.join(out_dir, 'dir1', 'extra-file'), 'w'):
+            pass
         with mock.patch('biosimulators_utils.sedml.exec.exec_doc', side_effect=exec_doc):
             with mock.patch.object(SedmlSimulationReader, 'run', return_value=SedDocument()):
                 exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir,
                                            bundle_outputs=False, keep_individual_outputs=False)
-        self.assertEqual(sorted(os.listdir(out_dir)), sorted(['status.yml']))
+        self.assertEqual(sorted(os.listdir(out_dir)), sorted(['status.yml', 'extra-file', 'dir1']))
+        self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'dir1'))), sorted(['extra-file']))
 
         out_dir = os.path.join(self.tmp_dir, 'outputs-3')
         with mock.patch('biosimulators_utils.sedml.exec.exec_doc', side_effect=exec_doc):
