@@ -70,7 +70,7 @@ def build_cli(cli_name=None, cli_version=None,
             label = 'base'
             description = "BioSimulators-compliant command-line interface to the {} simulation program{}.".format(
                 simulator_name,
-                '<{}>'.format(simulator_url) if simulator_url else '')
+                ' <{}>'.format(simulator_url) if simulator_url else '')
             help = cli_name
             arguments = [
                 (
@@ -109,7 +109,7 @@ def build_cli(cli_name=None, cli_version=None,
     class App(cement.App):
         """ Command line application """
         class Meta:
-            label = 'cli'
+            label = cli_name
             base_controller = 'base'
             handlers = [
                 BaseController,
