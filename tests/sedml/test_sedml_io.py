@@ -3,6 +3,7 @@ from biosimulators_utils.biosimulations.data_model import Metadata, ExternalRefe
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import io
 from biosimulators_utils.sedml import utils
+from biosimulators_utils.sedml.warnings import SedmlFeatureNotSupportedWarning
 from unittest import mock
 import datetime
 import dateutil.tz
@@ -485,17 +486,17 @@ class IoTestCase(unittest.TestCase):
 
     def test_read_warning_unsupported_classes(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'data-description.sedml')
-        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'data descriptions are not yet supported'):
+        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'data descriptions are not yet supported'):
             io.SedmlSimulationReader().run(filename)
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'add-xml.sedml')
-        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because it requires types of changes'):
+        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because it requires types of changes'):
             doc = io.SedmlSimulationReader().run(filename)
-        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because it requires types of model changes'):
+        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because it requires types of model changes'):
             doc = io.SedmlSimulationReader().run(filename)
-        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because it requires SED features'):
+        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because it requires SED features'):
             doc = io.SedmlSimulationReader().run(filename)
-        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because it requires types of model changes'):
+        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because it requires types of model changes'):
             doc = io.SedmlSimulationReader().run(filename)
         self.assertEqual(doc.models, [])
         self.assertEqual(doc.tasks, [])
@@ -503,7 +504,7 @@ class IoTestCase(unittest.TestCase):
         self.assertEqual(len(doc.outputs), 3)
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'repeated-task.sedml')
-        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because tasks of type'):
+        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because tasks of type'):
             io.SedmlSimulationReader().run(filename)
         self.assertEqual(doc.tasks, [])
 

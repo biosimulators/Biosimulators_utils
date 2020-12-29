@@ -8,6 +8,7 @@
 
 from . import data_model
 from .validation import validate_doc
+from .warnings import NoDataSetsWarning, NoCurvesWarning, NoSurfacesWarning, SedmlFeatureNotSupportedWarning
 from ..biosimulations.data_model import Metadata, ExternalReferences, Citation
 from ..data_model import Person, Identifier, OntologyTerm
 from ..kisao.utils import normalize_kisao_id
@@ -698,7 +699,7 @@ class SedmlSimulationReader(object):
         # data descriptions
         if doc_sed.getListOfDataDescriptions():
             warnings.warn('Data descriptions skipped because data descriptions are not yet supported',
-                          data_model.SedmlFeatureNotSupportedWarning)
+                          SedmlFeatureNotSupportedWarning)
 
         # models
         id_to_model_map = {}
@@ -727,7 +728,7 @@ class SedmlSimulationReader(object):
             else:
                 skipped_model_ids.add(model.id)
                 warnings.warn('Model {} skipped because it requires types of changes that are not yet supported'.format(
-                    model.id), data_model.SedmlFeatureNotSupportedWarning)
+                    model.id), SedmlFeatureNotSupportedWarning)
 
         # simulations
         id_to_sim_map = {}
@@ -781,7 +782,7 @@ class SedmlSimulationReader(object):
             if not isinstance(task_sed, libsedml.SedTask):
                 skipped_task_ids.add(task_sed.getId())
                 warnings.warn('Task {} skipped because tasks of type {} are not yet supported'.format(
-                    task_sed.getId(), task_sed.__class__.__name__), data_model.SedmlFeatureNotSupportedWarning)
+                    task_sed.getId(), task_sed.__class__.__name__), SedmlFeatureNotSupportedWarning)
                 continue
 
             task = data_model.Task()
@@ -793,7 +794,7 @@ class SedmlSimulationReader(object):
             if model_id in skipped_model_ids:
                 skipped_task_ids.add(task.id)
                 warnings.warn('Task {} skipped because it requires types of model changes that are not yet supported'.format(
-                    task.id), data_model.SedmlFeatureNotSupportedWarning)
+                    task.id), SedmlFeatureNotSupportedWarning)
             else:
                 doc.tasks.append(task)
                 self._add_obj_to_id_to_obj_map(task_sed, task, id_to_task_map)
@@ -850,7 +851,7 @@ class SedmlSimulationReader(object):
             else:
                 skipped_data_gen_ids.add(data_gen.id)
                 warnings.warn('Data generator {} skipped because it requires SED features that are not yet supported'.format(
-                    data_gen.id), data_model.SedmlFeatureNotSupportedWarning)
+                    data_gen.id), SedmlFeatureNotSupportedWarning)
 
         # outputs
         id_to_output_map = {}
@@ -867,14 +868,14 @@ class SedmlSimulationReader(object):
 
                     if dataset_sed.getDataReference() in skipped_data_gen_ids:
                         warnings.warn('Data set {} skipped because it requires SED features that are not yet supported'.format(
-                            data_set.id), data_model.SedmlFeatureNotSupportedWarning)
+                            data_set.id), SedmlFeatureNotSupportedWarning)
                     else:
                         output.data_sets.append(data_set)
                         self._deserialize_reference(dataset_sed, data_set, 'data generator', 'Data', 'data_generator', id_to_data_gen_map)
 
                 if not output.data_sets:
                     warnings.warn('Report {} does not contain any datasets'.format(output.id),
-                                  data_model.IllogicalSedmlWarning)
+                                  NoDataSetsWarning)
 
             elif isinstance(output_sed, libsedml.SedPlot2D):
                 output = data_model.Plot2D()
@@ -893,7 +894,7 @@ class SedmlSimulationReader(object):
                         or curve_sed.getYDataReference() in skipped_data_gen_ids
                     ):
                         warnings.warn('Curve {} skipped because it requires SED features that are not yet supported'.format(
-                            curve.id), data_model.SedmlFeatureNotSupportedWarning)
+                            curve.id), SedmlFeatureNotSupportedWarning)
                     else:
                         output.curves.append(curve)
                         self._deserialize_reference(curve_sed, curve, 'data generator', 'XData', 'x_data_generator', id_to_data_gen_map)
@@ -901,7 +902,7 @@ class SedmlSimulationReader(object):
 
                 if not output.curves:
                     warnings.warn('Plot {} does not contain any curves'.format(output.id),
-                                  data_model.IllogicalSedmlWarning)
+                                  NoCurvesWarning)
 
             elif isinstance(output_sed, libsedml.SedPlot3D):
                 output = data_model.Plot3D()
@@ -922,7 +923,7 @@ class SedmlSimulationReader(object):
                         or surface_sed.getZDataReference() in skipped_data_gen_ids
                     ):
                         warnings.warn('Surface {} skipped because it requires SED features that are not yet supported'.format(
-                            surface.id), data_model.SedmlFeatureNotSupportedWarning)
+                            surface.id), SedmlFeatureNotSupportedWarning)
                     else:
                         output.surfaces.append(surface)
                         self._deserialize_reference(surface_sed, surface, 'data generator', 'XData', 'x_data_generator', id_to_data_gen_map)
@@ -931,7 +932,7 @@ class SedmlSimulationReader(object):
 
                 if not output.surfaces:
                     warnings.warn('Plot {} does not contain any surfaces'.format(output.id),
-                                  data_model.IllogicalSedmlWarning)
+                                  NoSurfacesWarning)
 
             else:  # pragma: no cover: already validated by libSED-ML
                 # this is an error rather than a warning because SED doesn't define any other types of outputs

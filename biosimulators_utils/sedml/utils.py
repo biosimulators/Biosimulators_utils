@@ -186,14 +186,23 @@ def calc_data_generator_results(data_generator, variable_results):
     else:
         shape = list(var_shapes)[0]
         result = numpy.full(shape, numpy.nan)
+        n_dims = result.ndim
         for i_el in range(result.size):
             for var in data_generator.variables:
                 var_res = variable_results[var.id]
-                workspace[var.id] = variable_results[var.id][i_el]
+                if n_dims == 0:
+                    workspace[var.id] = variable_results[var.id].tolist()
+                else:
+                    workspace[var.id] = variable_results[var.id][i_el]
             try:
-                result[i_el] = eval(compiled_math, MATHEMATICAL_FUNCTIONS, workspace)
+                result_el = eval(compiled_math, MATHEMATICAL_FUNCTIONS, workspace)
             except Exception as exception:
                 raise ValueError('Expression for data generator {} could not be evaluated:\n  {}'.format(
                     data_generator.id, str(exception)))
+
+            if n_dims == 0:
+                result = numpy.array(result_el)
+            else:
+                result[i_el] = result_el
 
     return result

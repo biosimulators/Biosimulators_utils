@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from .warnings import InvalidKisaoTermIdWarning
 import re
 import warnings
 
@@ -35,6 +36,6 @@ def normalize_kisao_id(id):
         id = 'KISAO_' + '0' * (7 - len(id)) + id
 
     if not re.match(r'KISAO_\d{7}', id):
-        warnings.warn("'{}' is likely not an id for a KiSAO term".format(unnormalized_id), UserWarning)
+        warnings.warn("'{}' is likely not an id for a KiSAO term".format(unnormalized_id), InvalidKisaoTermIdWarning)
 
     return id

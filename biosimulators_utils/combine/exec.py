@@ -17,11 +17,13 @@ from ..sedml.data_model import Task, DataGeneratorVariable  # noqa: F401
 from ..sedml.io import SedmlSimulationReader  # noqa: F401
 from .io import CombineArchiveReader
 from .utils import get_sedml_contents, get_summary_sedml_contents
+from .warnings import NoSedmlWarning
 import biosimulators_utils.sedml.exec
 import os
 import tempfile
 import shutil
 import types  # noqa: F401
+import warnings
 
 __all__ = [
     'exec_sedml_docs_in_archive',
@@ -87,6 +89,8 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
 
     # determine files to execute
     sedml_contents = get_sedml_contents(archive)
+    if not sedml_contents:
+        warnings.warn("COMBINE/OMEX archive '{}' does not contain any executing SED-ML files".format(archive_filename), NoSedmlWarning)
 
     # print summary of SED documents
     print(get_summary_sedml_contents(archive, archive_tmp_dir))

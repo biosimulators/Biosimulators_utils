@@ -2,6 +2,7 @@ from biosimulators_utils.archive.io import ArchiveReader
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent
 from biosimulators_utils.combine.exec import exec_sedml_docs_in_archive
 from biosimulators_utils.combine.io import CombineArchiveWriter
+from biosimulators_utils.combine.warnings import NoSedmlWarning
 from biosimulators_utils.plot.data_model import PlotFormat
 from biosimulators_utils.report.data_model import ReportFormat
 from biosimulators_utils.sedml.data_model import SedDocument
@@ -72,6 +73,15 @@ class ExecCombineTestCase(unittest.TestCase):
         self.assertEqual(sorted(os.listdir(out_dir)), sorted(['reports.h5', 'reports.zip', 'sim.sedml', 'status.yml']))
         self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'sim.sedml'))),
                          sorted(['report1.csv', 'report2.csv']))
+
+        archive.contents[0].format = 'unknown'
+        CombineArchiveWriter().run(archive, in_dir, archive_filename)
+        with self.assertWarnsRegex(NoSedmlWarning, 'does not contain any executing SED-ML files'):
+            with mock.patch('biosimulators_utils.sedml.exec.exec_doc', side_effect=exec_doc):            
+                exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir,
+                                           report_formats=[ReportFormat.h5, ReportFormat.csv],
+                                           plot_formats=[],
+                                           bundle_outputs=True, keep_individual_outputs=True)
 
     def test_2(self):
         updated = datetime.datetime(2020, 1, 2, 1, 2, 3, tzinfo=dateutil.tz.tzutc())

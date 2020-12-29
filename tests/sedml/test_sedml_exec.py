@@ -7,6 +7,7 @@ from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
 from biosimulators_utils.sedml import io
 from biosimulators_utils.sedml import utils
+from biosimulators_utils.sedml.warnings import NoTasksWarning, NoOutputsWarning, RepeatDataSetLabelsWarning, SedmlFeatureNotSupportedWarning
 from lxml import etree
 from unittest import mock
 import numpy
@@ -386,6 +387,103 @@ class ExecTaskCase(unittest.TestCase):
         _, var_results = exec.exec_doc(filename, working_dir, execute_task, out_dir, apply_xml_model_changes=True)
         numpy.testing.assert_equal(var_results[doc.data_generators[0].variables[0].id], numpy.array((2., )))
 
+    def test_warnings(self):
+        # no tasks
+        doc = data_model.SedDocument()
+
+        filename = os.path.join(self.tmp_dir, 'test.sedml')
+        io.SedmlSimulationWriter().run(doc, filename)
+
+        def execute_task(task, variables):
+            return DataGeneratorVariableResults()
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with self.assertWarns(NoTasksWarning):
+            exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir)
+
+        # no outputs
+        doc = data_model.SedDocument()
+
+        doc.models.append(data_model.Model(
+            id='model1',
+            source='model1.xml',
+            language='urn:sedml:language:sbml',
+            changes=[
+                data_model.ModelAttributeChange(
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
+                    new_value="2.0",
+                ),
+            ],
+        ))
+
+        doc.simulations.append(data_model.SteadyStateSimulation(
+            id='sim1',
+        ))
+
+        doc.tasks.append(data_model.Task(
+            id='task1',
+            model=doc.models[0],
+            simulation=doc.simulations[0],
+        ))
+
+        doc.tasks.append(data_model.Task(
+            id='task2',
+            model=doc.models[0],
+            simulation=doc.simulations[0],
+        ))
+
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen_1',
+            variables=[
+                data_model.DataGeneratorVariable(
+                    id='data_gen_1_var_1',
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
+                    task=doc.tasks[0],
+                    model=doc.models[0],
+                ),
+            ],
+            math='data_gen_1_var_1',
+        ))
+
+        doc.outputs.append(data_model.Report(id='report_1', data_sets=[
+            data_model.DataSet(id='data_set_1', label='data_set_1', data_generator=doc.data_generators[0]),
+        ]))
+
+        doc.outputs.append(data_model.Plot2D(id='plot_1', curves=[
+            data_model.Curve(
+                id='curve_1',
+                x_data_generator=doc.data_generators[0],
+                y_data_generator=doc.data_generators[0],
+                x_scale=data_model.AxisScale.linear,
+                y_scale=data_model.AxisScale.linear,
+            ),
+        ]))
+
+        doc.outputs.append(data_model.Plot3D(id='plot_2', surfaces=[
+            data_model.Surface(
+                id='surface_1',
+                x_data_generator=doc.data_generators[0],
+                y_data_generator=doc.data_generators[0],
+                z_data_generator=doc.data_generators[0],
+                x_scale=data_model.AxisScale.linear,
+                y_scale=data_model.AxisScale.linear,
+                z_scale=data_model.AxisScale.linear,
+            ),
+        ]))
+
+        filename = os.path.join(self.tmp_dir, 'test.sedml')
+        io.SedmlSimulationWriter().run(doc, filename)
+
+        def execute_task(task, variables):
+            if task.id == 'task1':
+                return DataGeneratorVariableResults({'data_gen_1_var_1': numpy.array(1.)})
+            else:
+                return DataGeneratorVariableResults()
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with self.assertWarns(NoOutputsWarning):
+            exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir)
+
     def test_errors(self):
         # error: variable not recorded
         doc = data_model.SedDocument()
@@ -698,7 +796,7 @@ class ExecTaskCase(unittest.TestCase):
             return results
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertWarnsRegex(data_model.IllogicalSedmlWarning, 'should have unique ids'):
+        with self.assertWarnsRegex(RepeatDataSetLabelsWarning, 'should have unique ids'):
             exec.exec_doc(doc, '.', execute_task, out_dir)
 
         # error: unsupported outputs
@@ -712,7 +810,7 @@ class ExecTaskCase(unittest.TestCase):
         ]
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertWarnsRegex(data_model.SedmlFeatureNotSupportedWarning, 'skipped because outputs of type'):
+        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because outputs of type'):
             exec.exec_doc(doc, '.', execute_task, out_dir)
 
         # error: unsupported outputs

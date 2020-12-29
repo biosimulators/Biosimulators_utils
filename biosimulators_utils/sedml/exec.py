@@ -11,9 +11,11 @@ from ..exec_status.data_model import ExecutionStatus, SedDocumentExecutionStatus
 from ..plot.data_model import PlotFormat
 from ..report.data_model import DataGeneratorVariableResults, DataGeneratorResults, OutputResults, ReportFormat
 from ..report.io import ReportWriter
-from .data_model import SedDocument, Task, Report, Plot2D, Plot3D, SedmlFeatureNotSupportedWarning, IllogicalSedmlWarning
+from .data_model import SedDocument, Task, Report, Plot2D, Plot3D
+from .warnings import RepeatDataSetLabelsWarning, SedmlFeatureNotSupportedWarning
 from .io import SedmlSimulationReader
 from .utils import apply_changes_to_xml_model, get_variables_for_task, calc_data_generator_results
+from .warnings import NoTasksWarning, NoOutputsWarning
 import copy
 import numpy
 import os
@@ -101,9 +103,13 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
 
             modified_model_filenames.append(modified_model_filename)
 
-    # execute simulations
+    # execute tasks
+    if not doc.tasks:
+        warnings.warn('SED document does not describe any tasks', NoTasksWarning)
+
     variable_results = DataGeneratorVariableResults()
     data_gen_results = DataGeneratorResults()
+    report_results = OutputResults()
     doc.tasks.sort(key=lambda task: task.id)
     print('{}Found {} tasks\n{}{}'.format(' ' * 2 * indent,
                                           len(doc.tasks),
@@ -139,7 +145,8 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
                     data_gen_results[data_gen.id] = calc_data_generator_results(data_gen, variable_results)
 
             # generate outputs
-            report_results = OutputResults()
+            has_outputs = False
+
             for output in doc.outputs:
                 if exec_status and exec_status.outputs[output.id].status == ExecutionStatus.SUCCEEDED:
                     continue
@@ -153,6 +160,9 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
                     dataset_shapes = set()
 
                     for data_set in output.data_sets:
+                        if next((True for var in data_set.data_generator.variables if var.task == task), False):
+                            has_outputs = True
+
                         dataset_labels.append(data_set.label)
                         data_gen_res = data_gen_results.get(data_set.data_generator.id, None)
                         dataset_results.append(data_gen_res)
@@ -169,7 +179,7 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
 
                     if len(set(dataset_labels)) < len(dataset_labels):
                         warnings.warn('To facilitate machine interpretation, data sets should have unique ids',
-                                      IllogicalSedmlWarning)
+                                      RepeatDataSetLabelsWarning)
 
                     if dataset_shapes:
                         dataset_shape = list(dataset_shapes)[0]
@@ -190,17 +200,34 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
                                            format=report_format)
 
                 elif isinstance(output, Plot2D):
+                    for curve in output.curves:
+                        if next((True for var in curve.x_data_generator.variables if var.task == task), False):
+                            has_outputs = True
+                        if next((True for var in curve.y_data_generator.variables if var.task == task), False):
+                            has_outputs = True
+
                     warnings.warn('Output {} skipped because outputs of type {} are not yet supported'.format(
                         output.id, output.__class__.__name__), SedmlFeatureNotSupportedWarning)
                     # write_plot_2d()
 
                 elif isinstance(output, Plot3D):
+                    for surface in output.surfaces:
+                        if next((True for var in surface.x_data_generator.variables if var.task == task), False):
+                            has_outputs = True
+                        if next((True for var in surface.y_data_generator.variables if var.task == task), False):
+                            has_outputs = True
+                        if next((True for var in surface.z_data_generator.variables if var.task == task), False):
+                            has_outputs = True
+
                     warnings.warn('Output {} skipped because outputs of type {} are not yet supported'.format(
                         output.id, output.__class__.__name__), SedmlFeatureNotSupportedWarning)
                     # write_plot_3d()
 
                 else:
                     raise NotImplementedError('Outputs of type {} are not supported'.format(output.__class__.__name__))
+
+                if not has_outputs:
+                    warnings.warn('Task {} does not contribute to any outputs'.format(task.id), NoOutputsWarning)
 
                 if running and exec_status:
                     if succeeded:

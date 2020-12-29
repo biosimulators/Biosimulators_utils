@@ -41,8 +41,6 @@ __all__ = [
     'AxisScale',
     'Curve',
     'Surface',
-    'IllogicalSedmlWarning',
-    'SedmlFeatureNotSupportedWarning',
 ]
 
 
@@ -1142,19 +1140,3 @@ class Surface(object):
                  or (self.y_data_generator is not None and self.y_data_generator.is_equal(other.y_data_generator))) \
             and ((self.z_data_generator is None and self.z_data_generator == other.z_data_generator)
                  or (self.z_data_generator is not None and self.z_data_generator.is_equal(other.z_data_generator)))
-
-
-class IllogicalSedmlWarning(UserWarning):
-    """ Warning issued when a SED document is illogical such as when a report or plot contains
-    no datasets, curves, or surfaces.
-    """
-    pass  # pragma: no cover
-
-
-class SedmlFeatureNotSupportedWarning(UserWarning):
-    """ Warning issued when a feature of SED document is skipped because it requires a SED feature that is not
-    yet support. The warning is only used when skipping a portion of a document doesn't affect the semantic
-    meaning of the unskipped portions of the document (e.g., skipping generating a plot doesn't adversely
-    affect reports).
-    """
-    pass  # pragma: no cover
