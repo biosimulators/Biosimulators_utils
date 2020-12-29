@@ -86,8 +86,9 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(
     if not docker:
         raise ModuleNotFoundError("No module named 'docker'. Docker and the Python Docker package must be installed.")
 
-    # pull image
-    get_docker_image(docker_image, pull=pull_docker_image)
+    # get/pull image
+    docker_client = docker.from_env()
+    get_docker_image(docker_client, docker_image, pull=pull_docker_image)
 
     # run image
     in_dir = tempfile.mkdtemp()

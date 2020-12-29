@@ -17,14 +17,14 @@ class ImageTestCase(unittest.TestCase):
     def test_get_simulator_docker_image(self):
         docker_client = docker.from_env()
         docker_client.images.pull('hello-world')
-        image.get_docker_image('hello-world', pull=False)
-        image.get_docker_image('hello-world', pull=True)
+        image.get_docker_image(docker_client, 'hello-world', pull=False)
+        image.get_docker_image(docker_client, 'hello-world', pull=True)
 
         with self.assertRaises(docker.errors.ImageNotFound):
-            image.get_docker_image('unknown', pull=False)
+            image.get_docker_image(docker_client, 'unknown', pull=False)
 
         with self.assertRaises(docker.errors.ImageNotFound):
-            image.get_docker_image('unknown', pull=True)
+            image.get_docker_image(docker_client, 'unknown', pull=True)
 
     def test_pull_docker_image(self):
         docker_client = image.login_to_docker_registry(

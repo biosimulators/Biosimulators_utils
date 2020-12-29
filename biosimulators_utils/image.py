@@ -36,17 +36,16 @@ def login_to_docker_registry(registry, username, password):
     return docker_client
 
 
-def get_docker_image(tag, pull=True):
+def get_docker_image(docker_client, tag, pull=True):
     """ Get a Docker image for a simulator
 
     Args:
+        docker_client (:obj:`docker.client.DockerClient`): Docker client
         tag (:obj:`str`): tag (e.g., ``biosimulators/tellurium``) or
             URL (``ghcr.io/biosimulators/tellurium`) for a Docker image of a simulator
     Returns:
         :obj:`docker.models.images.Image`: Docker image
     """
-    docker_client = docker.from_env()
-
     try:
         image = docker_client.images.get(tag)
         if pull:
