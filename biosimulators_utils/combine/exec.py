@@ -159,4 +159,5 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
 
     # update status
     exec_status.status = ExecutionStatus.SUCCEEDED
+    exec_status.finalize()
     exec_status.export()

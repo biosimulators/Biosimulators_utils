@@ -106,9 +106,9 @@ class ExecStatusDataModel(unittest.TestCase):
                             'data_set_1': 'QUEUED',
                             'data_set_2': 'QUEUED',
                         }},
-                        'plot_2': {'status': 'QUEUED', 'curves': {
-                            'curve_1': 'QUEUED',
-                            'curve_2': 'QUEUED',
+                        'plot_2': {'status': 'SKIPPED', 'curves': {
+                            'curve_1': 'SKIPPED',
+                            'curve_2': 'SKIPPED',
                         }},
                     },
                 },
@@ -119,9 +119,9 @@ class ExecStatusDataModel(unittest.TestCase):
                     },
                     'outputs': {
                         'report_3': {'status': 'QUEUED', 'dataSets': {}},
-                        'plot_4': {'status': 'QUEUED', 'curves': {}},
-                        'plot_5': {'status': 'QUEUED', 'surfaces': {
-                            'surface_1': 'QUEUED',
+                        'plot_4': {'status': 'SKIPPED', 'curves': {}},
+                        'plot_5': {'status': 'SKIPPED', 'surfaces': {
+                            'surface_1': 'SKIPPED',
                         }},
                     },
                 },
@@ -130,3 +130,112 @@ class ExecStatusDataModel(unittest.TestCase):
         self.assertEqual(status.sed_documents['exp_1.sedml'].combine_archive_status, status)
         self.assertEqual(status.sed_documents['exp_1.sedml'].tasks['task_1'].document_status, status.sed_documents['exp_1.sedml'])
         self.assertEqual(status.sed_documents['exp_1.sedml'].outputs['report_1'].document_status, status.sed_documents['exp_1.sedml'])
+
+        status = utils.init_combine_archive_exec_status(archive, self.dirname)
+        for doc in status.sed_documents.values():
+            doc.status = data_model.ExecutionStatus.QUEUED
+            for task in doc.tasks.values():
+                task.status = data_model.ExecutionStatus.QUEUED
+            for output in doc.outputs.values():
+                output.status = data_model.ExecutionStatus.QUEUED
+                if isinstance(output, data_model.ReportExecutionStatus):
+                    els = output.data_sets
+                elif isinstance(output, data_model.Plot2DExecutionStatus):
+                    els = output.curves
+                elif isinstance(output, data_model.Plot3DExecutionStatus):
+                    els = output.surfaces
+                else:
+                    raise ValueError(output.__class__)
+                for id in els.keys():
+                    els[id] = data_model.ExecutionStatus.QUEUED
+        status.finalize()
+        self.assertEqual(status.to_dict(), {
+            'status': 'SKIPPED',
+            'sedDocuments': {
+                'exp_1.sedml': {
+                    'status': 'SKIPPED',
+                    'tasks': {
+                        'task_1': {'status': 'SKIPPED'},
+                        'task_2': {'status': 'SKIPPED'},
+                    },
+                    'outputs': {
+                        'report_1': {'status': 'SKIPPED', 'dataSets': {
+                            'data_set_1': 'SKIPPED',
+                            'data_set_2': 'SKIPPED',
+                        }},
+                        'plot_2': {'status': 'SKIPPED', 'curves': {
+                            'curve_1': 'SKIPPED',
+                            'curve_2': 'SKIPPED',
+                        }},
+                    },
+                },
+                'exp_2.sedml': {
+                    'status': 'SKIPPED',
+                    'tasks': {
+                        'task_3': {'status': 'SKIPPED'},
+                    },
+                    'outputs': {
+                        'report_3': {'status': 'SKIPPED', 'dataSets': {}},
+                        'plot_4': {'status': 'SKIPPED', 'curves': {}},
+                        'plot_5': {'status': 'SKIPPED', 'surfaces': {
+                            'surface_1': 'SKIPPED',
+                        }},
+                    },
+                },
+            },
+        })
+
+        status = utils.init_combine_archive_exec_status(archive, self.dirname)
+        status.status = data_model.ExecutionStatus.RUNNING
+        for doc in status.sed_documents.values():
+            doc.status = data_model.ExecutionStatus.RUNNING
+            for task in doc.tasks.values():
+                task.status = data_model.ExecutionStatus.RUNNING
+            for output in doc.outputs.values():
+                output.status = data_model.ExecutionStatus.RUNNING
+                if isinstance(output, data_model.ReportExecutionStatus):
+                    els = output.data_sets
+                elif isinstance(output, data_model.Plot2DExecutionStatus):
+                    els = output.curves
+                elif isinstance(output, data_model.Plot3DExecutionStatus):
+                    els = output.surfaces
+                else:
+                    raise ValueError(output.__class__)
+                for id in els.keys():
+                    els[id] = data_model.ExecutionStatus.RUNNING
+        status.finalize()
+        self.assertEqual(status.to_dict(), {
+            'status': 'FAILED',
+            'sedDocuments': {
+                'exp_1.sedml': {
+                    'status': 'FAILED',
+                    'tasks': {
+                        'task_1': {'status': 'FAILED'},
+                        'task_2': {'status': 'FAILED'},
+                    },
+                    'outputs': {
+                        'report_1': {'status': 'FAILED', 'dataSets': {
+                            'data_set_1': 'FAILED',
+                            'data_set_2': 'FAILED',
+                        }},
+                        'plot_2': {'status': 'FAILED', 'curves': {
+                            'curve_1': 'FAILED',
+                            'curve_2': 'FAILED',
+                        }},
+                    },
+                },
+                'exp_2.sedml': {
+                    'status': 'FAILED',
+                    'tasks': {
+                        'task_3': {'status': 'FAILED'},
+                    },
+                    'outputs': {
+                        'report_3': {'status': 'FAILED', 'dataSets': {}},
+                        'plot_4': {'status': 'FAILED', 'curves': {}},
+                        'plot_5': {'status': 'FAILED', 'surfaces': {
+                            'surface_1': 'FAILED',
+                        }},
+                    },
+                },
+            },
+        })

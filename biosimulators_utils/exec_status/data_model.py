@@ -8,6 +8,7 @@
 
 from ..config import get_config
 import enum
+import itertools
 import os
 import yaml
 
@@ -26,8 +27,16 @@ __all__ = [
 class ExecutionStatus(str, enum.Enum):
     """ Execution status of a component of a COMBINE/OMEX archive """
     QUEUED = 'QUEUED'
+
     RUNNING = 'RUNNING'
+
     SUCCEEDED = 'SUCCEEDED'
+
+    SKIPPED = 'SKIPPED'
+    # component will not / wasn't executed e.g., a plot won't be created because a
+    # simulation doesn't have the ability to create plots
+
+    FAILED = 'FAILED'
 
 
 class CombineArchiveExecutionStatus(object):
@@ -51,6 +60,16 @@ class CombineArchiveExecutionStatus(object):
         self.status = status
         self.sed_documents = sed_documents or {}
         self.out_dir = out_dir
+
+    def finalize(self):
+        """ Mark all unexceuted elements as skipped """
+        if self.status == ExecutionStatus.QUEUED:
+            self.status = ExecutionStatus.SKIPPED
+        elif self.status == ExecutionStatus.RUNNING:
+            self.status = ExecutionStatus.FAILED
+
+        for sed_document in self.sed_documents.values():
+            sed_document.finalize()
 
     def to_dict(self):
         """ Generate a JSON-compatible representation
@@ -99,6 +118,16 @@ class SedDocumentExecutionStatus(object):
         self.outputs = outputs or {}
         self.combine_archive_status = combine_archive_status
 
+    def finalize(self):
+        """ Mark all unexceuted elements as skipped """
+        if self.status == ExecutionStatus.QUEUED:
+            self.status = ExecutionStatus.SKIPPED
+        elif self.status == ExecutionStatus.RUNNING:
+            self.status = ExecutionStatus.FAILED
+
+        for el in itertools.chain(self.tasks.values(), self.outputs.values()):
+            el.finalize()
+
     def to_dict(self):
         """ Generate a JSON-compatible representation
 
@@ -133,6 +162,13 @@ class TaskExecutionStatus(object):
         self.status = status
         self.document_status = document_status
 
+    def finalize(self):
+        """ Mark all unexceuted elements as skipped """
+        if self.status == ExecutionStatus.QUEUED:
+            self.status = ExecutionStatus.SKIPPED
+        elif self.status == ExecutionStatus.RUNNING:
+            self.status = ExecutionStatus.FAILED
+
     def to_dict(self):
         """ Generate a JSON-compatible representation
 
@@ -164,6 +200,13 @@ class OutputExecutionStatus(object):
         """
         self.status = status
         self.document_status = document_status
+
+    def finalize(self):
+        """ Mark all unexceuted elements as skipped """
+        if self.status == ExecutionStatus.QUEUED:
+            self.status = ExecutionStatus.SKIPPED
+        elif self.status == ExecutionStatus.RUNNING:
+            self.status = ExecutionStatus.FAILED
 
     def to_dict(self):
         """ Generate a JSON-compatible representation
@@ -201,6 +244,16 @@ class ReportExecutionStatus(OutputExecutionStatus):
         super(ReportExecutionStatus, self).__init__(status=status, document_status=document_status)
         self.data_sets = data_sets or {}
 
+    def finalize(self):
+        """ Mark all unexceuted elements as skipped """
+        super(ReportExecutionStatus, self).finalize()
+
+        for id, status in self.data_sets.items():
+            if status == ExecutionStatus.QUEUED:
+                self.data_sets[id] = ExecutionStatus.SKIPPED
+            elif status == ExecutionStatus.RUNNING:
+                self.data_sets[id] = ExecutionStatus.FAILED
+
     def to_dict(self):
         """ Generate a JSON-compatible representation
 
@@ -233,6 +286,16 @@ class Plot2DExecutionStatus(OutputExecutionStatus):
         super(Plot2DExecutionStatus, self).__init__(status=status, document_status=document_status)
         self.curves = curves or {}
 
+    def finalize(self):
+        """ Mark all unexceuted elements as skipped """
+        super(Plot2DExecutionStatus, self).finalize()
+
+        for id, status in self.curves.items():
+            if status == ExecutionStatus.QUEUED:
+                self.curves[id] = ExecutionStatus.SKIPPED
+            elif status == ExecutionStatus.RUNNING:
+                self.curves[id] = ExecutionStatus.FAILED
+
     def to_dict(self):
         """ Generate a JSON-compatible representation
 
@@ -264,6 +327,16 @@ class Plot3DExecutionStatus(OutputExecutionStatus):
         """
         super(Plot3DExecutionStatus, self).__init__(status=status, document_status=document_status)
         self.surfaces = surfaces or {}
+
+    def finalize(self):
+        """ Mark all unexceuted elements as skipped """
+        super(Plot3DExecutionStatus, self).finalize()
+
+        for id, status in self.surfaces.items():
+            if status == ExecutionStatus.QUEUED:
+                self.surfaces[id] = ExecutionStatus.SKIPPED
+            elif status == ExecutionStatus.RUNNING:
+                self.surfaces[id] = ExecutionStatus.FAILED
 
     def to_dict(self):
         """ Generate a JSON-compatible representation
