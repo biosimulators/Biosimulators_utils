@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.9. biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.21 documentation</title>
+    <title>2.1.9. biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.22 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -70,7 +70,9 @@
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#submodules">2.2. Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.config">2.3. biosimulators_utils.config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.data_model">2.4. biosimulators_utils.data_model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.image">2.5. biosimulators_utils.image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.exceptions">2.5. biosimulators_utils.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.image">2.6. biosimulators_utils.image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.warnings">2.7. biosimulators_utils.warnings module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">3. About BioSimulators utils</a></li>
@@ -813,14 +815,6 @@
 
 </dd></dl>
 
-<dl class="py exception">
-<dt id="biosimulators_utils.sedml.data_model.IllogicalSedmlWarning">
-<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">IllogicalSedmlWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.IllogicalSedmlWarning" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">UserWarning</span></code></p>
-<p>Warning issued when a SED document is illogical such as when a report or plot contains
-no datasets, curves, or surfaces.</p>
-</dd></dl>
-
 <dl class="py class">
 <dt id="biosimulators_utils.sedml.data_model.Model">
 <em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">language</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">changes</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.Model" title="Permalink to this definition">¶</a></dt>
@@ -1545,16 +1539,6 @@ no datasets, curves, or surfaces.</p>
 </dl>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py exception">
-<dt id="biosimulators_utils.sedml.data_model.SedmlFeatureNotSupportedWarning">
-<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">SedmlFeatureNotSupportedWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SedmlFeatureNotSupportedWarning" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">UserWarning</span></code></p>
-<p>Warning issued when a feature of SED document is skipped because it requires a SED feature that is not
-yet support. The warning is only used when skipping a portion of a document doesn’t affect the semantic
-meaning of the unskipped portions of the document (e.g., skipping generating a plot doesn’t adversely
-affect reports).</p>
 </dd></dl>
 
 <dl class="py class">
@@ -2357,6 +2341,84 @@ calling <code class="xref py py-obj docutils literal notranslate"><span class="p
 <dd class="field-even"><p><strong>ValueErorr</strong> – if the simulation is invalid</p>
 </dd>
 </dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-biosimulators_utils.sedml.warnings">
+<span id="biosimulators-utils-sedml-warnings-module"></span><h2><span class="section-number">2.1.9.7. </span>biosimulators_utils.sedml.warnings module<a class="headerlink" href="#module-biosimulators_utils.sedml.warnings" title="Permalink to this headline">¶</a></h2>
+<p>Warnings for misuse of SED-ML</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-06</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="biosimulators_utils.sedml.warnings.IllogicalSedmlWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.sedml.warnings.</code><code class="sig-name descname">IllogicalSedmlWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.warnings.IllogicalSedmlWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.warnings.BioSimulatorsWarning" title="biosimulators_utils.warnings.BioSimulatorsWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.warnings.BioSimulatorsWarning</span></code></a></p>
+<p>Warning that a SED document is illogical, such as when a report or plot contains
+no datasets, curves, or surfaces.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="biosimulators_utils.sedml.warnings.NoCurvesWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.sedml.warnings.</code><code class="sig-name descname">NoCurvesWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.warnings.NoCurvesWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.warnings.IllogicalSedmlWarning" title="biosimulators_utils.sedml.warnings.IllogicalSedmlWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.warnings.IllogicalSedmlWarning</span></code></a></p>
+<p>Warning that a 2D plot does not contain any curves</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="biosimulators_utils.sedml.warnings.NoDataSetsWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.sedml.warnings.</code><code class="sig-name descname">NoDataSetsWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.warnings.NoDataSetsWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.warnings.IllogicalSedmlWarning" title="biosimulators_utils.sedml.warnings.IllogicalSedmlWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.warnings.IllogicalSedmlWarning</span></code></a></p>
+<p>Warning that a report does not contain any data sets</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="biosimulators_utils.sedml.warnings.NoOutputsWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.sedml.warnings.</code><code class="sig-name descname">NoOutputsWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.warnings.NoOutputsWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.warnings.IllogicalSedmlWarning" title="biosimulators_utils.sedml.warnings.IllogicalSedmlWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.warnings.IllogicalSedmlWarning</span></code></a></p>
+<p>Warning that a SED document does not have any outputs</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="biosimulators_utils.sedml.warnings.NoSurfacesWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.sedml.warnings.</code><code class="sig-name descname">NoSurfacesWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.warnings.NoSurfacesWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.warnings.IllogicalSedmlWarning" title="biosimulators_utils.sedml.warnings.IllogicalSedmlWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.warnings.IllogicalSedmlWarning</span></code></a></p>
+<p>Warning that a 3D plot does not contain any surfaces</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="biosimulators_utils.sedml.warnings.NoTasksWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.sedml.warnings.</code><code class="sig-name descname">NoTasksWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.warnings.NoTasksWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.warnings.IllogicalSedmlWarning" title="biosimulators_utils.sedml.warnings.IllogicalSedmlWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.warnings.IllogicalSedmlWarning</span></code></a></p>
+<p>Warning that a SED document does not have any tasks</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="biosimulators_utils.sedml.warnings.RepeatDataSetLabelsWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.sedml.warnings.</code><code class="sig-name descname">RepeatDataSetLabelsWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.warnings.RepeatDataSetLabelsWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.warnings.BioSimulatorsWarning" title="biosimulators_utils.warnings.BioSimulatorsWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.warnings.BioSimulatorsWarning</span></code></a></p>
+<p>Warning that multiple data sets with a report have the same label</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="biosimulators_utils.sedml.warnings.SedmlFeatureNotSupportedWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.sedml.warnings.</code><code class="sig-name descname">SedmlFeatureNotSupportedWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.warnings.SedmlFeatureNotSupportedWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.warnings.BioSimulatorsWarning" title="biosimulators_utils.warnings.BioSimulatorsWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.warnings.BioSimulatorsWarning</span></code></a></p>
+<p>Warning that a feature of a SED document was skipped because it requires a SED feature that is not
+yet supported. The warning is only used when skipping a portion of a document doesn’t affect the semantic
+meaning of the unskipped portions of the document (e.g., skipping generating a plot doesn’t adversely
+affect reports).</p>
 </dd></dl>
 
 </div>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.10. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.21 documentation</title>
+    <title>2.1.10. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.22 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -70,7 +70,9 @@
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#submodules">2.2. Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.config">2.3. biosimulators_utils.config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.data_model">2.4. biosimulators_utils.data_model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.image">2.5. biosimulators_utils.image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.exceptions">2.5. biosimulators_utils.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.image">2.6. biosimulators_utils.image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.warnings">2.7. biosimulators_utils.warnings module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">3. About BioSimulators utils</a></li>
@@ -205,6 +207,28 @@
 </dd>
 </dl>
 <dl class="py class">
+<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.simulator.data_model.</code><code class="sig-name descname">AlgorithmSubstitutionPolicy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Algorithm substitution policy</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.NONE">
+<code class="sig-name descname">NONE</code><em class="property"> = 'NONE'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.NONE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_FRAMEWORK">
+<code class="sig-name descname">SAME_FRAMEWORK</code><em class="property"> = 'SAME_FRAMEWORK'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_FRAMEWORK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_MATH">
+<code class="sig-name descname">SAME_MATH</code><em class="property"> = 'SAME_MATH'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_MATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="biosimulators_utils.simulator.data_model.SoftwareInterface">
 <em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.simulator.data_model.</code><code class="sig-name descname">SoftwareInterface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
@@ -247,8 +271,33 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-biosimulators_utils.simulator.exceptions">
+<span id="biosimulators-utils-simulator-exceptions-module"></span><h2><span class="section-number">2.1.10.4. </span>biosimulators_utils.simulator.exceptions module<a class="headerlink" href="#module-biosimulators_utils.simulator.exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Standard exceptions issued by biosimulation tools</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-29</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="biosimulators_utils.simulator.exceptions.AlgorithmDoesNotSupportModelFeatureException">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.simulator.exceptions.</code><code class="sig-name descname">AlgorithmDoesNotSupportModelFeatureException</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exceptions.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.exceptions.AlgorithmDoesNotSupportModelFeatureException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.exceptions.BioSimulatorsException" title="biosimulators_utils.exceptions.BioSimulatorsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.exceptions.BioSimulatorsException</span></code></a></p>
+<p>Exception that an algorithm does not support a feature of a model</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-biosimulators_utils.simulator.exec">
-<span id="biosimulators-utils-simulator-exec-module"></span><h2><span class="section-number">2.1.10.4. </span>biosimulators_utils.simulator.exec module<a class="headerlink" href="#module-biosimulators_utils.simulator.exec" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-exec-module"></span><h2><span class="section-number">2.1.10.5. </span>biosimulators_utils.simulator.exec module<a class="headerlink" href="#module-biosimulators_utils.simulator.exec" title="Permalink to this headline">¶</a></h2>
 <p>Utilities for executing command-line interfaces to simulators and
 containers that contain command-line interfaces to simulators</p>
 <dl class="field-list simple">
@@ -323,7 +372,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 </div>
 <div class="section" id="module-biosimulators_utils.simulator.io">
-<span id="biosimulators-utils-simulator-io-module"></span><h2><span class="section-number">2.1.10.5. </span>biosimulators_utils.simulator.io module<a class="headerlink" href="#module-biosimulators_utils.simulator.io" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-io-module"></span><h2><span class="section-number">2.1.10.6. </span>biosimulators_utils.simulator.io module<a class="headerlink" href="#module-biosimulators_utils.simulator.io" title="Permalink to this headline">¶</a></h2>
 <p>Methods for reading specifications of simulators</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -368,7 +417,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 </div>
 <div class="section" id="module-biosimulators_utils.simulator.specs">
-<span id="biosimulators-utils-simulator-specs-module"></span><h2><span class="section-number">2.1.10.6. </span>biosimulators_utils.simulator.specs module<a class="headerlink" href="#module-biosimulators_utils.simulator.specs" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-specs-module"></span><h2><span class="section-number">2.1.10.7. </span>biosimulators_utils.simulator.specs module<a class="headerlink" href="#module-biosimulators_utils.simulator.specs" title="Permalink to this headline">¶</a></h2>
 <p>Utilities for reading the specifications of a simulator</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -399,6 +448,31 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <code class="xref py py-obj docutils literal notranslate"><span class="pre">Algorithm</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-biosimulators_utils.simulator.warnings">
+<span id="biosimulators-utils-simulator-warnings-module"></span><h2><span class="section-number">2.1.10.8. </span>biosimulators_utils.simulator.warnings module<a class="headerlink" href="#module-biosimulators_utils.simulator.warnings" title="Permalink to this headline">¶</a></h2>
+<p>Standard warnings issued by biosimulation tools</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-29</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="biosimulators_utils.simulator.warnings.AlgorithmSubstitutedWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.simulator.warnings.</code><code class="sig-name descname">AlgorithmSubstitutedWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.warnings.AlgorithmSubstitutedWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.warnings.BioSimulatorsWarning" title="biosimulators_utils.warnings.BioSimulatorsWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.warnings.BioSimulatorsWarning</span></code></a></p>
+<p>Warning that an alternative algorithm was used rather than the requested algorithm</p>
 </dd></dl>
 
 </div>
