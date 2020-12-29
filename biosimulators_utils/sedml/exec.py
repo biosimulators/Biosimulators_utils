@@ -107,9 +107,12 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
     if not doc.tasks:
         warnings.warn('SED document does not describe any tasks', NoTasksWarning)
 
+    # TODO: initialize reports with their eventual shapes; this requires individual simulation tools to pass
+    # information about the shape of their output to this method
     variable_results = DataGeneratorVariableResults()
     data_gen_results = DataGeneratorResults()
     report_results = OutputResults()
+
     doc.tasks.sort(key=lambda task: task.id)
     print('{}Found {} tasks\n{}{}'.format(' ' * 2 * indent,
                                           len(doc.tasks),
