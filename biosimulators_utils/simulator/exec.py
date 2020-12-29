@@ -11,6 +11,7 @@ try:
     import docker
 except ModuleNotFoundError:
     docker = None
+from ..image import get_docker_image
 import os
 import shutil
 import subprocess
@@ -86,7 +87,7 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(
         raise ModuleNotFoundError("No module named 'docker'. Docker and the Python Docker package must be installed.")
 
     # pull image
-    get_simulator_docker_image(docker_image, pull=pull_docker_image)
+    get_docker_image(docker_image, pull=pull_docker_image)
 
     # run image
     in_dir = tempfile.mkdtemp()
@@ -162,34 +163,3 @@ def build_cli_args(archive_filename, out_dir):
         '-i', archive_filename,
         '-o', out_dir,
     ]
-
-
-def get_simulator_docker_image(tag, pull=True):
-    """ Get a Docker image for a simulator
-
-    Args:
-        tag (:obj:`str`): tag (e.g., ``biosimulators/tellurium``) or
-            URL (``ghcr.io/biosimulators/tellurium`) for a Docker image of a simulator
-    Returns:
-        :obj:`docker.models.images.Image`: Docker image
-    """
-    docker_client = docker.from_env()
-
-    try:
-        image = docker_client.images.get(tag)
-        if pull:
-            try:
-                image = docker_client.images.pull(tag)
-            except Exception:  # pragma: no cover
-                pass
-
-    except Exception:
-        if pull:
-            try:
-                image = docker_client.images.pull(tag)
-            except Exception:
-                raise docker.errors.ImageNotFound("Image '{}' for simulator could not be pulled".format(tag))
-        else:
-            raise docker.errors.ImageNotFound("Image '{}' for simulator is not available locally".format(tag))
-
-    return image

@@ -13,6 +13,7 @@ import subprocess
 
 __all__ = [
     'login_to_docker_registry',
+    'get_docker_image',
     'pull_docker_image',
     'tag_and_push_docker_image',
     'convert_docker_image_to_singularity',
@@ -33,6 +34,37 @@ def login_to_docker_registry(registry, username, password):
     docker_client = docker.from_env()
     docker_client.login(registry=registry, username=username, password=password)
     return docker_client
+
+
+def get_docker_image(tag, pull=True):
+    """ Get a Docker image for a simulator
+
+    Args:
+        tag (:obj:`str`): tag (e.g., ``biosimulators/tellurium``) or
+            URL (``ghcr.io/biosimulators/tellurium`) for a Docker image of a simulator
+    Returns:
+        :obj:`docker.models.images.Image`: Docker image
+    """
+    docker_client = docker.from_env()
+
+    try:
+        image = docker_client.images.get(tag)
+        if pull:
+            try:
+                image = docker_client.images.pull(tag)
+            except Exception:  # pragma: no cover
+                pass
+
+    except Exception:
+        if pull:
+            try:
+                image = docker_client.images.pull(tag)
+            except Exception:
+                raise docker.errors.ImageNotFound("Image '{}' for simulator could not be pulled".format(tag))
+        else:
+            raise docker.errors.ImageNotFound("Image '{}' for simulator is not available locally".format(tag))
+
+    return image
 
 
 def pull_docker_image(docker_client, url):

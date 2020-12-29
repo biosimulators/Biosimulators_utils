@@ -14,6 +14,18 @@ class ImageTestCase(unittest.TestCase):
             os.getenv("DOCKER_HUB_USERNAME"),
             os.getenv("DOCKER_HUB_TOKEN"))
 
+    def test_get_simulator_docker_image(self):
+        docker_client = docker.from_env()
+        docker_client.images.pull('hello-world')
+        image.get_docker_image('hello-world', pull=False)
+        image.get_docker_image('hello-world', pull=True)
+
+        with self.assertRaises(docker.errors.ImageNotFound):
+            image.get_docker_image('unknown', pull=False)
+
+        with self.assertRaises(docker.errors.ImageNotFound):
+            image.get_docker_image('unknown', pull=True)
+
     def test_pull_docker_image(self):
         docker_client = image.login_to_docker_registry(
             'docker.io',
