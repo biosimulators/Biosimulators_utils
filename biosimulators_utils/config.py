@@ -1,3 +1,11 @@
+""" Common configuration for simulation tools
+
+:Author: Jonathan Karr <karr@mssm.edu>
+:Date: 2020-12-29
+:Copyright: 2020, Center for Reproducible Biomedical Modeling
+:License: MIT
+"""
+
 import os
 
 
@@ -5,6 +13,7 @@ class Config(object):
     """ Configuration
 
     Attributes:
+        ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
         REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
         PLOT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate plots in
         H5_REPORTS_PATH (:obj:`str`): path to save reports in HDF5 format relative to base output directory
@@ -16,11 +25,12 @@ class Config(object):
         BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
     """
 
-    def __init__(self, REPORT_FORMATS, PLOT_FORMATS,
+    def __init__(self, ALGORITHM_SUBSTITUTION_POLICY, REPORT_FORMATS, PLOT_FORMATS,
                  H5_REPORTS_PATH, REPORTS_PATH, PLOTS_PATH, BUNDLE_OUTPUTS, KEEP_INDIVIDUAL_OUTPUTS,
                  EXEC_STATUS_PATH, BIOSIMULATORS_API_ENDPOINT):
         """
         Args:
+            ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
             REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
             PLOT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate plots in
             H5_REPORTS_PATH (:obj:`str`): path to save reports in HDF5 format relative to base output directory
@@ -31,6 +41,7 @@ class Config(object):
             EXEC_STATUS_PATH (:obj:`str`): path to save the execution status of a COMBINE/OMEX archive
             BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
         """
+        self.ALGORITHM_SUBSTITUTION_POLICY = ALGORITHM_SUBSTITUTION_POLICY
         self.REPORT_FORMATS = REPORT_FORMATS
         self.PLOT_FORMATS = PLOT_FORMATS
         self.H5_REPORTS_PATH = H5_REPORTS_PATH
@@ -49,6 +60,7 @@ def get_config():
         :obj:`Config`: configuration
     """
     return Config(
+        ALGORITHM_SUBSTITUTION_POLICY=os.environ.get('ALGORITHM_SUBSTITUTION_POLICY', 'SAME_FRAMEWORK'),
         REPORT_FORMATS=[format.strip().lower() for format in os.environ.get('REPORT_FORMATS', 'csv, h5').split(',')],
         PLOT_FORMATS=[format.strip().lower() for format in os.environ.get('PLOT_FORMATS', 'pdf').split(',')],
         H5_REPORTS_PATH=os.environ.get('H5_REPORTS_PATH', 'reports.h5'),

@@ -9,10 +9,10 @@
 from ..warnings import BioSimulatorsWarning
 
 __all__ = [
-    'AlternateAlgorithmWarning',
+    'AlgorithmSubstitutedWarning',
 ]
 
 
-class AlternateAlgorithmWarning(BioSimulatorsWarning):
+class AlgorithmSubstitutedWarning(BioSimulatorsWarning):
     """ Warning that an alternative algorithm was used rather than the requested algorithm """
     pass  # pragma: no cover
