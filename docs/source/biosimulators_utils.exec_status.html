@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.4. biosimulators_utils.exec_status package &#8212; BioSimulators utils 0.1.21 documentation</title>
+    <title>2.1.4. biosimulators_utils.exec_status package &#8212; BioSimulators utils 0.1.22 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -70,7 +70,9 @@
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#submodules">2.2. Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.config">2.3. biosimulators_utils.config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.data_model">2.4. biosimulators_utils.data_model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.image">2.5. biosimulators_utils.image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.exceptions">2.5. biosimulators_utils.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.image">2.6. biosimulators_utils.image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.warnings">2.7. biosimulators_utils.warnings module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../about.html">3. About BioSimulators utils</a></li>
@@ -168,6 +170,12 @@ sed_documents (<code class="xref py py-obj docutils literal notranslate"><span c
 </dd></dl>
 
 <dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus.finalize">
+<code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mark all unexceuted elements as skipped</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus.to_dict">
 <code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.CombineArchiveExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a JSON-compatible representation</p>
@@ -189,6 +197,11 @@ sed_documents (<code class="xref py py-obj docutils literal notranslate"><span c
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>Execution status of a component of a COMBINE/OMEX archive</p>
 <dl class="py attribute">
+<dt id="biosimulators_utils.exec_status.data_model.ExecutionStatus.FAILED">
+<code class="sig-name descname">FAILED</code><em class="property"> = 'FAILED'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus.FAILED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt id="biosimulators_utils.exec_status.data_model.ExecutionStatus.QUEUED">
 <code class="sig-name descname">QUEUED</code><em class="property"> = 'QUEUED'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus.QUEUED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -196,6 +209,11 @@ sed_documents (<code class="xref py py-obj docutils literal notranslate"><span c
 <dl class="py attribute">
 <dt id="biosimulators_utils.exec_status.data_model.ExecutionStatus.RUNNING">
 <code class="sig-name descname">RUNNING</code><em class="property"> = 'RUNNING'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus.RUNNING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.exec_status.data_model.ExecutionStatus.SKIPPED">
+<code class="sig-name descname">SKIPPED</code><em class="property"> = 'SKIPPED'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ExecutionStatus.SKIPPED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -219,6 +237,12 @@ document_status (<a class="reference internal" href="#biosimulators_utils.exec_s
 <dt id="biosimulators_utils.exec_status.data_model.OutputExecutionStatus.export">
 <code class="sig-name descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.OutputExecutionStatus.export" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write to a file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.OutputExecutionStatus.finalize">
+<code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.OutputExecutionStatus.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mark all unexceuted elements as skipped</p>
 </dd></dl>
 
 <dl class="py method">
@@ -252,6 +276,12 @@ curves (<code class="xref py py-obj docutils literal notranslate"><span class="p
 </dd>
 </dl>
 <dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.Plot2DExecutionStatus.finalize">
+<code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.Plot2DExecutionStatus.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mark all unexceuted elements as skipped</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="biosimulators_utils.exec_status.data_model.Plot2DExecutionStatus.to_dict">
 <code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.Plot2DExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a JSON-compatible representation</p>
@@ -282,6 +312,12 @@ surfaces (<code class="xref py py-obj docutils literal notranslate"><span class=
 </dd>
 </dl>
 <dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.Plot3DExecutionStatus.finalize">
+<code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.Plot3DExecutionStatus.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mark all unexceuted elements as skipped</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="biosimulators_utils.exec_status.data_model.Plot3DExecutionStatus.to_dict">
 <code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.Plot3DExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a JSON-compatible representation</p>
@@ -311,6 +347,12 @@ data_sets (<code class="xref py py-obj docutils literal notranslate"><span class
 <p>document_status (<a class="reference internal" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus" title="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentExecutionStatus</span></code></a>): execution status of parent SED document</p>
 </dd>
 </dl>
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.ReportExecutionStatus.finalize">
+<code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ReportExecutionStatus.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mark all unexceuted elements as skipped</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="biosimulators_utils.exec_status.data_model.ReportExecutionStatus.to_dict">
 <code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.ReportExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
@@ -352,6 +394,12 @@ tasks (<code class="xref py py-obj docutils literal notranslate"><span class="pr
 </dd></dl>
 
 <dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus.finalize">
+<code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mark all unexceuted elements as skipped</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus.to_dict">
 <code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.SedDocumentExecutionStatus.to_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a JSON-compatible representation</p>
@@ -381,6 +429,12 @@ document_status (<a class="reference internal" href="#biosimulators_utils.exec_s
 <dt id="biosimulators_utils.exec_status.data_model.TaskExecutionStatus.export">
 <code class="sig-name descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.TaskExecutionStatus.export" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write to a file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.exec_status.data_model.TaskExecutionStatus.finalize">
+<code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.data_model.TaskExecutionStatus.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mark all unexceuted elements as skipped</p>
 </dd></dl>
 
 <dl class="py method">
@@ -419,13 +473,15 @@ document_status (<a class="reference internal" href="#biosimulators_utils.exec_s
 </dl>
 <dl class="py function">
 <dt id="biosimulators_utils.exec_status.utils.init_combine_archive_exec_status">
-<code class="sig-prename descclassname">biosimulators_utils.exec_status.utils.</code><code class="sig-name descname">init_combine_archive_exec_status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">archive</span></em>, <em class="sig-param"><span class="n">archive_dir</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.utils.init_combine_archive_exec_status" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">biosimulators_utils.exec_status.utils.</code><code class="sig-name descname">init_combine_archive_exec_status</code><span class="sig-paren">(</span><em class="sig-param">archive</em>, <em class="sig-param">archive_dir</em>, <em class="sig-param">supported_features=(&lt;class 'biosimulators_utils.combine.data_model.CombineArchive'&gt;</em>, <em class="sig-param">&lt;class 'biosimulators_utils.sedml.data_model.SedDocument'&gt;</em>, <em class="sig-param">&lt;class 'biosimulators_utils.sedml.data_model.Task'&gt;</em>, <em class="sig-param">&lt;class 'biosimulators_utils.sedml.data_model.Report'&gt;)</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/exec_status/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.exec_status.utils.init_combine_archive_exec_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the execution status of the SED documents in a COMBINE/OMEX archive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>archive</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>) – COMBINE/OMEX archive</p></li>
 <li><p><strong>archive_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path where the content of the archive is located</p></li>
+<li><p><strong>supported_features</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code>, optional) – list of supported SED elements.
+Default: COMBINE/OMEX archives, SED documents, SED tasks, and SED reports</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
