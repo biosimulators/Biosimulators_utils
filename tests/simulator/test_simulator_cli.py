@@ -1,4 +1,5 @@
 from biosimulators_utils.simulator.cli import build_cli
+from biosimulators_utils.simulator.environ import ENVIRONMENT_VARIABLES
 import capturer
 import sys
 import unittest
@@ -13,7 +14,8 @@ class CliTestCase(unittest.TestCase):
                 raise Exception(outputs_dirname)
         self.App = build_cli('test-simulator', '4.5.6',
                              'Test Simulator', '1.2.3', 'https://test-simulator.org',
-                             exec_sedml_docs_in_combine_archive)
+                             exec_sedml_docs_in_combine_archive,
+                             environment_variables=ENVIRONMENT_VARIABLES.values())
 
     def test_help(self):
         with self.assertRaises(SystemExit) as cm:

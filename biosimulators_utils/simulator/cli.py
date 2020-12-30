@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from .data_model import EnvironmentVariable  # noqa: F401
 import cement
 import platform
 import sys
@@ -18,7 +19,7 @@ __all__ = [
 
 def build_cli(cli_name=None, cli_version=None,
               simulator_name=None, simulator_version=None, simulator_url=None,
-              combine_archive_executer=None):
+              combine_archive_executer=None, environment_variables=None):
     """ Create a BioSimulators-compliant command-line application for a biosimulation tool.
 
     The command-line application will have two inputs
@@ -40,6 +41,8 @@ def build_cli(cli_name=None, cli_version=None,
         combine_archive_executer (:obj:`types.FunctionType`): a function which has two positional arguments
             * The path to the COMBINE/OMEX archive
             * The path to the directory to save the outputs of the simulations defined in the archive
+        environment_variables (:obj:`list` of :obj:`EnvironmentVariable`, optional): description of the environment
+            variables recognized by the simulator
 
     Returns:
         :obj:`cement.App`: command-line application
@@ -55,6 +58,25 @@ def build_cli(cli_name=None, cli_version=None,
         raise ValueError('Simulator name must be defined')
     if not combine_archive_executer:
         raise ValueError('COMBINE/OMEX archive execution method must be provided')
+
+    description_value = "BioSimulators-compliant command-line interface to the {} simulation program{}.".format(
+        simulator_name,
+        ' <{}>'.format(simulator_url) if simulator_url else '')
+
+    if environment_variables:
+        description_value += ('\n\nIn addition to the command-line arguments outlined below, '
+                              '{} also supports the following environment variables:\n'
+                              ).format(simulator_name)
+
+        for env_var in sorted(environment_variables, key=lambda var: var.name):
+            description_value += "\n  '{}': {}".format(env_var.name, env_var.description)
+            if env_var.options:
+                option_values = sorted("'" + val + "'" for val in env_var.options.__members__.values())
+                description_value += "\n    Options: {}".format(', '.join(option_values))
+            if env_var.default:
+                description_value += "\n    Default value: '{}'".format(env_var.default)
+            if env_var.more_info_url:
+                description_value += "\n    More information: {}".format(env_var.more_info_url)
 
     versions = []
     if simulator_version:
@@ -75,9 +97,7 @@ def build_cli(cli_name=None, cli_version=None,
 
         class Meta:
             label = 'base'
-            description = "BioSimulators-compliant command-line interface to the {} simulation program{}.".format(
-                simulator_name,
-                ' <{}>'.format(simulator_url) if simulator_url else '')
+            description = description_value
             help = cli_name
             arguments = [
                 (
