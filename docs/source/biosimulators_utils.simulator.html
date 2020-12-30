@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.10. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.23 documentation</title>
+    <title>2.1.10. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.24 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -214,8 +214,13 @@ variables recognized by the simulator</p></li>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>Algorithm substitution policy</p>
 <dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.ANY">
+<code class="sig-name descname">ANY</code><em class="property"> = 'ANY'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.ANY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.NONE">
-<code class="sig-name descname">NONE</code><em class="property"> = 'NONE'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.NONE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">NONE</code><em class="property"> = 'None'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.NONE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -236,58 +241,33 @@ variables recognized by the simulator</p></li>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Environment variable supported by a simulator</p>
 <dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.EnvironmentVariable.name">
-<code class="sig-name descname">name</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.EnvironmentVariable.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>name</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
+<dt>
+<code class="sig-name descname">name(</code></dt>
+<dd><p>obj: <cite>str</cite>): name</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.EnvironmentVariable.description">
-<code class="sig-name descname">description</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.EnvironmentVariable.description" title="Permalink to this definition">¶</a></dt>
-<dd><p>description</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
+<dt>
+<code class="sig-name descname">description(</code></dt>
+<dd><p>obj: <cite>str</cite>): description</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.EnvironmentVariable.options">
-<code class="sig-name descname">options</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.EnvironmentVariable.options" title="Permalink to this definition">¶</a></dt>
-<dd><p>enumeration of options</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code></p>
-</dd>
-</dl>
+<dt>
+<code class="sig-name descname">options(</code></dt>
+<dd><p>obj: <cite>type</cite>): enumeration of options</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.EnvironmentVariable.default">
-<code class="sig-name descname">default</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.EnvironmentVariable.default" title="Permalink to this definition">¶</a></dt>
-<dd><p>default</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
+<dt>
+<code class="sig-name descname">default(</code></dt>
+<dd><p>obj: <cite>str</cite>): default</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.EnvironmentVariable.more_info_url">
-<code class="sig-name descname">more_info_url</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.EnvironmentVariable.more_info_url" title="Permalink to this definition">¶</a></dt>
-<dd><p>URL with more information about the variable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
+<dt>
+<code class="sig-name descname">more_info_url(</code></dt>
+<dd><p>obj: <cite>str</cite>): URL with more information about the variable</p>
 </dd></dl>
 
 </dd></dl>
@@ -370,6 +350,13 @@ variables recognized by the simulator</p></li>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
+<dl class="py exception">
+<dt id="biosimulators_utils.simulator.exceptions.AlgorithmCannotBeSubstitutedException">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.simulator.exceptions.</code><code class="sig-name descname">AlgorithmCannotBeSubstitutedException</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exceptions.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.exceptions.AlgorithmCannotBeSubstitutedException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.exceptions.BioSimulatorsException" title="biosimulators_utils.exceptions.BioSimulatorsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.exceptions.BioSimulatorsException</span></code></a></p>
+<p>Exception that the algorithm substitution policy does not allow an algorithm to be substituted</p>
+</dd></dl>
+
 <dl class="py exception">
 <dt id="biosimulators_utils.simulator.exceptions.AlgorithmDoesNotSupportModelFeatureException">
 <em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.simulator.exceptions.</code><code class="sig-name descname">AlgorithmDoesNotSupportModelFeatureException</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exceptions.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.exceptions.AlgorithmDoesNotSupportModelFeatureException" title="Permalink to this definition">¶</a></dt>
@@ -533,8 +520,44 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-biosimulators_utils.simulator.utils">
+<span id="biosimulators-utils-simulator-utils-module"></span><h2><span class="section-number">2.1.10.9. </span>biosimulators_utils.simulator.utils module<a class="headerlink" href="#module-biosimulators_utils.simulator.utils" title="Permalink to this headline">¶</a></h2>
+<p>Utilities for simulators</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-30</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="biosimulators_utils.simulator.utils.get_algorithm_substitution_policy">
+<code class="sig-prename descclassname">biosimulators_utils.simulator.utils.</code><code class="sig-name descname">get_algorithm_substitution_policy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.utils.get_algorithm_substitution_policy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current algorithm substitution policy based on the value of the <code class="docutils literal notranslate"><span class="pre">ALGORITHM_SUBSTITUTION_POLICY</span></code>
+environment variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>policy</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AlgorithmSubstitutionPolicy</span></code></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – if the value of <code class="docutils literal notranslate"><span class="pre">ALGORITHM_SUBSTITUTION_POLICY</span></code> is not the name of a recognized policy</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-biosimulators_utils.simulator.warnings">
-<span id="biosimulators-utils-simulator-warnings-module"></span><h2><span class="section-number">2.1.10.9. </span>biosimulators_utils.simulator.warnings module<a class="headerlink" href="#module-biosimulators_utils.simulator.warnings" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-warnings-module"></span><h2><span class="section-number">2.1.10.10. </span>biosimulators_utils.simulator.warnings module<a class="headerlink" href="#module-biosimulators_utils.simulator.warnings" title="Permalink to this headline">¶</a></h2>
 <p>Standard warnings issued by biosimulation tools</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
