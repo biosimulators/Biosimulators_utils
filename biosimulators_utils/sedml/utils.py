@@ -10,6 +10,7 @@ from ..report.data_model import DataGeneratorVariableResults  # noqa: F401
 from .data_model import (SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D,  # noqa: F401
                          DataGenerator, DataGeneratorVariable, MATHEMATICAL_FUNCTIONS)
 from lxml import etree
+import copy
 import evalidate
 import math
 import numpy
@@ -18,6 +19,10 @@ import re
 __all__ = [
     'append_all_nested_children_to_doc',
     'apply_changes_to_xml_model',
+    'remove_model_changes',
+    'remove_algorithm_parameter_changes',
+    'replace_complex_data_generators_with_generators_for_individual_variables',
+    'remove_plots',
 ]
 
 
@@ -206,3 +211,88 @@ def calc_data_generator_results(data_generator, variable_results):
                 result[i_el] = result_el
 
     return result
+
+
+def remove_model_changes(sed_doc):
+    """ Remove model changes from a SED document
+
+    Args:
+        sed_doc (:obj:`SedDocument`): SED document
+    """
+    for model in sed_doc.models:
+        model.changes = []
+
+
+def remove_algorithm_parameter_changes(sed_doc):
+    """ Remove algorithm parameter changes from a SED document
+
+    Args:
+        sed_doc (:obj:`SedDocument`): SED document
+    """
+    for simulation in sed_doc.simulations:
+        simulation.algorithm.changes = []
+
+
+def replace_complex_data_generators_with_generators_for_individual_variables(sed_doc):
+    """ Remove model changes from a SED document
+
+    Args:
+        sed_doc (:obj:`SedDocument`): SED document
+    """
+    data_gen_replacements = {}
+
+    for original_data_gen in list(sed_doc.data_generators):
+        if len(original_data_gen.parameters) + len(original_data_gen.variables) > 1:
+            sed_doc.data_generators.remove(original_data_gen)
+            data_gen_replacements[original_data_gen] = []
+
+            for var in original_data_gen.variables:
+                new_data_gen = DataGenerator(id='__single_var_gen__' + var.id, variables=[var], math=var.id)
+                data_gen_replacements[original_data_gen].append(new_data_gen)
+                sed_doc.data_generators.append(new_data_gen)
+
+    for output in sed_doc.outputs:
+        if isinstance(output, Report):
+            els = 'data_sets'
+            props = ['data_generator']
+
+        elif isinstance(output, Plot2D):
+            els = 'curves'
+            props = ['x_data_generator', 'y_data_generator']
+
+        elif isinstance(output, Plot3D):
+            els = 'surfaces'
+            props = ['x_data_generator', 'y_data_generator', 'z_data_generator']
+
+        old_els = getattr(output, els)
+
+        new_els = []
+        i_single_var_output_el = 0
+        for el in old_els:
+            replacement_els = [el]
+            for prop in props:
+                new_replacement_els = []
+                for el2 in replacement_els:
+                    original_data_gen = getattr(el2, prop)
+                    for replaced_data_gen in data_gen_replacements.get(original_data_gen, [original_data_gen]):
+                        i_single_var_output_el += 1
+                        el3 = copy.copy(el2)
+                        el3.id = '__single_var_output_el__' + str(i_single_var_output_el)
+                        el3.label = el3.id
+                        setattr(el3, prop, replaced_data_gen)
+                        new_replacement_els.append(el3)
+                replacement_els = new_replacement_els
+            new_els.extend(replacement_els)
+
+        setattr(output, els, new_els)
+
+
+def remove_plots(sed_doc):
+    """ Remove plots from a SED document
+
+    Args:
+        sed_doc (:obj:`SedDocument`): SED document
+    """
+    for output in list(sed_doc.outputs):
+        if isinstance(output, (Plot2D, Plot3D)):
+            sed_doc.outputs.remove(output)

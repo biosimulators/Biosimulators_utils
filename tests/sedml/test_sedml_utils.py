@@ -205,3 +205,143 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         }
         with self.assertRaises(ValueError):
             utils.calc_data_generator_results(data_gen, var_results)
+
+    def test_remove_model_changes(self):
+        doc = data_model.SedDocument(
+            models=[
+                data_model.Model(
+                    changes=[
+                        data_model.ModelAttributeChange(),
+                        data_model.ModelAttributeChange(),
+                        data_model.ModelAttributeChange(),
+                    ],
+                ),
+                data_model.Model(
+                    changes=[
+                        data_model.ModelAttributeChange(),
+                        data_model.ModelAttributeChange(),
+                        data_model.ModelAttributeChange(),
+                    ],
+                )
+            ],
+        )
+        utils.remove_model_changes(doc)
+        for model in doc.models:
+            self.assertEqual(model.changes, [])
+
+    def test_remove_algorithm_parameter_changes(self):
+        doc = data_model.SedDocument(
+            simulations=[
+                data_model.UniformTimeCourseSimulation(
+                    algorithm=data_model.Algorithm(
+                        changes=[
+                            data_model.AlgorithmParameterChange(),
+                            data_model.AlgorithmParameterChange(),
+                        ],
+                    )
+                ),
+                data_model.UniformTimeCourseSimulation(
+                    algorithm=data_model.Algorithm(
+                        changes=[
+                            data_model.AlgorithmParameterChange(),
+                            data_model.AlgorithmParameterChange(),
+                        ],
+                    )
+                ),
+            ],
+        )
+        utils.remove_algorithm_parameter_changes(doc)
+        for sim in doc.simulations:
+            self.assertEqual(sim.algorithm.changes, [])
+
+    def test_replace_complex_data_generators_with_generators_for_individual_variables(self):
+        doc = data_model.SedDocument(
+            data_generators=[
+                data_model.DataGenerator(
+                    parameters=[
+                        data_model.DataGeneratorParameter(),
+                    ],
+                    variables=[
+                        data_model.DataGeneratorVariable(id="var_1"),
+                    ]
+                ),
+                data_model.DataGenerator(
+                    parameters=[
+                        data_model.DataGeneratorParameter(),
+                    ],
+                    variables=[
+                        data_model.DataGeneratorVariable(id="var_2"),
+                        data_model.DataGeneratorVariable(id="var_3"),
+                    ]
+                )
+            ],
+        )
+        doc.outputs.append(data_model.Report(
+            data_sets=[
+                data_model.DataSet(data_generator=doc.data_generators[0]),
+                data_model.DataSet(data_generator=doc.data_generators[1]),
+            ]
+        ))
+        doc.outputs.append(data_model.Plot2D(
+            curves=[
+                data_model.Curve(x_data_generator=doc.data_generators[0], y_data_generator=doc.data_generators[0]),
+                data_model.Curve(x_data_generator=doc.data_generators[1], y_data_generator=doc.data_generators[1]),
+            ]
+        ))
+        doc.outputs.append(data_model.Plot3D(
+            surfaces=[
+                data_model.Surface(
+                    x_data_generator=doc.data_generators[0],
+                    y_data_generator=doc.data_generators[0],
+                    z_data_generator=doc.data_generators[0],
+                ),
+                data_model.Surface(
+                    x_data_generator=doc.data_generators[1],
+                    y_data_generator=doc.data_generators[1],
+                    z_data_generator=doc.data_generators[1],
+                ),
+            ]
+        ))
+
+        utils.replace_complex_data_generators_with_generators_for_individual_variables(doc)
+
+        for data_gen in doc.data_generators:
+            self.assertEqual(len(data_gen.variables), 1)
+            self.assertEqual(data_gen.parameters, [])
+            self.assertEqual(data_gen.math, data_gen.variables[0].id)
+        self.assertEqual(len(set(data_gen.variables[0].id for data_gen in doc.data_generators)), 3)
+        self.assertEqual(len(set(data_gen.id for data_gen in doc.data_generators)), 3)
+
+        report = doc.outputs[0]
+        self.assertEqual(len(report.data_sets), 3)
+        self.assertEqual(len(set(d.id for d in report.data_sets)), 3)
+        self.assertEqual(len(set(d.data_generator.id for d in report.data_sets)), 3)
+
+        report = doc.outputs[0]
+        self.assertEqual(len(report.data_sets), 3)
+        self.assertEqual(len(set(d.id for d in report.data_sets)), 3)
+        self.assertEqual(len(set(d.data_generator.id for d in report.data_sets)), 3)
+
+        plot = doc.outputs[1]
+        self.assertEqual(len(plot.curves), 5)
+        self.assertEqual(len(set(c.id for c in plot.curves)), 5)
+        self.assertEqual(len(set((c.x_data_generator.id, c.y_data_generator) for c in plot.curves)), 5)
+
+        plot = doc.outputs[2]
+        self.assertEqual(len(plot.surfaces), 9)
+        self.assertEqual(len(set(s.id for s in plot.surfaces)), 9)
+        self.assertEqual(len(set((s.x_data_generator.id, s.y_data_generator, s.z_data_generator) for s in plot.surfaces)), 9)
+
+    def test_remove_plots(self):
+        report = data_model.Report()
+        doc = data_model.SedDocument(
+            outputs=[
+                report,
+                data_model.Plot2D(),
+                data_model.Plot3D(),
+            ],
+        )
+
+        utils.remove_plots(doc)
+        self.assertEqual(len(doc.outputs), 1)
+        self.assertEqual(doc.outputs[0], report)
