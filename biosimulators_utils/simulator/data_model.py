@@ -36,7 +36,13 @@ class AlgorithmSubstitutionPolicy(str, enum.Enum):
     # algorithms can be substituted with mathematically-equivalent algorithms (e.g. SSA, NRM)
 
     SAME_FRAMEWORK = 'SAME_FRAMEWORK'
-    # any algorithms of the same framework can be substituted (e.g., CVODE, LSODA)
+    # any algorithm of the same framework can be substituted (e.g., CVODE, LSODA)
+    # this is the recommended default value
+
+    ANY = 'ANY'
+    # any algorithm can be substituted. Note, using any other algorithm can substantively
+    # change the interpretation of a simulation. For example, switching SSA to CVODE loses
+    # all information about the variance in the simulated system.
 
 
 class EnvironmentVariable(object):
