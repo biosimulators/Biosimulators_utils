@@ -11,6 +11,7 @@ import enum
 __all__ = [
     'SoftwareInterface',
     'AlgorithmSubstitutionPolicy',
+    'ALGORITHM_SUBSTITUTION_POLICY_LEVELS',
     'EnvironmentVariable',
 ]
 
@@ -29,7 +30,7 @@ class SoftwareInterface(str, enum.Enum):
 class AlgorithmSubstitutionPolicy(str, enum.Enum):
     """ Algorithm substitution policy """
 
-    NONE = 'NONE'
+    NONE = 'None'
     # algorithms should not be substituted
 
     SAME_MATH = 'SAME_MATH'
@@ -45,25 +46,33 @@ class AlgorithmSubstitutionPolicy(str, enum.Enum):
     # all information about the variance in the simulated system.
 
 
+ALGORITHM_SUBSTITUTION_POLICY_LEVELS = {
+    AlgorithmSubstitutionPolicy.NONE: 0,
+    AlgorithmSubstitutionPolicy.SAME_MATH: 1,
+    AlgorithmSubstitutionPolicy.SAME_FRAMEWORK: 2,
+    AlgorithmSubstitutionPolicy.ANY: 3,
+}
+
+
 class EnvironmentVariable(object):
     """ Environment variable supported by a simulator
 
     Attributes:
-        name (:obj:`str`): name
-        description (:obj:`str`): description
-        options (:obj:`type`): enumeration of options
-        default (:obj:`str`): default
-        more_info_url (:obj:`str`): URL with more information about the variable
+        name(: obj: `str`): name
+        description(: obj: `str`): description
+        options(: obj: `type`): enumeration of options
+        default(: obj: `str`): default
+        more_info_url(: obj: `str`): URL with more information about the variable
     """
 
     def __init__(self, name=None, description=None, options=None, default=None, more_info_url=None):
         """
         Args:
-            name (:obj:`str`, optional): name
-            description (:obj:`str`, optional): description
-            options (:obj:`type`, optional): enumeration of options
-            default (:obj:`str`, optional): default
-            more_info_url (:obj:`str`, optional): URL with more information about the variable
+            name(: obj: `str`, optional): name
+            description(: obj: `str`, optional): description
+            options(: obj: `type`, optional): enumeration of options
+            default(: obj: `str`, optional): default
+            more_info_url(: obj: `str`, optional): URL with more information about the variable
         """
         self.name = name
         self.description = description
