@@ -7,6 +7,7 @@
 """
 
 import cement
+import platform
 import sys
 import types  # noqa: F401
 
@@ -61,6 +62,12 @@ def build_cli(cli_name=None, cli_version=None,
     if cli_version:
         versions.append('CLI: ' + cli_version)
     versions.append('Python: ' + python_version)
+    versions.append('OS: {} {} {}'.format(
+        platform.system(),
+        (' '.join(platform.dist())).strip(),
+        platform.release(),
+    ))
+    versions.append('Machine: ' + platform.machine())
     version = ', '.join(versions)
 
     class BaseController(cement.Controller):
