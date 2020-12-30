@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2. biosimulators_utils package &#8212; BioSimulators utils 0.1.22 documentation</title>
+    <title>2. biosimulators_utils package &#8212; BioSimulators utils 0.1.23 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -196,11 +196,12 @@
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#submodules">2.1.10.1. Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.cli">2.1.10.2. biosimulators_utils.simulator.cli module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.data_model">2.1.10.3. biosimulators_utils.simulator.data_model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.exceptions">2.1.10.4. biosimulators_utils.simulator.exceptions module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.exec">2.1.10.5. biosimulators_utils.simulator.exec module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.io">2.1.10.6. biosimulators_utils.simulator.io module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.specs">2.1.10.7. biosimulators_utils.simulator.specs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.warnings">2.1.10.8. biosimulators_utils.simulator.warnings module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.environ">2.1.10.4. biosimulators_utils.simulator.environ module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.exceptions">2.1.10.5. biosimulators_utils.simulator.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.exec">2.1.10.6. biosimulators_utils.simulator.exec module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.io">2.1.10.7. biosimulators_utils.simulator.io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.specs">2.1.10.8. biosimulators_utils.simulator.specs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.warnings">2.1.10.9. biosimulators_utils.simulator.warnings module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.simulator_registry.html">2.1.11. biosimulators_utils.simulator_registry package</a><ul>
@@ -649,6 +650,27 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.image.get_docker_image">
+<code class="sig-prename descclassname">biosimulators_utils.image.</code><code class="sig-name descname">get_docker_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docker_client</span></em>, <em class="sig-param"><span class="n">tag</span></em>, <em class="sig-param"><span class="n">pull</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/image.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.image.get_docker_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a Docker image for a simulator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>docker_client</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">docker.client.DockerClient</span></code>) – Docker client</p></li>
+<li><p><strong>tag</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – tag (e.g., <code class="docutils literal notranslate"><span class="pre">biosimulators/tellurium</span></code>) or
+URL (<a href="#id1"><span class="problematic" id="id2">``</span></a>ghcr.io/biosimulators/tellurium`) for a Docker image of a simulator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Docker image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">docker.models.images.Image</span></code></p>
 </dd>
 </dl>
 </dd></dl>
