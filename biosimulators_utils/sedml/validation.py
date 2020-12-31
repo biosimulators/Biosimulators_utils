@@ -274,11 +274,12 @@ def validate_data_generator_variable_xpaths(variables, model_source, attr='id'):
         :obj:`dict` of :obj:`str` to :obj:`str`: dictionary that maps each XPath to the
             value of the attribute of the object in the XML file that matches the XPath
     """
-    x_paths = []
+    target_x_paths = {}
     for variable in variables:
         if variable.target:
             x_path = variable.target
             if '/@' in x_path:
                 x_path, _, _ = x_path.rpartition('/@')
-            x_paths.append(x_path)
-    return validate_xpaths_ref_to_unique_objects(model_source, x_paths, attr=attr)
+            target_x_paths[variable.target] = x_path
+    x_path_attrs = validate_xpaths_ref_to_unique_objects(model_source, set(target_x_paths.values()), attr=attr)
+    return {target: x_path_attrs[x_path] for target, x_path in target_x_paths.items()}

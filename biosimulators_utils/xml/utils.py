@@ -16,7 +16,7 @@ def get_attributes_of_xpaths(filename, x_paths, attr='id'):
     Args:
         filename (:obj:`str`): path to XML file
         x_paths (:obj:`list` of `str`): XPaths
-        attr (:obj:`str`, optional): attribute to get values of
+        attr (:obj:`str` or :obj:`dict`, optional): attribute to get values of
 
     Returns:
         :obj:`dict` of :obj:`str` to :obj:`list` of :obj:`str`: dictionary that maps each XPath to the
@@ -34,13 +34,16 @@ def get_attributes_of_xpaths(filename, x_paths, attr='id'):
         if match:
             namespaces[match.group(2)] = match.group(1)
 
+    if isinstance(attr, dict):
+        attr = '{{{}}}{}'.format(namespaces[attr['namespace']], attr['name'])
+
     # determine number of objects that match each XPath
     x_path_counts = {}
     for x_path in x_paths:
         try:
             objects = etree.xpath(x_path, namespaces=namespaces)
 
-            x_path_counts[x_path] = [obj.attrib[attr] for obj in objects]
+            x_path_counts[x_path] = [obj.attrib.get(attr, None) for obj in objects]
         except Exception:
             x_path_counts[x_path] = []
 
@@ -54,7 +57,7 @@ def validate_xpaths_ref_to_unique_objects(filename, x_paths, attr='id'):
     Args:
         filename (:obj:`str`): path to XML file
         x_paths (:obj:`list` of `str`): XPaths
-        attr (:obj:`str`, optional): attribute to get values of
+        attr (:obj:`str` or :obj:`dict`, optional): attribute to get values of
 
     Returns:
         :obj:`dict` of :obj:`str` to :obj:`str`: dictionary that maps each XPath to the

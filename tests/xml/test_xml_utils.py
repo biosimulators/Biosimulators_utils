@@ -5,6 +5,7 @@ import unittest
 
 class XmlUtilsTestCase(unittest.TestCase):
     XML_FILENAME = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.xml')
+    MULTIPLE_NAMESPACES_XML_FILENAME = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-fbc-textbook.xml')
 
     def test_get_attributes_of_xpaths(self):
         ids = utils.get_attributes_of_xpaths(self.XML_FILENAME, [
@@ -58,6 +59,35 @@ class XmlUtilsTestCase(unittest.TestCase):
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
         ], 'id')
         self.assertEqual(len(ids["/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species"]), 19)
+
+    def test_get_attributes_of_xpaths_in_namespaces(self):
+        ids = utils.get_attributes_of_xpaths(self.MULTIPLE_NAMESPACES_XML_FILENAME, [
+            "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='obj']",
+            "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='inactive_obj']",
+            "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']",
+            "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']",
+            "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='M_13dpg_c']",
+        ], 'id')
+        expected_ids = {
+            "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='obj']": None,
+            "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='inactive_obj']": None,
+            "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']": 'R_ACALD',
+            "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='M_13dpg_c']": 'M_13dpg_c',
+        }
+
+        ids = utils.get_attributes_of_xpaths(self.MULTIPLE_NAMESPACES_XML_FILENAME, [
+            "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='obj']",
+            "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='inactive_obj']",
+            "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']",
+            "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']",
+            "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='M_13dpg_c']",
+        ], {'namespace': 'fbc', 'name': 'id'})
+        expected_ids = {
+            "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='obj']": 'obj',
+            "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='inactive_obj']": 'inactive_obj',
+            "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']": None,
+            "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='M_13dpg_c']": None,
+        }
 
     def test_validate_xpaths_ref_to_unique_objects(self):
         utils.validate_xpaths_ref_to_unique_objects(self.XML_FILENAME, [
