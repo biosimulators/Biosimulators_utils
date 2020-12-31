@@ -199,7 +199,7 @@ def validate_model_change_types(changes, types):
         if not isinstance(change, types):
             raise NotImplementedError("".join([
                 'Model changes of type {} are not supported. '.format(change.__class__.__name__),
-                'Model changes must be instances of one of of the following types:\n  - {}'.format(
+                'Model changes must be instances of one of the following types:\n  - {}'.format(
                     '\n  - '.join(type.__name__ for type in types)),
 
             ]))
