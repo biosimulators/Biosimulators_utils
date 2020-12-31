@@ -119,7 +119,7 @@ def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename, p
             namespaces[match.group(2)] = match.group(1)
 
     # apply changes
-    for change in changes:
+    for change in list(changes):
         if not isinstance(change, ModelAttributeChange):
             raise NotImplementedError('Change{} of type {} is not supported'.format(
                 ' ' + change.name if change.name else '', change.__class__.__name__))
@@ -135,6 +135,9 @@ def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename, p
 
         # change value
         obj.set(attr, change.new_value)
+
+        # remove change from list of changes
+        changes.remove(change)
 
     # write model
     et.write(out_model_filename, xml_declaration=True, encoding="utf-8", standalone=False, pretty_print=pretty_print)

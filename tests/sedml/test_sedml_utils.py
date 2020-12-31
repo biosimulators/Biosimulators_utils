@@ -3,6 +3,7 @@ from biosimulators_utils.sedml import utils
 from biosimulators_utils.utils.core import are_lists_equal
 from lxml import etree
 from unittest import mock
+import copy
 import numpy
 import numpy.testing
 import os
@@ -118,6 +119,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']/@sboTerm",
                 new_value='SBO:0000001'),
         ]
+        save_changes = copy.copy(changes)
         out_filename = os.path.join(self.tmp_dir, 'test.xml')
         utils.apply_changes_to_xml_model(changes, self.FIXTURE_FILENAME, out_filename)
 
@@ -125,10 +127,12 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
         self.assertEqual(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
                                   namespaces=namespaces)[0].get('initialConcentration'),
-                         changes[0].new_value)
+                         save_changes[0].new_value)
         self.assertEqual(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']",
                                   namespaces=namespaces)[0].get('sboTerm'),
-                         changes[1].new_value)
+                         save_changes[1].new_value)
+
+        self.assertEqual(changes, [])
 
     def test_errors(self):
         changes = [
