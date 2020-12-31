@@ -276,7 +276,6 @@ class ExecTaskCase(unittest.TestCase):
         exec_status.outputs['report_3'].document_status = exec_status
         exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir, report_formats=[ReportFormat.h5], plot_formats=[],
                       exec_status=exec_status)
-        print(exec_status.to_dict())
         self.assertEqual(exec_status.to_dict(), {
             'status': 'SUCCEEDED',
             'tasks': {
