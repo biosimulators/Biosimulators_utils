@@ -21,7 +21,7 @@ def gen_algorithms_from_specs(specifications):
         :obj:`dict` of :obj:`str` to :obj:`Algorithm`: dictionary that maps KiSAO ids to algorithms and their parameters
     """
     if isinstance(specifications, str):
-        with open(specifications, 'r') as file:
+        with open(specifications, 'rb') as file:
             specifications = json.load(file)
 
     algs = {}
