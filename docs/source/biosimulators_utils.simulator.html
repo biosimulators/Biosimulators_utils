@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.10. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.27 documentation</title>
+    <title>2.1.10. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.28 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -219,6 +219,28 @@ variables recognized by the simulator</p></li>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.DISTINCT_APPROXIMATIONS">
+<code class="sig-name descname">DISTINCT_APPROXIMATIONS</code><em class="property"> = 'DISTINCT_APPROXIMATIONS'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.DISTINCT_APPROXIMATIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Algorithms can be substituted with others that make distinct approximations
+to the same math.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>SSA &lt;=&gt; tau leaping &lt;=&gt; Pahle hybrid method</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.DISTINCT_SCALES">
+<code class="sig-name descname">DISTINCT_SCALES</code><em class="property"> = 'DISTINCT_SCALES'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.DISTINCT_SCALES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Algorithms can be substituted with others that make distinct approximations
+to the same math that substantially differ in their scale.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>SSA &lt;=&gt; CVODE</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py attribute">
 <dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.NONE">
 <code class="sig-name descname">NONE</code><em class="property"> = 'None'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.NONE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -226,12 +248,66 @@ variables recognized by the simulator</p></li>
 <dl class="py attribute">
 <dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_FRAMEWORK">
 <code class="sig-name descname">SAME_FRAMEWORK</code><em class="property"> = 'SAME_FRAMEWORK'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_FRAMEWORK" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Any algorithm of the same framework can be substituted (e.g., CVODE, LSODA).</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>FBA &lt;=&gt; FVA</p></li>
+</ul>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_MATH">
 <code class="sig-name descname">SAME_MATH</code><em class="property"> = 'SAME_MATH'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_MATH" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Algorithms can be substituted with mathematically-equivalent algorithms.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>SSA &lt;=&gt; Next Reaction Method</p></li>
+<li><p>Simplex method &lt;=&gt; interior point method</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_METHOD">
+<code class="sig-name descname">SAME_METHOD</code><em class="property"> = 'SAME_METHOD'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_METHOD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Algorithms can be substituted with different realizations of the same method.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>GLPK Simplex method &lt;=&gt; SciPy Simplex method</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_VARIABLES">
+<code class="sig-name descname">SAME_VARIABLES</code><em class="property"> = 'SAME_VARIABLES'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_VARIABLES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Algorithms that predict the same dependent variables can be substituted.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>FBA &lt;=&gt; parsimonious FBA</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SIMILAR_APPROXIMATIONS">
+<code class="sig-name descname">SIMILAR_APPROXIMATIONS</code><em class="property"> = 'SIMILAR_APPROXIMATIONS'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SIMILAR_APPROXIMATIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Algorithms can be substituted with others that make similar approximations
+to the same math.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>CVODE &lt;=&gt; LSODA &lt;=&gt; RK-45</p></li>
+<li><p>tau leaping &lt;=&gt; partitioned tau leaping</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES">
+<code class="sig-name descname">SIMILAR_VARIABLES</code><em class="property"> = 'SIMILAR_VARIABLES'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Algorithms that predict similar dependent variables can be substituted.</p>
+<p>This is the recommended default value.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>FBA &lt;=&gt; geometric FBA</p></li>
+</ul>
+</dd></dl>
 
 </dd></dl>
 
