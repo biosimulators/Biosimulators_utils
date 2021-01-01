@@ -7,7 +7,7 @@
 """
 
 from ..config import get_config
-from .data_model import AlgorithmSubstitutionPolicy
+from .data_model import AlgorithmSubstitutionPolicy, ALGORITHM_SUBSTITUTION_POLICY_LEVELS
 
 
 def get_algorithm_substitution_policy():
@@ -27,6 +27,7 @@ def get_algorithm_substitution_policy():
             '`{}` is not a valid value of `ALGORITHM_SUBSTITUTION_POLICY`. '
             '`ALGORITHM_SUBSTITUTION_POLICY` must have one of the following values:\n  - {}'
         ).format(policy_name or '',
-                 '\n  - '.join(sorted('`' + name + '`' for name in AlgorithmSubstitutionPolicy.__members__.keys())))
+                 '\n  - '.join('`' + policy.value + '`' for policy, _ in
+                               sorted(ALGORITHM_SUBSTITUTION_POLICY_LEVELS.items(), key=lambda policy_level: policy_level[1])))
         raise ValueError(msg)
     return policy

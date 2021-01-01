@@ -71,7 +71,7 @@ def build_cli(cli_name=None, cli_version=None,
         for env_var in sorted(environment_variables, key=lambda var: var.name):
             description_value += "\n  '{}': {}".format(env_var.name, env_var.description)
             if env_var.options:
-                option_values = sorted("'" + val + "'" for val in env_var.options.__members__.values())
+                option_values = ["'" + val + "'" for val in env_var.options]
                 description_value += "\n    Options: {}".format(', '.join(option_values))
             if env_var.default:
                 description_value += "\n    Default value: '{}'".format(env_var.default)

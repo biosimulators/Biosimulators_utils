@@ -31,14 +31,78 @@ class AlgorithmSubstitutionPolicy(str, enum.Enum):
     """ Algorithm substitution policy """
 
     NONE = 'None'
-    # algorithms should not be substituted
+    # Algorithms should not be substituted.
+
+    SAME_METHOD = 'SAME_METHOD'
+    """ Algorithms can be substituted with different realizations of the same method.
+
+    Examples:
+
+    * GLPK Simplex method <=> SciPy Simplex method
+    """
 
     SAME_MATH = 'SAME_MATH'
-    # algorithms can be substituted with mathematically-equivalent algorithms (e.g. SSA, NRM)
+    """ Algorithms can be substituted with mathematically-equivalent algorithms.
+
+    Examples:
+
+    * SSA <=> Next Reaction Method
+    * Simplex method <=> interior point method
+    """
+
+    SIMILAR_APPROXIMATIONS = 'SIMILAR_APPROXIMATIONS'
+    """ Algorithms can be substituted with others that make similar approximations
+    to the same math.
+
+    Examples:
+
+    * CVODE <=> LSODA <=> RK-45
+    * tau leaping <=> partitioned tau leaping
+    """
+
+    DISTINCT_APPROXIMATIONS = 'DISTINCT_APPROXIMATIONS'
+    """ Algorithms can be substituted with others that make distinct approximations
+    to the same math.
+
+    Examples:
+
+    * SSA <=> tau leaping <=> Pahle hybrid method
+    """
+
+    DISTINCT_SCALES = 'DISTINCT_SCALES'
+    """ Algorithms can be substituted with others that make distinct approximations
+    to the same math that substantially differ in their scale.
+
+    Examples:
+
+    * SSA <=> CVODE
+    """
+
+    SAME_VARIABLES = 'SAME_VARIABLES'
+    """ Algorithms that predict the same dependent variables can be substituted.
+
+    Examples:
+
+    * FBA <=> parsimonious FBA
+    """
+
+    SIMILAR_VARIABLES = 'SIMILAR_VARIABLES'
+    """ Algorithms that predict similar dependent variables can be substituted.
+
+    This is the recommended default value.
+
+    Examples:
+
+    * FBA <=> geometric FBA
+    """
 
     SAME_FRAMEWORK = 'SAME_FRAMEWORK'
-    # any algorithm of the same framework can be substituted (e.g., CVODE, LSODA)
-    # this is the recommended default value
+    """ Any algorithm of the same framework can be substituted (e.g., CVODE, LSODA).
+
+    Examples:
+
+    * FBA <=> FVA
+    """
 
     ANY = 'ANY'
     # any algorithm can be substituted. Note, using any other algorithm can substantively
@@ -48,9 +112,15 @@ class AlgorithmSubstitutionPolicy(str, enum.Enum):
 
 ALGORITHM_SUBSTITUTION_POLICY_LEVELS = {
     AlgorithmSubstitutionPolicy.NONE: 0,
-    AlgorithmSubstitutionPolicy.SAME_MATH: 1,
-    AlgorithmSubstitutionPolicy.SAME_FRAMEWORK: 2,
-    AlgorithmSubstitutionPolicy.ANY: 3,
+    AlgorithmSubstitutionPolicy.SAME_METHOD: 1,
+    AlgorithmSubstitutionPolicy.SAME_MATH: 2,
+    AlgorithmSubstitutionPolicy.SIMILAR_APPROXIMATIONS: 3,
+    AlgorithmSubstitutionPolicy.DISTINCT_APPROXIMATIONS: 4,
+    AlgorithmSubstitutionPolicy.DISTINCT_SCALES: 5,
+    AlgorithmSubstitutionPolicy.SAME_VARIABLES: 6,
+    AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES: 7,
+    AlgorithmSubstitutionPolicy.SAME_FRAMEWORK: 8,
+    AlgorithmSubstitutionPolicy.ANY: 9,
 }
 
 

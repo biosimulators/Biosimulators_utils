@@ -60,7 +60,7 @@ def get_config():
         :obj:`Config`: configuration
     """
     return Config(
-        ALGORITHM_SUBSTITUTION_POLICY=os.environ.get('ALGORITHM_SUBSTITUTION_POLICY', 'SAME_FRAMEWORK'),
+        ALGORITHM_SUBSTITUTION_POLICY=os.environ.get('ALGORITHM_SUBSTITUTION_POLICY', 'SIMILAR_VARIABLES'),
         REPORT_FORMATS=[format.strip().lower() for format in os.environ.get('REPORT_FORMATS', 'csv, h5').split(',')],
         PLOT_FORMATS=[format.strip().lower() for format in os.environ.get('PLOT_FORMATS', 'pdf').split(',')],
         H5_REPORTS_PATH=os.environ.get('H5_REPORTS_PATH', 'reports.h5'),

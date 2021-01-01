@@ -7,7 +7,7 @@ import unittest
 
 class SimulatorUtilsTestCase(unittest.TestCase):
     def test_get_algorithm_substitution_policy(self):
-        self.assertEqual(utils.get_algorithm_substitution_policy(), AlgorithmSubstitutionPolicy.SAME_FRAMEWORK)
+        self.assertEqual(utils.get_algorithm_substitution_policy(), AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES)
 
         with mock.patch.dict(os.environ, {'ALGORITHM_SUBSTITUTION_POLICY': 'ANY'}):
             self.assertEqual(utils.get_algorithm_substitution_policy(), AlgorithmSubstitutionPolicy.ANY)
