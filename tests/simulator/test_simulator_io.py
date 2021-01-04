@@ -2,13 +2,12 @@ from biosimulators_utils.simulator.io import read_simulator_specs
 from unittest import mock
 import os
 import requests
-import simplejson.errors
 import unittest
 import tempfile
 
 
 class SimulatorIoTestCase(unittest.TestCase):
-    def test_file   (self):
+    def test_file(self):
         url = 'https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/dev/biosimulators.json'
         response = requests.get(url)
         response.raise_for_status()
@@ -16,7 +15,7 @@ class SimulatorIoTestCase(unittest.TestCase):
         os.close(file)
         with open(filename, 'wb') as file:
             file.write(response.content)
-        specs = read_simulator_specs(filename)
+        read_simulator_specs(filename)
         os.remove(filename)
 
         with self.assertRaisesRegex(ValueError, 'must be encoded into JSON'):

@@ -13,6 +13,7 @@ import re
 __all__ = [
     'are_lists_equal', 'none_sorted', 'assert_exception',
     'validate_value', 'validate_str_value', 'format_value', 'parse_value',
+    'patch_dict',
 ]
 
 
@@ -251,3 +252,26 @@ def parse_value(str_val, type):
     if type == ValueType.list or type == ValueType.object or type == ValueType.any:
         return json.loads(str_val)
     raise NotImplementedError('Type {} is not supported'.format(type))
+
+
+def patch_dict(dictionary, patch):
+    """ Recursively patch the attributes of a dictionary
+
+    Args:
+        dictionary (:obj:`dict`): dictionary
+        patch (:obj:`dict`): patch
+    """
+    patch_queue = [(dictionary, patch)]
+
+    while patch_queue:
+        props, props_patch = patch_queue.pop()
+        for key, new_val in props_patch.items():
+            value = props[key]
+            if isinstance(value, dict):
+                patch_queue.append((props[key], new_val))
+
+            elif isinstance(value, list) and isinstance(new_val, dict):
+                patch_queue.append((props[key], new_val))
+
+            else:
+                props[key] = new_val

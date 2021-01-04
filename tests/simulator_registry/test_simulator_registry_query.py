@@ -20,9 +20,6 @@ class QuerySimulatorRegistryTestCase(unittest.TestCase):
         with mock.patch('requests.get', side_effect=requests_get):
             self.assertEqual(get_simulator_version_specs('tellurium'), [])
 
-        def raise_for_status():
-            raise requests.exceptions.HTTPError()
-
         def requests_get(self):
             return mock.Mock(status_code=400, raise_for_status=raise_for_status)
 

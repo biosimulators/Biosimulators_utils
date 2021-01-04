@@ -19,4 +19,3 @@ class DataModelTestCase(unittest.TestCase):
         identifier3 = data_model.Identifier(namespace='KISAO', id='KISAO_0000028')
         self.assertTrue(identifier1.is_equal(identifier2))
         self.assertFalse(identifier1.is_equal(identifier3))
-

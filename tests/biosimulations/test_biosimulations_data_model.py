@@ -35,13 +35,12 @@ class DataModelTestCase(unittest.TestCase):
         ))
 
         person1 = Person(given_name='first', family_name='last')
-        person2 = Person(given_name='first', family_name='last')
-        person3 = Person(given_name='first3', family_name='last3')
+        person2 = Person(given_name='first3', family_name='last3')
 
         metadata1 = data_model.Metadata(
             description="description",
             tags=["tag1", "tag2"],
-            authors=[person1, person3],
+            authors=[person1, person2],
             references=refs1,
             license=data_model.OntologyTerm(
                 namespace="SPDX",
@@ -50,7 +49,7 @@ class DataModelTestCase(unittest.TestCase):
         metadata2 = data_model.Metadata(
             description="description",
             tags=["tag1", "tag2"],
-            authors=[person1, person3],
+            authors=[person1, person2],
             references=refs1,
             license=data_model.OntologyTerm(
                 namespace="SPDX",
@@ -61,7 +60,7 @@ class DataModelTestCase(unittest.TestCase):
         metadata3 = data_model.Metadata(
             description="description2",
             tags=["tag1", "tag2"],
-            authors=[person1, person3],
+            authors=[person1, person2],
             references=refs1,
             license=data_model.OntologyTerm(
                 namespace="SPDX",
@@ -72,7 +71,7 @@ class DataModelTestCase(unittest.TestCase):
         metadata3 = data_model.Metadata(
             description="description",
             tags=["tag2", "tag2"],
-            authors=[person1, person3],
+            authors=[person1, person2],
             references=refs1,
             license=data_model.OntologyTerm(
                 namespace="SPDX",
@@ -94,7 +93,7 @@ class DataModelTestCase(unittest.TestCase):
         metadata3 = data_model.Metadata(
             description="description",
             tags=["tag1", "tag2"],
-            authors=[person1, person3],
+            authors=[person1, person2],
             references=refs3,
             license=data_model.OntologyTerm(
                 namespace="SPDX",
@@ -105,7 +104,7 @@ class DataModelTestCase(unittest.TestCase):
         metadata3 = data_model.Metadata(
             description="description",
             tags=["tag1", "tag2"],
-            authors=[person1, person3],
+            authors=[person1, person2],
             references=refs1,
             license=data_model.OntologyTerm(
                 namespace="SPDX",
@@ -115,6 +114,6 @@ class DataModelTestCase(unittest.TestCase):
 
         self.assertEqual(metadata1.to_tuple()[0], metadata1.description)
         self.assertEqual(metadata1.to_tuple()[1], tuple(metadata1.tags))
-        self.assertEqual(metadata1.to_tuple()[2], tuple([person1.to_tuple(), person3.to_tuple()]))
+        self.assertEqual(metadata1.to_tuple()[2], tuple([person1.to_tuple(), person2.to_tuple()]))
         self.assertEqual(metadata1.to_tuple()[3], tuple(refs1.to_tuple(),))
         self.assertEqual(metadata1.to_tuple()[4], metadata1.license.to_tuple())

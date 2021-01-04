@@ -6,7 +6,6 @@ from biosimulators_utils.report.io import ReportReader
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
 from biosimulators_utils.sedml import io
-from biosimulators_utils.sedml import utils
 from biosimulators_utils.sedml.warnings import NoTasksWarning, NoOutputsWarning, RepeatDataSetLabelsWarning, SedmlFeatureNotSupportedWarning
 from lxml import etree
 from unittest import mock

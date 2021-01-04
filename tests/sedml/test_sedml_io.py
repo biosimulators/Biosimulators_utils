@@ -365,7 +365,7 @@ class IoTestCase(unittest.TestCase):
         document3.metadata = None
         io.SedmlSimulationWriter().run(document3, filename)
         document4 = io.SedmlSimulationReader().run(filename)
-        self.assertTrue(document3.is_equal(document3))
+        self.assertTrue(document4.is_equal(document3))
 
     def test_write_error_unsupported_classes(self):
         document = data_model.SedDocument(tasks=[mock.Mock(id='task')])

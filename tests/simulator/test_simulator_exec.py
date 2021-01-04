@@ -1,9 +1,7 @@
-from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent
 from biosimulators_utils.simulator import exec
 from unittest import mock
 import builtins
 import capturer
-import docker
 import importlib
 import os
 import shutil

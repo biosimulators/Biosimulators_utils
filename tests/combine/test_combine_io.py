@@ -20,7 +20,6 @@ class ReadWriteTestCase(unittest.TestCase):
         author1 = Person(given_name='first1', family_name='last1')
         author2 = Person(given_name='first2', family_name='last2')
 
-        location = 'path_to_file'
         format = 'https://spec-url-for-format'
         description = 'Example content'
         authors = [author1, author2]
@@ -32,7 +31,6 @@ class ReadWriteTestCase(unittest.TestCase):
 
         archive1 = data_model.CombineArchive([content1, content2], description=description, authors=authors, created=now, updated=now)
         archive2 = data_model.CombineArchive([content1, content1], description=description, authors=authors, created=None, updated=now)
-        archive3 = data_model.CombineArchive([content1, content1], description=description, authors=authors, created=None, updated=None)
 
         archive_file = os.path.join(self.temp_dir, 'test.omex')
         in_dir = os.path.join(self.temp_dir, 'in')
@@ -75,7 +73,6 @@ class ReadWriteTestCase(unittest.TestCase):
 
     @unittest.expectedFailure
     def test_no_updated_date(self):
-        location = 'path_to_file'
         format = 'https://spec-url-for-format'
         description = 'Example content'
         authors = []

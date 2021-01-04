@@ -7,6 +7,7 @@
 """
 
 from ..config import get_config
+from ..utils.core import patch_dict
 import json
 import os
 import requests
@@ -58,8 +59,7 @@ def read_simulator_specs(path_or_url, patch=None):
 
     # apply patch
     if patch:
-        for key, val in patch.items():
-            specs[key] = val
+        patch_dict(specs, patch)
 
     # validate specifications
     api_endpoint = get_config().BIOSIMULATORS_API_ENDPOINT

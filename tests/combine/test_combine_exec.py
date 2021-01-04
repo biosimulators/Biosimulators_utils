@@ -204,8 +204,6 @@ class ExecCombineTestCase(unittest.TestCase):
         def sed_task_executer(task, variables):
             pass
 
-        out_dir = os.path.join(self.tmp_dir, 'outputs')
-
         def exec_doc(filename, working_dir, task_executer, base_out_dir, rel_path='.',
                      apply_xml_model_changes=False, report_formats=[ReportFormat.csv], plot_formats=[],
                      indent=0, exec_status=None):

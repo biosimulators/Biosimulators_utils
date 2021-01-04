@@ -141,8 +141,6 @@ class GitHubActionTestCase(unittest.TestCase):
                 def run(self):
                     raise ValueError('Details about error')
 
-            i_request = 0
-
             class RequestMethod(object):
                 def __init__(self, unittest_self):
                     self.i_request = 0
@@ -155,7 +153,7 @@ class GitHubActionTestCase(unittest.TestCase):
                         self.unittest_self.assertEqual(json, {'labels': ['action_error']})
                     else:
                         self.unittest_self.assertEqual(url, 'https://api.github.com/repos/biosimulators/Biosimulators/issues/4/comments')
-                        self.unittest_self.assertEqual(json['body'], (                            
+                        self.unittest_self.assertEqual(json['body'], (
                             'Sorry. We encountered an unexpected error. Our team will review the error.\n'
                             '\n'
                             '```diff\n'

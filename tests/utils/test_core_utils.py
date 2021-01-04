@@ -1,5 +1,6 @@
 from biosimulators_utils.data_model import ValueType, OntologyTerm
 from biosimulators_utils.utils import core as utils
+import copy
 import unittest
 
 
@@ -246,3 +247,63 @@ class TestCase(unittest.TestCase):
         self.assertEqual(utils.format_value(utils.parse_value('1', ValueType.any), ValueType.any), '1')
         self.assertEqual(utils.format_value(utils.parse_value('{"a": 1}', ValueType.any), ValueType.any), '{"a": 1}')
         self.assertEqual(utils.format_value(utils.parse_value('[1, 2]', ValueType.any), ValueType.any), '[1, 2]')
+
+    def test_patch_dict(self):
+        dictionary = {
+            'id': 'simulator',
+            'name': 'simulator',
+            'version': 'x1',
+            'image': {
+                'url': 'y1',
+                'format': {
+                    'namespace': 'EDAM',
+                    'id': 'format_xxxx',
+                },
+            },
+            'algorithms': [
+                {
+                    'kisaoId': {
+                        'namespace': 'KISAO',
+                        'id': 'KISAO_0000029',
+                    },
+                },
+                {
+                    'kisaoId': {
+                        'namespace': 'KISAO',
+                        'id': 'KISAO_0000030',
+                    },
+                },
+                {
+                    'kisaoId': {
+                        'namespace': 'KISAO',
+                        'id': 'KISAO_0000031',
+                    },
+                },
+            ],
+            'authors': ['A', 'B', 'C'],
+        }
+
+        patch = {
+            'version': 'x2',
+            'image': {
+                'url': 'y2',
+            },
+            'algorithms': {
+                1: {
+                    'kisaoId': {
+                        'id': 'KISAO_XXXXXXX'
+                    }
+                }
+            },
+            'authors': ['A', 'B', 'C', 'D'],
+        }
+
+        expected_dictionary = copy.deepcopy(dictionary)
+        expected_dictionary['version'] = 'x2'
+        expected_dictionary['image']['url'] = 'y2'
+        expected_dictionary['algorithms'][1]['kisaoId']['id'] = 'KISAO_XXXXXXX'
+        expected_dictionary['authors'] = ['A', 'B', 'C', 'D']
+
+        utils.patch_dict(dictionary, patch)
+
+        self.assertEqual(dictionary, expected_dictionary)
