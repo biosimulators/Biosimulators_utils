@@ -72,7 +72,7 @@ jobs:
       - name: Run the tests
         env:
           MPLBACKEND: PDF
-          BIOSIMULATORS_API_ENDPOINT: https://api.biosimulators.dev/  # TODO: remove once API redeployed
+          # BIOSIMULATORS_API_ENDPOINT: https://api.biosimulators.dev/  # uncomment to execute tests with the dev deployment
         run: python -m pytest tests/ --cov=./biosimulators_utils --cov-report=xml
 
       - name: Upload the coverage report to Codecov
