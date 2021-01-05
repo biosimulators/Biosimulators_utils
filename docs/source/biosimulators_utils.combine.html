@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.3. biosimulators_utils.combine package &#8212; BioSimulators utils 0.1.29 documentation</title>
+    <title>2.1.3. biosimulators_utils.combine package &#8212; BioSimulators utils 0.1.30 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -509,28 +509,40 @@
 </dl>
 <dl class="py function">
 <dt id="biosimulators_utils.combine.exec.exec_sedml_docs_in_archive">
-<code class="sig-prename descclassname">biosimulators_utils.combine.exec.</code><code class="sig-name descname">exec_sedml_docs_in_archive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">archive_filename</span></em>, <em class="sig-param"><span class="n">sed_task_executer</span></em>, <em class="sig-param"><span class="n">out_dir</span></em>, <em class="sig-param"><span class="n">apply_xml_model_changes</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">report_formats</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">plot_formats</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bundle_outputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keep_individual_outputs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.exec.exec_sedml_docs_in_archive" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">biosimulators_utils.combine.exec.</code><code class="sig-name descname">exec_sedml_docs_in_archive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sed_doc_executer</span></em>, <em class="sig-param"><span class="n">archive_filename</span></em>, <em class="sig-param"><span class="n">out_dir</span></em>, <em class="sig-param"><span class="n">apply_xml_model_changes</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">report_formats</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">plot_formats</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bundle_outputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keep_individual_outputs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.combine.exec.exec_sedml_docs_in_archive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>archive_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to COMBINE/OMEX archive</p></li>
-<li><p><strong>sed_task_executer</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.FunctionType</span></code>) – <p>function to execute each SED task in each SED-ML file in the archive.
+<li><p><strong>sed_doc_executer</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.FunctionType</span></code>) – <p>function to execute each SED document in the archive.
 The function must implement the following interface:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">exec_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39; Execute a simulation and return its results</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sed_doc_executer</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">working_dir</span><span class="p">,</span> <span class="n">base_out_path</span><span class="p">,</span> <span class="n">rel_out_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">apply_xml_model_changes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">report_formats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_formats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">exec_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Execute the tasks specified in a SED document and generate the specified outputs</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">       task (:obj:`Task`): task</span>
-<span class="sd">       variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables that should be recorded</span>
+<span class="sd">        doc (:obj:`SedDocument` of :obj:`str`): SED document or a path to SED-ML file which defines a SED document</span>
+<span class="sd">        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">       :obj:`DataGeneratorVariableResults`: results of variables</span>
+<span class="sd">        out_path (:obj:`str`): path to store the outputs</span>
+
+<span class="sd">            * CSV: directory in which to save outputs to files</span>
+<span class="sd">              ``{out_path}/{rel_out_path}/{report.id}.csv``</span>
+<span class="sd">            * HDF5: directory in which to save a single HDF5 file (``{out_path}/reports.h5``),</span>
+<span class="sd">              with reports at keys ``{rel_out_path}/{report.id}`` within the HDF5 file</span>
+
+<span class="sd">        rel_out_path (:obj:`str`, optional): path relative to :obj:`out_path` to store the outputs</span>
+<span class="sd">        apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file</span>
+<span class="sd">        report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)</span>
+<span class="sd">        plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)</span>
+<span class="sd">        exec_status (:obj:`SedDocumentExecutionStatus`, optional): execution status of document</span>
+<span class="sd">        indent (:obj:`int`, optional): degree to indent status messages</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">pass</span>
 </pre></div>
 </div>
 </p></li>
+<li><p><strong>archive_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to COMBINE/OMEX archive</p></li>
 <li><p><strong>out_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – <p>path to store the outputs of the archive</p>
 <ul>
 <li><p>CSV: directory in which to save outputs to files
