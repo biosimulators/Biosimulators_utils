@@ -181,18 +181,8 @@ class ExecTaskCase(unittest.TestCase):
             return results
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        output_results, var_results = exec.exec_doc(filename, os.path.dirname(
-            filename), execute_task, out_dir, report_formats=[ReportFormat.csv], plot_formats=[])
-
-        expected_var_results = DataGeneratorVariableResults({
-            doc.data_generators[0].variables[0].id: numpy.array((1., 2.)),
-            doc.data_generators[1].variables[0].id: numpy.array((3., 4.)),
-            doc.data_generators[2].variables[0].id: numpy.array((5., 6.)),
-            doc.data_generators[3].variables[0].id: numpy.array((7., 8.)),
-        })
-        self.assertEqual(sorted(var_results.keys()), sorted(expected_var_results.keys()))
-        for key in var_results.keys():
-            numpy.testing.assert_equal(var_results[key], expected_var_results[key])
+        output_results = exec.exec_sed_doc(execute_task, filename, os.path.dirname(
+            filename), out_dir, report_formats=[ReportFormat.csv], plot_formats=[])
 
         expected_output_results = OutputResults({
             doc.outputs[0].id: pandas.DataFrame(
@@ -234,7 +224,7 @@ class ExecTaskCase(unittest.TestCase):
 
         # save in HDF5 format
         shutil.rmtree(out_dir)
-        exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir, report_formats=[ReportFormat.h5], plot_formats=[])
+        exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[])
 
         df = ReportReader().run(out_dir, doc.outputs[0].id, format=ReportFormat.h5)
         self.assertTrue(output_results[doc.outputs[0].id].equals(df))
@@ -273,7 +263,7 @@ class ExecTaskCase(unittest.TestCase):
         exec_status.outputs['report_1'].document_status = exec_status
         exec_status.outputs['report_2'].document_status = exec_status
         exec_status.outputs['report_3'].document_status = exec_status
-        exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir, report_formats=[ReportFormat.h5], plot_formats=[],
+        exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[],
                       exec_status=exec_status)
         self.assertEqual(exec_status.to_dict(), {
             'status': 'SUCCEEDED',
@@ -379,11 +369,11 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
 
-        _, var_results = exec.exec_doc(filename, working_dir, execute_task, out_dir, apply_xml_model_changes=False)
-        numpy.testing.assert_equal(var_results[doc.data_generators[0].variables[0].id], numpy.array((1., )))
+        report_results = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=False)
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((1., )))
 
-        _, var_results = exec.exec_doc(filename, working_dir, execute_task, out_dir, apply_xml_model_changes=True)
-        numpy.testing.assert_equal(var_results[doc.data_generators[0].variables[0].id], numpy.array((2., )))
+        report_results = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=True)
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((2., )))
 
     def test_warnings(self):
         # no tasks
@@ -397,7 +387,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarns(NoTasksWarning):
-            exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir)
+            exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir)
 
         # no outputs
         doc = data_model.SedDocument()
@@ -480,7 +470,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarns(NoOutputsWarning):
-            exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir)
+            exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir)
 
     def test_errors(self):
         # error: variable not recorded
@@ -534,7 +524,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(ValueError, 'must be generated for task'):
-            exec.exec_doc(filename, os.path.dirname(filename), execute_task, out_dir)
+            exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir)
 
         # error: unsupported type of task
         doc = data_model.SedDocument()
@@ -543,7 +533,7 @@ class ExecTaskCase(unittest.TestCase):
         ))
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(NotImplementedError, 'not supported'):
-            exec.exec_doc(doc, '.', execute_task, out_dir)
+            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
 
         # error: unsupported data generators
         doc = data_model.SedDocument()
@@ -601,7 +591,7 @@ class ExecTaskCase(unittest.TestCase):
             return results
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        exec.exec_doc(doc, '.', execute_task, out_dir)
+        exec.exec_sed_doc(execute_task, doc, '.', out_dir)
 
         # error: inconsistent math
         doc.data_generators = [
@@ -638,7 +628,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(ValueError, 'could not be evaluated'):
-            exec.exec_doc(doc, '.', execute_task, out_dir)
+            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
 
         # error: variables have inconsistent shapes
         doc.data_generators = [
@@ -683,7 +673,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(ValueError, 'must have consistent shape'):
-            exec.exec_doc(doc, '.', execute_task, out_dir)
+            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
 
         # error: data generators have inconsistent shapes
         doc.data_generators = [
@@ -739,7 +729,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(ValueError, 'must have consistent shape'):
-            exec.exec_doc(doc, '.', execute_task, out_dir)
+            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
 
         # warning: data set labels are not unique
         doc.data_generators = [
@@ -795,7 +785,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarnsRegex(RepeatDataSetLabelsWarning, 'should have unique ids'):
-            exec.exec_doc(doc, '.', execute_task, out_dir)
+            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
 
         # error: unsupported outputs
         doc.outputs = [
@@ -809,7 +799,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because outputs of type'):
-            exec.exec_doc(doc, '.', execute_task, out_dir)
+            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
 
         # error: unsupported outputs
         doc.outputs = [
@@ -818,4 +808,4 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
-            exec.exec_doc(doc, '.', execute_task, out_dir)
+            exec.exec_sed_doc(execute_task, doc, '.', out_dir)

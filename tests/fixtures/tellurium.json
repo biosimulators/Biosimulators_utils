@@ -2,7 +2,7 @@
   "id": "tellurium",
   "name": "tellurium",
   "version": "2.1.6",
-  "description": "Tellurium is a Python-based environment for model building, simulation, and analysis that facilitates reproducibility of models in systems and synthetic biology.",
+  "description": "tellurium is a Python-based environment for model building, simulation, and analysis that facilitates reproducibility of models in systems and synthetic biology.",
   "urls": [{
       "type": "Home page",
       "url": "http://tellurium.analogmachine.org/"
@@ -174,7 +174,7 @@
       }
     ],
     "citations": [{
-      "title": "Tellurium: an extensible Python-based modeling environment for systems and synthetic biology",
+      "title": "tellurium: an extensible Python-based modeling environment for systems and synthetic biology",
       "authors": "Kiri Choi, J. Kyle Medley, Matthias König, Kaylene Stocking, Lucian Smith, Stanley Gua & Herbert M. Sauro",
       "journal": "BioSystems",
       "volume": 171,

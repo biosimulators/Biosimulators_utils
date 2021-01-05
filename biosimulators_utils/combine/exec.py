@@ -18,7 +18,6 @@ from ..sedml.io import SedmlSimulationReader  # noqa: F401
 from .io import CombineArchiveReader
 from .utils import get_sedml_contents, get_summary_sedml_contents
 from .warnings import NoSedmlWarning
-import biosimulators_utils.sedml.exec
 import glob
 import os
 import tempfile
@@ -31,28 +30,40 @@ __all__ = [
 ]
 
 
-def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, apply_xml_model_changes=False,
+def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, apply_xml_model_changes=False,
                                report_formats=None, plot_formats=None,
                                bundle_outputs=None, keep_individual_outputs=None):
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
 
     Args:
-        archive_filename (:obj:`str`): path to COMBINE/OMEX archive
-        sed_task_executer (:obj:`types.FunctionType`): function to execute each SED task in each SED-ML file in the archive.
+        sed_doc_executer (:obj:`types.FunctionType`): function to execute each SED document in the archive.
             The function must implement the following interface::
 
-                def exec_task(task, variables):
-                    ''' Execute a simulation and return its results
+                def sed_doc_executer(doc, working_dir, base_out_path, rel_out_path=None,
+                             apply_xml_model_changes=False, report_formats=None, plot_formats=None,
+                             exec_status=None, indent=0):
+                    ''' Execute the tasks specified in a SED document and generate the specified outputs
 
                     Args:
-                       task (:obj:`Task`): task
-                       variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables that should be recorded
+                        doc (:obj:`SedDocument` of :obj:`str`): SED document or a path to SED-ML file which defines a SED document
+                        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
 
-                    Returns:
-                       :obj:`DataGeneratorVariableResults`: results of variables
+                        out_path (:obj:`str`): path to store the outputs
+
+                            * CSV: directory in which to save outputs to files
+                              ``{out_path}/{rel_out_path}/{report.id}.csv``
+                            * HDF5: directory in which to save a single HDF5 file (``{out_path}/reports.h5``),
+                              with reports at keys ``{rel_out_path}/{report.id}`` within the HDF5 file
+
+                        rel_out_path (:obj:`str`, optional): path relative to :obj:`out_path` to store the outputs
+                        apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file
+                        report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
+                        plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
+                        exec_status (:obj:`SedDocumentExecutionStatus`, optional): execution status of document
+                        indent (:obj:`int`, optional): degree to indent status messages
                     '''
-                    pass
 
+        archive_filename (:obj:`str`): path to COMBINE/OMEX archive
         out_dir (:obj:`str`): path to store the outputs of the archive
 
             * CSV: directory in which to save outputs to files
@@ -114,16 +125,15 @@ def exec_sedml_docs_in_archive(archive_filename, sed_task_executer, out_dir, app
         print('Executing SED-ML file {}: {}'.format(i_content, content_id))
 
         working_dir = os.path.dirname(content_filename)
-        biosimulators_utils.sedml.exec.exec_doc(content_filename,
-                                                working_dir,
-                                                sed_task_executer,
-                                                out_dir,
-                                                os.path.relpath(content_filename, archive_tmp_dir),
-                                                apply_xml_model_changes=apply_xml_model_changes,
-                                                report_formats=report_formats,
-                                                plot_formats=plot_formats,
-                                                exec_status=exec_status.sed_documents[content_id],
-                                                indent=1)
+        sed_doc_executer(content_filename,
+                         working_dir,
+                         out_dir,
+                         os.path.relpath(content_filename, archive_tmp_dir),
+                         apply_xml_model_changes=apply_xml_model_changes,
+                         report_formats=report_formats,
+                         plot_formats=plot_formats,
+                         exec_status=exec_status.sed_documents[content_id],
+                         indent=1)
 
     if bundle_outputs:
         # bundle CSV files of reports into zip archive

@@ -26,18 +26,16 @@ import warnings
 
 
 __all__ = [
-    'exec_doc',
+    'exec_sed_doc',
 ]
 
 
-def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
-             apply_xml_model_changes=False, report_formats=None, plot_formats=None,
-             exec_status=None, indent=0):
+def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=None,
+                 apply_xml_model_changes=False, report_formats=None, plot_formats=None,
+                 exec_status=None, indent=0):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
-        doc (:obj:`SedDocument` of :obj:`str`): SED document or a path to SED-ML file which defines a SED document
-        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
         task_executer (:obj:`types.FunctionType`): function to execute each task in the SED-ML file.
             The function must implement the following interface::
 
@@ -53,6 +51,9 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
                     '''
                     pass
 
+        doc (:obj:`SedDocument` or :obj:`str`): SED document or a path to SED-ML file which defines a SED document
+        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
+
         out_path (:obj:`str`): path to store the outputs
 
             * CSV: directory in which to save outputs to files
@@ -67,6 +68,9 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
         plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
         exec_status (:obj:`SedDocumentExecutionStatus`, optional): execution status of document
         indent (:obj:`int`, optional): degree to indent status messages
+
+    Returns:
+        :obj:`OutputResults`: results of each report
     """
     # process arguments
     if not isinstance(doc, SedDocument):
@@ -254,4 +258,4 @@ def exec_doc(doc, working_dir, task_executer, base_out_path, rel_out_path=None,
         exec_status.status = ExecutionStatus.SUCCEEDED
         exec_status.export()
 
-    return (report_results, variable_results)
+    return report_results
