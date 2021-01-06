@@ -46,7 +46,7 @@ __all__ = [
 
 class ModelLanguage(str, enum.Enum):
     """ Model language """
-    BGNL = 'urn:sedml:language:bgnl'
+    BNGL = 'urn:sedml:language:bngl'
     CellML = 'urn:sedml:language:cellml'
     NeuroML = 'urn:sedml:language:neuroml'
     SBML = 'urn:sedml:language:sbml'
