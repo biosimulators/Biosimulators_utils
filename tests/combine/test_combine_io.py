@@ -4,6 +4,8 @@ import os
 import shutil
 import tempfile
 import unittest
+from biosimulators_utils.archive.data_model import Archive, ArchiveFile
+from biosimulators_utils.archive.io import ArchiveWriter
 from biosimulators_utils.combine import data_model
 from biosimulators_utils.combine import io
 from biosimulators_utils.data_model import Person
@@ -68,7 +70,7 @@ class ReadWriteTestCase(unittest.TestCase):
         with open(os.path.join(out_dir2, content1.location), 'r') as file:
             self.assertEqual('a', file.read())
 
-        with self.assertRaisesRegex(ValueError, 'Invalid COMBINE archive'):
+        with self.assertRaisesRegex(ValueError, 'not a valid COMBINE/OMEX archive'):
             io.CombineArchiveReader.run(os.path.join(self.temp_dir, 'test2.omex'), out_dir)
 
     @unittest.expectedFailure
@@ -105,3 +107,44 @@ class ReadWriteTestCase(unittest.TestCase):
         ]))
         with open(os.path.join(out_dir, content.location), 'r') as file:
             self.assertEqual('a', file.read())
+
+    def test_read_from_plain_zip_archive(self):
+        in_dir = os.path.join(self.temp_dir, 'in')
+        os.mkdir(in_dir)
+        sim_path = os.path.join(in_dir, 'simulation.sedml')
+        model_path = os.path.join(in_dir, 'model.xml')
+        archive_filename = os.path.join(in_dir, 'archive.zip')
+        with open(sim_path, 'w'):
+            pass
+        with open(model_path, 'w'):
+            pass
+
+        archive = Archive(files=[
+            ArchiveFile(local_path=sim_path, archive_path='simulation.sedml'),
+            ArchiveFile(local_path=model_path, archive_path='model.xml'),
+        ])
+
+        ArchiveWriter().run(archive, archive_filename)
+
+        zip_out_dir = os.path.join(self.temp_dir, 'out_zip')
+        combine_archive = io.CombineArchiveZipReader().run(archive_filename, zip_out_dir)
+
+        expected_combine_archive = data_model.CombineArchive(contents=[
+            data_model.CombineArchiveContent(location='simulation.sedml', format=data_model.CombineArchiveContentFormat.SED_ML.value),
+            data_model.CombineArchiveContent(location='model.xml'),
+        ])
+        self.assertTrue(combine_archive.is_equal(expected_combine_archive))
+
+        combine_out_dir = os.path.join(self.temp_dir, 'out_combine')
+        combine_archive = io.CombineArchiveReader().run(archive_filename, combine_out_dir)
+        self.assertTrue(combine_archive.is_equal(expected_combine_archive))
+
+        # error handling
+        with self.assertRaisesRegex(ValueError, 'not a valid zip archive'):
+            io.CombineArchiveZipReader().run(sim_path, zip_out_dir)
+
+        with self.assertRaisesRegex(ValueError, 'not a valid COMBINE/OMEX archive'):
+            io.CombineArchiveReader().run(sim_path, zip_out_dir, try_reading_as_plain_zip_archive=True)
+
+        with self.assertRaisesRegex(ValueError, 'not a valid COMBINE/OMEX archive'):
+            io.CombineArchiveReader().run(sim_path, zip_out_dir, try_reading_as_plain_zip_archive=False)

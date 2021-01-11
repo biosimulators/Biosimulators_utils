@@ -6,16 +6,19 @@
 :License: MIT
 """
 
-from .data_model import CombineArchiveBase, CombineArchive, CombineArchiveContent  # noqa: F401
+from .data_model import CombineArchiveBase, CombineArchive, CombineArchiveContent, CombineArchiveContentFormat  # noqa: F401
+from ..archive.io import ArchiveReader
 from ..data_model import Person
 import dateutil.parser
 import libcombine
 import os
-
+import warnings
+import zipfile
 
 __all__ = [
     'CombineArchiveWriter',
     'CombineArchiveReader',
+    'CombineArchiveZipReader',
 ]
 
 
@@ -96,22 +99,32 @@ class CombineArchiveReader(object):
     NONE_DATETIME = '2000-01-01T00:00:00Z'
 
     @classmethod
-    def run(cls, in_file, out_dir):
+    def run(cls, in_file, out_dir, try_reading_as_plain_zip_archive=True):
         """ Read an archive from a file
 
         Args:
-            in_file (:obj:`str`): path to save archive
-            out_dir (:obj:`str`): directory which contains the files in the archive
+            in_file (:obj:`str`): path to archive
+            out_dir (:obj:`str`): directory where the contents of the archive should be unpacked
+            try_reading_as_plain_zip_archive (:obj:`bool`, optional): whether to try reading the
+                file as a plain zip archive
 
         Returns:
             :obj:`CombineArchive`: description of archive
 
         Raises:
-            :obj:`ArchiveIoError`: archive is invalid
+            :obj:`ValueError`: archive is invalid
         """
         archive_comb = libcombine.CombineArchive()
         if not archive_comb.initializeFromArchive(in_file):
-            raise ValueError("Invalid COMBINE archive")
+            if try_reading_as_plain_zip_archive:
+                try:
+                    archive = CombineArchiveZipReader().run(in_file, out_dir)
+                    warnings.warn('`{}` is a plain zip archive, not a COMBINE/OMEX archive.'.format(in_file), UserWarning)
+                    return archive
+                except ValueError:
+                    raise ValueError("`{}` is not a valid COMBINE/OMEX archive.".format(in_file))
+            else:
+                raise ValueError("`{}` is not a valid COMBINE/OMEX archive.".format(in_file))
 
         # instantiate archive
         archive = CombineArchive()
@@ -181,3 +194,39 @@ class CombineArchiveReader(object):
                     obj.updated = max(obj.updated, updated)
                 else:
                     obj.updated = updated
+
+
+class CombineArchiveZipReader(object):
+    """ Create a COMBINE/OMEX archive object from a plain zip archive. Set the format of files with
+    the extension ``.sedml`` to :obj:`CombineArchiveContentFormat.SED_ML.value`.
+    """
+    @classmethod
+    def run(cls, in_file, out_dir):
+        """ Read an archive from a zip file
+
+        Args:
+            in_file (:obj:`str`): path to archive
+            out_dir (:obj:`str`): directory where the contents of the archive should be unpacked
+
+        Returns:
+            :obj:`CombineArchive`: description of the archive
+
+        Raises:
+            :obj:`ValueError`: archive is invalid
+        """
+        try:
+            zip_archive = ArchiveReader().run(in_file, out_dir)
+        except (FileNotFoundError, zipfile.BadZipFile):
+            raise ValueError('`{}` is not a valid zip archive.'.format(in_file))
+
+        combine_archive = CombineArchive()
+        for file in zip_archive.files:
+            combine_archive.contents.append(
+                CombineArchiveContent(
+                    location=file.archive_path,
+                    format=(CombineArchiveContentFormat.SED_ML.value
+                            if os.path.splitext(file.archive_path)[1] == '.sedml' else None),
+                ),
+            )
+
+        return combine_archive
