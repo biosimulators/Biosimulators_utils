@@ -7,7 +7,7 @@
 """
 
 from ..xml.utils import validate_xpaths_ref_to_unique_objects
-from .data_model import (Task, ModelLanguage, ModelChange, ModelAttributeChange,  # noqa: F401
+from .data_model import (Task, ModelLanguage, ModelChange,  # noqa: F401
                          Simulation, UniformTimeCourseSimulation, DataGeneratorVariable,
                          Report, Plot2D, Plot3D)
 from .utils import append_all_nested_children_to_doc
@@ -63,9 +63,8 @@ def validate_doc(doc, validate_semantics=True):
         # validate that model attribute changes have targets
         for model in doc.models:
             for change in model.changes:
-                if isinstance(change, ModelAttributeChange):
-                    if not change.target:
-                        raise ValueError('Model change attributes must define a target')
+                if not change.target:
+                    raise ValueError('Model change attributes must define a target')
 
         for sim in doc.simulations:
             if sim.algorithm:
@@ -204,9 +203,8 @@ def validate_model_change_types(changes, types):
 
             ]))
 
-        if isinstance(change, ModelAttributeChange):
-            if not change.target:
-                raise ValueError('Model change attributes must define a target')
+        if not change.target:
+            raise ValueError('Model change attributes must define a target')
 
 
 def validate_simulation_type(simulation, types):

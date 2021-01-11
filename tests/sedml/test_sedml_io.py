@@ -29,6 +29,17 @@ class IoTestCase(unittest.TestCase):
             changes=[
                 data_model.ModelAttributeChange(target='/sbml:sbml/sbml:model[id=\'a\']/@id', new_value='234'),
                 data_model.ModelAttributeChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_value='432'),
+                data_model.AddElementModelChange(
+                    target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters', 
+                    new_element='<parameter id="new_parameter" value="1.0"/>'
+                ),
+                data_model.ReplaceElementModelChange(
+                    target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters/sbml:parameter[@id=\'p1\']', 
+                    new_element='<parameter id="p1" value="1.0"/>'
+                ),
+                data_model.RemoveElementModelChange(
+                    target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters/sbml:parameter[@id=\'p1\']',
+                ),
             ],
         )
         model2 = data_model.Model(
@@ -323,6 +334,8 @@ class IoTestCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(document, filename)
 
         document2 = io.SedmlSimulationReader().run(filename)
+        print(document.models[0].changes[2].to_tuple())
+        print(document2.models[0].changes[2].to_tuple())
         self.assertTrue(document.is_equal(document2))
 
         document = data_model.SedDocument(
@@ -366,6 +379,15 @@ class IoTestCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(document3, filename)
         document4 = io.SedmlSimulationReader().run(filename)
         self.assertTrue(document4.is_equal(document3))
+
+        document.models[0].changes[2].new_element = '<parameter id="new_parameter" value="1.0/>'
+        with self.assertRaisesRegex(ValueError, 'not valid XML'):
+            io.SedmlSimulationWriter().run(document, filename)
+
+        document.models[0].changes[2].new_element = '<parameter id="new_parameter" value="1.0"/>'
+        document.models[0].changes[3].new_element = '<parameter id="new_parameter" value="1.0/>'
+        with self.assertRaisesRegex(ValueError, 'not valid XML'):
+            io.SedmlSimulationWriter().run(document, filename)
 
     def test_write_error_unsupported_classes(self):
         document = data_model.SedDocument(tasks=[mock.Mock(id='task')])
@@ -421,6 +443,20 @@ class IoTestCase(unittest.TestCase):
         utils.append_all_nested_children_to_doc(document)
         with self.assertRaises(NotImplementedError):
             io.SedmlSimulationWriter().run(document, None)
+
+    def test_read_add_xml(self):
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'add-xml.sedml')
+        doc = io.SedmlSimulationReader().run(filename)    
+        self.assertEqual(len(doc.models), 1)
+        self.assertEqual(len(doc.tasks), 1)
+        self.assertEqual(len(doc.data_generators), 1)
+        self.assertEqual(len(doc.outputs), 3)
+
+    @unittest.skip('Not yet implemented')
+    def test_read_repeated_task(self):
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'repeated-task.sedml')
+        doc = io.SedmlSimulationReader().run(filename)
+        self.assertEqual(doc.tasks, [])
 
     def test_write_error_invalid_ids(self):
         document = data_model.SedDocument(models=[mock.Mock(id=None)])
@@ -488,25 +524,6 @@ class IoTestCase(unittest.TestCase):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'data-description.sedml')
         with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'data descriptions are not yet supported'):
             io.SedmlSimulationReader().run(filename)
-
-        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'add-xml.sedml')
-        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because it requires types of changes'):
-            doc = io.SedmlSimulationReader().run(filename)
-        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because it requires types of model changes'):
-            doc = io.SedmlSimulationReader().run(filename)
-        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because it requires SED features'):
-            doc = io.SedmlSimulationReader().run(filename)
-        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because it requires types of model changes'):
-            doc = io.SedmlSimulationReader().run(filename)
-        self.assertEqual(doc.models, [])
-        self.assertEqual(doc.tasks, [])
-        self.assertEqual(doc.data_generators, [])
-        self.assertEqual(len(doc.outputs), 3)
-
-        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'repeated-task.sedml')
-        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because tasks of type'):
-            io.SedmlSimulationReader().run(filename)
-        self.assertEqual(doc.tasks, [])
 
     def test_read_error_simulation_times(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'initialTime-more-than-outputStartTime.sedml')

@@ -111,6 +111,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         shutil.rmtree(self.tmp_dir)
 
     def test(self):
+        namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
+
         changes = [
             data_model.ModelAttributeChange(
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']/@initialConcentration",
@@ -118,19 +120,42 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             data_model.ModelAttributeChange(
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']/@sboTerm",
                 new_value='SBO:0000001'),
+            data_model.AddElementModelChange(
+                target="/sbml:sbml/sbml:model/sbml:listOfSpecies",
+                new_element='<species id="NewSpecies" />'),
+            data_model.ReplaceElementModelChange(
+                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='SpeciesToReplace']",
+                new_element='<species id="DifferentSpecies" />'),
+            data_model.RemoveElementModelChange(
+                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Sic']"),
         ]
         save_changes = copy.copy(changes)
+        et = etree.parse(self.FIXTURE_FILENAME)
+        self.assertEqual(len(et.xpath(changes[2].target, namespaces=namespaces)[0].getchildren()), 4)
+        self.assertEqual(len(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='NewSpecies']",
+                                      namespaces=namespaces)), 0)
+        self.assertEqual(len(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='DifferentSpecies']",
+                                      namespaces=namespaces)), 0)
+        self.assertEqual(len(et.xpath(changes[4].target, namespaces=namespaces)), 1)
+
+        # apply changes
         out_filename = os.path.join(self.tmp_dir, 'test.xml')
         utils.apply_changes_to_xml_model(changes, self.FIXTURE_FILENAME, out_filename)
 
+        # check changes applied
         et = etree.parse(out_filename)
-        namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
         self.assertEqual(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
                                   namespaces=namespaces)[0].get('initialConcentration'),
                          save_changes[0].new_value)
         self.assertEqual(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']",
                                   namespaces=namespaces)[0].get('sboTerm'),
                          save_changes[1].new_value)
+        self.assertEqual(len(et.xpath(save_changes[2].target, namespaces=namespaces)[0].getchildren()), 4)
+        self.assertEqual(len(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='NewSpecies']",
+                                      namespaces=namespaces)), 1)
+        self.assertEqual(len(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='DifferentSpecies']",
+                                      namespaces=namespaces)), 1)
+        self.assertEqual(len(et.xpath(save_changes[4].target, namespaces=namespaces)), 0)
 
         self.assertEqual(changes, [])
 
@@ -158,6 +183,38 @@ class ApplyModelChangesTestCase(unittest.TestCase):
                 new_value='1.9'),
         ]
         with self.assertRaises(ValueError):
+            utils.apply_changes_to_xml_model(changes, self.FIXTURE_FILENAME, None)
+
+        changes = [
+            data_model.AddElementModelChange(
+                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
+                new_element='1.9'),
+        ]
+        with self.assertRaisesRegex(ValueError, 'not valid XML'):
+            utils.apply_changes_to_xml_model(changes, self.FIXTURE_FILENAME, None)
+
+        changes = [
+            data_model.AddElementModelChange(
+                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                new_element='1.9'),
+        ]
+        with self.assertRaisesRegex(ValueError, 'must match a single object'):
+            utils.apply_changes_to_xml_model(changes, self.FIXTURE_FILENAME, None)
+
+        changes = [
+            data_model.ReplaceElementModelChange(
+                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
+                new_element='1.9'),
+        ]
+        with self.assertRaisesRegex(ValueError, 'not valid XML'):
+            utils.apply_changes_to_xml_model(changes, self.FIXTURE_FILENAME, None)
+
+        changes = [
+            data_model.ReplaceElementModelChange(
+                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                new_element='1.9'),
+        ]
+        with self.assertRaisesRegex(ValueError, 'must match a single object'):
             utils.apply_changes_to_xml_model(changes, self.FIXTURE_FILENAME, None)
 
     def test_calc_data_generator_results(self):

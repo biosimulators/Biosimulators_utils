@@ -7,11 +7,14 @@
 """
 
 from ..report.data_model import DataGeneratorVariableResults  # noqa: F401
-from .data_model import (SedDocument, ModelAttributeChange, Task, Report, Plot2D, Plot3D,  # noqa: F401
+from .data_model import (SedDocument, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
+                         ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange,
+                         Task, Report, Plot2D, Plot3D,
                          DataGenerator, DataGeneratorVariable, MATHEMATICAL_FUNCTIONS)
 from lxml import etree
 import copy
 import evalidate
+import io
 import math
 import numpy
 import re
@@ -101,7 +104,7 @@ def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename, p
     """ Modify an XML-encoded model according to the model attribute changes in a simulation
 
     Args:
-        changes (:obj:`list` of :obj:`ModelAttributeChange`): changes
+        changes (:obj:`list` of :obj:`ModelChange`): changes
         in_model_filename (:obj:`str`): path to model
         out_model_filename (:obj:`str`): path to save modified model
         pretty_print (:obj:`bool`, optional): if :obj:`True`, pretty print output
@@ -119,25 +122,62 @@ def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename, p
             namespaces[match.group(2)] = match.group(1)
 
     # apply changes
-    for change in list(changes):
-        if not isinstance(change, ModelAttributeChange):
+    for change in changes:
+        if isinstance(change, ModelAttributeChange):
+
+            # get object to change
+            obj_xpath, sep, attr = change.target.rpartition('/@')
+            if sep != '/@':
+                raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
+            objs = et.xpath(obj_xpath, namespaces=namespaces)
+            if len(objs) != 1:
+                raise ValueError('xpath {} must match a single object in {}'.format(obj_xpath, in_model_filename))
+            obj = objs[0]
+
+            # change value
+            obj.set(attr, change.new_value)
+
+        elif isinstance(change, AddElementModelChange):
+            parent = et.xpath(change.target, namespaces=namespaces)
+            if len(parent) != 1:
+                raise ValueError('xpath {} must match a single object in {}'.format(change.target, in_model_filename))
+            parent = parent[0]
+
+            try:
+                new_element = etree.parse(io.StringIO(change.new_element)).getroot()
+            except etree.XMLSyntaxError as exception:
+                raise ValueError('`{}` is not valid XML. {}'.format(change.new_element, str(exception)))
+            parent.append(new_element)
+
+        elif isinstance(change, ReplaceElementModelChange):
+            old_element = et.xpath(change.target, namespaces=namespaces)
+            if len(old_element) != 1:
+                raise ValueError('xpath {} must match a single object in {}'.format(change.target, in_model_filename))
+            old_element = old_element[0]
+            try:
+                new_element = etree.parse(io.StringIO(change.new_element)).getroot()
+            except etree.XMLSyntaxError as exception:
+                raise ValueError('`{}` is not valid XML. {}'.format(change.new_element, str(exception)))
+            parent = old_element.getparent()
+
+            parent.remove(old_element)
+            parent.append(new_element)
+
+        elif isinstance(change, RemoveElementModelChange):
+            elements = et.xpath(change.target, namespaces=namespaces)
+            for element in elements:
+                parent = element.getparent()
+                parent.remove(element)
+
+        elif isinstance(change, ComputeModelChange):
+            pass
+
+        else:
             raise NotImplementedError('Change{} of type {} is not supported'.format(
                 ' ' + change.name if change.name else '', change.__class__.__name__))
 
-        # get object to change
-        obj_xpath, sep, attr = change.target.rpartition('/@')
-        if sep != '/@':
-            raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
-        objs = et.xpath(obj_xpath, namespaces=namespaces)
-        if len(objs) != 1:
-            raise ValueError('xpath {} must match a single object in {}'.format(obj_xpath, in_model_filename))
-        obj = objs[0]
-
-        # change value
-        obj.set(attr, change.new_value)
-
-        # remove change from list of changes
-        changes.remove(change)
+    # remove changes from list of changes
+    changes.clear()
 
     # write model
     et.write(out_model_filename, xml_declaration=True, encoding="utf-8", standalone=False, pretty_print=pretty_print)

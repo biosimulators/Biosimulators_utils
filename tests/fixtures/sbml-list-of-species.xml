@@ -8,6 +8,8 @@
       </species>
       <species compartment="compartment" id="Sic" initialConcentration="0.0035491784" metaid="metaid_0000086" name="Sic1" sboTerm="SBO:0000245">
       </species>
+      <species compartment="compartment" id="SpeciesToReplace" initialConcentration="0.0035491784" metaid="metaid_0000086" name="Sic1" sboTerm="SBO:0000245">
+      </species>
     </listOfSpecies>
   </model>
 </sbml>

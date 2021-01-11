@@ -8,7 +8,7 @@
 
 from . import data_model
 from .validation import validate_doc
-from .warnings import NoDataSetsWarning, NoCurvesWarning, NoSurfacesWarning, SedmlFeatureNotSupportedWarning
+from .warnings import SedmlFeatureNotSupportedWarning
 from ..biosimulations.data_model import Metadata, ExternalReferences, Citation
 from ..data_model import Person, Identifier, OntologyTerm
 from ..kisao.utils import normalize_kisao_id
@@ -66,6 +66,11 @@ class SedmlSimulationWriter(object):
         for task in doc.tasks:
             if isinstance(task, data_model.Task):
                 self._add_task_to_doc(task)
+
+            # Todo
+            # elif isinstance(task, data_model.RepeatedTask):
+            #    self._add_repeated_task_to_doc(task)
+
             else:
                 # this is an error rather than a warning because our data model currently only support 1 type of task
                 raise NotImplementedError('Task type {} is not supported'.format(task.__class__.__name__))
@@ -119,6 +124,20 @@ class SedmlSimulationWriter(object):
         for change in model.changes:
             if isinstance(change, data_model.ModelAttributeChange):
                 self._add_attribute_change_to_model(model, change)
+
+            elif isinstance(change, data_model.AddElementModelChange):
+                self._add_add_model_element_to_model(model, change)
+
+            elif isinstance(change, data_model.ReplaceElementModelChange):
+                self._add_change_model_element_to_model(model, change)
+
+            elif isinstance(change, data_model.RemoveElementModelChange):
+                self._add_remove_model_element_to_model(model, change)
+
+            # Todo
+            # elif isinstance(change, data_model.ComputeModelChange):
+            #     self._add_compute_change_to_model(model, change)
+
             else:
                 # this is an error rather than a warning because skipping a model change would alter the semantic
                 # meaning of the remaining model
@@ -139,6 +158,74 @@ class SedmlSimulationWriter(object):
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
         if change.new_value is not None:
             self._call_libsedml_method(change_sed, 'setNewValue', change.new_value)
+
+    def _add_add_model_element_to_model(self, model, change):
+        """ Add an add element change change to a SED model
+
+        Args:
+            model (:obj:`data_model.Model`): model
+            change (:obj:`data_model.ModelAttributeChange`): add model element change
+        """
+        model_sed = self._obj_to_sed_obj_map[model]
+        change_sed = model_sed.createAddXML()
+        self._obj_to_sed_obj_map[change] = change_sed
+
+        if change.target is not None:
+            self._call_libsedml_method(change_sed, 'setTarget', change.target)
+        if change.new_element is not None:
+            new_xml = libsedml.XMLNode_convertStringToXMLNode(change.new_element)
+            if new_xml is None:
+                raise ValueError('`{}` is not valid XML.'.format(change.new_element))
+            self._call_libsedml_method(change_sed, 'setNewXML', new_xml)
+
+    def _add_change_model_element_to_model(self, model, change):
+        """ Add a change element change to a SED model
+
+        Args:
+            model (:obj:`data_model.Model`): model
+            change (:obj:`data_model.ReplaceElementModelChange`): change model element change
+        """
+        model_sed = self._obj_to_sed_obj_map[model]
+        change_sed = model_sed.createChangeXML()
+        self._obj_to_sed_obj_map[change] = change_sed
+
+        if change.target is not None:
+            self._call_libsedml_method(change_sed, 'setTarget', change.target)
+        if change.new_element is not None:
+            new_xml = libsedml.XMLNode_convertStringToXMLNode(change.new_element)
+            if new_xml is None:
+                raise ValueError('`{}` is not valid XML.'.format(change.new_element))
+            self._call_libsedml_method(change_sed, 'setNewXML', new_xml)
+
+    def _add_remove_model_element_to_model(self, model, change):
+        """ Add a remove element change to a SED model
+
+        Args:
+            model (:obj:`data_model.Model`): model
+            change (:obj:`data_model.RemoveElementModelChange`): remove model element change
+        """
+        model_sed = self._obj_to_sed_obj_map[model]
+        change_sed = model_sed.createRemoveXML()
+        self._obj_to_sed_obj_map[change] = change_sed
+
+        if change.target is not None:
+            self._call_libsedml_method(change_sed, 'setTarget', change.target)
+
+    def _add_compute_change_to_model(self, model, change):
+        """ Add a compute change to a SED model
+
+        Args:
+            model (:obj:`data_model.Model`): model
+            change (:obj:`data_model.ComputeModelChange`): compute change
+        """
+        model_sed = self._obj_to_sed_obj_map[model]
+        change_sed = model_sed.createComputeChange()
+        self._obj_to_sed_obj_map[change] = change_sed
+
+        if change.target is not None:
+            self._call_libsedml_method(change_sed, 'setTarget', change.target)
+
+        # TODO
 
     def _add_sim_to_doc(self, sim):
         """ Add a simulation to a SED document
@@ -703,7 +790,6 @@ class SedmlSimulationReader(object):
 
         # models
         id_to_model_map = {}
-        skipped_model_ids = set()
         for model_sed in doc_sed.getListOfModels():
             model = data_model.Model()
 
@@ -712,23 +798,48 @@ class SedmlSimulationReader(object):
             model.source = model_sed.getSource() or None
             model.language = model_sed.getLanguage() or None
 
-            changes_supported = True
             for change_sed in model_sed.getListOfChanges():
-                if not isinstance(change_sed, libsedml.SedChangeAttribute):
-                    changes_supported = False
-                    break
-                change = data_model.ModelAttributeChange()
-                model.changes.append(change)
-                change.target = change_sed.getTarget() or None
-                change.new_value = change_sed.getNewValue() or None
+                if isinstance(change_sed, libsedml.SedChangeAttribute):
+                    change = data_model.ModelAttributeChange()
+                    model.changes.append(change)
+                    change.target = change_sed.getTarget() or None
+                    change.new_value = change_sed.getNewValue() or None
 
-            if changes_supported:
-                doc.models.append(model)
-                self._add_obj_to_id_to_obj_map(model_sed, model, id_to_model_map)
-            else:
-                skipped_model_ids.add(model.id)
-                warnings.warn('Model {} skipped because it requires types of changes that are not yet supported'.format(
-                    model.id), SedmlFeatureNotSupportedWarning)
+                elif isinstance(change_sed, libsedml.SedAddXML):
+                    change = data_model.AddElementModelChange()
+                    model.changes.append(change)
+                    change.target = change_sed.getTarget() or None
+
+                    new_xml = change_sed.getNewXML() or None
+                    print(change_sed.getNewXML())
+                    if new_xml is not None:
+                        change.new_element = libsedml.XMLNode_convertXMLNodeToString(new_xml)
+
+                elif isinstance(change_sed, libsedml.SedChangeXML):
+                    change = data_model.ReplaceElementModelChange()
+                    model.changes.append(change)
+                    change.target = change_sed.getTarget() or None
+                    new_xml = change_sed.getNewXML() or None
+                    if new_xml is not None:
+                        change.new_element = libsedml.XMLNode_convertXMLNodeToString(new_xml)
+
+                elif isinstance(change_sed, libsedml.SedRemoveXML):
+                    change = data_model.RemoveElementModelChange()
+                    model.changes.append(change)
+                    change.target = change_sed.getTarget() or None
+
+                # Todo
+                # elif isinstance(change_sed, libsedml.SedComputeChange):
+                #    change = data_model.ComputeModelChange()
+                #    model.changes.append(change)
+                #    change.target = change_sed.getTarget() or None
+
+                else:  # pragma: no cover: already validated by libSED-ML
+                    # this is an error rather than a warning because SED doesn't define any other types of changes
+                    raise NotImplementedError('Change type {} is not supported'.format(change_sed.__class__.__name__))
+
+            doc.models.append(model)
+            self._add_obj_to_id_to_obj_map(model_sed, model, id_to_model_map)
 
         # simulations
         id_to_sim_map = {}
@@ -777,41 +888,35 @@ class SedmlSimulationReader(object):
 
         # tasks
         id_to_task_map = {}
-        skipped_task_ids = set()
         for task_sed in doc_sed.getListOfTasks():
-            if not isinstance(task_sed, libsedml.SedTask):
-                skipped_task_ids.add(task_sed.getId())
-                warnings.warn('Task {} skipped because tasks of type {} are not yet supported'.format(
-                    task_sed.getId(), task_sed.__class__.__name__), SedmlFeatureNotSupportedWarning)
-                continue
+            if isinstance(task_sed, libsedml.SedTask):
+                task = data_model.Task()
 
-            task = data_model.Task()
+                task.id = task_sed.getId() or None
+                task.name = task_sed.getName() or None
 
-            task.id = task_sed.getId() or None
-            task.name = task_sed.getName() or None
-
-            model_id = task_sed.getModelReference() or None
-            if model_id in skipped_model_ids:
-                skipped_task_ids.add(task.id)
-                warnings.warn('Task {} skipped because it requires types of model changes that are not yet supported'.format(
-                    task.id), SedmlFeatureNotSupportedWarning)
-            else:
                 doc.tasks.append(task)
                 self._add_obj_to_id_to_obj_map(task_sed, task, id_to_task_map)
 
                 self._deserialize_reference(task_sed, task, 'model', 'Model', 'model', id_to_model_map)
                 self._deserialize_reference(task_sed, task, 'simulation', 'Simulation', 'simulation', id_to_sim_map)
 
+            elif isinstance(task_sed.libsedmlSedRepeatedTask):
+                # todo
+                pass
+
+            else:  # pragma: no cover: already validated by libSED-ML
+                # this is an error rather than a warning because SED doesn't define any other types of tasks
+                raise NotImplementedError('Task type {} is not supported'.format(task_sed.__class__.__name__))
+
         # data generators
         id_to_data_gen_map = {}
-        skipped_data_gen_ids = set()
         for data_gen_sed in doc_sed.getListOfDataGenerators():
             data_gen = data_model.DataGenerator()
 
             data_gen.id = data_gen_sed.getId() or None
             data_gen.name = data_gen_sed.getName() or None
 
-            variables_supported = True
             for var_sed in data_gen_sed.getListOfVariables():
                 var = data_model.DataGeneratorVariable()
                 data_gen.variables.append(var)
@@ -821,15 +926,8 @@ class SedmlSimulationReader(object):
                 var.symbol = var_sed.getSymbol() or None
                 var.target = var_sed.getTarget() or None
 
-                if (
-                    not var_sed.getTaskReference()
-                    or var_sed.getTaskReference() in skipped_task_ids
-                    or var_sed.getModelReference() in skipped_model_ids
-                ):
-                    variables_supported = False
-                else:
-                    self._deserialize_reference(var_sed, var, 'task', 'Task', 'task', id_to_task_map)
-                    self._deserialize_reference(var_sed, var, 'model', 'Model', 'model', id_to_model_map)
+                self._deserialize_reference(var_sed, var, 'task', 'Task', 'task', id_to_task_map)
+                self._deserialize_reference(var_sed, var, 'model', 'Model', 'model', id_to_model_map)
 
             for param_sed in data_gen_sed.getListOfParameters():
                 param = data_model.DataGeneratorParameter()
@@ -845,13 +943,8 @@ class SedmlSimulationReader(object):
             if data_gen.math is not None:
                 data_gen.math = libsedml.formulaToL3String(data_gen.math)
 
-            if variables_supported:
-                doc.data_generators.append(data_gen)
-                self._add_obj_to_id_to_obj_map(data_gen_sed, data_gen, id_to_data_gen_map)
-            else:
-                skipped_data_gen_ids.add(data_gen.id)
-                warnings.warn('Data generator {} skipped because it requires SED features that are not yet supported'.format(
-                    data_gen.id), SedmlFeatureNotSupportedWarning)
+            doc.data_generators.append(data_gen)
+            self._add_obj_to_id_to_obj_map(data_gen_sed, data_gen, id_to_data_gen_map)
 
         # outputs
         id_to_output_map = {}
@@ -866,16 +959,8 @@ class SedmlSimulationReader(object):
                     data_set.name = dataset_sed.getName() or None
                     data_set.label = dataset_sed.getLabel() or None
 
-                    if dataset_sed.getDataReference() in skipped_data_gen_ids:
-                        warnings.warn('Data set {} skipped because it requires SED features that are not yet supported'.format(
-                            data_set.id), SedmlFeatureNotSupportedWarning)
-                    else:
-                        output.data_sets.append(data_set)
-                        self._deserialize_reference(dataset_sed, data_set, 'data generator', 'Data', 'data_generator', id_to_data_gen_map)
-
-                if not output.data_sets:
-                    warnings.warn('Report {} does not contain any datasets'.format(output.id),
-                                  NoDataSetsWarning)
+                    output.data_sets.append(data_set)
+                    self._deserialize_reference(dataset_sed, data_set, 'data generator', 'Data', 'data_generator', id_to_data_gen_map)
 
             elif isinstance(output_sed, libsedml.SedPlot2D):
                 output = data_model.Plot2D()
@@ -889,20 +974,9 @@ class SedmlSimulationReader(object):
                     curve.x_scale = data_model.AxisScale.log if curve_sed.getLogX() else data_model.AxisScale.linear
                     curve.y_scale = data_model.AxisScale.log if curve_sed.getLogY() else data_model.AxisScale.linear
 
-                    if (
-                        curve_sed.getXDataReference() in skipped_data_gen_ids
-                        or curve_sed.getYDataReference() in skipped_data_gen_ids
-                    ):
-                        warnings.warn('Curve {} skipped because it requires SED features that are not yet supported'.format(
-                            curve.id), SedmlFeatureNotSupportedWarning)
-                    else:
-                        output.curves.append(curve)
-                        self._deserialize_reference(curve_sed, curve, 'data generator', 'XData', 'x_data_generator', id_to_data_gen_map)
-                        self._deserialize_reference(curve_sed, curve, 'data generator', 'YData', 'y_data_generator', id_to_data_gen_map)
-
-                if not output.curves:
-                    warnings.warn('Plot {} does not contain any curves'.format(output.id),
-                                  NoCurvesWarning)
+                    output.curves.append(curve)
+                    self._deserialize_reference(curve_sed, curve, 'data generator', 'XData', 'x_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(curve_sed, curve, 'data generator', 'YData', 'y_data_generator', id_to_data_gen_map)
 
             elif isinstance(output_sed, libsedml.SedPlot3D):
                 output = data_model.Plot3D()
@@ -917,22 +991,10 @@ class SedmlSimulationReader(object):
                     surface.y_scale = data_model.AxisScale.log if surface_sed.getLogY() else data_model.AxisScale.linear
                     surface.z_scale = data_model.AxisScale.log if surface_sed.getLogZ() else data_model.AxisScale.linear
 
-                    if (
-                        surface_sed.getXDataReference() in skipped_data_gen_ids
-                        or surface_sed.getYDataReference() in skipped_data_gen_ids
-                        or surface_sed.getZDataReference() in skipped_data_gen_ids
-                    ):
-                        warnings.warn('Surface {} skipped because it requires SED features that are not yet supported'.format(
-                            surface.id), SedmlFeatureNotSupportedWarning)
-                    else:
-                        output.surfaces.append(surface)
-                        self._deserialize_reference(surface_sed, surface, 'data generator', 'XData', 'x_data_generator', id_to_data_gen_map)
-                        self._deserialize_reference(surface_sed, surface, 'data generator', 'YData', 'y_data_generator', id_to_data_gen_map)
-                        self._deserialize_reference(surface_sed, surface, 'data generator', 'ZData', 'z_data_generator', id_to_data_gen_map)
-
-                if not output.surfaces:
-                    warnings.warn('Plot {} does not contain any surfaces'.format(output.id),
-                                  NoSurfacesWarning)
+                    output.surfaces.append(surface)
+                    self._deserialize_reference(surface_sed, surface, 'data generator', 'XData', 'x_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(surface_sed, surface, 'data generator', 'YData', 'y_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(surface_sed, surface, 'data generator', 'ZData', 'z_data_generator', id_to_data_gen_map)
 
             else:  # pragma: no cover: already validated by libSED-ML
                 # this is an error rather than a warning because SED doesn't define any other types of outputs

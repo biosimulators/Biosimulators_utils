@@ -28,6 +28,10 @@ __all__ = [
     'Model',
     'ModelChange',
     'ModelAttributeChange',
+    'AddElementModelChange',
+    'ReplaceElementModelChange',
+    'RemoveElementModelChange',
+    'ComputeModelChange',
     'AbstractTask',
     'Task',
     'DataGenerator',
@@ -467,17 +471,19 @@ class ModelAttributeChange(ModelChange):
     """ A change of an attribute of a model
 
     Attributes:
+        name (:obj:`str`): name
         target (:obj:`str`): path to the model element that should be changed
         new_value (:obj:`str`): new value
     """
 
-    def __init__(self, target=None, new_value=None):
+    def __init__(self, name=None, target=None, new_value=None):
         """
         Args:
+            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the model element that should be changed
             new_value (:obj:`str`, optional): new value
         """
-        super(ModelAttributeChange, self).__init__(target=target)
+        super(ModelAttributeChange, self).__init__(name=name, target=target)
         self.new_value = new_value
 
     def to_tuple(self):
@@ -486,7 +492,7 @@ class ModelAttributeChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target, self.new_value)
+        return (self.name, self.target, self.new_value)
 
     def is_equal(self, other):
         """ Determine if model attribute changes are equal
@@ -499,6 +505,155 @@ class ModelAttributeChange(ModelChange):
         """
         return super(ModelAttributeChange, self).is_equal(other) \
             and self.new_value == other.new_value
+
+
+class AddElementModelChange(ModelChange):
+    """ An addition of an element to a model
+
+    Attributes:
+        name (:obj:`str`,): name
+        target (:obj:`str`): path to the parent of the new element
+        new_element (:obj:`str`): new element
+    """
+
+    def __init__(self, name=None, target=None, new_element=None):
+        """
+        Args:
+            name (:obj:`str`, optional): name
+            target (:obj:`str`, optional): path to the parent of the new element
+            new_element (:obj:`str`): new element
+        """
+        super(AddElementModelChange, self).__init__(name=name, target=target)
+        self.new_element = new_element
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.name, self.target, self.new_element)
+
+    def is_equal(self, other):
+        """ Determine if model attribute changes are equal
+
+        Args:
+            other (:obj:`AddElementModelChange`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two model attribute changes are equal
+        """
+        return super(AddElementModelChange, self).is_equal(other) \
+            and self.new_element == other.new_element
+
+
+class ReplaceElementModelChange(ModelChange):
+    """ A replacement of an element of a model
+
+    Attributes:
+        name (:obj:`str`): name
+        target (:obj:`str`): path to the element to replace
+        new_element (:obj:`str`): new element
+    """
+
+    def __init__(self, name=None, target=None, new_element=None):
+        """
+        Args:
+            name (:obj:`str`, optional): name
+            target (:obj:`str`, optional): path to the element to replace
+            new_element (:obj:`str`): new element
+        """
+        super(ReplaceElementModelChange, self).__init__(name=name, target=target)
+        self.new_element = new_element
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.name, self.target, self.new_element)
+
+    def is_equal(self, other):
+        """ Determine if model attribute changes are equal
+
+        Args:
+            other (:obj:`ReplaceElementModelChange`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two model attribute changes are equal
+        """
+        return super(ReplaceElementModelChange, self).is_equal(other) \
+            and self.new_element == other.new_element
+
+
+class RemoveElementModelChange(ModelChange):
+    """ A removal of an element from a model
+
+    Attributes:
+        name (:obj:`str`, optional): name
+        target (:obj:`str`): path to the element to remove
+    """
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.name, self.target)
+
+
+class ComputeModelChange(ModelChange):
+    """ A replacement of an element of a model
+
+    Attributes:
+        name (:obj:`str`): name
+        target (:obj:`str`): path to the element to replace
+        variables (:obj:`list` of :obj:``): variables
+        parameters (:obj:`list` of :obj:``): parameters
+        math (:obj:`str`): mathematical expression
+    """
+
+    def __init__(self, name=None, target=None, variables=None, parameters=None, math=None):
+        """
+        Args:
+            name (:obj:`str`, optional): name
+            target (:obj:`str`, optional): path to the element to replace
+            variables (:obj:`list` of :obj:``): variables
+            parameters (:obj:`list` of :obj:``): parameters
+            math (:obj:`str`): mathematical expression
+        """
+        super(ComputeModelChange, self).__init__(name=name, target=target)
+        self.variables = variables or []
+        self.parameters = parameters or []
+        self.math = math or []
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.name, self.target,
+                tuple(none_sorted(variable.to_tuple() for variable in self.variables)),
+                tuple(none_sorted(parameter.to_tuple() for parameter in self.parameters)),
+                self.math)
+
+    def is_equal(self, other):
+        """ Determine if model attribute changes are equal
+
+        Args:
+            other (:obj:`ComputeModelChange`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two model attribute changes are equal
+        """
+        return super(ComputeModelChange, self).is_equal(other) \
+            and are_lists_equal(self.variables, other.variables) \
+            and are_lists_equal(self.parameters, other.parameters) \
+            and self.math == other.math \
+
 
 
 class AbstractTask(abc.ABC):

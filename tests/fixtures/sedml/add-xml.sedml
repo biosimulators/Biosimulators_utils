@@ -22,6 +22,9 @@
       <listOfVariables>
         <variable id="variable_1" taskReference="task_1" symbol="urn:sedml:symbol:time" />
       </listOfVariables>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <ci> variable_1 </ci>
+      </math>
     </dataGenerator>
   </listOfDataGenerators>
   <listOfOutputs>
