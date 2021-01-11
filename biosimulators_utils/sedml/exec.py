@@ -182,20 +182,32 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                                 exec_status.outputs[output.id].data_sets[data_set.id] = ExecutionStatus.SUCCEEDED
 
                     if len(dataset_shapes) > 1:
-                        raise ValueError('Data generators for report {} must have consistent shapes'.format(output.id))
+                        warnings.warn('Data generators for report {} do not have consistent shapes'.format(output.id), UserWarning)
 
                     if len(set(dataset_labels)) < len(dataset_labels):
                         warnings.warn('To facilitate machine interpretation, data sets should have unique ids',
                                       RepeatDataSetLabelsWarning)
 
-                    if dataset_shapes:
-                        dataset_shape = list(dataset_shapes)[0]
-                    else:
-                        dataset_shape = ()
+                    dataset_max_shape = []
+                    for dataset_shape in dataset_shapes:
+                        dataset_max_shape = dataset_max_shape + [1] * (len(dataset_shape) - len(dataset_max_shape))
+                        dataset_shape = list(dataset_shape) + [1] * (len(dataset_shape) - len(dataset_max_shape))
+                        dataset_max_shape = [max(x, y) for x, y in zip(dataset_max_shape, dataset_shape)]
 
                     for i_result, dataset_result in enumerate(dataset_results):
                         if dataset_result is None:
                             dataset_results[i_result] = numpy.full(dataset_shape, numpy.nan)
+
+                        dataset_shape = tuple(list(dataset_results[i_result].shape)
+                                              + [1] * (len(dataset_max_shape) - dataset_results[i_result].ndim))
+                        dataset_results[i_result].reshape(dataset_shape)
+
+                        pad_width = tuple((0, x - y) for x, y in zip(dataset_max_shape, dataset_shape))
+                        if pad_width:
+                            dataset_results[i_result] = numpy.pad(dataset_results[i_result],
+                                                                  pad_width,
+                                                                  mode='constant',
+                                                                  constant_values=numpy.nan)
 
                     output_df = pandas.DataFrame(numpy.array(dataset_results), index=dataset_labels)
                     report_results[output.id] = output_df

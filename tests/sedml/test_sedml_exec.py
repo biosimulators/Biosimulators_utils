@@ -264,7 +264,7 @@ class ExecTaskCase(unittest.TestCase):
         exec_status.outputs['report_2'].document_status = exec_status
         exec_status.outputs['report_3'].document_status = exec_status
         exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[],
-                      exec_status=exec_status)
+                          exec_status=exec_status)
         self.assertEqual(exec_status.to_dict(), {
             'status': 'SUCCEEDED',
             'tasks': {
@@ -694,12 +694,24 @@ class ExecTaskCase(unittest.TestCase):
                 variables=[
                     data_model.DataGeneratorVariable(
                         id='data_gen_2_var_2',
-                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_2']/@concentration",
                         task=doc.tasks[0],
                         model=doc.models[0],
                     ),
                 ],
                 math='data_gen_2_var_2',
+            ),
+            data_model.DataGenerator(
+                id='data_gen_3',
+                variables=[
+                    data_model.DataGeneratorVariable(
+                        id='data_gen_3_var_3',
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_3']/@concentration",
+                        task=doc.tasks[0],
+                        model=doc.models[0],
+                    ),
+                ],
+                math='data_gen_3_var_3',
             ),
         ]
 
@@ -725,11 +737,32 @@ class ExecTaskCase(unittest.TestCase):
             results = DataGeneratorVariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[1].variables[0].id] = numpy.array((1., 2.))
+            results[doc.data_generators[2].variables[0].id] = numpy.array(((1., 2., 3.), (4., 5., 6.), (7., 8., 9.)))
             return results
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertRaisesRegex(ValueError, 'must have consistent shape'):
-            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+        with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
+            report_results = exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((1., numpy.nan)))
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :], numpy.array((1., 2.)))
+
+        # doc.outputs[0].data_sets.append(
+        #    data_model.DataSet(
+        #        id='dataset_3',
+        #        label='dataset_3',
+        #        data_generator=doc.data_generators[2],
+        #    ),
+        # )
+
+        #out_dir = os.path.join(self.tmp_dir, 'results2')
+        # with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
+        #    report_results = exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+        # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :],
+        #    numpy.array(((1., numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
+        # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :],
+        #    numpy.array(((1., 2., numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
+        # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[2].id, :],
+        #    numpy.array(((1., 2., 3.), (4., 5., 6.), (7., 8., 9.))))
 
         # warning: data set labels are not unique
         doc.data_generators = [

@@ -201,7 +201,7 @@ def calc_data_generator_results(data_generator, variable_results):
                 if n_dims == 0:
                     workspace[var.id] = variable_results[var.id].tolist()
                 else:
-                    workspace[var.id] = variable_results[var.id][i_el]
+                    workspace[var.id] = variable_results[var.id].flat[i_el]
             try:
                 result_el = eval(compiled_math, MATHEMATICAL_FUNCTIONS, workspace)
             except Exception as exception:
@@ -211,7 +211,7 @@ def calc_data_generator_results(data_generator, variable_results):
             if n_dims == 0:
                 result = numpy.array(result_el)
             else:
-                result[i_el] = result_el
+                result.flat[i_el] = result_el
 
     return result
 
