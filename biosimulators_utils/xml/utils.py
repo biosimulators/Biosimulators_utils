@@ -9,6 +9,8 @@
 import lxml.etree
 import re
 
+__all__ = ['get_attributes_of_xpaths', 'validate_xpaths_ref_to_unique_objects']
+
 
 def get_attributes_of_xpaths(filename, x_paths, attr='id'):
     """ Determine the number of objects that match each XPath in an XML file.
