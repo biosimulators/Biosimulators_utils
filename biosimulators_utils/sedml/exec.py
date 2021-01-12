@@ -7,7 +7,7 @@
 """
 
 from ..config import get_config
-from ..exec_status.data_model import ExecutionStatus, SedDocumentExecutionStatus  # noqa: F401
+from ..log.data_model import ExecutionStatus, SedDocumentExecutionStatus  # noqa: F401
 from ..plot.data_model import PlotFormat
 from ..report.data_model import DataGeneratorVariableResults, DataGeneratorResults, OutputResults, ReportFormat
 from ..report.io import ReportWriter
@@ -32,7 +32,7 @@ __all__ = [
 
 def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=None,
                  apply_xml_model_changes=False, report_formats=None, plot_formats=None,
-                 exec_status=None, indent=0):
+                 log=None, indent=0):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -66,7 +66,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             calling :obj:`task_executer`.
         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
         plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
-        exec_status (:obj:`SedDocumentExecutionStatus`, optional): execution status of document
+        log (:obj:`SedDocumentExecutionStatus`, optional): execution status of document
         indent (:obj:`int`, optional): degree to indent status messages
 
     Returns:
@@ -85,9 +85,9 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         plot_formats = [PlotFormat(format_value) for format_value in get_config().PLOT_FORMATS]
 
     # update status
-    if exec_status:
-        exec_status.status = ExecutionStatus.RUNNING
-        exec_status.export()
+    if log:
+        log.status = ExecutionStatus.RUNNING
+        log.export()
 
     # apply changes to models
     modified_model_filenames = []
@@ -124,9 +124,9 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     for i_task, task in enumerate(doc.tasks):
         print('{}Executing task {}: {}'.format(' ' * 2 * indent, i_task + 1, task.id))
 
-        if exec_status:
-            exec_status.tasks[task.id].status = ExecutionStatus.RUNNING
-            exec_status.tasks[task.id].export()
+        if log:
+            log.tasks[task.id].status = ExecutionStatus.RUNNING
+            log.tasks[task.id].export()
 
         if isinstance(task, Task):
             # get a list of the variables that the task needs to record
@@ -154,7 +154,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             has_outputs = False
 
             for output in doc.outputs:
-                if exec_status and exec_status.outputs[output.id].status == ExecutionStatus.SUCCEEDED:
+                if log and log.outputs[output.id].status == ExecutionStatus.SUCCEEDED:
                     continue
 
                 running = False
@@ -177,8 +177,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                         else:
                             running = True
                             dataset_shapes.add(data_gen_res.shape)
-                            if exec_status:
-                                exec_status.outputs[output.id].data_sets[data_set.id] = ExecutionStatus.SUCCEEDED
+                            if log:
+                                log.outputs[output.id].data_sets[data_set.id] = ExecutionStatus.SUCCEEDED
 
                     if len(dataset_shapes) > 1:
                         warnings.warn('Data generators for report {} do not have consistent shapes'.format(output.id), UserWarning)
@@ -247,26 +247,26 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                 if not has_outputs:
                     warnings.warn('Task {} does not contribute to any outputs'.format(task.id), NoOutputsWarning)
 
-                if running and exec_status:
+                if running and log:
                     if succeeded:
-                        exec_status.outputs[output.id].status = ExecutionStatus.SUCCEEDED
+                        log.outputs[output.id].status = ExecutionStatus.SUCCEEDED
                     else:
-                        exec_status.outputs[output.id].status = ExecutionStatus.RUNNING
+                        log.outputs[output.id].status = ExecutionStatus.RUNNING
 
         else:
             raise NotImplementedError('Tasks of type {} are not supported'.format(task.__class__.__name__))
 
-        if exec_status:
-            exec_status.tasks[task.id].status = ExecutionStatus.SUCCEEDED
-            exec_status.tasks[task.id].export()
+        if log:
+            log.tasks[task.id].status = ExecutionStatus.SUCCEEDED
+            log.tasks[task.id].export()
 
     # cleanup modified models
     for modified_model_filename in modified_model_filenames:
         os.remove(modified_model_filename)
 
     # update status
-    if exec_status:
-        exec_status.status = ExecutionStatus.SUCCEEDED
-        exec_status.export()
+    if log:
+        log.status = ExecutionStatus.SUCCEEDED
+        log.export()
 
     return report_results

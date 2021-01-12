@@ -14,11 +14,11 @@ from .data_model import (ExecutionStatus, CombineArchiveExecutionStatus, SedDocu
                          TaskExecutionStatus, ReportExecutionStatus, Plot2DExecutionStatus, Plot3DExecutionStatus)
 import os
 
-__all__ = ['init_combine_archive_exec_status']
+__all__ = ['init_combine_archive_log']
 
 
-def init_combine_archive_exec_status(archive, archive_dir,
-                                     supported_features=(CombineArchive, SedDocument, Task, Report)):
+def init_combine_archive_log(archive, archive_dir,
+                             supported_features=(CombineArchive, SedDocument, Task, Report)):
     """ Initialize the execution status of the SED documents in a COMBINE/OMEX archive
 
     Args:

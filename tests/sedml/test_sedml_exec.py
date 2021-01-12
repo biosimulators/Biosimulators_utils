@@ -1,5 +1,5 @@
 from biosimulators_utils.config import get_config
-from biosimulators_utils.exec_status.data_model import (
+from biosimulators_utils.log.data_model import (
     ExecutionStatus, CombineArchiveExecutionStatus, SedDocumentExecutionStatus, TaskExecutionStatus, ReportExecutionStatus)
 from biosimulators_utils.report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
@@ -238,7 +238,7 @@ class ExecTaskCase(unittest.TestCase):
 
         # track execution status
         shutil.rmtree(out_dir)
-        exec_status = SedDocumentExecutionStatus(
+        log = SedDocumentExecutionStatus(
             status=ExecutionStatus.QUEUED,
             tasks={
                 'task_1_ss': TaskExecutionStatus(status=ExecutionStatus.QUEUED),
@@ -261,15 +261,15 @@ class ExecTaskCase(unittest.TestCase):
                 })
             },
         )
-        exec_status.combine_archive_status = CombineArchiveExecutionStatus(out_dir=out_dir)
-        exec_status.tasks['task_1_ss'].document_status = exec_status
-        exec_status.tasks['task_2_time_course'].document_status = exec_status
-        exec_status.outputs['report_1'].document_status = exec_status
-        exec_status.outputs['report_2'].document_status = exec_status
-        exec_status.outputs['report_3'].document_status = exec_status
+        log.combine_archive_status = CombineArchiveExecutionStatus(out_dir=out_dir)
+        log.tasks['task_1_ss'].document_status = log
+        log.tasks['task_2_time_course'].document_status = log
+        log.outputs['report_1'].document_status = log
+        log.outputs['report_2'].document_status = log
+        log.outputs['report_3'].document_status = log
         exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[],
-                          exec_status=exec_status)
-        self.assertEqual(exec_status.to_dict(), {
+                          log=log)
+        self.assertEqual(log.to_dict(), {
             'status': 'SUCCEEDED',
             'tasks': {
                 'task_1_ss': {'status': 'SUCCEEDED'},
@@ -304,7 +304,7 @@ class ExecTaskCase(unittest.TestCase):
                 },
             },
         })
-        self.assertTrue(os.path.isfile(os.path.join(out_dir, get_config().EXEC_STATUS_PATH)))
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, get_config().LOG_PATH)))
 
     def test_with_model_changes(self):
         doc = data_model.SedDocument()

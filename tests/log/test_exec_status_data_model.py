@@ -1,5 +1,5 @@
 from biosimulators_utils.config import get_config
-from biosimulators_utils.exec_status import data_model
+from biosimulators_utils.log import data_model
 import os
 import shutil
 import tempfile
@@ -116,5 +116,5 @@ class ExecStatusDataModel(unittest.TestCase):
         report_status.export()
         plot2d_status.export()
         plot3d_status.export()
-        with open(os.path.join(self.dirname, get_config().EXEC_STATUS_PATH), 'r') as file:
+        with open(os.path.join(self.dirname, get_config().LOG_PATH), 'r') as file:
             self.assertEqual(yaml.load(file), archive_status.to_dict())

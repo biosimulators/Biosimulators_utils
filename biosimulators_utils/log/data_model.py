@@ -84,7 +84,7 @@ class CombineArchiveExecutionStatus(object):
 
     def export(self):
         """ Write to a file """
-        path = os.path.join(self.out_dir, get_config().EXEC_STATUS_PATH)
+        path = os.path.join(self.out_dir, get_config().LOG_PATH)
         if not os.path.isdir(self.out_dir):
             os.makedirs(self.out_dir)
         with open(path, 'w') as file:

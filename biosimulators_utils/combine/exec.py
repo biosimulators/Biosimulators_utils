@@ -9,8 +9,8 @@
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config
-from ..exec_status.data_model import ExecutionStatus
-from ..exec_status.utils import init_combine_archive_exec_status
+from ..log.data_model import ExecutionStatus
+from ..log.utils import init_combine_archive_log
 from ..plot.data_model import PlotFormat  # noqa: F401
 from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import Task, DataGeneratorVariable  # noqa: F401
@@ -41,7 +41,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
 
                 def sed_doc_executer(doc, working_dir, base_out_path, rel_out_path=None,
                              apply_xml_model_changes=False, report_formats=None, plot_formats=None,
-                             exec_status=None, indent=0):
+                             log=None, indent=0):
                     ''' Execute the tasks specified in a SED document and generate the specified outputs
 
                     Args:
@@ -59,7 +59,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                         apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file
                         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
                         plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
-                        exec_status (:obj:`SedDocumentExecutionStatus`, optional): execution status of document
+                        log (:obj:`SedDocumentExecutionStatus`, optional): execution status of document
                         indent (:obj:`int`, optional): degree to indent status messages
                     '''
 
@@ -112,10 +112,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         os.makedirs(out_dir)
 
     # initialize status and output
-    exec_status = init_combine_archive_exec_status(archive, archive_tmp_dir)
-    exec_status.status = ExecutionStatus.RUNNING
-    exec_status.out_dir = out_dir
-    exec_status.export()
+    log = init_combine_archive_log(archive, archive_tmp_dir)
+    log.status = ExecutionStatus.RUNNING
+    log.out_dir = out_dir
+    log.export()
 
     # execute SED-ML files: execute tasks and save output
     for i_content, content in enumerate(sedml_contents):
@@ -132,7 +132,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                          apply_xml_model_changes=apply_xml_model_changes,
                          report_formats=report_formats,
                          plot_formats=plot_formats,
-                         exec_status=exec_status.sed_documents[content_id],
+                         log=log.sed_documents[content_id],
                          indent=1)
 
     if bundle_outputs:
@@ -174,6 +174,6 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
     shutil.rmtree(archive_tmp_dir)
 
     # update status
-    exec_status.status = ExecutionStatus.SUCCEEDED
-    exec_status.finalize()
-    exec_status.export()
+    log.status = ExecutionStatus.SUCCEEDED
+    log.finalize()
+    log.export()

@@ -1,6 +1,6 @@
 from biosimulators_utils.combine import data_model as combine_data_model
-from biosimulators_utils.exec_status import data_model
-from biosimulators_utils.exec_status import utils
+from biosimulators_utils.log import data_model
+from biosimulators_utils.log import utils
 from biosimulators_utils.sedml import data_model as sedml_data_model
 from biosimulators_utils.sedml.io import SedmlSimulationWriter
 import os
@@ -16,7 +16,7 @@ class ExecStatusDataModel(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.dirname)
 
-    def test_init_combine_archive_exec_status(self):
+    def test_init_combine_archive_log(self):
         archive = combine_data_model.CombineArchive(contents=[
             combine_data_model.CombineArchiveContent(
                 location='./exp_2.sedml',
@@ -91,7 +91,7 @@ class ExecStatusDataModel(unittest.TestCase):
         exp_2.outputs.append(sedml_data_model.Plot2D(id='plot_4'))
         SedmlSimulationWriter().run(exp_2, os.path.join(self.dirname, 'exp_2.sedml'))
 
-        status = utils.init_combine_archive_exec_status(archive, self.dirname)
+        status = utils.init_combine_archive_log(archive, self.dirname)
         self.assertEqual(status.to_dict(), {
             'status': 'QUEUED',
             'sedDocuments': {
@@ -131,7 +131,7 @@ class ExecStatusDataModel(unittest.TestCase):
         self.assertEqual(status.sed_documents['exp_1.sedml'].tasks['task_1'].document_status, status.sed_documents['exp_1.sedml'])
         self.assertEqual(status.sed_documents['exp_1.sedml'].outputs['report_1'].document_status, status.sed_documents['exp_1.sedml'])
 
-        status = utils.init_combine_archive_exec_status(archive, self.dirname)
+        status = utils.init_combine_archive_log(archive, self.dirname)
         for doc in status.sed_documents.values():
             doc.status = data_model.ExecutionStatus.QUEUED
             for task in doc.tasks.values():
@@ -185,7 +185,7 @@ class ExecStatusDataModel(unittest.TestCase):
             },
         })
 
-        status = utils.init_combine_archive_exec_status(archive, self.dirname)
+        status = utils.init_combine_archive_log(archive, self.dirname)
         status.status = data_model.ExecutionStatus.RUNNING
         for doc in status.sed_documents.values():
             doc.status = data_model.ExecutionStatus.RUNNING
