@@ -133,21 +133,21 @@ class ExecStatusDataModel(unittest.TestCase):
 
         status = utils.init_combine_archive_log(archive, self.dirname)
         for doc in status.sed_documents.values():
-            doc.status = data_model.ExecutionStatus.QUEUED
+            doc.status = data_model.Status.QUEUED
             for task in doc.tasks.values():
-                task.status = data_model.ExecutionStatus.QUEUED
+                task.status = data_model.Status.QUEUED
             for output in doc.outputs.values():
-                output.status = data_model.ExecutionStatus.QUEUED
-                if isinstance(output, data_model.ReportExecutionStatus):
+                output.status = data_model.Status.QUEUED
+                if isinstance(output, data_model.ReportLog):
                     els = output.data_sets
-                elif isinstance(output, data_model.Plot2DExecutionStatus):
+                elif isinstance(output, data_model.Plot2DLog):
                     els = output.curves
-                elif isinstance(output, data_model.Plot3DExecutionStatus):
+                elif isinstance(output, data_model.Plot3DLog):
                     els = output.surfaces
                 else:
                     raise ValueError(output.__class__)
                 for id in els.keys():
-                    els[id] = data_model.ExecutionStatus.QUEUED
+                    els[id] = data_model.Status.QUEUED
         status.finalize()
         self.assertEqual(status.to_dict(), {
             'status': 'SKIPPED',
@@ -186,23 +186,23 @@ class ExecStatusDataModel(unittest.TestCase):
         })
 
         status = utils.init_combine_archive_log(archive, self.dirname)
-        status.status = data_model.ExecutionStatus.RUNNING
+        status.status = data_model.Status.RUNNING
         for doc in status.sed_documents.values():
-            doc.status = data_model.ExecutionStatus.RUNNING
+            doc.status = data_model.Status.RUNNING
             for task in doc.tasks.values():
-                task.status = data_model.ExecutionStatus.RUNNING
+                task.status = data_model.Status.RUNNING
             for output in doc.outputs.values():
-                output.status = data_model.ExecutionStatus.RUNNING
-                if isinstance(output, data_model.ReportExecutionStatus):
+                output.status = data_model.Status.RUNNING
+                if isinstance(output, data_model.ReportLog):
                     els = output.data_sets
-                elif isinstance(output, data_model.Plot2DExecutionStatus):
+                elif isinstance(output, data_model.Plot2DLog):
                     els = output.curves
-                elif isinstance(output, data_model.Plot3DExecutionStatus):
+                elif isinstance(output, data_model.Plot3DLog):
                     els = output.surfaces
                 else:
                     raise ValueError(output.__class__)
                 for id in els.keys():
-                    els[id] = data_model.ExecutionStatus.RUNNING
+                    els[id] = data_model.Status.RUNNING
         status.finalize()
         self.assertEqual(status.to_dict(), {
             'status': 'FAILED',

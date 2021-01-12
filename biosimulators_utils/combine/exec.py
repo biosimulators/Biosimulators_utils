@@ -9,7 +9,7 @@
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config
-from ..log.data_model import ExecutionStatus
+from ..log.data_model import Status
 from ..log.utils import init_combine_archive_log
 from ..plot.data_model import PlotFormat  # noqa: F401
 from ..report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat  # noqa: F401
@@ -59,7 +59,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                         apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file
                         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
                         plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
-                        log (:obj:`SedDocumentExecutionStatus`, optional): execution status of document
+                        log (:obj:`SedDocumentLog`, optional): execution status of document
                         indent (:obj:`int`, optional): degree to indent status messages
                     '''
 
@@ -113,7 +113,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
 
     # initialize status and output
     log = init_combine_archive_log(archive, archive_tmp_dir)
-    log.status = ExecutionStatus.RUNNING
+    log.status = Status.RUNNING
     log.out_dir = out_dir
     log.export()
 
@@ -174,6 +174,6 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
     shutil.rmtree(archive_tmp_dir)
 
     # update status
-    log.status = ExecutionStatus.SUCCEEDED
+    log.status = Status.SUCCEEDED
     log.finalize()
     log.export()

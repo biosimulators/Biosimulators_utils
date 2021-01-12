@@ -1,6 +1,6 @@
 from biosimulators_utils.config import get_config
 from biosimulators_utils.log.data_model import (
-    ExecutionStatus, CombineArchiveExecutionStatus, SedDocumentExecutionStatus, TaskExecutionStatus, ReportExecutionStatus)
+    Status, CombineArchiveLog, SedDocumentLog, TaskLog, ReportLog)
 from biosimulators_utils.report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
 from biosimulators_utils.sedml import data_model
@@ -238,30 +238,30 @@ class ExecTaskCase(unittest.TestCase):
 
         # track execution status
         shutil.rmtree(out_dir)
-        log = SedDocumentExecutionStatus(
-            status=ExecutionStatus.QUEUED,
+        log = SedDocumentLog(
+            status=Status.QUEUED,
             tasks={
-                'task_1_ss': TaskExecutionStatus(status=ExecutionStatus.QUEUED),
-                'task_2_time_course': TaskExecutionStatus(status=ExecutionStatus.QUEUED),
+                'task_1_ss': TaskLog(status=Status.QUEUED),
+                'task_2_time_course': TaskLog(status=Status.QUEUED),
             },
             outputs={
-                'report_1': ReportExecutionStatus(status=ExecutionStatus.QUEUED, data_sets={
-                    'dataset_1': ExecutionStatus.QUEUED,
-                    'dataset_2': ExecutionStatus.QUEUED,
+                'report_1': ReportLog(status=Status.QUEUED, data_sets={
+                    'dataset_1': Status.QUEUED,
+                    'dataset_2': Status.QUEUED,
                 }),
-                'report_2': ReportExecutionStatus(status=ExecutionStatus.QUEUED, data_sets={
-                    'dataset_3': ExecutionStatus.QUEUED,
-                    'dataset_4': ExecutionStatus.QUEUED,
+                'report_2': ReportLog(status=Status.QUEUED, data_sets={
+                    'dataset_3': Status.QUEUED,
+                    'dataset_4': Status.QUEUED,
                 }),
-                'report_3': ReportExecutionStatus(status=ExecutionStatus.QUEUED, data_sets={
-                    'dataset_5': ExecutionStatus.QUEUED,
+                'report_3': ReportLog(status=Status.QUEUED, data_sets={
+                    'dataset_5': Status.QUEUED,
                 }),
-                'report_4': ReportExecutionStatus(status=ExecutionStatus.QUEUED, data_sets={
-                    'dataset_6': ExecutionStatus.QUEUED,
+                'report_4': ReportLog(status=Status.QUEUED, data_sets={
+                    'dataset_6': Status.QUEUED,
                 })
             },
         )
-        log.combine_archive_status = CombineArchiveExecutionStatus(out_dir=out_dir)
+        log.combine_archive_status = CombineArchiveLog(out_dir=out_dir)
         log.tasks['task_1_ss'].document_status = log
         log.tasks['task_2_time_course'].document_status = log
         log.outputs['report_1'].document_status = log

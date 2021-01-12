@@ -7,7 +7,7 @@
 """
 
 from ..config import get_config
-from ..log.data_model import ExecutionStatus, SedDocumentExecutionStatus  # noqa: F401
+from ..log.data_model import Status, SedDocumentLog  # noqa: F401
 from ..plot.data_model import PlotFormat
 from ..report.data_model import DataGeneratorVariableResults, DataGeneratorResults, OutputResults, ReportFormat
 from ..report.io import ReportWriter
@@ -66,7 +66,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             calling :obj:`task_executer`.
         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
         plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
-        log (:obj:`SedDocumentExecutionStatus`, optional): execution status of document
+        log (:obj:`SedDocumentLog`, optional): execution status of document
         indent (:obj:`int`, optional): degree to indent status messages
 
     Returns:
@@ -86,7 +86,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
 
     # update status
     if log:
-        log.status = ExecutionStatus.RUNNING
+        log.status = Status.RUNNING
         log.export()
 
     # apply changes to models
@@ -125,7 +125,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         print('{}Executing task {}: {}'.format(' ' * 2 * indent, i_task + 1, task.id))
 
         if log:
-            log.tasks[task.id].status = ExecutionStatus.RUNNING
+            log.tasks[task.id].status = Status.RUNNING
             log.tasks[task.id].export()
 
         if isinstance(task, Task):
@@ -154,7 +154,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             has_outputs = False
 
             for output in doc.outputs:
-                if log and log.outputs[output.id].status == ExecutionStatus.SUCCEEDED:
+                if log and log.outputs[output.id].status == Status.SUCCEEDED:
                     continue
 
                 running = False
@@ -178,7 +178,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                             running = True
                             dataset_shapes.add(data_gen_res.shape)
                             if log:
-                                log.outputs[output.id].data_sets[data_set.id] = ExecutionStatus.SUCCEEDED
+                                log.outputs[output.id].data_sets[data_set.id] = Status.SUCCEEDED
 
                     if len(dataset_shapes) > 1:
                         warnings.warn('Data generators for report {} do not have consistent shapes'.format(output.id), UserWarning)
@@ -249,15 +249,15 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
 
                 if running and log:
                     if succeeded:
-                        log.outputs[output.id].status = ExecutionStatus.SUCCEEDED
+                        log.outputs[output.id].status = Status.SUCCEEDED
                     else:
-                        log.outputs[output.id].status = ExecutionStatus.RUNNING
+                        log.outputs[output.id].status = Status.RUNNING
 
         else:
             raise NotImplementedError('Tasks of type {} are not supported'.format(task.__class__.__name__))
 
         if log:
-            log.tasks[task.id].status = ExecutionStatus.SUCCEEDED
+            log.tasks[task.id].status = Status.SUCCEEDED
             log.tasks[task.id].export()
 
     # cleanup modified models
@@ -266,7 +266,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
 
     # update status
     if log:
-        log.status = ExecutionStatus.SUCCEEDED
+        log.status = Status.SUCCEEDED
         log.export()
 
     return report_results

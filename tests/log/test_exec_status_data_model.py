@@ -15,20 +15,20 @@ class ExecStatusDataModel(unittest.TestCase):
         shutil.rmtree(self.dirname)
 
     def test(self):
-        'CombineArchiveExecutionStatus'
-        'SedDocumentExecutionStatus'
+        'CombineArchiveLog'
+        'SedDocumentLog'
 
-        task_status = data_model.TaskExecutionStatus(
-            status=data_model.ExecutionStatus.RUNNING)
+        task_status = data_model.TaskLog(
+            status=data_model.Status.RUNNING)
         self.assertEqual(task_status.to_dict(), {
             'status': 'RUNNING',
         })
 
-        report_status = data_model.ReportExecutionStatus(
-            status=data_model.ExecutionStatus.RUNNING,
+        report_status = data_model.ReportLog(
+            status=data_model.Status.RUNNING,
             data_sets={
-                'data_set_1': data_model.ExecutionStatus.QUEUED,
-                'data_set_2': data_model.ExecutionStatus.SUCCEEDED,
+                'data_set_1': data_model.Status.QUEUED,
+                'data_set_2': data_model.Status.SUCCEEDED,
             })
         self.assertEqual(report_status.to_dict(), {
             'status': 'RUNNING',
@@ -38,11 +38,11 @@ class ExecStatusDataModel(unittest.TestCase):
             }
         })
 
-        plot2d_status = data_model.Plot2DExecutionStatus(
-            status=data_model.ExecutionStatus.RUNNING,
+        plot2d_status = data_model.Plot2DLog(
+            status=data_model.Status.RUNNING,
             curves={
-                'curve_1': data_model.ExecutionStatus.QUEUED,
-                'curve_2': data_model.ExecutionStatus.SUCCEEDED,
+                'curve_1': data_model.Status.QUEUED,
+                'curve_2': data_model.Status.SUCCEEDED,
             })
         self.assertEqual(plot2d_status.to_dict(), {
             'status': 'RUNNING',
@@ -52,11 +52,11 @@ class ExecStatusDataModel(unittest.TestCase):
             }
         })
 
-        plot3d_status = data_model.Plot3DExecutionStatus(
-            status=data_model.ExecutionStatus.RUNNING,
+        plot3d_status = data_model.Plot3DLog(
+            status=data_model.Status.RUNNING,
             surfaces={
-                'surface_1': data_model.ExecutionStatus.QUEUED,
-                'surface_2': data_model.ExecutionStatus.SUCCEEDED,
+                'surface_1': data_model.Status.QUEUED,
+                'surface_2': data_model.Status.SUCCEEDED,
             })
         self.assertEqual(plot3d_status.to_dict(), {
             'status': 'RUNNING',
@@ -66,8 +66,8 @@ class ExecStatusDataModel(unittest.TestCase):
             }
         })
 
-        doc_status = data_model.SedDocumentExecutionStatus(
-            status=data_model.ExecutionStatus.RUNNING,
+        doc_status = data_model.SedDocumentLog(
+            status=data_model.Status.RUNNING,
             tasks={
                 'task_1': task_status,
             },
@@ -89,8 +89,8 @@ class ExecStatusDataModel(unittest.TestCase):
             }
         })
 
-        archive_status = data_model.CombineArchiveExecutionStatus(
-            status=data_model.ExecutionStatus.RUNNING,
+        archive_status = data_model.CombineArchiveLog(
+            status=data_model.Status.RUNNING,
             sed_documents={
                 'doc_1': doc_status,
             },
