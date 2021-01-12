@@ -30,11 +30,11 @@ class IoTestCase(unittest.TestCase):
                 data_model.ModelAttributeChange(target='/sbml:sbml/sbml:model[id=\'a\']/@id', new_value='234'),
                 data_model.ModelAttributeChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_value='432'),
                 data_model.AddElementModelChange(
-                    target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters', 
+                    target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters',
                     new_element='<parameter id="new_parameter" value="1.0"/>'
                 ),
                 data_model.ReplaceElementModelChange(
-                    target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters/sbml:parameter[@id=\'p1\']', 
+                    target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters/sbml:parameter[@id=\'p1\']',
                     new_element='<parameter id="p1" value="1.0"/>'
                 ),
                 data_model.RemoveElementModelChange(
@@ -446,7 +446,7 @@ class IoTestCase(unittest.TestCase):
 
     def test_read_add_xml(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'add-xml.sedml')
-        doc = io.SedmlSimulationReader().run(filename)    
+        doc = io.SedmlSimulationReader().run(filename)
         self.assertEqual(len(doc.models), 1)
         self.assertEqual(len(doc.tasks), 1)
         self.assertEqual(len(doc.data_generators), 1)

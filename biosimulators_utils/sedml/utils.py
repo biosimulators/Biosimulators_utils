@@ -7,7 +7,7 @@
 """
 
 from ..report.data_model import DataGeneratorVariableResults  # noqa: F401
-from .data_model import (SedDocument, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
+from .data_model import (SedDocument, Model, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange,
                          Task, Report, Plot2D, Plot3D,
                          DataGenerator, DataGeneratorVariable, MATHEMATICAL_FUNCTIONS)
@@ -17,10 +17,14 @@ import evalidate
 import io
 import math
 import numpy
+import os
 import re
+import requests
+import tempfile
 
 __all__ = [
     'append_all_nested_children_to_doc',
+    'resolve_model',
     'apply_changes_to_xml_model',
     'remove_model_changes',
     'remove_algorithm_parameter_changes',
@@ -98,6 +102,77 @@ def get_variables_for_task(doc, task):
             if var.task == task:
                 variables.add(var)
     return list(variables)
+
+
+BIOMODELS_DOWNLOAD_ENDPOINT = 'https://www.ebi.ac.uk/biomodels/model/download/{}?filename={}_url.xml'
+
+
+def resolve_model(model, sed_doc, working_dir):
+    """ Resolve the source of a model and return a temporary file with the content of the source
+
+    Args:
+        model (:obj:`Model`): model whose ``source`` is one of the following
+
+            * A path to a file
+            * A URL
+            * A MIRIAM URN for an entry in the BioModelsl database (e.g., ``urn:miriam:biomodels.db:BIOMD0000000012``)
+            * A reference to another model, using the ``id`` of the other model (e.g., ``#other-model-id``).
+              In this case, the model also inherits changes from the parent model.
+
+        sed_doc (:obj:`SedDocument`): parent SED document; used to resolve sources defined by reference to other models
+        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
+    """
+    source = model.source
+
+    if source.lower().startswith('urn:'):
+        if source.lower().startswith('urn:miriam:biomodels.db:'):
+            biomodels_id = source.lower().replace('urn:miriam:biomodels.db:', '')
+            url = BIOMODELS_DOWNLOAD_ENDPOINT.format(biomodels_id, biomodels_id)
+            response = requests.get(url)
+            try:
+                response.raise_for_status()
+            except Exception:
+                raise ValueError('Model `{}` could not be downloaded from BioModels.'.format(biomodels_id))
+
+            temp_file, model.source = tempfile.mkstemp()
+            os.close(temp_file)
+            with open(model.source, 'wb') as file:
+                file.write(response.content)
+        else:
+            raise NotImplementedError('URN model source `{}` could be resolved.'.format(source))
+
+    elif re.match(r'^http(s)?://', source, re.IGNORECASE):
+        response = requests.get(source)
+        try:
+            response.raise_for_status()
+        except Exception:
+            raise ValueError('Model could not be downloaded from `{}`.'.format(source))
+
+        temp_file, model.source = tempfile.mkstemp()
+        os.close(temp_file)
+        with open(model.source, 'wb') as file:
+            file.write(response.content)
+
+    elif source.startswith('#'):
+        other_model_id = source[1:]
+        other_model = next((m for m in sed_doc.models if m.id == other_model_id), None)
+        if other_model is None:
+            raise ValueError('Relative model source `{}` does not exist.'.format(source))
+
+        model.source = other_model.source
+        model.changes = other_model.changes + model.changes
+        model = resolve_model(model, sed_doc, working_dir)
+
+    else:
+        if os.path.isabs(source):
+            model.source = source
+        else:
+            model.source = os.path.join(working_dir, source)
+
+        if not os.path.isfile(model.source):
+            raise FileNotFoundError('Model source file `{}` does not exist.'.format(source))
+
+    return model
 
 
 def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename, pretty_print=False):

@@ -14,7 +14,7 @@ from ..report.io import ReportWriter
 from .data_model import SedDocument, Task, Report, Plot2D, Plot3D
 from .warnings import RepeatDataSetLabelsWarning, SedmlFeatureNotSupportedWarning
 from .io import SedmlSimulationReader
-from .utils import apply_changes_to_xml_model, get_variables_for_task, calc_data_generator_results
+from .utils import resolve_model, apply_changes_to_xml_model, get_variables_for_task, calc_data_generator_results
 from .warnings import NoTasksWarning, NoOutputsWarning
 import copy
 import numpy
@@ -92,8 +92,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     # apply changes to models
     modified_model_filenames = []
     for model in doc.models:
-        if not os.path.isabs(model.source):
-            model.source = os.path.join(working_dir, model.source)
+        resolve_model(model, doc, working_dir)
 
         if apply_xml_model_changes and model.changes:
             original_model_filename = model.source

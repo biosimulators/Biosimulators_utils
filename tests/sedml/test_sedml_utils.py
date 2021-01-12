@@ -13,6 +13,109 @@ import unittest
 
 
 class SedmlUtilsTestCase(unittest.TestCase):
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp_dir)
+
+    def test_resolve_model(self):
+        doc = data_model.SedDocument(
+            models=[
+                data_model.Model(id='model_0', source='model_0.xml', changes=[1, 2]),
+                data_model.Model(id='model_1', source=os.path.join(self.tmp_dir, 'model_1.xml'), changes=[3, 4]),
+                data_model.Model(id='model_2', source='#model_0', changes=[5]),
+                data_model.Model(id='model_3', source='#model_2', changes=[6, 7]),
+                data_model.Model(id='model_4', source='https://server.edu/model.xml', changes=[8]),
+                data_model.Model(id='model_5', source='urn:miriam:biomodels.db:123', changes=[9]),
+                data_model.Model(id='model_6', source='#model_5', changes=[10]),
+            ],
+        )
+        with open(os.path.join(self.tmp_dir, doc.models[0].source), 'w'):
+            pass
+        with open(doc.models[1].source, 'w'):
+            pass
+
+        doc_2 = copy.deepcopy(doc)
+        utils.resolve_model(doc_2.models[0], doc_2, working_dir=self.tmp_dir)
+        self.assertEqual(doc_2.models[0].source, os.path.join(self.tmp_dir, doc.models[0].source))
+        self.assertEqual(doc_2.models[0].changes, [1, 2])
+
+        doc_2 = copy.deepcopy(doc)
+        utils.resolve_model(doc_2.models[1], doc_2, working_dir=self.tmp_dir)
+        self.assertEqual(doc_2.models[1].source, doc.models[1].source)
+        self.assertEqual(doc_2.models[1].changes, [3, 4])
+
+        doc_2 = copy.deepcopy(doc)
+        utils.resolve_model(doc_2.models[2], doc_2, working_dir=self.tmp_dir)
+        self.assertEqual(doc_2.models[2].source, os.path.join(self.tmp_dir, doc.models[0].source))
+        self.assertEqual(doc_2.models[2].changes, [1, 2, 5])
+
+        doc_2 = copy.deepcopy(doc)
+        utils.resolve_model(doc_2.models[3], doc_2, working_dir=self.tmp_dir)
+        self.assertEqual(doc_2.models[3].source, os.path.join(self.tmp_dir, doc.models[0].source))
+        self.assertEqual(doc_2.models[3].changes, [1, 2, 5, 6, 7])
+
+        def requests_get(url):
+            assert url == 'https://server.edu/model.xml'
+            return mock.Mock(raise_for_status=lambda: None, content='best model'.encode())
+        doc_2 = copy.deepcopy(doc)
+        with mock.patch('requests.get', side_effect=requests_get):
+            utils.resolve_model(doc_2.models[4], doc_2, working_dir=self.tmp_dir)
+        with open(doc_2.models[4].source, 'r') as file:
+            self.assertEqual(file.read(), 'best model')
+        self.assertEqual(doc_2.models[4].changes, [8])
+
+        def requests_get(url):
+            assert url == 'https://www.ebi.ac.uk/biomodels/model/download/123?filename=123_url.xml'
+            return mock.Mock(raise_for_status=lambda: None, content='second best model'.encode())
+        doc_2 = copy.deepcopy(doc)
+        with mock.patch('requests.get', side_effect=requests_get):
+            utils.resolve_model(doc_2.models[5], doc_2, working_dir=self.tmp_dir)
+        with open(doc_2.models[5].source, 'r') as file:
+            self.assertEqual(file.read(), 'second best model')
+        self.assertEqual(doc_2.models[5].changes, [9])
+
+        def requests_get(url):
+            assert url == 'https://www.ebi.ac.uk/biomodels/model/download/123?filename=123_url.xml'
+            return mock.Mock(raise_for_status=lambda: None, content='second best model'.encode())
+        doc_2 = copy.deepcopy(doc)
+        with mock.patch('requests.get', side_effect=requests_get):
+            utils.resolve_model(doc_2.models[6], doc_2, working_dir=self.tmp_dir)
+        with open(doc_2.models[6].source, 'r') as file:
+            self.assertEqual(file.read(), 'second best model')
+        self.assertEqual(doc_2.models[6].changes, [9, 10])
+
+        # error handling:
+        def bad_requests_get(url):
+            def raise_for_status():
+                raise Exception('error')
+            return mock.Mock(raise_for_status=raise_for_status)
+        doc_2 = copy.deepcopy(doc)
+        with self.assertRaisesRegex(ValueError, 'could not be downloaded from BioModels'):
+            with mock.patch('requests.get', side_effect=bad_requests_get):
+                utils.resolve_model(doc_2.models[5], doc_2, working_dir=self.tmp_dir)
+
+        doc_2 = copy.deepcopy(doc)
+        doc_2.models[5].source = 'urn:miriam:unimplemented:123'
+        with self.assertRaisesRegex(NotImplementedError, 'could be resolved'):
+            utils.resolve_model(doc_2.models[5], doc_2, working_dir=self.tmp_dir)
+
+        doc_2 = copy.deepcopy(doc)
+        with self.assertRaisesRegex(ValueError, 'could not be downloaded'):
+            with mock.patch('requests.get', side_effect=bad_requests_get):
+                utils.resolve_model(doc_2.models[4], doc_2, working_dir=self.tmp_dir)
+
+        doc_2 = copy.deepcopy(doc)
+        doc_2.models[6].source = '#not-a-model'
+        with self.assertRaisesRegex(ValueError, 'does not exist'):
+            utils.resolve_model(doc_2.models[6], doc_2, working_dir=self.tmp_dir)
+
+        doc_2 = copy.deepcopy(doc)
+        doc_2.models[0].source = 'not-a-file.xml'
+        with self.assertRaisesRegex(FileNotFoundError, 'does not exist'):
+            utils.resolve_model(doc_2.models[0], doc_2, working_dir=self.tmp_dir)
+
     def test_get_variables_for_task(self):
         doc = data_model.SedDocument()
 

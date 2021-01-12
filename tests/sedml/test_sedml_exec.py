@@ -180,9 +180,13 @@ class ExecTaskCase(unittest.TestCase):
                 results[doc.data_generators[3].variables[0].id] = numpy.array((7., 8.))
             return results
 
+        working_dir = os.path.dirname(filename)
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
         out_dir = os.path.join(self.tmp_dir, 'results')
-        output_results = exec.exec_sed_doc(execute_task, filename, os.path.dirname(
-            filename), out_dir, report_formats=[ReportFormat.csv], plot_formats=[])
+        output_results = exec.exec_sed_doc(execute_task, filename, working_dir,
+                                           out_dir, report_formats=[ReportFormat.csv], plot_formats=[])
 
         expected_output_results = OutputResults({
             doc.outputs[0].id: pandas.DataFrame(
@@ -468,9 +472,13 @@ class ExecTaskCase(unittest.TestCase):
             else:
                 return DataGeneratorVariableResults()
 
+        working_dir = os.path.dirname(filename)
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarns(NoOutputsWarning):
-            exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir)
+            exec.exec_sed_doc(execute_task, filename, working_dir, out_dir)
 
     def test_errors(self):
         # error: variable not recorded
@@ -522,9 +530,13 @@ class ExecTaskCase(unittest.TestCase):
         def execute_task(task, variables):
             return DataGeneratorVariableResults()
 
+        working_dir = os.path.dirname(filename)
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(ValueError, 'must be generated for task'):
-            exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir)
+            exec.exec_sed_doc(execute_task, filename, working_dir, out_dir)
 
         # error: unsupported type of task
         doc = data_model.SedDocument()
@@ -590,8 +602,12 @@ class ExecTaskCase(unittest.TestCase):
             results[doc.data_generators[0].variables[1].id] = numpy.array((1.,))
             return results
 
+        working_dir = self.tmp_dir
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
         out_dir = os.path.join(self.tmp_dir, 'results')
-        exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+        exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
 
         # error: inconsistent math
         doc.data_generators = [
@@ -626,9 +642,13 @@ class ExecTaskCase(unittest.TestCase):
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             return results
 
+        working_dir = self.tmp_dir
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(ValueError, 'could not be evaluated'):
-            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
 
         # error: variables have inconsistent shapes
         doc.data_generators = [
@@ -671,9 +691,13 @@ class ExecTaskCase(unittest.TestCase):
             results[doc.data_generators[0].variables[1].id] = numpy.array((1., 2.))
             return results
 
+        working_dir = self.tmp_dir
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(ValueError, 'must have consistent shape'):
-            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
 
         # error: data generators have inconsistent shapes
         doc.data_generators = [
@@ -740,9 +764,13 @@ class ExecTaskCase(unittest.TestCase):
             results[doc.data_generators[2].variables[0].id] = numpy.array(((1., 2., 3.), (4., 5., 6.), (7., 8., 9.)))
             return results
 
+        working_dir = self.tmp_dir
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-            report_results = exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+            report_results = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((1., numpy.nan)))
         numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :], numpy.array((1., 2.)))
 
@@ -754,9 +782,13 @@ class ExecTaskCase(unittest.TestCase):
         #    ),
         # )
 
+        # working_dir = self.tmp_dir
+        # with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+        #    pass
+
         #out_dir = os.path.join(self.tmp_dir, 'results2')
         # with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-        #    report_results = exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+        #    report_results = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
         # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :],
         #    numpy.array(((1., numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
         # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :],
@@ -816,9 +848,13 @@ class ExecTaskCase(unittest.TestCase):
             results[doc.data_generators[1].variables[0].id] = numpy.array((2., 3.))
             return results
 
+        working_dir = self.tmp_dir
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarnsRegex(RepeatDataSetLabelsWarning, 'should have unique ids'):
-            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
 
         # error: unsupported outputs
         doc.outputs = [
@@ -830,15 +866,23 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
+        working_dir = self.tmp_dir
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because outputs of type'):
-            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
 
         # error: unsupported outputs
         doc.outputs = [
             None
         ]
 
+        working_dir = self.tmp_dir
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
-            exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
