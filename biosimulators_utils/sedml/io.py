@@ -12,11 +12,11 @@ from .warnings import SedmlFeatureNotSupportedWarning
 from ..biosimulations.data_model import Metadata, ExternalReferences, Citation
 from ..data_model import Person, Identifier, OntologyTerm
 from ..kisao.utils import normalize_kisao_id
+from ..warnings import warn
 from xml.sax import saxutils
 import dateutil.parser
 import enum
 import libsedml
-import warnings
 
 __all__ = [
     'SedmlSimulationReader',
@@ -785,8 +785,8 @@ class SedmlSimulationReader(object):
 
         # data descriptions
         if doc_sed.getListOfDataDescriptions():
-            warnings.warn('Data descriptions skipped because data descriptions are not yet supported',
-                          SedmlFeatureNotSupportedWarning)
+            warn('Data descriptions skipped because data descriptions are not yet supported',
+                 SedmlFeatureNotSupportedWarning)
 
         # models
         id_to_model_map = {}

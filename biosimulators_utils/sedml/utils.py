@@ -7,10 +7,12 @@
 """
 
 from ..report.data_model import DataGeneratorVariableResults  # noqa: F401
+from ..warnings import warn
 from .data_model import (SedDocument, Model, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange,
                          Task, Report, Plot2D, Plot3D,
                          DataGenerator, DataGeneratorVariable, MATHEMATICAL_FUNCTIONS)
+from .warnings import InconsistentVariableShapesWarning
 from lxml import etree
 import copy
 import evalidate
@@ -121,6 +123,9 @@ def resolve_model(model, sed_doc, working_dir):
 
         sed_doc (:obj:`SedDocument`): parent SED document; used to resolve sources defined by reference to other models
         working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
+
+    Returns:
+        :obj:`bool`: whether the model source is a temporary file obtained from an external source
     """
     source = model.source
 
@@ -141,6 +146,8 @@ def resolve_model(model, sed_doc, working_dir):
         else:
             raise NotImplementedError('URN model source `{}` could be resolved.'.format(source))
 
+        return True
+
     elif re.match(r'^http(s)?://', source, re.IGNORECASE):
         response = requests.get(source)
         try:
@@ -153,6 +160,8 @@ def resolve_model(model, sed_doc, working_dir):
         with open(model.source, 'wb') as file:
             file.write(response.content)
 
+        return True
+
     elif source.startswith('#'):
         other_model_id = source[1:]
         other_model = next((m for m in sed_doc.models if m.id == other_model_id), None)
@@ -161,7 +170,7 @@ def resolve_model(model, sed_doc, working_dir):
 
         model.source = other_model.source
         model.changes = other_model.changes + model.changes
-        model = resolve_model(model, sed_doc, working_dir)
+        return resolve_model(model, sed_doc, working_dir)
 
     else:
         if os.path.isabs(source):
@@ -172,7 +181,7 @@ def resolve_model(model, sed_doc, working_dir):
         if not os.path.isfile(model.source):
             raise FileNotFoundError('Model source file `{}` does not exist.'.format(source))
 
-    return model
+        return False
 
 
 def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename, pretty_print=False):
@@ -269,12 +278,21 @@ def calc_data_generator_results(data_generator, variable_results):
         :obj:`numpy.ndarray`: result of data generator
     """
     var_shapes = set()
+    max_shape = []
     for var in data_generator.variables:
         var_res = variable_results[var.id]
-        var_shapes.add(var_res.shape)
+        var_shape = var_res.shape
+        if not var_shape and var_res.size:
+            var_shape = (1,)
+        var_shapes.add(var_shape)
+
+        max_shape = max_shape + [1 if max_shape else 0] * (var_res.ndim - len(max_shape))
+        for i_dim in range(var_res.ndim):
+            max_shape[i_dim] = max(max_shape[i_dim], var_res.shape[i_dim])
 
     if len(var_shapes) > 1:
-        raise ValueError('Variables for data generator {} must have consistent shapes'.format(data_generator.id))
+        warn('Variables for data generator {} do not have consistent shapes'.format(data_generator.id),
+             InconsistentVariableShapesWarning)
 
     math_node = evalidate.evalidate(data_generator.math,
                                     addnodes=[
@@ -307,16 +325,42 @@ def calc_data_generator_results(data_generator, variable_results):
         result = numpy.array(value)
 
     else:
-        shape = list(var_shapes)[0]
-        result = numpy.full(shape, numpy.nan)
+        padded_var_shapes = []
+        for var in data_generator.variables:
+            var_res = variable_results[var.id]
+            padded_var_shapes.append(
+                list(var_res.shape)
+                + [1 if var_res.size else 0] * (len(max_shape) - var_res.ndim)
+            )
+
+        result = numpy.full(max_shape, numpy.nan)
         n_dims = result.ndim
         for i_el in range(result.size):
-            for var in data_generator.variables:
+            el_indices = numpy.unravel_index(i_el, result.shape)
+
+            vars_available = True
+            for var, padded_shape in zip(data_generator.variables, padded_var_shapes):
                 var_res = variable_results[var.id]
-                if n_dims == 0:
-                    workspace[var.id] = variable_results[var.id].tolist()
+                if var_res.ndim == 0:
+                    if i_el == 0 and var_res.size:
+                        workspace[var.id] = var_res.tolist()
+                    else:
+                        vars_available = False
+                        break
+
                 else:
-                    workspace[var.id] = variable_results[var.id].flat[i_el]
+                    for x, y in zip(padded_shape, el_indices):
+                        if (y + 1) > x:
+                            vars_available = False
+                            break
+                    if not vars_available:
+                        break
+
+                    workspace[var.id] = var_res[el_indices[0:var_res.ndim]]
+
+            if not vars_available:
+                continue
+
             try:
                 result_el = eval(compiled_math, MATHEMATICAL_FUNCTIONS, workspace)
             except Exception as exception:

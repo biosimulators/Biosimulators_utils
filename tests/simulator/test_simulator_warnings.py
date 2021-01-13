@@ -1,8 +1,8 @@
-from biosimulators_utils.simulator import warnings as simulator_warnings
+from biosimulators_utils.simulator.warnings import AlgorithmSubstitutedWarning
+from biosimulators_utils.warnings import warn
 import unittest
-import warnings
 
 
 class SimulatorWarningsTestCase(unittest.TestCase):
     def test(self):
-        warnings.warn('Alternate algorithm used', simulator_warnings.AlgorithmSubstitutedWarning)
+        warn('Alternate algorithm used', AlgorithmSubstitutedWarning)

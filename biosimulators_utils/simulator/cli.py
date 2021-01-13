@@ -10,6 +10,7 @@ from .data_model import EnvironmentVariable  # noqa: F401
 import cement
 import platform
 import sys
+import termcolor
 import types  # noqa: F401
 
 __all__ = [
@@ -131,7 +132,7 @@ def build_cli(cli_name=None, cli_version=None,
             try:
                 combine_archive_executer(args.archive, args.out_dir)
             except Exception as exception:
-                raise SystemExit(str(exception)) from exception
+                raise SystemExit(termcolor.colored(str(exception), 'red')) from exception
 
     class App(cement.App):
         """ Command line application """

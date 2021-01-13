@@ -6,7 +6,10 @@
 :License: MIT
 """
 
+import enum
 import os
+
+__all__ = ['Config', 'get_config', 'Colors']
 
 
 class Config(object):
@@ -23,11 +26,12 @@ class Config(object):
         KEEP_INDIVIDUAL_OUTPUTS (:obj:`bool`): indicates whether the individual output files should be kept
         LOG_PATH (:obj:`str`): path to save the execution status of a COMBINE/OMEX archive
         BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
+        VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
     """
 
     def __init__(self, ALGORITHM_SUBSTITUTION_POLICY, REPORT_FORMATS, PLOT_FORMATS,
                  H5_REPORTS_PATH, REPORTS_PATH, PLOTS_PATH, BUNDLE_OUTPUTS, KEEP_INDIVIDUAL_OUTPUTS,
-                 LOG_PATH, BIOSIMULATORS_API_ENDPOINT):
+                 LOG_PATH, BIOSIMULATORS_API_ENDPOINT, VERBOSE):
         """
         Args:
             ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
@@ -40,6 +44,7 @@ class Config(object):
             KEEP_INDIVIDUAL_OUTPUTS (:obj:`bool`): indicates whether the individual output files should be kept
             LOG_PATH (:obj:`str`): path to save the execution status of a COMBINE/OMEX archive
             BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
+            VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
         """
         self.ALGORITHM_SUBSTITUTION_POLICY = ALGORITHM_SUBSTITUTION_POLICY
         self.REPORT_FORMATS = REPORT_FORMATS
@@ -51,6 +56,7 @@ class Config(object):
         self.KEEP_INDIVIDUAL_OUTPUTS = KEEP_INDIVIDUAL_OUTPUTS
         self.LOG_PATH = LOG_PATH
         self.BIOSIMULATORS_API_ENDPOINT = BIOSIMULATORS_API_ENDPOINT
+        self.VERBOSE = VERBOSE
 
 
 def get_config():
@@ -70,4 +76,23 @@ def get_config():
         KEEP_INDIVIDUAL_OUTPUTS=os.environ.get('KEEP_INDIVIDUAL_OUTPUTS', '1').lower() in ['1', 'true'],
         LOG_PATH=os.environ.get('LOG_PATH', 'log.yml'),
         BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', 'https://api.biosimulators.org/'),
+        VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
     )
+
+
+Colors = enum.Enum('Colors',
+                   {
+                       'queued': 'cyan',
+                       'success': 'blue',
+                       'succeeded': 'blue',
+                       'running': 'green',
+                       'pass': 'green',
+                       'passed': 'green',
+                       'failure': 'red',
+                       'failed': 'red',
+                       'skip': 'magenta',
+                       'skipped': 'magenta',
+                       'warning': 'yellow',
+                       'warned': 'yellow',
+                   },
+                   type=str)

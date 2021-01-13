@@ -6,13 +6,16 @@ from biosimulators_utils.report.io import ReportReader
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
 from biosimulators_utils.sedml import io
-from biosimulators_utils.sedml.warnings import NoTasksWarning, NoOutputsWarning, RepeatDataSetLabelsWarning, SedmlFeatureNotSupportedWarning
+from biosimulators_utils.sedml.exceptions import SedmlExecutionError
+from biosimulators_utils.sedml.warnings import (NoTasksWarning, NoOutputsWarning, RepeatDataSetLabelsWarning,
+                                                SedmlFeatureNotSupportedWarning, InconsistentVariableShapesWarning)
 from lxml import etree
 from unittest import mock
 import numpy
 import numpy.testing
 import os
 import pandas
+import requests
 import shutil
 import tempfile
 import unittest
@@ -35,7 +38,7 @@ class ExecTaskCase(unittest.TestCase):
         ))
         doc.models.append(data_model.Model(
             id='model2',
-            source='model1.xml',
+            source='https://models.edu/model1.xml',
             language='urn:sedml:language:cellml',
         ))
 
@@ -164,13 +167,18 @@ class ExecTaskCase(unittest.TestCase):
                     label='dataset_6',
                     data_generator=doc.data_generators[3],
                 ),
+                data_model.DataSet(
+                    id='dataset_7',
+                    label='dataset_7',
+                    data_generator=doc.data_generators[3],
+                ),
             ],
         ))
 
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename)
 
-        def execute_task(task, variables):
+        def execute_task(task, variables, log):
             results = DataGeneratorVariableResults()
             if task.id == 'task_1_ss':
                 results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
@@ -178,15 +186,16 @@ class ExecTaskCase(unittest.TestCase):
             else:
                 results[doc.data_generators[2].variables[0].id] = numpy.array((5., 6.))
                 results[doc.data_generators[3].variables[0].id] = numpy.array((7., 8.))
-            return results
+            return results, log
 
         working_dir = os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        output_results = exec.exec_sed_doc(execute_task, filename, working_dir,
-                                           out_dir, report_formats=[ReportFormat.csv], plot_formats=[])
+        with mock.patch('requests.get', return_value=mock.Mock(raise_for_status=lambda: None, content=b'')):
+            output_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir,
+                                                  out_dir, report_formats=[ReportFormat.csv], plot_formats=[])
 
         expected_output_results = OutputResults({
             doc.outputs[0].id: pandas.DataFrame(
@@ -212,8 +221,9 @@ class ExecTaskCase(unittest.TestCase):
             doc.outputs[3].id: pandas.DataFrame(
                 numpy.array([
                     numpy.array((7., 8.)),
+                    numpy.array((7., 8.)),
                 ]),
-                index=['dataset_6'],
+                index=['dataset_6', 'dataset_7'],
             ),
         })
         self.assertEqual(sorted(output_results.keys()), sorted(expected_output_results.keys()))
@@ -227,6 +237,8 @@ class ExecTaskCase(unittest.TestCase):
         self.assertTrue(output_results[doc.outputs[1].id].equals(df))
 
         # save in HDF5 format
+        doc.models[1].source = doc.models[0].source
+        io.SedmlSimulationWriter().run(doc, filename)
         shutil.rmtree(out_dir)
         exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[])
 
@@ -239,7 +251,6 @@ class ExecTaskCase(unittest.TestCase):
         # track execution status
         shutil.rmtree(out_dir)
         log = SedDocumentLog(
-            status=Status.QUEUED,
             tasks={
                 'task_1_ss': TaskLog(status=Status.QUEUED),
                 'task_2_time_course': TaskLog(status=Status.QUEUED),
@@ -258,26 +269,53 @@ class ExecTaskCase(unittest.TestCase):
                 }),
                 'report_4': ReportLog(status=Status.QUEUED, data_sets={
                     'dataset_6': Status.QUEUED,
+                    'dataset_7': Status.QUEUED,
                 })
             },
         )
-        log.combine_archive_status = CombineArchiveLog(out_dir=out_dir)
-        log.tasks['task_1_ss'].document_status = log
-        log.tasks['task_2_time_course'].document_status = log
-        log.outputs['report_1'].document_status = log
-        log.outputs['report_2'].document_status = log
-        log.outputs['report_3'].document_status = log
+        log.parent = CombineArchiveLog(out_dir=out_dir)
+        log.tasks['task_1_ss'].parent = log
+        log.tasks['task_2_time_course'].parent = log
+        log.outputs['report_1'].parent = log
+        log.outputs['report_2'].parent = log
+        log.outputs['report_3'].parent = log
+        log.outputs['report_4'].parent = log
         exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[],
                           log=log)
-        self.assertEqual(log.to_dict(), {
-            'status': 'SUCCEEDED',
+
+        expected_log = {
+            'status': None,
+            'exception': None,
+            'skipReason': None,
+            'output': None,
+            'duration': None,
             'tasks': {
-                'task_1_ss': {'status': 'SUCCEEDED'},
-                'task_2_time_course': {'status': 'SUCCEEDED'},
+                'task_1_ss': {
+                    'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.tasks['task_1_ss'].output,
+                    'duration': log.tasks['task_1_ss'].duration,
+                    'algorithm': None,
+                    'simulatorDetails': None,
+                },
+                'task_2_time_course': {
+                    'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.tasks['task_2_time_course'].output,
+                    'duration': log.tasks['task_2_time_course'].duration,
+                    'algorithm': None,
+                    'simulatorDetails': None,
+                },
             },
             'outputs': {
                 'report_1': {
                     'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.outputs['report_1'].output,
+                    'duration': log.outputs['report_1'].duration,
                     'dataSets': {
                         'dataset_1': 'SUCCEEDED',
                         'dataset_2': 'SUCCEEDED',
@@ -285,6 +323,10 @@ class ExecTaskCase(unittest.TestCase):
                 },
                 'report_2': {
                     'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.outputs['report_2'].output,
+                    'duration': log.outputs['report_2'].duration,
                     'dataSets': {
                         'dataset_3': 'SUCCEEDED',
                         'dataset_4': 'SUCCEEDED',
@@ -292,18 +334,28 @@ class ExecTaskCase(unittest.TestCase):
                 },
                 'report_3': {
                     'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.outputs['report_3'].output,
+                    'duration': log.outputs['report_3'].duration,
                     'dataSets': {
                         'dataset_5': 'SUCCEEDED',
                     },
                 },
                 'report_4': {
                     'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.outputs['report_4'].output,
+                    'duration': log.outputs['report_4'].duration,
                     'dataSets': {
                         'dataset_6': 'SUCCEEDED',
+                        'dataset_7': 'SUCCEEDED',
                     },
                 },
             },
-        })
+        }
+        self.assertEqual(log.to_dict(), expected_log)
         self.assertTrue(os.path.isfile(os.path.join(out_dir, get_config().LOG_PATH)))
 
     def test_with_model_changes(self):
@@ -363,20 +415,20 @@ class ExecTaskCase(unittest.TestCase):
             os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-three-species.xml'),
             os.path.join(working_dir, 'model1.xml'))
 
-        def execute_task(task, variables):
+        def execute_task(task, variables, log):
             et = etree.parse(task.model.source)
             obj_xpath, _, attr = variables[0].target.rpartition('/@')
             obj = et.xpath(obj_xpath, namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'})[0]
             results = DataGeneratorVariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((float(obj.get(attr)),))
-            return results
+            return results, log
 
         out_dir = os.path.join(self.tmp_dir, 'results')
 
-        report_results = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=False)
+        report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=False)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((1., )))
 
-        report_results = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=True)
+        report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=True)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((2., )))
 
     def test_warnings(self):
@@ -386,8 +438,8 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename)
 
-        def execute_task(task, variables):
-            return DataGeneratorVariableResults()
+        def execute_task(task, variables, log):
+            return DataGeneratorVariableResults(), log
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarns(NoTasksWarning):
@@ -466,11 +518,11 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename)
 
-        def execute_task(task, variables):
+        def execute_task(task, variables, log):
             if task.id == 'task1':
-                return DataGeneratorVariableResults({'data_gen_1_var_1': numpy.array(1.)})
+                return DataGeneratorVariableResults({'data_gen_1_var_1': numpy.array(1.)}), log
             else:
-                return DataGeneratorVariableResults()
+                return DataGeneratorVariableResults(), log
 
         working_dir = os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
@@ -527,15 +579,15 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename)
 
-        def execute_task(task, variables):
-            return DataGeneratorVariableResults()
+        def execute_task(task, variables, log):
+            return DataGeneratorVariableResults(), log
 
         working_dir = os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertRaisesRegex(ValueError, 'must be generated for task'):
+        with self.assertRaisesRegex(SedmlExecutionError, 'did not generate the following expected variables'):
             exec.exec_sed_doc(execute_task, filename, working_dir, out_dir)
 
         # error: unsupported type of task
@@ -544,7 +596,7 @@ class ExecTaskCase(unittest.TestCase):
             id='task_1_ss',
         ))
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertRaisesRegex(NotImplementedError, 'not supported'):
+        with self.assertRaisesRegex(SedmlExecutionError, 'not supported'):
             exec.exec_sed_doc(execute_task, doc, '.', out_dir)
 
         # error: unsupported data generators
@@ -596,11 +648,11 @@ class ExecTaskCase(unittest.TestCase):
             ],
         ))
 
-        def execute_task(task, variables):
+        def execute_task(task, variables, log):
             results = DataGeneratorVariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[0].variables[1].id] = numpy.array((1.,))
-            return results
+            return results, log
 
         working_dir = self.tmp_dir
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
@@ -637,17 +689,17 @@ class ExecTaskCase(unittest.TestCase):
             )
         ]
 
-        def execute_task(task, variables):
+        def execute_task(task, variables, log):
             results = DataGeneratorVariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
-            return results
+            return results, log
 
         working_dir = self.tmp_dir
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertRaisesRegex(ValueError, 'could not be evaluated'):
+        with self.assertRaisesRegex(SedmlExecutionError, 'could not be evaluated'):
             exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
 
         # error: variables have inconsistent shapes
@@ -685,18 +737,18 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
-        def execute_task(task, variables):
+        def execute_task(task, variables, log):
             results = DataGeneratorVariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[0].variables[1].id] = numpy.array((1., 2.))
-            return results
+            return results, log
 
         working_dir = self.tmp_dir
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertRaisesRegex(ValueError, 'must have consistent shape'):
+        with self.assertWarnsRegex(InconsistentVariableShapesWarning, 'do not have consistent shapes'):
             exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
 
         # error: data generators have inconsistent shapes
@@ -757,12 +809,12 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
-        def execute_task(task, variables):
+        def execute_task(task, variables, log):
             results = DataGeneratorVariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[1].variables[0].id] = numpy.array((1., 2.))
             results[doc.data_generators[2].variables[0].id] = numpy.array(((1., 2., 3.), (4., 5., 6.), (7., 8., 9.)))
-            return results
+            return results, log
 
         working_dir = self.tmp_dir
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
@@ -770,7 +822,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-            report_results = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+            report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((1., numpy.nan)))
         numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :], numpy.array((1., 2.)))
 
@@ -788,7 +840,7 @@ class ExecTaskCase(unittest.TestCase):
 
         #out_dir = os.path.join(self.tmp_dir, 'results2')
         # with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-        #    report_results = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+        #    report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
         # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :],
         #    numpy.array(((1., numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
         # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :],
@@ -842,11 +894,11 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
-        def execute_task(task, variables):
+        def execute_task(task, variables, log):
             results = DataGeneratorVariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
             results[doc.data_generators[1].variables[0].id] = numpy.array((2., 3.))
-            return results
+            return results, log
 
         working_dir = self.tmp_dir
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
@@ -876,13 +928,17 @@ class ExecTaskCase(unittest.TestCase):
 
         # error: unsupported outputs
         doc.outputs = [
-            None
+            mock.Mock(id='unsupported')
         ]
 
         working_dir = self.tmp_dir
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
-        out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
-            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+        log = SedDocumentLog(tasks={}, outputs={})
+        for task in doc.tasks:
+            log.tasks[task.id] = TaskLog(parent=log)
+        for output in doc.outputs:
+            log.outputs[output.id] = ReportLog(parent=log)
+        with self.assertRaisesRegex(SedmlExecutionError, 'are not supported'):
+            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir, log=log)

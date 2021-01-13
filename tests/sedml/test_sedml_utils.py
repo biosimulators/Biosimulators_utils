@@ -370,6 +370,72 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             utils.calc_data_generator_results(data_gen, var_results)
 
+    def test_calc_data_generator_results_diff_shapes(self):
+        data_gen = data_model.DataGenerator(
+            id='data_gen_1',
+            variables=[
+                data_model.DataGeneratorVariable(id='var_1'),
+                data_model.DataGeneratorVariable(id='var_2'),
+            ],
+            math='var_1 + var_2',
+        )
+
+        var_results = {
+            'var_1': numpy.array(2.),
+            'var_2': numpy.array(3.),
+        }
+        numpy.testing.assert_allclose(utils.calc_data_generator_results(data_gen, var_results),
+                                      numpy.array(5.))
+
+        var_results = {
+            'var_1': numpy.array([2.]),
+            'var_2': numpy.array([3.]),
+        }
+        numpy.testing.assert_allclose(utils.calc_data_generator_results(data_gen, var_results),
+                                      numpy.array([5.]))
+
+        var_results = {
+            'var_1': numpy.array([[2.]]),
+            'var_2': numpy.array([[3.]]),
+        }
+        numpy.testing.assert_allclose(utils.calc_data_generator_results(data_gen, var_results),
+                                      numpy.array([[5.]]))
+
+        var_results = {
+            'var_1': numpy.array(2.),
+            'var_2': numpy.array([3, 5.]),
+        }
+        numpy.testing.assert_allclose(utils.calc_data_generator_results(data_gen, var_results),
+                                      numpy.array([5., numpy.nan]))
+
+        var_results = {
+            'var_1': numpy.array([2.]),
+            'var_2': numpy.array([3, 5.]),
+        }
+        numpy.testing.assert_allclose(utils.calc_data_generator_results(data_gen, var_results),
+                                      numpy.array([5., numpy.nan]))
+
+        var_results = {
+            'var_1': numpy.array([[2.]]),
+            'var_2': numpy.array([3, 5.]),
+        }
+        numpy.testing.assert_allclose(utils.calc_data_generator_results(data_gen, var_results),
+                                      numpy.array([[5.], [numpy.nan]]))
+
+        var_results = {
+            'var_1': numpy.array(2.),
+            'var_2': numpy.array([[3, 5., 1.], [4., 7., 1.]]),
+        }
+        numpy.testing.assert_allclose(utils.calc_data_generator_results(data_gen, var_results),
+                                      numpy.array([[5., numpy.nan, numpy.nan], [numpy.nan, numpy.nan, numpy.nan]]))
+
+        var_results = {
+            'var_2': numpy.array(2.),
+            'var_1': numpy.array([[3, 5., 1.], [4., 7., 1.]]),
+        }
+        numpy.testing.assert_allclose(utils.calc_data_generator_results(data_gen, var_results),
+                                      numpy.array([[5., numpy.nan, numpy.nan], [numpy.nan, numpy.nan, numpy.nan]]))
+
     def test_remove_model_changes(self):
         doc = data_model.SedDocument(
             models=[

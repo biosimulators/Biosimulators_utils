@@ -8,16 +8,16 @@
 
 from ..config import get_config
 import enum
-import itertools
 import os
 import yaml
 
 __all__ = [
     'Status',
+    'Log',
     'CombineArchiveLog',
     'SedDocumentLog',
     'TaskLog',
-    'OutLog',
+    'OutputLog',
     'ReportLog',
     'Plot2DLog',
     'Plot3DLog',
@@ -25,7 +25,7 @@ __all__ = [
 
 
 class Status(str, enum.Enum):
-    """ Execution status of a component of a COMBINE/OMEX archive """
+    """ Status of COMBINE/OMEX archive or one of its components """
     QUEUED = 'QUEUED'
 
     RUNNING = 'RUNNING'
@@ -39,37 +39,128 @@ class Status(str, enum.Enum):
     FAILED = 'FAILED'
 
 
-class CombineArchiveLog(object):
-    """ Execution status of a COMBINE/OMEX archive
+class Log(object):
+    """ Log of a COMBINE/OMEX archive or one of its components
 
     Attributes
         status (:obj:`Status`): execution status of the archive
+        exception (:obj:`Exception`): exception
+        skip_reason (:obj:`Exception`): reason of skip
+        output (:obj:`str`): output
+        duration (:obj:`float`): duration in seconds
+        parent (:obj:`Log`): execution status of parent COMBINE/OMEX archive
+        out_dir (:obj:`str`): directory to export status
+    """
+
+    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None, parent=None, out_dir=None):
+        """
+        Args:
+            status (:obj:`Status`, optional): execution status of the archive
+            exception (:obj:`Exception`, optional): exception
+            skip_reason (:obj:`Exception`, optional): reason of skip
+            output (:obj:`str`, optional): output
+            duration (:obj:`float`, optional): duration in seconds
+            parent (:obj:`Log`, optional): execution status of parent COMBINE/OMEX archive
+            out_dir (:obj:`str`, optional): directory to export status
+        """
+        self.status = status
+        self.exception = exception
+        self.skip_reason = skip_reason
+        self.output = output
+        self.duration = duration
+        self.parent = parent
+        self.out_dir = out_dir
+
+    def finalize(self):
+        """ Mark all unexecuted elements as skipped """
+        if self.status == Status.QUEUED:
+            self.status = Status.SKIPPED
+        elif self.status == Status.RUNNING:
+            self.status = Status.FAILED
+
+    def to_dict(self):
+        """ Generate a JSON-compatible representation
+
+        Returns:
+            :obj:`dict`: JSON-compatible representation
+        """
+        value = {}
+
+        value['status'] = self.status.value if self.status else None
+
+        if self.exception:
+            value['exception'] = {
+                'type': self.exception.__class__.__name__,
+                'message': str(self.exception),
+            }
+        else:
+            value['exception'] = None
+
+        if self.skip_reason:
+            value['skipReason'] = {
+                'type': self.skip_reason.__class__.__name__,
+                'message': str(self.skip_reason),
+            }
+        else:
+            value['skipReason'] = None
+
+        value['output'] = self.output
+
+        value['duration'] = self.duration
+
+        return value
+
+    def export(self):
+        """ Write to a file """
+        if self.out_dir:
+            path = os.path.join(self.out_dir, get_config().LOG_PATH)
+            if not os.path.isdir(self.out_dir):
+                os.makedirs(self.out_dir)
+            with open(path, 'w') as file:
+                file.write(yaml.dump(self.to_dict()))
+        elif self.parent:
+            self.parent.export()
+
+
+class CombineArchiveLog(Log):
+    """ Log of a COMBINE/OMEX archive
+
+    Attributes
+        status (:obj:`Status`): execution status of the archive
+        exception (:obj:`Exception`): exception
+        skip_reason (:obj:`Exception`): reason of skip
+        output (:obj:`str`): output
+        duration (:obj:`float`): duration in seconds
         sed_documents (:obj:`dict` of :obj:`str` to :obj:`SedDocumentLog`): execution status of each
             SED document in the archive
         out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, sed_documents=None, out_dir=None):
+    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None, sed_documents=None,
+                 out_dir=None):
         """
         Args:
             status (:obj:`Status`, optional): execution status of the archive
+            exception (:obj:`Exception`, optional): exception
+            skip_reason (:obj:`Exception`, optional): reason of skip
+            output (:obj:`str`, optional): output
+            duration (:obj:`float`, optional): duration in seconds
             sed_documents (:obj:`dict` of :obj:`str` to :obj:`SedDocumentLog`, optional): execution status of each
                 SED document in the archive
             out_dir (:obj:`str`, optional): directory to export status
         """
-        self.status = status
-        self.sed_documents = sed_documents or {}
-        self.out_dir = out_dir
+        super(CombineArchiveLog, self).__init__(status=status, exception=exception,
+                                                skip_reason=skip_reason, output=output,
+                                                duration=duration, out_dir=out_dir)
+        self.sed_documents = sed_documents
 
     def finalize(self):
         """ Mark all unexceuted elements as skipped """
-        if self.status == Status.QUEUED:
-            self.status = Status.SKIPPED
-        elif self.status == Status.RUNNING:
-            self.status = Status.FAILED
+        super(CombineArchiveLog, self).finalize()
 
-        for sed_document in self.sed_documents.values():
-            sed_document.finalize()
+        if self.sed_documents:
+            for sed_document in self.sed_documents.values():
+                sed_document.finalize()
 
     def to_dict(self):
         """ Generate a JSON-compatible representation
@@ -77,56 +168,65 @@ class CombineArchiveLog(object):
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        return {
-            'status': self.status.value if self.status else None,
-            'sedDocuments': {doc_id: doc_status.to_dict() for doc_id, doc_status in self.sed_documents.items()},
-        }
-
-    def export(self):
-        """ Write to a file """
-        path = os.path.join(self.out_dir, get_config().LOG_PATH)
-        if not os.path.isdir(self.out_dir):
-            os.makedirs(self.out_dir)
-        with open(path, 'w') as file:
-            file.write(yaml.dump(self.to_dict()))
+        value = super(CombineArchiveLog, self).to_dict()
+        value['sedDocuments'] = (
+            {doc_id: (doc_log.to_dict() if doc_log else None) for doc_id, doc_log in self.sed_documents.items()}
+            if self.sed_documents is not None
+            else None
+        )
+        return value
 
 
-class SedDocumentLog(object):
-    """ Execution status of a SED document
+class SedDocumentLog(Log):
+    """ Log of a SED document
 
     Attributes
         status (:obj:`Status`): execution status of the archive
+        exception (:obj:`Exception`): exception
+        skip_reason (:obj:`Exception`): reason of skip
+        output (:obj:`str`): output
+        duration (:obj:`float`): duration in seconds
         tasks (:obj:`dict` of :obj:`str` to :obj:`TaskLog`): execution status of each
             task
-        outputs (:obj:`dict` of :obj:`str` to :obj:`OutLog`): execution status of each
+        outputs (:obj:`dict` of :obj:`str` to :obj:`OutputLog`): execution status of each
             output
-        combine_archive_status (:obj:`CombineArchiveLog`): execution status of parent COMBINE/OMEX archive
+        parent (:obj:`CombineArchiveLog`): execution status of parent COMBINE/OMEX archive
+        out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, tasks=None, outputs=None, combine_archive_status=None):
+    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None,
+                 tasks=None, outputs=None, parent=None, out_dir=None):
         """
         Args:
             status (:obj:`Status`, optional): execution status of the archive
+            exception (:obj:`Exception`, optional): exception
+            skip_reason (:obj:`Exception`, optional): reason of skip
+            output (:obj:`str`, optional): output
+            duration (:obj:`float`, optional): duration in seconds
             tasks (:obj:`dict` of :obj:`str` to :obj:`TaskLog`, optional): execution status of each
                 task
-            outputs (:obj:`dict` of :obj:`str` to :obj:`OutLog`, optional): execution status of each
+            outputs (:obj:`dict` of :obj:`str` to :obj:`OutputLog`, optional): execution status of each
                 output
-            combine_archive_status (:obj:`CombineArchiveLog`, optional): execution status of parent COMBINE/OMEX archive
+            parent (:obj:`CombineArchiveLog`, optional): execution status of parent COMBINE/OMEX archive
+            out_dir (:obj:`str`, optional): directory to export status
         """
-        self.status = status
-        self.tasks = tasks or {}
-        self.outputs = outputs or {}
-        self.combine_archive_status = combine_archive_status
+        super(SedDocumentLog, self).__init__(status=status, exception=exception,
+                                             skip_reason=skip_reason, output=output,
+                                             duration=duration, parent=parent, out_dir=out_dir)
+        self.tasks = tasks
+        self.outputs = outputs
 
     def finalize(self):
         """ Mark all unexceuted elements as skipped """
-        if self.status == Status.QUEUED:
-            self.status = Status.SKIPPED
-        elif self.status == Status.RUNNING:
-            self.status = Status.FAILED
+        super(SedDocumentLog, self).finalize()
 
-        for el in itertools.chain(self.tasks.values(), self.outputs.values()):
-            el.finalize()
+        if self.tasks:
+            for task in self.tasks.values():
+                task.finalize()
+
+        if self.outputs:
+            for output in self.outputs.values():
+                output.finalize()
 
     def to_dict(self):
         """ Generate a JSON-compatible representation
@@ -134,79 +234,54 @@ class SedDocumentLog(object):
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        return {
-            'status': self.status.value if self.status else None,
-            'tasks': {task_id: task_status.to_dict() for task_id, task_status in self.tasks.items()},
-            'outputs': {output_id: output_status.to_dict() for output_id, output_status in self.outputs.items()},
-        }
-
-    def export(self):
-        """ Write to a file """
-        self.combine_archive_status.export()
-
-
-class TaskLog(object):
-    """ Execution status of a SED task
-
-    Attributes
-        status (:obj:`Status`): execution status of the task
-        document_status (:obj:`SedDocumentLog`): execution status of parent SED document
-    """
-
-    def __init__(self, status=None, document_status=None):
-        """
-        Args:
-            status (:obj:`Status`): execution status of the task
-            document_status (:obj:`SedDocumentLog`, optional): execution status of parent SED document
-        """
-        self.status = status
-        self.document_status = document_status
-
-    def finalize(self):
-        """ Mark all unexceuted elements as skipped """
-        if self.status == Status.QUEUED:
-            self.status = Status.SKIPPED
-        elif self.status == Status.RUNNING:
-            self.status = Status.FAILED
-
-    def to_dict(self):
-        """ Generate a JSON-compatible representation
-
-        Returns:
-            :obj:`dict`: JSON-compatible representation
-        """
-        return {
-            'status': self.status.value if self.status else None,
-        }
-
-    def export(self):
-        """ Write to a file """
-        self.document_status.export()
+        value = super(SedDocumentLog, self).to_dict()
+        value['tasks'] = (
+            {task_id: (task_log.to_dict() if task_log else None) for task_id, task_log in self.tasks.items()}
+            if self.tasks is not None
+            else None
+        )
+        value['outputs'] = (
+            {output_id: (output_log.to_dict() if output_log else None) for output_id, output_log in self.outputs.items()}
+            if self.outputs is not None
+            else None
+        )
+        return value
 
 
-class OutLog(object):
-    """ Execution status of a SED output
+class TaskLog(Log):
+    """ Log of a SED task
 
     Attributes
         status (:obj:`Status`): execution status of the archive
-        document_status (:obj:`SedDocumentLog`): execution status of parent SED document
+        exception (:obj:`Exception`): exception
+        skip_reason (:obj:`Exception`): reason of skip
+        output (:obj:`str`): output
+        duration (:obj:`float`): duration in seconds
+        algorithm (:obj:`str`): KiSAO id of the requested algorithm
+        simulator_details (:obj:`dict`): additional simulator-specific information
+        parent (:obj:`SedDocumentLog`): execution status of parent SED document
+        out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, document_status=None):
+    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None,
+                 algorithm=None, simulator_details=None, parent=None, out_dir=None):
         """
         Args:
             status (:obj:`Status`, optional): execution status of the archive
-            document_status (:obj:`SedDocumentLog`, optional): execution status of parent SED document
+            exception (:obj:`Exception`, optional): exception
+            skip_reason (:obj:`Exception`, optional): reason of skip
+            output (:obj:`str`, optional): output
+            duration (:obj:`float`, optional): duration in seconds
+            algorithm (:obj:`str`, optional): KiSAO id of the executed algorithm
+            simulator_details (:obj:`dict`, optional): additional simulator-specific information
+            parent (:obj:`SedDocumentLog`): execution status of parent SED document
+            out_dir (:obj:`str`, optional): directory to export status
         """
-        self.status = status
-        self.document_status = document_status
-
-    def finalize(self):
-        """ Mark all unexceuted elements as skipped """
-        if self.status == Status.QUEUED:
-            self.status = Status.SKIPPED
-        elif self.status == Status.RUNNING:
-            self.status = Status.FAILED
+        super(TaskLog, self).__init__(status=status, exception=exception,
+                                      skip_reason=skip_reason, output=output,
+                                      duration=duration, parent=parent, out_dir=out_dir)
+        self.algorithm = algorithm
+        self.simulator_details = simulator_details
 
     def to_dict(self):
         """ Generate a JSON-compatible representation
@@ -214,45 +289,70 @@ class OutLog(object):
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        return {
-            'status': self.status.value if self.status else None,
-        }
-
-    def export(self):
-        """ Write to a file """
-        self.document_status.export()
+        value = super(TaskLog, self).to_dict()
+        value['algorithm'] = self.algorithm
+        value['simulatorDetails'] = self.simulator_details
+        return value
 
 
-class ReportLog(OutLog):
-    """ Execution status of a SED report
+class OutputLog(Log):
+    """ Log of a SED output
 
     Attributes
         status (:obj:`Status`): execution status of the archive
+        exception (:obj:`Exception`): exception
+        skip_reason (:obj:`Exception`): reason of skip
+        output (:obj:`str`): output
+        duration (:obj:`float`): duration in seconds
+        parent (:obj:`SedDocumentLog`): execution status of parent SED document
+        out_dir (:obj:`str`): directory to export status
+    """
+    pass  # pragma: no cover
+
+
+class ReportLog(OutputLog):
+    """ Log of a SED report
+
+    Attributes
+        status (:obj:`Status`): execution status of the archive
+        exception (:obj:`Exception`): exception
+        skip_reason (:obj:`Exception`): reason of skip
+        output (:obj:`str`): output
+        duration (:obj:`float`): duration in seconds
         data_sets (:obj:`dict` of :obj:`str` to :obj:`Status`): execution status of each
             data set
-        document_status (:obj:`SedDocumentLog`): execution status of parent SED document
+        parent (:obj:`SedDocumentLog`): execution status of parent SED document
+        out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, data_sets=None, document_status=None):
+    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None, data_sets=None,
+                 parent=None, out_dir=None):
         """
         Args:
             status (:obj:`Status`, optional): execution status of the archive
+            exception (:obj:`Exception`, optional): exception
+            skip_reason (:obj:`Exception`, optional): reason of skip
+            output (:obj:`str`, optional): output
+            duration (:obj:`float`, optional): duration in seconds
             data_sets (:obj:`dict` of :obj:`str` to :obj:`Status`, optional): execution status of each
                 data set
-            document_status (:obj:`SedDocumentLog`, optional): execution status of parent SED document
+            parent (:obj:`SedDocumentLog`, optional): execution status of parent SED document
+            out_dir (:obj:`str`, optional): directory to export status
         """
-        super(ReportLog, self).__init__(status=status, document_status=document_status)
-        self.data_sets = data_sets or {}
+        super(ReportLog, self).__init__(status=status, exception=exception, skip_reason=skip_reason,
+                                        output=output, duration=duration, parent=parent, out_dir=out_dir)
+        self.data_sets = data_sets
 
     def finalize(self):
         """ Mark all unexceuted elements as skipped """
         super(ReportLog, self).finalize()
 
-        for id, status in self.data_sets.items():
-            if status == Status.QUEUED:
-                self.data_sets[id] = Status.SKIPPED
-            elif status == Status.RUNNING:
-                self.data_sets[id] = Status.FAILED
+        if self.data_sets:
+            for id, status in self.data_sets.items():
+                if status == Status.QUEUED:
+                    self.data_sets[id] = Status.SKIPPED
+                elif status == Status.RUNNING:
+                    self.data_sets[id] = Status.FAILED
 
     def to_dict(self):
         """ Generate a JSON-compatible representation
@@ -260,41 +360,58 @@ class ReportLog(OutLog):
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        dict_status = super(ReportLog, self).to_dict()
-        dict_status['dataSets'] = {id: status.value if status else None for id, status in self.data_sets.items()}
-        return dict_status
+        dict_log = super(ReportLog, self).to_dict()
+        dict_log['dataSets'] = (
+            {id: status.value if status else None for id, status in self.data_sets.items()}
+            if self.data_sets is not None
+            else None
+        )
+        return dict_log
 
 
-class Plot2DLog(OutLog):
-    """ Execution status of a 2D SED plot
+class Plot2DLog(OutputLog):
+    """ Log of a 2D SED plot
 
     Attributes
         status (:obj:`Status`): execution status of the archive
+        exception (:obj:`Exception`): exception
+        skip_reason (:obj:`Exception`): reason of skip
+        output (:obj:`str`): output
+        duration (:obj:`float`): duration in seconds
         curves (:obj:`dict` of :obj:`str` to :obj:`Status`): execution status of each
             curve
-        document_status (:obj:`SedDocumentLog`): execution status of parent SED document
+        parent (:obj:`SedDocumentLog`): execution status of parent SED document
+        out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, curves=None, document_status=None):
+    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None, curves=None,
+                 parent=None, out_dir=None):
         """
         Args:
             status (:obj:`Status`, optional): execution status of the archive
+            exception (:obj:`Exception`, optional): exception
+            skip_reason (:obj:`Exception`, optional): reason of skip
+            output (:obj:`str`, optional): output
+            duration (:obj:`float`, optional): duration in seconds
             curves (:obj:`dict` of :obj:`str` to :obj:`Status`, optional): execution status of each
                 curve
-            document_status (:obj:`SedDocumentLog`, optional): execution status of parent SED document
+            parent (:obj:`SedDocumentLog`, optional): execution status of parent SED document
+            out_dir (:obj:`str`, optional): directory to export status
         """
-        super(Plot2DLog, self).__init__(status=status, document_status=document_status)
-        self.curves = curves or {}
+        super(Plot2DLog, self).__init__(status=status, exception=exception, skip_reason=skip_reason,
+                                        output=output, duration=duration, parent=parent, out_dir=out_dir)
+        self.curves = curves
 
     def finalize(self):
         """ Mark all unexceuted elements as skipped """
         super(Plot2DLog, self).finalize()
 
-        for id, status in self.curves.items():
-            if status == Status.QUEUED:
-                self.curves[id] = Status.SKIPPED
-            elif status == Status.RUNNING:
-                self.curves[id] = Status.FAILED
+        if self.curves:
+            for id, status in self.curves.items():
+                if status == Status.QUEUED:
+                    self.curves[id] = Status.SKIPPED
+                elif status == Status.RUNNING:
+                    self.curves[id] = Status.FAILED
 
     def to_dict(self):
         """ Generate a JSON-compatible representation
@@ -302,41 +419,58 @@ class Plot2DLog(OutLog):
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        dict_status = super(Plot2DLog, self).to_dict()
-        dict_status['curves'] = {id: status.value if status else None for id, status in self.curves.items()}
-        return dict_status
+        dict_log = super(Plot2DLog, self).to_dict()
+        dict_log['curves'] = (
+            {id: status.value if status else None for id, status in self.curves.items()}
+            if self.curves is not None
+            else None
+        )
+        return dict_log
 
 
-class Plot3DLog(OutLog):
-    """ Execution status of a 3D SED plot
+class Plot3DLog(OutputLog):
+    """ Log of a 3D SED plot
 
     Attributes
         status (:obj:`Status`): execution status of the archive
+        exception (:obj:`Exception`): exception
+        skip_reason (:obj:`Exception`): reason of skip
+        output (:obj:`str`): output
+        duration (:obj:`float`): duration in seconds
         surfaces (:obj:`dict` of :obj:`str` to :obj:`Status`): execution status of each
             surface
-        document_status (:obj:`SedDocumentLog`): execution status of parent SED document
+        parent (:obj:`SedDocumentLog`): execution status of parent SED document
+        out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, surfaces=None, document_status=None):
+    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None, surfaces=None,
+                 parent=None, out_dir=None):
         """
         Args:
             status (:obj:`Status`, optional): execution status of the archive
+            exception (:obj:`Exception`, optional): exception
+            skip_reason (:obj:`Exception`, optional): reason of skip
+            output (:obj:`str`, optional): output
+            duration (:obj:`float`, optional): duration in seconds
             surfaces (:obj:`dict` of :obj:`str` to :obj:`Status`, optional): execution status of each
                 surface
-            document_status (:obj:`SedDocumentLog`, optional): execution status of parent SED document
+            parent (:obj:`SedDocumentLog`, optional): execution status of parent SED document
+            out_dir (:obj:`str`, optional): directory to export status
         """
-        super(Plot3DLog, self).__init__(status=status, document_status=document_status)
-        self.surfaces = surfaces or {}
+        super(Plot3DLog, self).__init__(status=status, exception=exception, skip_reason=skip_reason,
+                                        output=output, duration=duration, parent=parent, out_dir=out_dir)
+        self.surfaces = surfaces
 
     def finalize(self):
         """ Mark all unexceuted elements as skipped """
         super(Plot3DLog, self).finalize()
 
-        for id, status in self.surfaces.items():
-            if status == Status.QUEUED:
-                self.surfaces[id] = Status.SKIPPED
-            elif status == Status.RUNNING:
-                self.surfaces[id] = Status.FAILED
+        if self.surfaces:
+            for id, status in self.surfaces.items():
+                if status == Status.QUEUED:
+                    self.surfaces[id] = Status.SKIPPED
+                elif status == Status.RUNNING:
+                    self.surfaces[id] = Status.FAILED
 
     def to_dict(self):
         """ Generate a JSON-compatible representation
@@ -344,6 +478,10 @@ class Plot3DLog(OutLog):
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        dict_status = super(Plot3DLog, self).to_dict()
-        dict_status['surfaces'] = {id: status.value if status else None for id, status in self.surfaces.items()}
-        return dict_status
+        dict_log = super(Plot3DLog, self).to_dict()
+        dict_log['surfaces'] = (
+            {id: status.value if status else None for id, status in self.surfaces.items()}
+            if self.surfaces is not None
+            else None
+        )
+        return dict_log

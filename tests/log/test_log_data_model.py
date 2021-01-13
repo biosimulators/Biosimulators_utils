@@ -15,106 +15,153 @@ class ExecStatusDataModel(unittest.TestCase):
         shutil.rmtree(self.dirname)
 
     def test(self):
-        'CombineArchiveLog'
-        'SedDocumentLog'
-
-        task_status = data_model.TaskLog(
-            status=data_model.Status.RUNNING)
-        self.assertEqual(task_status.to_dict(), {
-            'status': 'RUNNING',
+        task_log = data_model.TaskLog(
+            status=data_model.Status.FAILED,
+            exception=ValueError('Big error'),
+            skip_reason=NotImplementedError('Skip rationale'),
+            output='Stdout/err',
+            duration=10.5,
+            algorithm='KISAO_0000019',
+        )
+        self.assertEqual(task_log.to_dict(), {
+            'status': 'FAILED',
+            'exception': {
+                'type': 'ValueError',
+                'message': 'Big error',
+            },
+            'skipReason': {
+                'type': 'NotImplementedError',
+                'message': 'Skip rationale',
+            },
+            'output': 'Stdout/err',
+            'duration': 10.5,
+            'algorithm': 'KISAO_0000019',
+            'simulatorDetails': None,
         })
 
-        report_status = data_model.ReportLog(
+        task_log = data_model.TaskLog(
+            status=data_model.Status.RUNNING)
+        self.assertEqual(task_log.to_dict(), {
+            'status': 'RUNNING',
+            'exception': None,
+            'skipReason': None,
+            'output': None,
+            'duration': None,
+            'algorithm': None,
+            'simulatorDetails': None,
+        })
+
+        report_log = data_model.ReportLog(
             status=data_model.Status.RUNNING,
             data_sets={
                 'data_set_1': data_model.Status.QUEUED,
                 'data_set_2': data_model.Status.SUCCEEDED,
             })
-        self.assertEqual(report_status.to_dict(), {
+        self.assertEqual(report_log.to_dict(), {
             'status': 'RUNNING',
+            'exception': None,
+            'skipReason': None,
+            'output': None,
+            'duration': None,
             'dataSets': {
                 'data_set_1': 'QUEUED',
                 'data_set_2': 'SUCCEEDED',
             }
         })
 
-        plot2d_status = data_model.Plot2DLog(
+        plot2d_log = data_model.Plot2DLog(
             status=data_model.Status.RUNNING,
             curves={
                 'curve_1': data_model.Status.QUEUED,
                 'curve_2': data_model.Status.SUCCEEDED,
             })
-        self.assertEqual(plot2d_status.to_dict(), {
+        self.assertEqual(plot2d_log.to_dict(), {
             'status': 'RUNNING',
+            'exception': None,
+            'skipReason': None,
+            'output': None,
+            'duration': None,
             'curves': {
                 'curve_1': 'QUEUED',
                 'curve_2': 'SUCCEEDED',
             }
         })
 
-        plot3d_status = data_model.Plot3DLog(
+        plot3d_log = data_model.Plot3DLog(
             status=data_model.Status.RUNNING,
             surfaces={
                 'surface_1': data_model.Status.QUEUED,
                 'surface_2': data_model.Status.SUCCEEDED,
             })
-        self.assertEqual(plot3d_status.to_dict(), {
+        self.assertEqual(plot3d_log.to_dict(), {
             'status': 'RUNNING',
+            'exception': None,
+            'skipReason': None,
+            'output': None,
+            'duration': None,
             'surfaces': {
                 'surface_1': 'QUEUED',
                 'surface_2': 'SUCCEEDED',
             }
         })
 
-        doc_status = data_model.SedDocumentLog(
+        doc_log = data_model.SedDocumentLog(
             status=data_model.Status.RUNNING,
             tasks={
-                'task_1': task_status,
+                'task_1': task_log,
             },
             outputs={
-                'report_1': report_status,
-                'plot_1': plot2d_status,
-                'plot_2': plot3d_status,
+                'report_1': report_log,
+                'plot_1': plot2d_log,
+                'plot_2': plot3d_log,
             },
         )
-        self.assertEqual(doc_status.to_dict(), {
+        self.assertEqual(doc_log.to_dict(), {
             'status': 'RUNNING',
+            'exception': None,
+            'skipReason': None,
+            'output': None,
+            'duration': None,
             'tasks': {
-                'task_1': task_status.to_dict(),
+                'task_1': task_log.to_dict(),
             },
             'outputs': {
-                'report_1': report_status.to_dict(),
-                'plot_1': plot2d_status.to_dict(),
-                'plot_2': plot3d_status.to_dict(),
-            }
+                'report_1': report_log.to_dict(),
+                'plot_1': plot2d_log.to_dict(),
+                'plot_2': plot3d_log.to_dict(),
+            },
         })
 
-        archive_status = data_model.CombineArchiveLog(
+        archive_log = data_model.CombineArchiveLog(
             status=data_model.Status.RUNNING,
             sed_documents={
-                'doc_1': doc_status,
+                'doc_1': doc_log,
             },
         )
-        self.assertEqual(archive_status.to_dict(), {
+        self.assertEqual(archive_log.to_dict(), {
             'status': 'RUNNING',
+            'exception': None,
+            'skipReason': None,
+            'output': None,
+            'duration': None,
             'sedDocuments': {
-                'doc_1': doc_status.to_dict(),
+                'doc_1': doc_log.to_dict(),
             },
         })
 
-        doc_status.combine_archive_status = archive_status
-        task_status.document_status = doc_status
-        report_status.document_status = doc_status
-        plot2d_status.document_status = doc_status
-        plot3d_status.document_status = doc_status
+        doc_log.parent = archive_log
+        task_log.parent = doc_log
+        report_log.parent = doc_log
+        plot2d_log.parent = doc_log
+        plot3d_log.parent = doc_log
 
-        archive_status.out_dir = self.dirname
+        archive_log.out_dir = os.path.join(self.dirname, 'log')
 
-        archive_status.export()
-        doc_status.export()
-        task_status.export()
-        report_status.export()
-        plot2d_status.export()
-        plot3d_status.export()
-        with open(os.path.join(self.dirname, get_config().LOG_PATH), 'r') as file:
-            self.assertEqual(yaml.load(file), archive_status.to_dict())
+        archive_log.export()
+        doc_log.export()
+        task_log.export()
+        report_log.export()
+        plot2d_log.export()
+        plot3d_log.export()
+        with open(os.path.join(archive_log.out_dir, get_config().LOG_PATH), 'r') as file:
+            self.assertEqual(yaml.load(file), archive_log.to_dict())

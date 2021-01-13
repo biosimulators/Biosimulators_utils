@@ -11,6 +11,7 @@ from ..warnings import BioSimulatorsWarning
 __all__ = [
     'RepeatDataSetLabelsWarning',
     'IllogicalSedmlWarning',
+    'InconsistentVariableShapesWarning',
     'NoTasksWarning',
     'NoOutputsWarning',
     'NoDataSetsWarning',
@@ -29,6 +30,11 @@ class IllogicalSedmlWarning(BioSimulatorsWarning):
     """ Warning that a SED document is illogical, such as when a report or plot contains
     no datasets, curves, or surfaces.
     """
+    pass  # pragma: no cover
+
+
+class InconsistentVariableShapesWarning(BioSimulatorsWarning):
+    """ Warning that the variables of a data generator have different shapes. """
     pass  # pragma: no cover
 
 

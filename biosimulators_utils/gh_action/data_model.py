@@ -6,13 +6,15 @@
 :License: MIT
 """
 
+from ..exceptions import BioSimulatorsException
+
 __all__ = [
     'GitHubActionCaughtError',
     'Comment',
 ]
 
 
-class GitHubActionCaughtError(Exception):
+class GitHubActionCaughtError(BioSimulatorsException):
     """ An error caught during the execution of a GitHub action """
     pass  # pragma: no cover
 

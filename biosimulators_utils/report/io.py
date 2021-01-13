@@ -12,6 +12,7 @@ import glob
 import os
 import pandas
 import tables
+import warnings
 
 __all__ = [
     'ReportWriter',
@@ -52,14 +53,17 @@ class ReportWriter(object):
             filename = os.path.join(base_path, get_config().H5_REPORTS_PATH)
             if not os.path.isdir(base_path):
                 os.makedirs(base_path)
-            results.to_hdf(filename,
-                           key=rel_path,
-                           format='table',
-                           complevel=9,
-                           complib='zlib',
-                           mode='a',
-                           append=False,
-                           )
+
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", tables.NaturalNameWarning)
+                results.to_hdf(filename,
+                               key=rel_path,
+                               format='table',
+                               complevel=9,
+                               complib='zlib',
+                               mode='a',
+                               append=False,
+                               )
 
         else:
             raise NotImplementedError('Report format {} is not supported'.format(format))

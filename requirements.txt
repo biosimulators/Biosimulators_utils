@@ -13,4 +13,5 @@ requests
 seaborn
 simplejson
 tables
+termcolor
 yamldown

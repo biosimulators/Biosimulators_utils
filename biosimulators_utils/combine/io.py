@@ -9,10 +9,10 @@
 from .data_model import CombineArchiveBase, CombineArchive, CombineArchiveContent, CombineArchiveContentFormat  # noqa: F401
 from ..archive.io import ArchiveReader
 from ..data_model import Person
+from ..warnings import warn
 import dateutil.parser
 import libcombine
 import os
-import warnings
 import zipfile
 
 __all__ = [
@@ -119,7 +119,7 @@ class CombineArchiveReader(object):
             if try_reading_as_plain_zip_archive:
                 try:
                     archive = CombineArchiveZipReader().run(in_file, out_dir)
-                    warnings.warn('`{}` is a plain zip archive, not a COMBINE/OMEX archive.'.format(in_file), UserWarning)
+                    warn('`{}` is a plain zip archive, not a COMBINE/OMEX archive.'.format(in_file), UserWarning)
                     return archive
                 except ValueError:
                     raise ValueError("`{}` is not a valid COMBINE/OMEX archive.".format(in_file))
