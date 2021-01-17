@@ -79,6 +79,7 @@ class ExecStatusDataModel(unittest.TestCase):
         exp_2.data_generators.append(data_gen_3)
         exp_2.data_generators.append(data_gen_4)
         exp_2.outputs.append(sedml_data_model.Report(id='report_3'))
+        exp_2.outputs.append(sedml_data_model.Plot2D(id='plot_4'))
         exp_2.outputs.append(sedml_data_model.Plot3D(id='plot_5', surfaces=[
             sedml_data_model.Surface(id='surface_1',
                                      x_data_generator=data_gen_3,
@@ -88,7 +89,6 @@ class ExecStatusDataModel(unittest.TestCase):
                                      y_scale=sedml_data_model.AxisScale.log,
                                      z_scale=sedml_data_model.AxisScale.log),
         ]))
-        exp_2.outputs.append(sedml_data_model.Plot2D(id='plot_4'))
         SedmlSimulationWriter().run(exp_2, os.path.join(self.dirname, 'exp_2.sedml'))
 
         status = utils.init_combine_archive_log(
@@ -110,61 +110,65 @@ class ExecStatusDataModel(unittest.TestCase):
                 sedml_data_model.DataSet,
             ),
         )
-        self.assertEqual(status.to_dict(), {
+        expected = {
             'status': 'QUEUED',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'sedDocuments': {
-                'exp_1.sedml': {
+            'sedDocuments': [
+                {
+                    'location': 'exp_1.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_1': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                        'task_2': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                    },
-                    'outputs': {
-                        'report_1': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                     'dataSets': {
-                                         'data_set_1': 'QUEUED',
-                                         'data_set_2': 'QUEUED',
-                                     }},
-                        'plot_2': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'curves': {
-                                       'curve_1': 'SKIPPED',
-                                       'curve_2': 'SKIPPED',
-                                   }},
-                    },
+                    'tasks': [
+                        {'id': 'task_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                        {'id': 'task_2', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                    ],
+                    'outputs': [
+                        {'id': 'report_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': [
+                             {'id': 'data_set_1', 'status': 'QUEUED'},
+                             {'id': 'data_set_2', 'status': 'QUEUED'},
+                         ]},
+                        {'id': 'plot_2', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': [
+                             {'id': 'curve_1', 'status': 'SKIPPED'},
+                             {'id': 'curve_2', 'status': 'SKIPPED'},
+                         ]},
+                    ],
                 },
-                'exp_2.sedml': {
+                {
+                    'location': 'exp_2.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_3': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None, },
-                    },
-                    'outputs': {
-                        'report_3': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                     'dataSets': {}},
-                        'plot_4': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'curves': {}},
-                        'plot_5': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'surfaces': {
-                                       'surface_1': 'SKIPPED',
-                                   }},
-                    },
+                    'tasks': [
+                        {'id': 'task_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None, },
+                    ],
+                    'outputs': [
+                        {'id': 'report_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': []},
+                        {'id': 'plot_4', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': []},
+                        {'id': 'plot_5', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'surfaces': [
+                             {'id': 'surface_1', 'status': 'SKIPPED'},
+                         ]},
+                    ],
                 },
-            },
-        })
+            ],
+        }
+        print(status.to_json()['sedDocuments'][1]['outputs'][0])
+        self.assertEqual(status.to_json()['sedDocuments'][1]['outputs'][1], expected['sedDocuments'][1]['outputs'][1])
         self.assertEqual(status.sed_documents['exp_1.sedml'].parent, status)
         self.assertEqual(status.sed_documents['exp_1.sedml'].tasks['task_1'].parent, status.sed_documents['exp_1.sedml'])
         self.assertEqual(status.sed_documents['exp_1.sedml'].outputs['report_1'].parent, status.sed_documents['exp_1.sedml'])
@@ -187,60 +191,62 @@ class ExecStatusDataModel(unittest.TestCase):
                 for id in els.keys():
                     els[id] = data_model.Status.QUEUED
         status.finalize()
-        self.assertEqual(status.to_dict(), {
+        self.assertEqual(status.to_json(), {
             'status': 'SKIPPED',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'sedDocuments': {
-                'exp_1.sedml': {
+            'sedDocuments': [
+                {
+                    'location': 'exp_1.sedml',
                     'status': 'SKIPPED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_1': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                        'task_2': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                    },
-                    'outputs': {
-                        'report_1': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                     'dataSets': {
-                                         'data_set_1': 'SKIPPED',
-                                         'data_set_2': 'SKIPPED',
-                                     }},
-                        'plot_2': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'curves': {
-                                       'curve_1': 'SKIPPED',
-                                       'curve_2': 'SKIPPED',
-                                   }},
-                    },
+                    'tasks': [
+                        {'id': 'task_1', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                        {'id': 'task_2', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                    ],
+                    'outputs': [
+                        {'id': 'report_1', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': [
+                             {'id': 'data_set_1', 'status': 'SKIPPED'},
+                             {'id': 'data_set_2', 'status': 'SKIPPED'},
+                         ]},
+                        {'id': 'plot_2', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': [
+                             {'id': 'curve_1', 'status': 'SKIPPED'},
+                             {'id': 'curve_2', 'status': 'SKIPPED'},
+                         ]},
+                    ],
                 },
-                'exp_2.sedml': {
+                {
+                    'location': 'exp_2.sedml',
                     'status': 'SKIPPED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_3': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                    },
-                    'outputs': {
-                        'report_3': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                     'dataSets': {}},
-                        'plot_4': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'curves': {}},
-                        'plot_5': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'surfaces': {
-                                       'surface_1': 'SKIPPED',
-                                   }},
-                    },
+                    'tasks': [
+                        {'id': 'task_3', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                    ],
+                    'outputs': [
+                        {'id': 'report_3', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': []},
+                        {'id': 'plot_4', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': []},
+                        {'id': 'plot_5', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'surfaces': [
+                             {'id': 'surface_1', 'status': 'SKIPPED'},
+                         ]},
+                    ],
                 },
-            },
+            ],
         })
 
         status = utils.init_combine_archive_log(archive, self.dirname)
@@ -262,60 +268,62 @@ class ExecStatusDataModel(unittest.TestCase):
                 for id in els.keys():
                     els[id] = data_model.Status.RUNNING
         status.finalize()
-        self.assertEqual(status.to_dict(), {
+        self.assertEqual(status.to_json(), {
             'status': 'FAILED',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'sedDocuments': {
-                'exp_1.sedml': {
+            'sedDocuments': [
+                {
+                    'location': 'exp_1.sedml',
                     'status': 'FAILED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_1': {'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                        'task_2': {'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                    },
-                    'outputs': {
-                        'report_1': {'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                     'dataSets': {
-                                         'data_set_1': 'FAILED',
-                                         'data_set_2': 'FAILED',
-                                     }},
-                        'plot_2': {'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'curves': {
-                                       'curve_1': 'FAILED',
-                                       'curve_2': 'FAILED',
-                                   }},
-                    },
+                    'tasks': [
+                        {'id': 'task_1', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                        {'id': 'task_2', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                    ],
+                    'outputs': [
+                        {'id': 'report_1', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': [
+                             {'id': 'data_set_1', 'status': 'FAILED'},
+                             {'id': 'data_set_2', 'status': 'FAILED'},
+                         ]},
+                        {'id': 'plot_2', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': [
+                             {'id': 'curve_1', 'status': 'FAILED'},
+                             {'id': 'curve_2', 'status': 'FAILED'},
+                         ]},
+                    ],
                 },
-                'exp_2.sedml': {
+                {
+                    'location': 'exp_2.sedml',
                     'status': 'FAILED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_3': {'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                    },
-                    'outputs': {
-                        'report_3': {'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                     'dataSets': {}},
-                        'plot_4': {'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'curves': {}},
-                        'plot_5': {'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'surfaces': {
-                                       'surface_1': 'FAILED',
-                                   }},
-                    },
+                    'tasks': [
+                        {'id': 'task_3', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                    ],
+                    'outputs': [
+                        {'id': 'report_3', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': []},
+                        {'id': 'plot_4', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': []},
+                        {'id': 'plot_5', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'surfaces': [
+                             {'id': 'surface_1', 'status': 'FAILED'},
+                         ]},
+                    ],
                 },
-            },
+            ],
         })
 
         # test logging subsets of possible features -- no data sets, curves, surfaces
@@ -335,52 +343,54 @@ class ExecStatusDataModel(unittest.TestCase):
                 sedml_data_model.DataSet,
             ),
         )
-        self.assertEqual(status.to_dict(), {
+        self.assertEqual(status.to_json(), {
             'status': 'QUEUED',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'sedDocuments': {
-                'exp_1.sedml': {
+            'sedDocuments': [
+                {
+                    'location': 'exp_1.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_1': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                        'task_2': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                    },
-                    'outputs': {
-                        'report_1': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                     'dataSets': None},
-                        'plot_2': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'curves': None},
-                    },
+                    'tasks': [
+                        {'id': 'task_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                        {'id': 'task_2', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                    ],
+                    'outputs': [
+                        {'id': 'report_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': None},
+                        {'id': 'plot_2', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': None},
+                    ],
                 },
-                'exp_2.sedml': {
+                {
+                    'location': 'exp_2.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_3': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None, },
-                    },
-                    'outputs': {
-                        'report_3': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                     'dataSets': None},
-                        'plot_4': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'curves': None},
-                        'plot_5': {'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'surfaces': None},
-                    },
+                    'tasks': [
+                        {'id': 'task_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None, },
+                    ],
+                    'outputs': [
+                        {'id': 'report_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': None},
+                        {'id': 'plot_4', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': None},
+                        {'id': 'plot_5', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'surfaces': None},
+                    ],
                 },
-            },
+            ],
         })
 
         # test logging subsets of possible features -- no plots
@@ -398,49 +408,48 @@ class ExecStatusDataModel(unittest.TestCase):
                 sedml_data_model.DataSet,
             ),
         )
-        self.assertEqual(status.to_dict(), {
+        self.assertEqual(status.to_json(), {
             'status': 'QUEUED',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'sedDocuments': {
-                'exp_1.sedml': {
+            'sedDocuments': [
+                {
+                    'location': 'exp_1.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_1': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                        'task_2': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                    },
-                    'outputs': {
-                        'report_1': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                     'dataSets': None},
-                        'plot_2': None,
-                    },
+                    'tasks': [
+                        {'id': 'task_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                        {'id': 'task_2', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                    ],
+                    'outputs': [
+                        {'id': 'report_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': None},
+                    ],
                 },
-                'exp_2.sedml': {
+                {
+                    'location': 'exp_2.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_3': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None, },
-                    },
-                    'outputs': {
-                        'report_3': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                     'dataSets': None},
-                        'plot_4': None,
-                        'plot_5': None,
-                    },
+                    'tasks': [
+                        {'id': 'task_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None, },
+                    ],
+                    'outputs': [
+                        {'id': 'report_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': None},
+                    ],
                 },
-            },
+            ],
         })
 
         # test logging subsets of possible features -- no outputs
@@ -457,40 +466,42 @@ class ExecStatusDataModel(unittest.TestCase):
                 sedml_data_model.DataSet,
             ),
         )
-        self.assertEqual(status.to_dict(), {
+        self.assertEqual(status.to_json(), {
             'status': 'QUEUED',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'sedDocuments': {
-                'exp_1.sedml': {
+            'sedDocuments': [
+                {
+                    'location': 'exp_1.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_1': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                        'task_2': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None},
-                    },
+                    'tasks': [
+                        {'id': 'task_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                        {'id': 'task_2', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                    ],
                     'outputs': None,
                 },
-                'exp_2.sedml': {
+                {
+                    'location': 'exp_2.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,
                     'output': None,
                     'duration': None,
-                    'tasks': {
-                        'task_3': {'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                                   'algorithm': None, 'simulatorDetails': None, },
-                    },
+                    'tasks': [
+                        {'id': 'task_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None, },
+                    ],
                     'outputs': None,
                 },
-            },
+            ],
         })
 
         # test logging subsets of possible features -- no tasks or outputs
@@ -506,14 +517,15 @@ class ExecStatusDataModel(unittest.TestCase):
                 sedml_data_model.DataSet,
             ),
         )
-        self.assertEqual(status.to_dict(), {
+        self.assertEqual(status.to_json(), {
             'status': 'QUEUED',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'sedDocuments': {
-                'exp_1.sedml': {
+            'sedDocuments': [
+                {
+                    'location': 'exp_1.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,
@@ -522,7 +534,8 @@ class ExecStatusDataModel(unittest.TestCase):
                     'tasks': None,
                     'outputs': None,
                 },
-                'exp_2.sedml': {
+                {
+                    'location': 'exp_2.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,
@@ -531,7 +544,7 @@ class ExecStatusDataModel(unittest.TestCase):
                     'tasks': None,
                     'outputs': None,
                 },
-            },
+            ],
         })
 
         # test logging subsets of possible features -- no SED documents
@@ -546,7 +559,7 @@ class ExecStatusDataModel(unittest.TestCase):
                 sedml_data_model.DataSet,
             ),
         )
-        self.assertEqual(status.to_dict(), {
+        self.assertEqual(status.to_json(), {
             'status': 'QUEUED',
             'exception': None,
             'skipReason': None,

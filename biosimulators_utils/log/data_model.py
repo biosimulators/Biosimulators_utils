@@ -42,7 +42,7 @@ class Status(str, enum.Enum):
 class Log(object):
     """ Log of a COMBINE/OMEX archive or one of its components
 
-    Attributes
+    Attributes:
         status (:obj:`Status`): execution status of the archive
         exception (:obj:`Exception`): exception
         skip_reason (:obj:`Exception`): reason of skip
@@ -52,7 +52,7 @@ class Log(object):
         out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None, parent=None, out_dir=None):
+    def __init__(self, id=None, status=None, exception=None, skip_reason=None, output=None, duration=None, parent=None, out_dir=None):
         """
         Args:
             status (:obj:`Status`, optional): execution status of the archive
@@ -78,7 +78,7 @@ class Log(object):
         elif self.status == Status.RUNNING:
             self.status = Status.FAILED
 
-    def to_dict(self):
+    def to_json(self):
         """ Generate a JSON-compatible representation
 
         Returns:
@@ -117,7 +117,7 @@ class Log(object):
             if not os.path.isdir(self.out_dir):
                 os.makedirs(self.out_dir)
             with open(path, 'w') as file:
-                file.write(yaml.dump(self.to_dict()))
+                file.write(yaml.dump(self.to_json()))
         elif self.parent:
             self.parent.export()
 
@@ -125,7 +125,7 @@ class Log(object):
 class CombineArchiveLog(Log):
     """ Log of a COMBINE/OMEX archive
 
-    Attributes
+    Attributes:
         status (:obj:`Status`): execution status of the archive
         exception (:obj:`Exception`): exception
         skip_reason (:obj:`Exception`): reason of skip
@@ -136,7 +136,7 @@ class CombineArchiveLog(Log):
         out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None, sed_documents=None,
+    def __init__(self, id=None, status=None, exception=None, skip_reason=None, output=None, duration=None, sed_documents=None,
                  out_dir=None):
         """
         Args:
@@ -162,15 +162,15 @@ class CombineArchiveLog(Log):
             for sed_document in self.sed_documents.values():
                 sed_document.finalize()
 
-    def to_dict(self):
+    def to_json(self):
         """ Generate a JSON-compatible representation
 
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        value = super(CombineArchiveLog, self).to_dict()
+        value = super(CombineArchiveLog, self).to_json()
         value['sedDocuments'] = (
-            {doc_id: (doc_log.to_dict() if doc_log else None) for doc_id, doc_log in self.sed_documents.items()}
+            [doc_log.to_json() for doc_log in self.sed_documents.values() if doc_log]
             if self.sed_documents is not None
             else None
         )
@@ -180,7 +180,8 @@ class CombineArchiveLog(Log):
 class SedDocumentLog(Log):
     """ Log of a SED document
 
-    Attributes
+    Attributes:
+        location (:obj:`str`): location of the SED document
         status (:obj:`Status`): execution status of the archive
         exception (:obj:`Exception`): exception
         skip_reason (:obj:`Exception`): reason of skip
@@ -194,10 +195,11 @@ class SedDocumentLog(Log):
         out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None,
+    def __init__(self, location=None, status=None, exception=None, skip_reason=None, output=None, duration=None,
                  tasks=None, outputs=None, parent=None, out_dir=None):
         """
         Args:
+            location (:obj:`str`, optional): location of the SED document
             status (:obj:`Status`, optional): execution status of the archive
             exception (:obj:`Exception`, optional): exception
             skip_reason (:obj:`Exception`, optional): reason of skip
@@ -213,6 +215,7 @@ class SedDocumentLog(Log):
         super(SedDocumentLog, self).__init__(status=status, exception=exception,
                                              skip_reason=skip_reason, output=output,
                                              duration=duration, parent=parent, out_dir=out_dir)
+        self.location = location
         self.tasks = tasks
         self.outputs = outputs
 
@@ -228,20 +231,21 @@ class SedDocumentLog(Log):
             for output in self.outputs.values():
                 output.finalize()
 
-    def to_dict(self):
+    def to_json(self):
         """ Generate a JSON-compatible representation
 
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        value = super(SedDocumentLog, self).to_dict()
+        value = super(SedDocumentLog, self).to_json()
+        value['location'] = self.location
         value['tasks'] = (
-            {task_id: (task_log.to_dict() if task_log else None) for task_id, task_log in self.tasks.items()}
+            [task_log.to_json() for task_log in self.tasks.values() if task_log]
             if self.tasks is not None
             else None
         )
         value['outputs'] = (
-            {output_id: (output_log.to_dict() if output_log else None) for output_id, output_log in self.outputs.items()}
+            [output_log.to_json() for output_log in self.outputs.values() if output_log]
             if self.outputs is not None
             else None
         )
@@ -251,7 +255,8 @@ class SedDocumentLog(Log):
 class TaskLog(Log):
     """ Log of a SED task
 
-    Attributes
+    Attributes:
+        id (:obj:`str`): id of the task
         status (:obj:`Status`): execution status of the archive
         exception (:obj:`Exception`): exception
         skip_reason (:obj:`Exception`): reason of skip
@@ -263,10 +268,11 @@ class TaskLog(Log):
         out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None,
+    def __init__(self, id=None, status=None, exception=None, skip_reason=None, output=None, duration=None,
                  algorithm=None, simulator_details=None, parent=None, out_dir=None):
         """
         Args:
+            id (:obj:`str`, optional): id of the task
             status (:obj:`Status`, optional): execution status of the archive
             exception (:obj:`Exception`, optional): exception
             skip_reason (:obj:`Exception`, optional): reason of skip
@@ -280,25 +286,32 @@ class TaskLog(Log):
         super(TaskLog, self).__init__(status=status, exception=exception,
                                       skip_reason=skip_reason, output=output,
                                       duration=duration, parent=parent, out_dir=out_dir)
+        self.id = id
         self.algorithm = algorithm
         self.simulator_details = simulator_details
 
-    def to_dict(self):
+    def to_json(self):
         """ Generate a JSON-compatible representation
 
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        value = super(TaskLog, self).to_dict()
+        value = super(TaskLog, self).to_json()
+        value['id'] = self.id
         value['algorithm'] = self.algorithm
-        value['simulatorDetails'] = self.simulator_details
+        value['simulatorDetails'] = (
+            [{'key': key, 'value': value} for key, value in self.simulator_details.items()]
+            if self.simulator_details
+            else None
+        )
         return value
 
 
 class OutputLog(Log):
     """ Log of a SED output
 
-    Attributes
+    Attributes:
+        id (:obj:`str`): id of the output
         status (:obj:`Status`): execution status of the archive
         exception (:obj:`Exception`): exception
         skip_reason (:obj:`Exception`): reason of skip
@@ -307,13 +320,40 @@ class OutputLog(Log):
         parent (:obj:`SedDocumentLog`): execution status of parent SED document
         out_dir (:obj:`str`): directory to export status
     """
-    pass  # pragma: no cover
+
+    def __init__(self, id=None, status=None, exception=None, skip_reason=None, output=None, duration=None,
+                 parent=None, out_dir=None):
+        """
+        Args:
+            id (:obj:`str`, optional): id of the report
+            status (:obj:`Status`, optional): execution status of the archive
+            exception (:obj:`Exception`, optional): exception
+            skip_reason (:obj:`Exception`, optional): reason of skip
+            output (:obj:`str`, optional): output
+            duration (:obj:`float`, optional): duration in seconds
+            parent (:obj:`SedDocumentLog`, optional): execution status of parent SED document
+            out_dir (:obj:`str`, optional): directory to export status
+        """
+        super(OutputLog, self).__init__(status=status, exception=exception, skip_reason=skip_reason,
+                                        output=output, duration=duration, parent=parent, out_dir=out_dir)
+        self.id = id
+
+    def to_json(self):
+        """ Generate a JSON-compatible representation
+
+        Returns:
+            :obj:`dict`: JSON-compatible representation
+        """
+        value = super(OutputLog, self).to_json()
+        value['id'] = self.id
+        return value
 
 
 class ReportLog(OutputLog):
     """ Log of a SED report
 
-    Attributes
+    Attributes:
+        id (:obj:`str`): id of the report
         status (:obj:`Status`): execution status of the archive
         exception (:obj:`Exception`): exception
         skip_reason (:obj:`Exception`): reason of skip
@@ -325,10 +365,11 @@ class ReportLog(OutputLog):
         out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None, data_sets=None,
+    def __init__(self, id=None, status=None, exception=None, skip_reason=None, output=None, duration=None, data_sets=None,
                  parent=None, out_dir=None):
         """
         Args:
+            id (:obj:`str`, optional): id of the report
             status (:obj:`Status`, optional): execution status of the archive
             exception (:obj:`Exception`, optional): exception
             skip_reason (:obj:`Exception`, optional): reason of skip
@@ -339,7 +380,7 @@ class ReportLog(OutputLog):
             parent (:obj:`SedDocumentLog`, optional): execution status of parent SED document
             out_dir (:obj:`str`, optional): directory to export status
         """
-        super(ReportLog, self).__init__(status=status, exception=exception, skip_reason=skip_reason,
+        super(ReportLog, self).__init__(id=id, status=status, exception=exception, skip_reason=skip_reason,
                                         output=output, duration=duration, parent=parent, out_dir=out_dir)
         self.data_sets = data_sets
 
@@ -354,15 +395,15 @@ class ReportLog(OutputLog):
                 elif status == Status.RUNNING:
                     self.data_sets[id] = Status.FAILED
 
-    def to_dict(self):
+    def to_json(self):
         """ Generate a JSON-compatible representation
 
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        dict_log = super(ReportLog, self).to_dict()
+        dict_log = super(ReportLog, self).to_json()
         dict_log['dataSets'] = (
-            {id: status.value if status else None for id, status in self.data_sets.items()}
+            [{'id': id, 'status': status.value if status else None} for id, status in self.data_sets.items()]
             if self.data_sets is not None
             else None
         )
@@ -372,7 +413,8 @@ class ReportLog(OutputLog):
 class Plot2DLog(OutputLog):
     """ Log of a 2D SED plot
 
-    Attributes
+    Attributes:
+        id (:obj:`str`): id of the plot
         status (:obj:`Status`): execution status of the archive
         exception (:obj:`Exception`): exception
         skip_reason (:obj:`Exception`): reason of skip
@@ -384,10 +426,11 @@ class Plot2DLog(OutputLog):
         out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None, curves=None,
+    def __init__(self, id=None, status=None, exception=None, skip_reason=None, output=None, duration=None, curves=None,
                  parent=None, out_dir=None):
         """
         Args:
+            id (:obj:`str`, optional): id of the plot
             status (:obj:`Status`, optional): execution status of the archive
             exception (:obj:`Exception`, optional): exception
             skip_reason (:obj:`Exception`, optional): reason of skip
@@ -398,7 +441,7 @@ class Plot2DLog(OutputLog):
             parent (:obj:`SedDocumentLog`, optional): execution status of parent SED document
             out_dir (:obj:`str`, optional): directory to export status
         """
-        super(Plot2DLog, self).__init__(status=status, exception=exception, skip_reason=skip_reason,
+        super(Plot2DLog, self).__init__(id=id, status=status, exception=exception, skip_reason=skip_reason,
                                         output=output, duration=duration, parent=parent, out_dir=out_dir)
         self.curves = curves
 
@@ -413,15 +456,15 @@ class Plot2DLog(OutputLog):
                 elif status == Status.RUNNING:
                     self.curves[id] = Status.FAILED
 
-    def to_dict(self):
+    def to_json(self):
         """ Generate a JSON-compatible representation
 
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        dict_log = super(Plot2DLog, self).to_dict()
+        dict_log = super(Plot2DLog, self).to_json()
         dict_log['curves'] = (
-            {id: status.value if status else None for id, status in self.curves.items()}
+            [{'id': id, 'status': status.value if status else None} for id, status in self.curves.items()]
             if self.curves is not None
             else None
         )
@@ -431,7 +474,8 @@ class Plot2DLog(OutputLog):
 class Plot3DLog(OutputLog):
     """ Log of a 3D SED plot
 
-    Attributes
+    Attributes:
+        id (:obj:`str`): id of the plot
         status (:obj:`Status`): execution status of the archive
         exception (:obj:`Exception`): exception
         skip_reason (:obj:`Exception`): reason of skip
@@ -443,10 +487,11 @@ class Plot3DLog(OutputLog):
         out_dir (:obj:`str`): directory to export status
     """
 
-    def __init__(self, status=None, exception=None, skip_reason=None, output=None, duration=None, surfaces=None,
+    def __init__(self, id=None, status=None, exception=None, skip_reason=None, output=None, duration=None, surfaces=None,
                  parent=None, out_dir=None):
         """
         Args:
+            id (:obj:`str`, optional): id of the report
             status (:obj:`Status`, optional): execution status of the archive
             exception (:obj:`Exception`, optional): exception
             skip_reason (:obj:`Exception`, optional): reason of skip
@@ -457,7 +502,7 @@ class Plot3DLog(OutputLog):
             parent (:obj:`SedDocumentLog`, optional): execution status of parent SED document
             out_dir (:obj:`str`, optional): directory to export status
         """
-        super(Plot3DLog, self).__init__(status=status, exception=exception, skip_reason=skip_reason,
+        super(Plot3DLog, self).__init__(id=id, status=status, exception=exception, skip_reason=skip_reason,
                                         output=output, duration=duration, parent=parent, out_dir=out_dir)
         self.surfaces = surfaces
 
@@ -472,15 +517,15 @@ class Plot3DLog(OutputLog):
                 elif status == Status.RUNNING:
                     self.surfaces[id] = Status.FAILED
 
-    def to_dict(self):
+    def to_json(self):
         """ Generate a JSON-compatible representation
 
         Returns:
             :obj:`dict`: JSON-compatible representation
         """
-        dict_log = super(Plot3DLog, self).to_dict()
+        dict_log = super(Plot3DLog, self).to_json()
         dict_log['surfaces'] = (
-            {id: status.value if status else None for id, status in self.surfaces.items()}
+            [{'id': id, 'status': status.value if status else None} for id, status in self.surfaces.items()]
             if self.surfaces is not None
             else None
         )

@@ -252,22 +252,22 @@ class ExecTaskCase(unittest.TestCase):
         shutil.rmtree(out_dir)
         log = SedDocumentLog(
             tasks={
-                'task_1_ss': TaskLog(status=Status.QUEUED),
-                'task_2_time_course': TaskLog(status=Status.QUEUED),
+                'task_1_ss': TaskLog(id='task_1_ss', status=Status.QUEUED),
+                'task_2_time_course': TaskLog(id='task_2_time_course', status=Status.QUEUED),
             },
             outputs={
-                'report_1': ReportLog(status=Status.QUEUED, data_sets={
+                'report_1': ReportLog(id='report_1', status=Status.QUEUED, data_sets={
                     'dataset_1': Status.QUEUED,
                     'dataset_2': Status.QUEUED,
                 }),
-                'report_2': ReportLog(status=Status.QUEUED, data_sets={
+                'report_2': ReportLog(id='report_2', status=Status.QUEUED, data_sets={
                     'dataset_3': Status.QUEUED,
                     'dataset_4': Status.QUEUED,
                 }),
-                'report_3': ReportLog(status=Status.QUEUED, data_sets={
+                'report_3': ReportLog(id='report_3', status=Status.QUEUED, data_sets={
                     'dataset_5': Status.QUEUED,
                 }),
-                'report_4': ReportLog(status=Status.QUEUED, data_sets={
+                'report_4': ReportLog(id='report_4', status=Status.QUEUED, data_sets={
                     'dataset_6': Status.QUEUED,
                     'dataset_7': Status.QUEUED,
                 })
@@ -284,13 +284,15 @@ class ExecTaskCase(unittest.TestCase):
                           log=log)
 
         expected_log = {
+            'location': None,
             'status': None,
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'tasks': {
-                'task_1_ss': {
+            'tasks': [
+                {
+                    'id': 'task_1_ss',
                     'status': 'SUCCEEDED',
                     'exception': None,
                     'skipReason': None,
@@ -299,7 +301,8 @@ class ExecTaskCase(unittest.TestCase):
                     'algorithm': None,
                     'simulatorDetails': None,
                 },
-                'task_2_time_course': {
+                {
+                    'id': 'task_2_time_course',
                     'status': 'SUCCEEDED',
                     'exception': None,
                     'skipReason': None,
@@ -308,54 +311,63 @@ class ExecTaskCase(unittest.TestCase):
                     'algorithm': None,
                     'simulatorDetails': None,
                 },
-            },
-            'outputs': {
-                'report_1': {
+            ],
+            'outputs': [
+                {
+                    'id': 'report_1',
                     'status': 'SUCCEEDED',
                     'exception': None,
                     'skipReason': None,
                     'output': log.outputs['report_1'].output,
                     'duration': log.outputs['report_1'].duration,
-                    'dataSets': {
-                        'dataset_1': 'SUCCEEDED',
-                        'dataset_2': 'SUCCEEDED',
-                    },
+                    'dataSets': [
+                        {'id': 'dataset_1', 'status': 'SUCCEEDED'},
+                        {'id': 'dataset_2', 'status': 'SUCCEEDED'},
+                    ],
                 },
-                'report_2': {
+                {
+                    'id': 'report_2',
                     'status': 'SUCCEEDED',
                     'exception': None,
                     'skipReason': None,
                     'output': log.outputs['report_2'].output,
                     'duration': log.outputs['report_2'].duration,
-                    'dataSets': {
-                        'dataset_3': 'SUCCEEDED',
-                        'dataset_4': 'SUCCEEDED',
-                    },
+                    'dataSets': [
+                        {'id': 'dataset_3', 'status': 'SUCCEEDED'},
+                        {'id': 'dataset_4', 'status': 'SUCCEEDED'},
+                    ],
                 },
-                'report_3': {
+                {
+                    'id': 'report_3',
                     'status': 'SUCCEEDED',
                     'exception': None,
                     'skipReason': None,
                     'output': log.outputs['report_3'].output,
                     'duration': log.outputs['report_3'].duration,
-                    'dataSets': {
-                        'dataset_5': 'SUCCEEDED',
-                    },
+                    'dataSets': [
+                        {'id': 'dataset_5', 'status': 'SUCCEEDED'},
+                    ],
                 },
-                'report_4': {
+                {
+                    'id': 'report_4',
                     'status': 'SUCCEEDED',
                     'exception': None,
                     'skipReason': None,
                     'output': log.outputs['report_4'].output,
                     'duration': log.outputs['report_4'].duration,
-                    'dataSets': {
-                        'dataset_6': 'SUCCEEDED',
-                        'dataset_7': 'SUCCEEDED',
-                    },
+                    'dataSets': [
+                        {'id': 'dataset_6', 'status': 'SUCCEEDED'},
+                        {'id': 'dataset_7', 'status': 'SUCCEEDED'},
+                    ],
                 },
-            },
+            ],
         }
-        self.assertEqual(log.to_dict(), expected_log)
+        actual = log.to_json()
+        actual['tasks'].sort(key=lambda task: task['id'])
+        actual['outputs'].sort(key=lambda output: output['id'])
+        for output in actual['outputs']:
+            output['dataSets'].sort(key=lambda dat_set: dat_set['id'])
+        self.assertEqual(actual, expected_log)
         self.assertTrue(os.path.isfile(os.path.join(out_dir, get_config().LOG_PATH)))
 
     def test_with_model_changes(self):

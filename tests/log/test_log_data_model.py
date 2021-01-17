@@ -16,6 +16,7 @@ class ExecStatusDataModel(unittest.TestCase):
 
     def test(self):
         task_log = data_model.TaskLog(
+            id='task_1',
             status=data_model.Status.FAILED,
             exception=ValueError('Big error'),
             skip_reason=NotImplementedError('Skip rationale'),
@@ -23,7 +24,8 @@ class ExecStatusDataModel(unittest.TestCase):
             duration=10.5,
             algorithm='KISAO_0000019',
         )
-        self.assertEqual(task_log.to_dict(), {
+        self.assertEqual(task_log.to_json(), {
+            'id': 'task_1',
             'status': 'FAILED',
             'exception': {
                 'type': 'ValueError',
@@ -40,8 +42,10 @@ class ExecStatusDataModel(unittest.TestCase):
         })
 
         task_log = data_model.TaskLog(
+            id='task_1',
             status=data_model.Status.RUNNING)
-        self.assertEqual(task_log.to_dict(), {
+        self.assertEqual(task_log.to_json(), {
+            'id': 'task_1',
             'status': 'RUNNING',
             'exception': None,
             'skipReason': None,
@@ -52,60 +56,67 @@ class ExecStatusDataModel(unittest.TestCase):
         })
 
         report_log = data_model.ReportLog(
+            id='report_1',
             status=data_model.Status.RUNNING,
             data_sets={
                 'data_set_1': data_model.Status.QUEUED,
                 'data_set_2': data_model.Status.SUCCEEDED,
             })
-        self.assertEqual(report_log.to_dict(), {
+        self.assertEqual(report_log.to_json(), {
+            'id': 'report_1',
             'status': 'RUNNING',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'dataSets': {
-                'data_set_1': 'QUEUED',
-                'data_set_2': 'SUCCEEDED',
-            }
+            'dataSets': [
+                {'id': 'data_set_1', 'status': 'QUEUED'},
+                {'id': 'data_set_2', 'status': 'SUCCEEDED'},
+            ]
         })
 
         plot2d_log = data_model.Plot2DLog(
+            id='plot_1',
             status=data_model.Status.RUNNING,
             curves={
                 'curve_1': data_model.Status.QUEUED,
                 'curve_2': data_model.Status.SUCCEEDED,
             })
-        self.assertEqual(plot2d_log.to_dict(), {
+        self.assertEqual(plot2d_log.to_json(), {
+            'id': 'plot_1',
             'status': 'RUNNING',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'curves': {
-                'curve_1': 'QUEUED',
-                'curve_2': 'SUCCEEDED',
-            }
+            'curves': [
+                {'id': 'curve_1', 'status': 'QUEUED'},
+                {'id': 'curve_2', 'status': 'SUCCEEDED'},
+            ]
         })
 
         plot3d_log = data_model.Plot3DLog(
+            id='plot_2',
             status=data_model.Status.RUNNING,
             surfaces={
                 'surface_1': data_model.Status.QUEUED,
                 'surface_2': data_model.Status.SUCCEEDED,
             })
-        self.assertEqual(plot3d_log.to_dict(), {
+        self.assertEqual(plot3d_log.to_json(), {
+            'id': 'plot_2',
             'status': 'RUNNING',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'surfaces': {
-                'surface_1': 'QUEUED',
-                'surface_2': 'SUCCEEDED',
-            }
+            'surfaces': [
+                {'id': 'surface_1', 'status': 'QUEUED'},
+                {'id': 'surface_2', 'status': 'SUCCEEDED'},
+            ]
         })
 
         doc_log = data_model.SedDocumentLog(
+            location='doc_1',
             status=data_model.Status.RUNNING,
             tasks={
                 'task_1': task_log,
@@ -116,20 +127,21 @@ class ExecStatusDataModel(unittest.TestCase):
                 'plot_2': plot3d_log,
             },
         )
-        self.assertEqual(doc_log.to_dict(), {
+        self.assertEqual(doc_log.to_json(), {
+            'location': 'doc_1',
             'status': 'RUNNING',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'tasks': {
-                'task_1': task_log.to_dict(),
-            },
-            'outputs': {
-                'report_1': report_log.to_dict(),
-                'plot_1': plot2d_log.to_dict(),
-                'plot_2': plot3d_log.to_dict(),
-            },
+            'tasks': [
+                task_log.to_json(),
+            ],
+            'outputs': [
+                report_log.to_json(),
+                plot2d_log.to_json(),
+                plot3d_log.to_json(),
+            ],
         })
 
         archive_log = data_model.CombineArchiveLog(
@@ -138,15 +150,15 @@ class ExecStatusDataModel(unittest.TestCase):
                 'doc_1': doc_log,
             },
         )
-        self.assertEqual(archive_log.to_dict(), {
+        self.assertEqual(archive_log.to_json(), {
             'status': 'RUNNING',
             'exception': None,
             'skipReason': None,
             'output': None,
             'duration': None,
-            'sedDocuments': {
-                'doc_1': doc_log.to_dict(),
-            },
+            'sedDocuments': [
+                doc_log.to_json(),
+            ],
         })
 
         doc_log.parent = archive_log
@@ -164,4 +176,4 @@ class ExecStatusDataModel(unittest.TestCase):
         plot2d_log.export()
         plot3d_log.export()
         with open(os.path.join(archive_log.out_dir, get_config().LOG_PATH), 'r') as file:
-            self.assertEqual(yaml.load(file), archive_log.to_dict())
+            self.assertEqual(yaml.load(file), archive_log.to_json())

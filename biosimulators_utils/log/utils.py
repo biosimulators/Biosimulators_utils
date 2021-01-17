@@ -55,6 +55,7 @@ def init_combine_archive_log(archive, archive_dir,
             doc = SedmlSimulationReader().run(content_filename)
 
             doc_log = init_sed_document_log(doc, supported_features=supported_features, logged_features=logged_features)
+            doc_log.location = os.path.relpath(content.location, '.')
             doc_log.status = Status.QUEUED if isinstance(doc, supported_features) else Status.SKIPPED
 
             doc_log.parent = log
@@ -102,9 +103,8 @@ def init_sed_document_log(doc,
                 output_log = init_output_log(output, supported_features=supported_features, logged_features=logged_features)
                 output_log.status = Status.QUEUED if isinstance(output, supported_features) else Status.SKIPPED
                 output_log.parent = log
-            else:
-                output_log = None
-            log.outputs[output.id] = output_log
+                log.outputs[output.id] = output_log
+
     else:
         log.outputs = None
 
@@ -126,7 +126,7 @@ def init_task_log(task,
     Returns:
         :obj:`OutputLog`: initialized log of a SED document
     """
-    return TaskLog()
+    return TaskLog(id=task.id)
 
 
 def init_output_log(output,
@@ -177,7 +177,7 @@ def init_report_log(report,
         :obj:`ReportLog`: initialized log of a report
     """
 
-    log = ReportLog()
+    log = ReportLog(id=report.id)
 
     if DataSet in logged_features:
         log.data_sets = {}
@@ -207,7 +207,7 @@ def init_plot2d_log(plot,
     Returns:
         :obj:`Plot2DLog`: initialized log of a 2D plot
     """
-    log = Plot2DLog()
+    log = Plot2DLog(id=plot.id)
 
     if Curve in logged_features:
         log.curves = {}
@@ -237,7 +237,7 @@ def init_plot3d_log(plot,
     Returns:
         :obj:`Plot3DLog`: initialized log of a 3D plot
     """
-    log = Plot3DLog()
+    log = Plot3DLog(id=plot.id)
 
     if Surface in logged_features:
         log.surfaces = {}
