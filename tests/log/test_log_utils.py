@@ -167,7 +167,6 @@ class ExecStatusDataModel(unittest.TestCase):
                 },
             ],
         }
-        print(status.to_json()['sedDocuments'][1]['outputs'][0])
         self.assertEqual(status.to_json()['sedDocuments'][1]['outputs'][1], expected['sedDocuments'][1]['outputs'][1])
         self.assertEqual(status.sed_documents['exp_1.sedml'].parent, status)
         self.assertEqual(status.sed_documents['exp_1.sedml'].tasks['task_1'].parent, status.sed_documents['exp_1.sedml'])

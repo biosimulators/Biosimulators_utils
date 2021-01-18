@@ -15,8 +15,8 @@ class DataModelTestCase(unittest.TestCase):
             changes=[
                 data_model.ModelAttributeChange(target='/sbml:sbml/sbml:model[id=\'a\']/@id', new_value='234'),
                 data_model.ModelAttributeChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_value='432'),
-                data_model.AddElementModelChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_element='432'),
-                data_model.ReplaceElementModelChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_element='432'),
+                data_model.AddElementModelChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_elements='432'),
+                data_model.ReplaceElementModelChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_elements='432'),
                 data_model.RemoveElementModelChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id'),
             ],
         )

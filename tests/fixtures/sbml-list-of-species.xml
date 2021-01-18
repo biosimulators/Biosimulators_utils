@@ -2,11 +2,11 @@
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" metaid="metaid_0000001" version="4">
   <model id="Ciliberto2003_Morphogenesis" metaid="metaid_0000002" name="Ciliberto2003_Morphogenesis_Checkpoint">
     <listOfSpecies>
-      <species compartment="compartment" id="Trim" initialConcentration="0.084410675" metaid="metaid_0000084" name="CDC28_Clb2_Sic1_Complex" sboTerm="SBO:0000296">
+      <species compartment="compartment" id="Trim" initialConcentration="0.1" metaid="metaid_0000084" name="CDC28_Clb2_Sic1_Complex" sboTerm="SBO:0000296">
       </species>
-      <species compartment="compartment" id="Clb" initialConcentration="0.18453673" metaid="metaid_0000085" name="Clb2" sboTerm="SBO:0000245">
+      <species compartment="compartment" id="Clb" initialConcentration="0.1" metaid="metaid_0000085" name="Clb2" sboTerm="SBO:0000245">
       </species>
-      <species compartment="compartment" id="Sic" initialConcentration="0.0035491784" metaid="metaid_0000086" name="Sic1" sboTerm="SBO:0000245">
+      <species compartment="compartment" id="Sic" initialConcentration="0.1" metaid="metaid_0000086" name="Sic1" sboTerm="SBO:0000245">
       </species>
       <species compartment="compartment" id="SpeciesToReplace" initialConcentration="0.0035491784" metaid="metaid_0000086" name="Sic1" sboTerm="SBO:0000245">
       </species>

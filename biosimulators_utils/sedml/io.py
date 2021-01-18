@@ -172,10 +172,10 @@ class SedmlSimulationWriter(object):
 
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
-        if change.new_element is not None:
-            new_xml = libsedml.XMLNode_convertStringToXMLNode(change.new_element)
+        if change.new_elements is not None:
+            new_xml = libsedml.XMLNode_convertStringToXMLNode(change.new_elements)
             if new_xml is None:
-                raise ValueError('`{}` is not valid XML.'.format(change.new_element))
+                raise ValueError('`{}` is not valid XML.'.format(change.new_elements))
             self._call_libsedml_method(change_sed, 'setNewXML', new_xml)
 
     def _add_change_model_element_to_model(self, model, change):
@@ -191,10 +191,10 @@ class SedmlSimulationWriter(object):
 
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
-        if change.new_element is not None:
-            new_xml = libsedml.XMLNode_convertStringToXMLNode(change.new_element)
+        if change.new_elements is not None:
+            new_xml = libsedml.XMLNode_convertStringToXMLNode(change.new_elements)
             if new_xml is None:
-                raise ValueError('`{}` is not valid XML.'.format(change.new_element))
+                raise ValueError('`{}` is not valid XML.'.format(change.new_elements))
             self._call_libsedml_method(change_sed, 'setNewXML', new_xml)
 
     def _add_remove_model_element_to_model(self, model, change):
@@ -811,9 +811,8 @@ class SedmlSimulationReader(object):
                     change.target = change_sed.getTarget() or None
 
                     new_xml = change_sed.getNewXML() or None
-                    print(change_sed.getNewXML())
                     if new_xml is not None:
-                        change.new_element = libsedml.XMLNode_convertXMLNodeToString(new_xml)
+                        change.new_elements = libsedml.XMLNode_convertXMLNodeToString(new_xml)
 
                 elif isinstance(change_sed, libsedml.SedChangeXML):
                     change = data_model.ReplaceElementModelChange()
@@ -821,7 +820,7 @@ class SedmlSimulationReader(object):
                     change.target = change_sed.getTarget() or None
                     new_xml = change_sed.getNewXML() or None
                     if new_xml is not None:
-                        change.new_element = libsedml.XMLNode_convertXMLNodeToString(new_xml)
+                        change.new_elements = libsedml.XMLNode_convertXMLNodeToString(new_xml)
 
                 elif isinstance(change_sed, libsedml.SedRemoveXML):
                     change = data_model.RemoveElementModelChange()

@@ -512,19 +512,19 @@ class AddElementModelChange(ModelChange):
 
     Attributes:
         name (:obj:`str`,): name
-        target (:obj:`str`): path to the parent of the new element
-        new_element (:obj:`str`): new element
+        target (:obj:`str`): path to the parent of the new element(s)
+        new_elements (:obj:`str`): new element(s)
     """
 
-    def __init__(self, name=None, target=None, new_element=None):
+    def __init__(self, name=None, target=None, new_elements=None):
         """
         Args:
             name (:obj:`str`, optional): name
-            target (:obj:`str`, optional): path to the parent of the new element
-            new_element (:obj:`str`): new element
+            target (:obj:`str`, optional): path to the parent of the new element(s)
+            new_elements (:obj:`str`): new element(s)
         """
         super(AddElementModelChange, self).__init__(name=name, target=target)
-        self.new_element = new_element
+        self.new_elements = new_elements
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -532,7 +532,7 @@ class AddElementModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.name, self.target, self.new_element)
+        return (self.name, self.target, self.new_elements)
 
     def is_equal(self, other):
         """ Determine if model attribute changes are equal
@@ -544,7 +544,7 @@ class AddElementModelChange(ModelChange):
             :obj:`bool`: :obj:`True`, if two model attribute changes are equal
         """
         return super(AddElementModelChange, self).is_equal(other) \
-            and self.new_element == other.new_element
+            and self.new_elements == other.new_elements
 
 
 class ReplaceElementModelChange(ModelChange):
@@ -553,18 +553,18 @@ class ReplaceElementModelChange(ModelChange):
     Attributes:
         name (:obj:`str`): name
         target (:obj:`str`): path to the element to replace
-        new_element (:obj:`str`): new element
+        new_elements (:obj:`str`): new element(s)
     """
 
-    def __init__(self, name=None, target=None, new_element=None):
+    def __init__(self, name=None, target=None, new_elements=None):
         """
         Args:
             name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the element to replace
-            new_element (:obj:`str`): new element
+            new_elements (:obj:`str`): new element(s)
         """
         super(ReplaceElementModelChange, self).__init__(name=name, target=target)
-        self.new_element = new_element
+        self.new_elements = new_elements
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -572,7 +572,7 @@ class ReplaceElementModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.name, self.target, self.new_element)
+        return (self.name, self.target, self.new_elements)
 
     def is_equal(self, other):
         """ Determine if model attribute changes are equal
@@ -584,7 +584,7 @@ class ReplaceElementModelChange(ModelChange):
             :obj:`bool`: :obj:`True`, if two model attribute changes are equal
         """
         return super(ReplaceElementModelChange, self).is_equal(other) \
-            and self.new_element == other.new_element
+            and self.new_elements == other.new_elements
 
 
 class RemoveElementModelChange(ModelChange):

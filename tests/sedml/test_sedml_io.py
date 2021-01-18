@@ -31,11 +31,19 @@ class IoTestCase(unittest.TestCase):
                 data_model.ModelAttributeChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_value='432'),
                 data_model.AddElementModelChange(
                     target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters',
-                    new_element='<parameter id="new_parameter" value="1.0"/>'
+                    new_elements='<parameter id="new_parameter" value="1.0"/>'
+                ),
+                data_model.AddElementModelChange(
+                    target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters',
+                    new_elements='<parameter id="new_parameter_1" value="1.0"/><parameter id="new_parameter_2" value="1.0"/>'
                 ),
                 data_model.ReplaceElementModelChange(
                     target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters/sbml:parameter[@id=\'p1\']',
-                    new_element='<parameter id="p1" value="1.0"/>'
+                    new_elements='<parameter id="p1" value="1.0"/>'
+                ),
+                data_model.ReplaceElementModelChange(
+                    target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters/sbml:parameter[@id=\'p1\']',
+                    new_elements='<parameter id="p1" value="1.0"/><parameter id="p1" value="1.0"/>'
                 ),
                 data_model.RemoveElementModelChange(
                     target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters/sbml:parameter[@id=\'p1\']',
@@ -334,8 +342,6 @@ class IoTestCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(document, filename)
 
         document2 = io.SedmlSimulationReader().run(filename)
-        print(document.models[0].changes[2].to_tuple())
-        print(document2.models[0].changes[2].to_tuple())
         self.assertTrue(document.is_equal(document2))
 
         document = data_model.SedDocument(
@@ -380,12 +386,13 @@ class IoTestCase(unittest.TestCase):
         document4 = io.SedmlSimulationReader().run(filename)
         self.assertTrue(document4.is_equal(document3))
 
-        document.models[0].changes[2].new_element = '<parameter id="new_parameter" value="1.0/>'
+        document.models[0].changes[2].new_elements = '<parameter id="new_parameter" value="1.0/>'
+        document.models[0].changes[4].new_elements = '<parameter id="new_parameter" value="1.0"/>'
         with self.assertRaisesRegex(ValueError, 'not valid XML'):
             io.SedmlSimulationWriter().run(document, filename)
 
-        document.models[0].changes[2].new_element = '<parameter id="new_parameter" value="1.0"/>'
-        document.models[0].changes[3].new_element = '<parameter id="new_parameter" value="1.0/>'
+        document.models[0].changes[2].new_elements = '<parameter id="new_parameter" value="1.0"/>'
+        document.models[0].changes[4].new_elements = '<parameter id="new_parameter" value="1.0/>'
         with self.assertRaisesRegex(ValueError, 'not valid XML'):
             io.SedmlSimulationWriter().run(document, filename)
 

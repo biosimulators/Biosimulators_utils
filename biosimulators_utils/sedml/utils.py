@@ -184,13 +184,17 @@ def resolve_model(model, sed_doc, working_dir):
         return False
 
 
-def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename, pretty_print=False):
+def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename,
+                               validate_unique_xml_targets=True,
+                               pretty_print=False):
     """ Modify an XML-encoded model according to the model attribute changes in a simulation
 
     Args:
         changes (:obj:`list` of :obj:`ModelChange`): changes
         in_model_filename (:obj:`str`): path to model
         out_model_filename (:obj:`str`): path to save modified model
+        validate_unique_xml_targets (:obj:`bool`, optional): whether to validate the XML targets match
+            uniue objects
         pretty_print (:obj:`bool`, optional): if :obj:`True`, pretty print output
     """
     # read model
@@ -214,41 +218,53 @@ def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename, p
             if sep != '/@':
                 raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
             objs = et.xpath(obj_xpath, namespaces=namespaces)
-            if len(objs) != 1:
+            if validate_unique_xml_targets and len(objs) != 1:
                 raise ValueError('xpath {} must match a single object in {}'.format(obj_xpath, in_model_filename))
-            obj = objs[0]
 
             # change value
-            obj.set(attr, change.new_value)
+            for obj in objs:
+                obj.set(attr, change.new_value)
 
         elif isinstance(change, AddElementModelChange):
-            parent = et.xpath(change.target, namespaces=namespaces)
-            if len(parent) != 1:
+            parents = et.xpath(change.target, namespaces=namespaces)
+
+            if validate_unique_xml_targets and len(parents) != 1:
                 raise ValueError('xpath {} must match a single object in {}'.format(change.target, in_model_filename))
-            parent = parent[0]
 
             try:
-                new_element = etree.parse(io.StringIO(change.new_element)).getroot()
+                new_elements = etree.parse(io.StringIO('<root>' + change.new_elements + '</root>')).getroot().getchildren()
             except etree.XMLSyntaxError as exception:
-                raise ValueError('`{}` is not valid XML. {}'.format(change.new_element, str(exception)))
-            parent.append(new_element)
+                raise ValueError('`{}` is not valid XML. {}'.format(change.new_elements, str(exception)))
+
+            for parent in parents:
+                for new_element in copy.deepcopy(new_elements):
+                    parent.append(new_element)
 
         elif isinstance(change, ReplaceElementModelChange):
-            old_element = et.xpath(change.target, namespaces=namespaces)
-            if len(old_element) != 1:
-                raise ValueError('xpath {} must match a single object in {}'.format(change.target, in_model_filename))
-            old_element = old_element[0]
-            try:
-                new_element = etree.parse(io.StringIO(change.new_element)).getroot()
-            except etree.XMLSyntaxError as exception:
-                raise ValueError('`{}` is not valid XML. {}'.format(change.new_element, str(exception)))
-            parent = old_element.getparent()
+            old_elements = et.xpath(change.target, namespaces=namespaces)
 
-            parent.remove(old_element)
-            parent.append(new_element)
+            if validate_unique_xml_targets and len(old_elements) != 1:
+                raise ValueError('xpath {} must match a single object in {}'.format(change.target, in_model_filename))
+
+            try:
+                new_elements = etree.parse(io.StringIO('<root>' + change.new_elements + '</root>')).getroot().getchildren()
+            except etree.XMLSyntaxError as exception:
+                raise ValueError('`{}` is not valid XML. {}'.format(change.new_elements, str(exception)))
+
+            for old_element in old_elements:
+                parent = old_element.getparent()
+
+                parent.remove(old_element)
+
+                for new_element in copy.deepcopy(new_elements):
+                    parent.append(new_element)
 
         elif isinstance(change, RemoveElementModelChange):
             elements = et.xpath(change.target, namespaces=namespaces)
+
+            if validate_unique_xml_targets and len(elements) != 1:
+                raise ValueError('xpath {} must match a single object in {}'.format(change.target, in_model_filename))
+
             for element in elements:
                 parent = element.getparent()
                 parent.remove(element)
