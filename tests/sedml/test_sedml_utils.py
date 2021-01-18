@@ -128,12 +128,12 @@ class SedmlUtilsTestCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_1',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='var_1_1',
                     task=doc.tasks[0],
                     model=doc.models[0],
                 ),
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='var_1_2',
                     task=doc.tasks[0],
                     model=doc.models[0],
@@ -143,12 +143,12 @@ class SedmlUtilsTestCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_2',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='var_2_1',
                     task=doc.tasks[0],
                     model=doc.models[0],
                 ),
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='var_2_2',
                     task=doc.tasks[0],
                     model=doc.models[0],
@@ -158,12 +158,12 @@ class SedmlUtilsTestCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_3',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='var_3_1',
                     task=doc.tasks[1],
                     model=doc.models[1],
                 ),
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='var_3_2',
                     task=doc.tasks[1],
                     model=doc.models[1],
@@ -173,12 +173,12 @@ class SedmlUtilsTestCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_4',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='var_4_1',
                     task=doc.tasks[1],
                     model=doc.models[1],
                 ),
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='var_4_2',
                     task=doc.tasks[1],
                     model=doc.models[1],
@@ -524,11 +524,11 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         data_gen = data_model.DataGenerator(
             id='data_gen_1',
             variables=[
-                data_model.DataGeneratorVariable(id='var_1'),
-                data_model.DataGeneratorVariable(id='var_2'),
+                data_model.Variable(id='var_1'),
+                data_model.Variable(id='var_2'),
             ],
             parameters=[
-                data_model.DataGeneratorParameter(id='param_1', value=2.),
+                data_model.Parameter(id='param_1', value=2.),
             ],
             math='var_1 * var_2 + param_1',
         )
@@ -542,7 +542,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         data_gen_no_vars = data_model.DataGenerator(
             id='data_gen_1',
             parameters=[
-                data_model.DataGeneratorParameter(id='param_1', value=2.),
+                data_model.Parameter(id='param_1', value=2.),
             ],
             math='param_1',
         )
@@ -574,8 +574,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         data_gen = data_model.DataGenerator(
             id='data_gen_1',
             variables=[
-                data_model.DataGeneratorVariable(id='var_1'),
-                data_model.DataGeneratorVariable(id='var_2'),
+                data_model.Variable(id='var_1'),
+                data_model.Variable(id='var_2'),
             ],
             math='var_1 + var_2',
         )
@@ -689,19 +689,19 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             data_generators=[
                 data_model.DataGenerator(
                     parameters=[
-                        data_model.DataGeneratorParameter(),
+                        data_model.Parameter(),
                     ],
                     variables=[
-                        data_model.DataGeneratorVariable(id="var_1"),
+                        data_model.Variable(id="var_1"),
                     ]
                 ),
                 data_model.DataGenerator(
                     parameters=[
-                        data_model.DataGeneratorParameter(),
+                        data_model.Parameter(),
                     ],
                     variables=[
-                        data_model.DataGeneratorVariable(id="var_2"),
-                        data_model.DataGeneratorVariable(id="var_3"),
+                        data_model.Variable(id="var_2"),
+                        data_model.Variable(id="var_3"),
                     ]
                 )
             ],

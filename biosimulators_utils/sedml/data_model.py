@@ -17,7 +17,7 @@ import numpy  # noqa: F401
 
 __all__ = [
     'ModelLanguage',
-    'DataGeneratorVariableSymbol',
+    'Symbol',
     'SedDocument',
     'Simulation',
     'SteadyStateSimulation',
@@ -35,8 +35,8 @@ __all__ = [
     'AbstractTask',
     'Task',
     'DataGenerator',
-    'DataGeneratorVariable',
-    'DataGeneratorParameter',
+    'Variable',
+    'Parameter',
     'Output',
     'Report',
     'DataSet',
@@ -57,7 +57,7 @@ class ModelLanguage(str, enum.Enum):
     VCML = 'urn:sedml:language:vcml'
 
 
-class DataGeneratorVariableSymbol(str, enum.Enum):
+class Symbol(str, enum.Enum):
     """ Variable sumbol """
     time = 'urn:sedml:symbol:time'
 
@@ -750,8 +750,8 @@ class DataGenerator(object):
     Attributes:
         id (:obj:`str`): id
         name (:obj:`str`): name
-        variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables
-        parameters (:obj:`list` of :obj:`DataGeneratorParameters`): variables
+        variables (:obj:`list` of :obj:`Variable`): variables
+        parameters (:obj:`list` of :obj:`Parameters`): variables
         math (:obj:`str`): mathematical expression
     """
 
@@ -760,8 +760,8 @@ class DataGenerator(object):
         Args:
             id (:obj:`str`, optional): id
             name (:obj:`str`, optional): name
-            variables (:obj:`list` of :obj:`DataGeneratorVariable`, optional): variables
-            parameters (:obj:`list` of :obj:`DataGeneratorParameters`, optional): variables
+            variables (:obj:`list` of :obj:`Variable`, optional): variables
+            parameters (:obj:`list` of :obj:`Parameters`, optional): variables
             math (:obj:`str`, optional): mathematical expression
         """
         self.id = id
@@ -799,8 +799,8 @@ class DataGenerator(object):
             and self.math == other.math
 
 
-class DataGeneratorVariable(object):
-    """ A model variable involved in a data generator
+class Variable(object):
+    """ A model variable
 
     Attributes:
         id (:obj:`str`): id
@@ -842,7 +842,7 @@ class DataGeneratorVariable(object):
         """ Determine if data generator variables are equal
 
         Args:
-            other (:obj:`DataGeneratorVariable`): another content item
+            other (:obj:`Variable`): another content item
 
         Returns:
             :obj:`bool`: :obj:`True`, if two data generator variables are equal
@@ -858,7 +858,7 @@ class DataGeneratorVariable(object):
                  or (self.model is not None and self.model.is_equal(other.model)))
 
 
-class DataGeneratorParameter(object):
+class Parameter(object):
     """ A parameter involved in a data generator
 
     Attributes:
@@ -890,7 +890,7 @@ class DataGeneratorParameter(object):
         """ Determine if data generator parameters are equal
 
         Args:
-            other (:obj:`DataGeneratorParameter`): another content item
+            other (:obj:`Parameter`): another content item
 
         Returns:
             :obj:`bool`: :obj:`True`, if two data generator parameters are equal

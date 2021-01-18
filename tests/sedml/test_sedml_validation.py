@@ -67,7 +67,7 @@ class ValidationTestCase(unittest.TestCase):
                 data_model.DataGenerator(
                     id='data_gen',
                     variables=[
-                        data_model.DataGeneratorVariable(
+                        data_model.Variable(
                             id='var',
                         )
                     ],
@@ -83,7 +83,7 @@ class ValidationTestCase(unittest.TestCase):
                 data_model.DataGenerator(
                     id='data_gen',
                     variables=[
-                        data_model.DataGeneratorVariable(
+                        data_model.Variable(
                             id='var',
                             target="target",
                             symbol="symbol",
@@ -130,7 +130,7 @@ class ValidationTestCase(unittest.TestCase):
                 data_model.DataGenerator(
                     id='data_gen',
                     variables=[
-                        data_model.DataGeneratorVariable(
+                        data_model.Variable(
                         )
                     ],
                 ),
@@ -147,7 +147,7 @@ class ValidationTestCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='var',
                     target='target',
                     task=doc.tasks[0],
@@ -166,7 +166,7 @@ class ValidationTestCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='var',
                     target='target',
                     task=doc.tasks[0],
@@ -184,7 +184,7 @@ class ValidationTestCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='var',
                     target='target',
                     task=doc.tasks[0],
@@ -308,13 +308,13 @@ class ValidationTestCase(unittest.TestCase):
         task.simulation.number_of_points = 10.
 
         variables = [
-            data_model.DataGeneratorVariable()
+            data_model.Variable()
         ]
         with self.assertRaisesRegex(ValueError, 'must define a symbol or target'):
             self._validate_task(task, variables)
 
         variables = [
-            data_model.DataGeneratorVariable(symbol='x', target='y')
+            data_model.Variable(symbol='x', target='y')
         ]
         with self.assertRaisesRegex(ValueError, 'must define a symbol or target'):
             self._validate_task(task, variables)
@@ -323,25 +323,25 @@ class ValidationTestCase(unittest.TestCase):
         model_source = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.xml')
 
         variables = [
-            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='BE']"),
-            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='PSwe1M']"),
-            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Swe1M']"),
-            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Swe1']"),
-            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Clg']"),
-            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']"),
-            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='BUD']"),
-            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']/@reducedCosts"),
+            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='BE']"),
+            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='PSwe1M']"),
+            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Swe1M']"),
+            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Swe1']"),
+            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Clg']"),
+            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']"),
+            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='BUD']"),
+            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']/@reducedCosts"),
         ]
         validation.validate_data_generator_variable_xpaths(variables, model_source)
 
         variables = [
-            data_model.DataGeneratorVariable(target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='not_exist']"),
+            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='not_exist']"),
         ]
         with self.assertRaises(ValueError):
             validation.validate_data_generator_variable_xpaths(variables, model_source)
 
         variables = [
-            data_model.DataGeneratorVariable(target='/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species'),
+            data_model.Variable(target='/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species'),
         ]
         with self.assertRaises(ValueError):
             validation.validate_data_generator_variable_xpaths(variables, model_source)

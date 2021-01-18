@@ -9,7 +9,7 @@
 import enum
 
 
-__all__ = ['DataGeneratorResults', 'DataGeneratorVariableResults', 'OutputResults', 'ReportFormat']
+__all__ = ['DataGeneratorResults', 'VariableResults', 'OutputResults', 'ReportFormat']
 
 
 class DataGeneratorResults(dict):
@@ -25,10 +25,10 @@ class DataGeneratorResults(dict):
     pass
 
 
-class DataGeneratorVariableResults(dict):
-    """ Dictionary that maps the ids of variables (:obj:`DataGeneratorVariable`) to their results (:obj:`numpy.ndarray`)
+class VariableResults(dict):
+    """ Dictionary that maps the ids of variables (:obj:`Variable`) to their results (:obj:`numpy.ndarray`)
 
-    * Keys (:obj:`str`): ids of variables (:obj:`DataGeneratorVariable`)
+    * Keys (:obj:`str`): ids of variables (:obj:`Variable`)
     * Values (:obj:`numpy.ndarray`): result of each variable
 
         * Steady-state tasks of non-spatial models: results should be arrays of shape ``(1,)``

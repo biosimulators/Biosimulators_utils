@@ -8,7 +8,7 @@
 
 from ..xml.utils import validate_xpaths_ref_to_unique_objects
 from .data_model import (Task, ModelLanguage, ModelChange,  # noqa: F401
-                         Simulation, UniformTimeCourseSimulation, DataGeneratorVariable,
+                         Simulation, UniformTimeCourseSimulation, Variable,
                          Report, Plot2D, Plot3D)
 from .utils import append_all_nested_children_to_doc
 import copy
@@ -249,7 +249,7 @@ def validate_data_generator_variables(variables):
     """ Check variables have a symbol or target
 
     Args:
-        variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables
+        variables (:obj:`list` of :obj:`Variable`): variables
 
     Raises:
         :obj:`ValidateError`: if a variable is invalid
@@ -264,7 +264,7 @@ def validate_data_generator_variable_xpaths(variables, model_source, attr='id'):
     an XML-encoded model
 
     Args:
-        variables (:obj:`list` of :obj:`DataGeneratorVariable`): variables
+        variables (:obj:`list` of :obj:`Variable`): variables
         model_source (:obj:`str`): path to XML model file
         attr (:obj:`str`, optional): attribute to get values of
 

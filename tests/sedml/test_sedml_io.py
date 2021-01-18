@@ -110,11 +110,11 @@ class IoTestCase(unittest.TestCase):
                         id='dataGen1',
                         name='DataGen1',
                         variables=[
-                            data_model.DataGeneratorVariable(
+                            data_model.Variable(
                                 id='DataGenVar1', name='DataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task1, model=model1)
                         ],
                         parameters=[
-                            data_model.DataGeneratorParameter(
+                            data_model.Parameter(
                                 id='DataGenParam1', name='DataGenParam1', value=2.)
                         ],
                         math='DataGenVar1 - DataGenParam1',
@@ -135,11 +135,11 @@ class IoTestCase(unittest.TestCase):
                         id='xDataGen2',
                         name='XDataGen2',
                         variables=[
-                            data_model.DataGeneratorVariable(
+                            data_model.Variable(
                                 id='xDataGenVar1', name='XDataGenVar1', symbol='urn:sedml:symbol:time', task=task2, model=model2)
                         ],
                         parameters=[
-                            data_model.DataGeneratorParameter(
+                            data_model.Parameter(
                                 id='xDataGenParam1', name='XDataGenParam1', value=2.)
                         ],
                         math='xDataGenVar1 * xDataGenParam1',
@@ -148,11 +148,11 @@ class IoTestCase(unittest.TestCase):
                         id='yDataGen3',
                         name='yDataGen3',
                         variables=[
-                            data_model.DataGeneratorVariable(
+                            data_model.Variable(
                                 id='xDataGenVar1', name='XDataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
                         ],
                         parameters=[
-                            data_model.DataGeneratorParameter(
+                            data_model.Parameter(
                                 id='xDataGenParam1', name='XDataGenParam1', value=2.)
                         ],
                         math='xDataGenVar1 * xDataGenParam1',
@@ -166,11 +166,11 @@ class IoTestCase(unittest.TestCase):
                         id='yDataGen4',
                         name='yDataGen4',
                         variables=[
-                            data_model.DataGeneratorVariable(
+                            data_model.Variable(
                                 id='yDataGenVar1', name='YDataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task1, model=model1)
                         ],
                         parameters=[
-                            data_model.DataGeneratorParameter(
+                            data_model.Parameter(
                                 id='yDataGenParam1', name='YDataGenParam1', value=2.)
                         ],
                         math='yDataGenParam1 + YDataGenParam1',
@@ -179,11 +179,11 @@ class IoTestCase(unittest.TestCase):
                         id='yDataGen5',
                         name='yDataGen5',
                         variables=[
-                            data_model.DataGeneratorVariable(
+                            data_model.Variable(
                                 id='yDataGenVar1', name='YDataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task1, model=model1)
                         ],
                         parameters=[
-                            data_model.DataGeneratorParameter(
+                            data_model.Parameter(
                                 id='yDataGenParam1', name='YDataGenParam1', value=2.)
                         ],
                         math='yDataGenParam1 + YDataGenParam1',
@@ -205,11 +205,11 @@ class IoTestCase(unittest.TestCase):
                         id='xDataGen6',
                         name='XDataGen6',
                         variables=[
-                            data_model.DataGeneratorVariable(
+                            data_model.Variable(
                                 id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
                         ],
                         parameters=[
-                            data_model.DataGeneratorParameter(
+                            data_model.Parameter(
                                 id='xDataGenParam1', name='XDataGenParam1', value=2.)
                         ],
                         math='xDataGenVar2 * xDataGenParam1',
@@ -218,11 +218,11 @@ class IoTestCase(unittest.TestCase):
                         id='xDataGen8',
                         name='XDataGen8',
                         variables=[
-                            data_model.DataGeneratorVariable(
+                            data_model.Variable(
                                 id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
                         ],
                         parameters=[
-                            data_model.DataGeneratorParameter(
+                            data_model.Parameter(
                                 id='xDataGenParam1', name='XDataGenParam1', value=2.)
                         ],
                         math='xDataGenVar2 * xDataGenParam1',
@@ -231,11 +231,11 @@ class IoTestCase(unittest.TestCase):
                         id='xDataGen9',
                         name='XDataGen9',
                         variables=[
-                            data_model.DataGeneratorVariable(
+                            data_model.Variable(
                                 id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
                         ],
                         parameters=[
-                            data_model.DataGeneratorParameter(
+                            data_model.Parameter(
                                 id='xDataGenParam1', name='XDataGenParam1', value=2.)
                         ],
                         math='xDataGenVar2 * xDataGenParam1',
@@ -251,11 +251,11 @@ class IoTestCase(unittest.TestCase):
                         id='xDataGen10',
                         name='XDataGen10',
                         variables=[
-                            data_model.DataGeneratorVariable(
+                            data_model.Variable(
                                 id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
                         ],
                         parameters=[
-                            data_model.DataGeneratorParameter(
+                            data_model.Parameter(
                                 id='xDataGenParam1', name='XDataGenParam1', value=2.)
                         ],
                         math='xDataGenVar2 * xDataGenParam1',
@@ -264,11 +264,11 @@ class IoTestCase(unittest.TestCase):
                         id='xDataGen11',
                         name='XDataGen11',
                         variables=[
-                            data_model.DataGeneratorVariable(
+                            data_model.Variable(
                                 id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
                         ],
                         parameters=[
-                            data_model.DataGeneratorParameter(
+                            data_model.Parameter(
                                 id='xDataGenParam1', name='XDataGenParam1', value=2.)
                         ],
                         math='xDataGenVar2 * xDataGenParam1',
@@ -277,11 +277,11 @@ class IoTestCase(unittest.TestCase):
                         id='xDataGen12',
                         name='XDataGen12',
                         variables=[
-                            data_model.DataGeneratorVariable(
+                            data_model.Variable(
                                 id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
                         ],
                         parameters=[
-                            data_model.DataGeneratorParameter(
+                            data_model.Parameter(
                                 id='xDataGenParam1', name='XDataGenParam1', value=2.)
                         ],
                         math='xDataGenVar2 * xDataGenParam1',

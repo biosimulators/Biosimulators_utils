@@ -39,10 +39,10 @@ class ExecStatusDataModel(unittest.TestCase):
         exp_1.tasks.append(task_2)
         data_gen_1 = sedml_data_model.DataGenerator(id='data_gen_1',
                                                     math='param_1',
-                                                    parameters=[sedml_data_model.DataGeneratorParameter(id='param_1', value=1.)])
+                                                    parameters=[sedml_data_model.Parameter(id='param_1', value=1.)])
         data_gen_2 = sedml_data_model.DataGenerator(id='data_gen_2',
                                                     math='param_2',
-                                                    parameters=[sedml_data_model.DataGeneratorParameter(id='param_2', value=2.)])
+                                                    parameters=[sedml_data_model.Parameter(id='param_2', value=2.)])
         exp_1.data_generators.append(data_gen_1)
         exp_1.data_generators.append(data_gen_2)
         exp_1.outputs.append(sedml_data_model.Report(id='report_1', data_sets=[
@@ -72,10 +72,10 @@ class ExecStatusDataModel(unittest.TestCase):
         exp_2.tasks.append(task_3)
         data_gen_3 = sedml_data_model.DataGenerator(id='data_gen_3',
                                                     math='param_3',
-                                                    parameters=[sedml_data_model.DataGeneratorParameter(id='param_3', value=1.)])
+                                                    parameters=[sedml_data_model.Parameter(id='param_3', value=1.)])
         data_gen_4 = sedml_data_model.DataGenerator(id='data_gen_4',
                                                     math='param_4',
-                                                    parameters=[sedml_data_model.DataGeneratorParameter(id='param_4', value=2.)])
+                                                    parameters=[sedml_data_model.Parameter(id='param_4', value=2.)])
         exp_2.data_generators.append(data_gen_3)
         exp_2.data_generators.append(data_gen_4)
         exp_2.outputs.append(sedml_data_model.Report(id='report_3'))

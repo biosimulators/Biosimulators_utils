@@ -363,7 +363,7 @@ class SedmlSimulationWriter(object):
 
         Args:
             data_gen (:obj:`data_model.DataGenerator`): data generator
-            var (:obj:`data_model.DataGeneratorVariable`): variable
+            var (:obj:`data_model.Variable`): variable
         """
         data_gen_sed = self._obj_to_sed_obj_map[data_gen]
         var_sed = data_gen_sed.createVariable()
@@ -396,7 +396,7 @@ class SedmlSimulationWriter(object):
 
         Args:
             data_gen (:obj:`data_model.DataGenerator`): data generator
-            param (:obj:`data_model.DataGeneratorParameter`): parameter
+            param (:obj:`data_model.Parameter`): parameter
         """
         data_gen_sed = self._obj_to_sed_obj_map[data_gen]
         param_sed = data_gen_sed.createParameter()
@@ -917,7 +917,7 @@ class SedmlSimulationReader(object):
             data_gen.name = data_gen_sed.getName() or None
 
             for var_sed in data_gen_sed.getListOfVariables():
-                var = data_model.DataGeneratorVariable()
+                var = data_model.Variable()
                 data_gen.variables.append(var)
 
                 var.id = var_sed.getId() or None
@@ -929,7 +929,7 @@ class SedmlSimulationReader(object):
                 self._deserialize_reference(var_sed, var, 'model', 'Model', 'model', id_to_model_map)
 
             for param_sed in data_gen_sed.getListOfParameters():
-                param = data_model.DataGeneratorParameter()
+                param = data_model.Parameter()
                 data_gen.parameters.append(param)
 
                 param.id = param_sed.getId() or None

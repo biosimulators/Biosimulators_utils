@@ -1,7 +1,7 @@
 from biosimulators_utils.config import get_config
 from biosimulators_utils.log.data_model import (
     Status, CombineArchiveLog, SedDocumentLog, TaskLog, ReportLog)
-from biosimulators_utils.report.data_model import DataGeneratorVariableResults, OutputResults, ReportFormat
+from biosimulators_utils.report.data_model import VariableResults, OutputResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
@@ -67,7 +67,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_1',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                     task=doc.tasks[0],
@@ -80,7 +80,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_2',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='data_gen_2_var_2',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_2']/@concentration",
                     task=doc.tasks[0],
@@ -93,7 +93,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_3',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='data_gen_3_var_3',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_3']/@concentration",
                     task=doc.tasks[1],
@@ -106,7 +106,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_4',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='data_gen_4_var_4',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_4']/@concentration",
                     task=doc.tasks[1],
@@ -179,7 +179,7 @@ class ExecTaskCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(doc, filename)
 
         def execute_task(task, variables, log):
-            results = DataGeneratorVariableResults()
+            results = VariableResults()
             if task.id == 'task_1_ss':
                 results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
                 results[doc.data_generators[1].variables[0].id] = numpy.array((3., 4.))
@@ -398,7 +398,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_1',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
                     task=doc.tasks[0],
@@ -431,7 +431,7 @@ class ExecTaskCase(unittest.TestCase):
             et = etree.parse(task.model.source)
             obj_xpath, _, attr = variables[0].target.rpartition('/@')
             obj = et.xpath(obj_xpath, namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'})[0]
-            results = DataGeneratorVariableResults()
+            results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((float(obj.get(attr)),))
             return results, log
 
@@ -451,7 +451,7 @@ class ExecTaskCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(doc, filename)
 
         def execute_task(task, variables, log):
-            return DataGeneratorVariableResults(), log
+            return VariableResults(), log
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarns(NoTasksWarning):
@@ -491,7 +491,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_1',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
                     task=doc.tasks[0],
@@ -532,9 +532,9 @@ class ExecTaskCase(unittest.TestCase):
 
         def execute_task(task, variables, log):
             if task.id == 'task1':
-                return DataGeneratorVariableResults({'data_gen_1_var_1': numpy.array(1.)}), log
+                return VariableResults({'data_gen_1_var_1': numpy.array(1.)}), log
             else:
-                return DataGeneratorVariableResults(), log
+                return VariableResults(), log
 
         working_dir = os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
@@ -567,7 +567,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_1',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                     task=doc.tasks[0],
@@ -592,7 +592,7 @@ class ExecTaskCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(doc, filename)
 
         def execute_task(task, variables, log):
-            return DataGeneratorVariableResults(), log
+            return VariableResults(), log
 
         working_dir = os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
@@ -633,13 +633,13 @@ class ExecTaskCase(unittest.TestCase):
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_1',
             variables=[
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                     task=doc.tasks[0],
                     model=doc.models[0],
                 ),
-                data_model.DataGeneratorVariable(
+                data_model.Variable(
                     id='data_gen_1_var_2',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                     task=doc.tasks[0],
@@ -661,7 +661,7 @@ class ExecTaskCase(unittest.TestCase):
         ))
 
         def execute_task(task, variables, log):
-            results = DataGeneratorVariableResults()
+            results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[0].variables[1].id] = numpy.array((1.,))
             return results, log
@@ -678,7 +678,7 @@ class ExecTaskCase(unittest.TestCase):
             data_model.DataGenerator(
                 id='data_gen_1',
                 variables=[
-                    data_model.DataGeneratorVariable(
+                    data_model.Variable(
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                         task=doc.tasks[0],
@@ -702,7 +702,7 @@ class ExecTaskCase(unittest.TestCase):
         ]
 
         def execute_task(task, variables, log):
-            results = DataGeneratorVariableResults()
+            results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             return results, log
 
@@ -719,13 +719,13 @@ class ExecTaskCase(unittest.TestCase):
             data_model.DataGenerator(
                 id='data_gen_1',
                 variables=[
-                    data_model.DataGeneratorVariable(
+                    data_model.Variable(
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                         task=doc.tasks[0],
                         model=doc.models[0],
                     ),
-                    data_model.DataGeneratorVariable(
+                    data_model.Variable(
                         id='data_gen_1_var_2',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_2']/@concentration",
                         task=doc.tasks[0],
@@ -750,7 +750,7 @@ class ExecTaskCase(unittest.TestCase):
         ]
 
         def execute_task(task, variables, log):
-            results = DataGeneratorVariableResults()
+            results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[0].variables[1].id] = numpy.array((1., 2.))
             return results, log
@@ -768,7 +768,7 @@ class ExecTaskCase(unittest.TestCase):
             data_model.DataGenerator(
                 id='data_gen_1',
                 variables=[
-                    data_model.DataGeneratorVariable(
+                    data_model.Variable(
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                         task=doc.tasks[0],
@@ -780,7 +780,7 @@ class ExecTaskCase(unittest.TestCase):
             data_model.DataGenerator(
                 id='data_gen_2',
                 variables=[
-                    data_model.DataGeneratorVariable(
+                    data_model.Variable(
                         id='data_gen_2_var_2',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_2']/@concentration",
                         task=doc.tasks[0],
@@ -792,7 +792,7 @@ class ExecTaskCase(unittest.TestCase):
             data_model.DataGenerator(
                 id='data_gen_3',
                 variables=[
-                    data_model.DataGeneratorVariable(
+                    data_model.Variable(
                         id='data_gen_3_var_3',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_3']/@concentration",
                         task=doc.tasks[0],
@@ -822,7 +822,7 @@ class ExecTaskCase(unittest.TestCase):
         ]
 
         def execute_task(task, variables, log):
-            results = DataGeneratorVariableResults()
+            results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[1].variables[0].id] = numpy.array((1., 2.))
             results[doc.data_generators[2].variables[0].id] = numpy.array(((1., 2., 3.), (4., 5., 6.), (7., 8., 9.)))
@@ -865,7 +865,7 @@ class ExecTaskCase(unittest.TestCase):
             data_model.DataGenerator(
                 id='data_gen_1',
                 variables=[
-                    data_model.DataGeneratorVariable(
+                    data_model.Variable(
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                         task=doc.tasks[0],
@@ -877,7 +877,7 @@ class ExecTaskCase(unittest.TestCase):
             data_model.DataGenerator(
                 id='data_gen_2',
                 variables=[
-                    data_model.DataGeneratorVariable(
+                    data_model.Variable(
                         id='data_gen_2_var_2',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                         task=doc.tasks[0],
@@ -907,7 +907,7 @@ class ExecTaskCase(unittest.TestCase):
         ]
 
         def execute_task(task, variables, log):
-            results = DataGeneratorVariableResults()
+            results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
             results[doc.data_generators[1].variables[0].id] = numpy.array((2., 3.))
             return results, log

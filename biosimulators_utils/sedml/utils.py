@@ -6,12 +6,12 @@
 :License: MIT
 """
 
-from ..report.data_model import DataGeneratorVariableResults  # noqa: F401
+from ..report.data_model import VariableResults  # noqa: F401
 from ..warnings import warn
 from .data_model import (SedDocument, Model, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange,
                          Task, Report, Plot2D, Plot3D,
-                         DataGenerator, DataGeneratorVariable, MATHEMATICAL_FUNCTIONS)
+                         DataGenerator, Variable, MATHEMATICAL_FUNCTIONS)
 from .warnings import InconsistentVariableShapesWarning
 from lxml import etree
 import copy
@@ -96,7 +96,7 @@ def get_variables_for_task(doc, task):
         task (:obj:`Task`): task
 
     Returns:
-        :obj:`list` of :obj:`DataGeneratorVariable`: variables that task must record
+        :obj:`list` of :obj:`Variable`: variables that task must record
     """
     variables = set()
     for data_gen in doc.data_generators:
@@ -288,7 +288,7 @@ def calc_data_generator_results(data_generator, variable_results):
 
     Args:
         data_generator (:obj:`DataGenerator`): data generator
-        variable_results (:obj:`DataGeneratorVariableResults`): results for the variables of the data generator
+        variable_results (:obj:`VariableResults`): results for the variables of the data generator
 
     Returns:
         :obj:`numpy.ndarray`: result of data generator
