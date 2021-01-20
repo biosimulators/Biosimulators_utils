@@ -18,6 +18,7 @@ from lxml import etree
 import copy
 import evalidate
 import io
+import libsedml  # noqa: F401
 import math
 import numpy
 import os
@@ -27,6 +28,7 @@ import tempfile
 
 __all__ = [
     'append_all_nested_children_to_doc',
+    'convert_xml_node_to_string',
     'resolve_model_and_apply_xml_changes',
     'resolve_model',
     'apply_changes_to_xml_model',
@@ -101,6 +103,41 @@ def append_all_nested_children_to_doc(doc):
     doc.simulations += list(simulations - set(doc.simulations))
     doc.tasks += list(tasks - set(doc.tasks))
     doc.data_generators += list(data_generators - set(doc.data_generators))
+
+
+def add_namespaces_to_xml_node(node, namespaces, include_default=False):
+    """ Add namespaces to an XML node
+
+    Args:
+        node (:obj:`libsedml.XMLNode`): XML node
+        namespaces (:obj:`libsedml.XMLNamespaces`): namespaces for the parent document
+        include_default (:obj:`bool`, optional): include the default (SED-ML) namespace
+    """
+    node_namespaces = node.getNamespaces()
+
+    for i_ns in range(namespaces.getNumNamespaces()):
+        uri = namespaces.getURI(i_ns)
+        prefix = namespaces.getPrefix(i_ns)
+
+        if prefix == '' and not include_default:
+            continue
+
+        i_node_ns_prefix = node_namespaces.getIndexByPrefix(prefix)
+
+        if i_node_ns_prefix == -1:
+            node.addNamespace(uri, prefix)
+
+
+def convert_xml_node_to_string(node):
+    """ Generate a string representation of an XML node
+
+    Args:
+        node (:obj:`libsedml.XMLNode`): XML node
+
+    Returns:
+        :obj:`str`: string representation of the node
+    """
+    return node.convertXMLNodeToString(node)
 
 
 def get_variables_for_task(doc, task):

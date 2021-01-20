@@ -5,6 +5,7 @@ from biosimulators_utils.utils.core import are_lists_equal
 from lxml import etree
 from unittest import mock
 import copy
+import libsedml
 import numpy
 import numpy.testing
 import os
@@ -261,6 +262,21 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         self.assertNotEqual(changes, [])
 
+    def test_add_namespaces_to_xml_node(self):
+        filename = os.path.join(os.path.dirname(__file__), '../fixtures/sedml/new-xml-with-top-level-namespace.sedml')
+        doc = libsedml.readSedMLFromFile(filename)
+        node = doc.getListOfModels()[0].getListOfChanges()[0].getNewXML()
+        namespaces = node.getNamespaces()
+        self.assertEqual(namespaces.getIndexByPrefix('sbml'), -1)
+        self.assertEqual(utils.convert_xml_node_to_string(node), '<sbml:parameter id="V_mT" value="0.7"/>')
+
+        utils.add_namespaces_to_xml_node(node, doc.getNamespaces())
+        namespaces = node.getNamespaces()
+        self.assertEqual(namespaces.getIndexByPrefix('sbml'), 0)
+        self.assertEqual(utils.convert_xml_node_to_string(node),
+                         '<sbml:parameter xmlns:{}="{}" id="V_mT" value="0.7"/>'.format(
+            'sbml', 'http://sed-ml.org/sed-ml/level1/version3'))
+
     def test_change_attributes_multiple_targets(self):
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
 
@@ -309,6 +325,97 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         species = xpath_evaluator("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species")
         self.assertEqual(len(species), num_species + 2)
         self.assertEqual(set([s.get('id') for s in species]), species_ids | set(['NewSpecies1', 'NewSpecies2']))
+
+        # check that changes can be written/read from file
+        doc = data_model.SedDocument(
+            models=[
+                data_model.Model(
+                    id='model',
+                    language='language',
+                    source='source',
+                    changes=[change],
+                ),
+            ]
+        )
+
+        filename = os.path.join(self.tmp_dir, 'test.sedml')
+        io.SedmlSimulationWriter().run(doc, filename)
+        doc2 = io.SedmlSimulationReader().run(filename)
+        self.assertTrue(doc2.is_equal(doc))
+
+    def test_add_multiple_elements_to_single_target_with_different_namespace_prefix(self):
+        ####################
+        # Correct namespace
+        namespaces = {
+            'sbml': 'http://www.sbml.org/sbml/level2/version4',
+            'newXml': 'http://www.sbml.org/sbml/level2/version4',
+        }
+
+        change = data_model.AddElementModelChange(
+            target="/sbml:sbml/sbml:model/sbml:listOfSpecies",
+            new_elements=''.join([
+                '<newXml:species xmlns:newXml="{}" id="NewSpecies1"/>'.format(namespaces['newXml']),
+                '<newXml:species xmlns:newXml="{}" id="NewSpecies2"/>'.format(namespaces['newXml']),
+            ]))
+        et = etree.parse(self.FIXTURE_FILENAME)
+
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        num_species = len(species)
+        species_ids = set([s.get('id') for s in species])
+
+        # apply changes
+        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+
+        # check changes applied
+        xpath_evaluator = etree.XPathEvaluator(et, namespaces=namespaces)
+        species = xpath_evaluator("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species")
+        self.assertEqual(len(species), num_species + 2)
+        self.assertEqual(set([s.get('id') for s in species]), species_ids | set(['NewSpecies1', 'NewSpecies2']))
+
+        # check that changes can be written/read from file
+        doc = data_model.SedDocument(
+            models=[
+                data_model.Model(
+                    id='model',
+                    language='language',
+                    source='source',
+                    changes=[change],
+                ),
+            ]
+        )
+
+        filename = os.path.join(self.tmp_dir, 'test.sedml')
+        io.SedmlSimulationWriter().run(doc, filename)
+        doc2 = io.SedmlSimulationReader().run(filename)
+        self.assertTrue(doc2.is_equal(doc))
+
+        ####################
+        # Incorrect namespace
+        namespaces = {
+            'sbml': 'http://www.sbml.org/sbml/level2/version4',
+            'newXml': 'http://www.sbml.org/sbml/level3/version1',
+        }
+
+        change = data_model.AddElementModelChange(
+            target="/sbml:sbml/sbml:model/sbml:listOfSpecies",
+            new_elements=''.join([
+                '<newXml:species xmlns:newXml="{}" id="NewSpecies1"/>'.format(namespaces['newXml']),
+                '<newXml:species xmlns:newXml="{}" id="NewSpecies2"/>'.format(namespaces['newXml']),
+            ]))
+        et = etree.parse(self.FIXTURE_FILENAME)
+
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        num_species = len(species)
+        species_ids = set([s.get('id') for s in species])
+
+        # apply changes
+        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+
+        # check changes applied
+        xpath_evaluator = etree.XPathEvaluator(et, namespaces=namespaces)
+        species = xpath_evaluator("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species")
+        self.assertEqual(len(species), num_species)
+        self.assertEqual(set([s.get('id') for s in species]), species_ids)
 
         # check that changes can be written/read from file
         doc = data_model.SedDocument(

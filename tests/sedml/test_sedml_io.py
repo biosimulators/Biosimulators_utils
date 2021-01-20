@@ -475,6 +475,13 @@ class IoTestCase(unittest.TestCase):
         self.assertEqual(len(doc.data_generators), 1)
         self.assertEqual(len(doc.outputs), 3)
 
+    def test_read_new_xml_with_top_level_namespace(self):
+        filename = os.path.join(os.path.dirname(__file__), '../fixtures/sedml/new-xml-with-top-level-namespace.sedml')
+        doc = io.SedmlSimulationReader().run(filename)
+        self.assertEqual(doc.models[0].changes[0].new_elements,
+                         '<sbml:parameter xmlns:{}="{}" id="V_mT" value="0.7"/>'.format(
+            'sbml', 'http://sed-ml.org/sed-ml/level1/version3'))
+
     @unittest.skip('Not yet implemented')
     def test_read_repeated_task(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'repeated-task.sedml')

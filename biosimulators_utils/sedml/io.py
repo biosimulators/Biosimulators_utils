@@ -7,6 +7,7 @@
 """
 
 from . import data_model
+from .utils import add_namespaces_to_xml_node, convert_xml_node_to_string
 from .validation import validate_doc
 from .warnings import SedmlFeatureNotSupportedWarning
 from ..biosimulations.data_model import Metadata, ExternalReferences, Citation
@@ -913,13 +914,15 @@ class SedmlSimulationReader(object):
                     change = data_model.AddElementModelChange()
                     new_xml = change_sed.getNewXML() or None
                     if new_xml is not None:
-                        change.new_elements = libsedml.XMLNode_convertXMLNodeToString(new_xml)
+                        add_namespaces_to_xml_node(new_xml, doc_sed.getNamespaces())
+                        change.new_elements = convert_xml_node_to_string(new_xml)
 
                 elif isinstance(change_sed, libsedml.SedChangeXML):
                     change = data_model.ReplaceElementModelChange()
                     new_xml = change_sed.getNewXML() or None
                     if new_xml is not None:
-                        change.new_elements = libsedml.XMLNode_convertXMLNodeToString(new_xml)
+                        add_namespaces_to_xml_node(new_xml, doc_sed.getNamespaces())
+                        change.new_elements = convert_xml_node_to_string(new_xml)
 
                 elif isinstance(change_sed, libsedml.SedRemoveXML):
                     change = data_model.RemoveElementModelChange()
