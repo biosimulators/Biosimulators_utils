@@ -5,7 +5,7 @@
       <listOfChanges>
         <addXML target="/sbml:sbml/sbml:model/sbml:listOfParameters" >
           <newXML >
-            <parameter metaid="metaid_0000010" id="V_mT" value="0.7" />
+            <sbml:parameter xmlns:sbml="http://sed-ml.org/sed-ml/level1/version3" id="V_mT" value="0.7" />
           </newXML >
         </addXML >
       </listOfChanges>

@@ -18,8 +18,30 @@ class DataModelTestCase(unittest.TestCase):
                 data_model.AddElementModelChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_elements='432'),
                 data_model.ReplaceElementModelChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_elements='432'),
                 data_model.RemoveElementModelChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id'),
+                data_model.ComputeModelChange(
+                    target='/sbml:sbml/sbml:model[id=\'b\']/@id',
+                    parameters=[
+                        data_model.Parameter(id='p_1', value=1.5),
+                        data_model.Parameter(id='p_2', value=2.5),
+                    ],
+                    variables=[
+                        data_model.Variable(
+                            id='v_1',
+                            model=None,
+                            target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='param_1']",
+                        ),
+                        data_model.Variable(
+                            id='v_1',
+                            model=None,
+                            target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='param_1']",
+                        ),
+                    ],
+                    math='p_1 * v_1 + p_2 * v_2',
+                ),
             ],
         )
+        for var in model.changes[-1].variables:
+            var.model = model
 
         ss_simulation = data_model.SteadyStateSimulation(
             id='simulation1',
@@ -56,6 +78,8 @@ class DataModelTestCase(unittest.TestCase):
             number_of_points=10)
 
         task = data_model.Task(id='task1', name='Task1', model=model, simulation=time_course_simulation)
+        for var in model.changes[-1].variables:
+            var.task = task
 
         report = data_model.Report(
             id='report1',
@@ -222,8 +246,7 @@ class DataModelTestCase(unittest.TestCase):
         )
 
         self.assertEqual(report.to_tuple()[0], report.id)
-        self.assertEqual(plot2d.to_tuple()[2][0][4][2][0][1], plot2d.curves[0].x_data_generator.variables[0].name)
-        self.assertEqual(plot3d.to_tuple()[2][0][5][2][0][0], plot3d.surfaces[0].x_data_generator.variables[0].id)
+        self.assertEqual(plot2d.to_tuple()[2][0][4], plot2d.curves[0].x_data_generator.id)
 
         self.assertEqual(document.to_tuple(), (
             document.level,
@@ -240,6 +263,25 @@ class DataModelTestCase(unittest.TestCase):
         change2 = copy.deepcopy(change)
         self.assertTrue(change.is_equal(change2))
         change2.target = None
+        self.assertFalse(change.is_equal(change2))
+
+        change = model.changes[-1]
+        change2 = copy.deepcopy(change)
+        self.assertTrue(change.is_equal(change2))
+        change2 = copy.deepcopy(change)
+        change2.target = None
+        self.assertFalse(change.is_equal(change2))
+        change2 = copy.deepcopy(change)
+        change2.parameters[0].value = -1
+        self.assertFalse(change.is_equal(change2))
+        change2 = copy.deepcopy(change)
+        change2.variables[0].id = 'variable_1'
+        self.assertFalse(change.is_equal(change2))
+        change2 = copy.deepcopy(change)
+        change2.variables[0].model.id = 'different_model'
+        self.assertFalse(change.is_equal(change2))
+        change2 = copy.deepcopy(change)
+        change2.math = 'x * y'
         self.assertFalse(change.is_equal(change2))
 
         model2 = copy.deepcopy(model)

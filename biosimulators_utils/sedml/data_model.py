@@ -45,6 +45,8 @@ __all__ = [
     'AxisScale',
     'Curve',
     'Surface',
+    'MATHEMATICAL_FUNCTIONS',
+    'RESERVED_MATHEMATICAL_SYMBOLS',
 ]
 
 
@@ -431,17 +433,14 @@ class ModelChange(abc.ABC):
     """ A change to a model
 
     Attributes:
-        name (:obj:`str`): name
         target (:obj:`str`): path to the model element that should be changed
     """
 
-    def __init__(self, name=None, target=None):
+    def __init__(self, target=None):
         """
         Args:
-            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the model element that should be changed
         """
-        self.name = name
         self.target = target
 
     @abc.abstractmethod
@@ -463,7 +462,6 @@ class ModelChange(abc.ABC):
             :obj:`bool`: :obj:`True`, if two model changes are equal
         """
         return self.__class__ == other.__class__ \
-            and self.name == other.name \
             and self.target == other.target
 
 
@@ -471,19 +469,17 @@ class ModelAttributeChange(ModelChange):
     """ A change of an attribute of a model
 
     Attributes:
-        name (:obj:`str`): name
         target (:obj:`str`): path to the model element that should be changed
         new_value (:obj:`str`): new value
     """
 
-    def __init__(self, name=None, target=None, new_value=None):
+    def __init__(self, target=None, new_value=None):
         """
         Args:
-            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the model element that should be changed
             new_value (:obj:`str`, optional): new value
         """
-        super(ModelAttributeChange, self).__init__(name=name, target=target)
+        super(ModelAttributeChange, self).__init__(target=target)
         self.new_value = new_value
 
     def to_tuple(self):
@@ -492,7 +488,7 @@ class ModelAttributeChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.name, self.target, self.new_value)
+        return (self.target, self.new_value)
 
     def is_equal(self, other):
         """ Determine if model attribute changes are equal
@@ -511,19 +507,17 @@ class AddElementModelChange(ModelChange):
     """ An addition of an element to a model
 
     Attributes:
-        name (:obj:`str`,): name
         target (:obj:`str`): path to the parent of the new element(s)
         new_elements (:obj:`str`): new element(s)
     """
 
-    def __init__(self, name=None, target=None, new_elements=None):
+    def __init__(self, target=None, new_elements=None):
         """
         Args:
-            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the parent of the new element(s)
             new_elements (:obj:`str`): new element(s)
         """
-        super(AddElementModelChange, self).__init__(name=name, target=target)
+        super(AddElementModelChange, self).__init__(target=target)
         self.new_elements = new_elements
 
     def to_tuple(self):
@@ -532,7 +526,7 @@ class AddElementModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.name, self.target, self.new_elements)
+        return (self.target, self.new_elements)
 
     def is_equal(self, other):
         """ Determine if model attribute changes are equal
@@ -551,19 +545,17 @@ class ReplaceElementModelChange(ModelChange):
     """ A replacement of an element of a model
 
     Attributes:
-        name (:obj:`str`): name
         target (:obj:`str`): path to the element to replace
         new_elements (:obj:`str`): new element(s)
     """
 
-    def __init__(self, name=None, target=None, new_elements=None):
+    def __init__(self, target=None, new_elements=None):
         """
         Args:
-            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the element to replace
             new_elements (:obj:`str`): new element(s)
         """
-        super(ReplaceElementModelChange, self).__init__(name=name, target=target)
+        super(ReplaceElementModelChange, self).__init__(target=target)
         self.new_elements = new_elements
 
     def to_tuple(self):
@@ -572,7 +564,7 @@ class ReplaceElementModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.name, self.target, self.new_elements)
+        return (self.target, self.new_elements)
 
     def is_equal(self, other):
         """ Determine if model attribute changes are equal
@@ -591,7 +583,6 @@ class RemoveElementModelChange(ModelChange):
     """ A removal of an element from a model
 
     Attributes:
-        name (:obj:`str`, optional): name
         target (:obj:`str`): path to the element to remove
     """
 
@@ -601,33 +592,31 @@ class RemoveElementModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.name, self.target)
+        return (self.target,)
 
 
 class ComputeModelChange(ModelChange):
     """ A replacement of an element of a model
 
     Attributes:
-        name (:obj:`str`): name
         target (:obj:`str`): path to the element to replace
-        variables (:obj:`list` of :obj:``): variables
-        parameters (:obj:`list` of :obj:``): parameters
+        variables (:obj:`list` of :obj:`Variable`): variables
+        parameters (:obj:`list` of :obj:`Parameter`): parameters
         math (:obj:`str`): mathematical expression
     """
 
-    def __init__(self, name=None, target=None, variables=None, parameters=None, math=None):
+    def __init__(self, target=None, variables=None, parameters=None, math=None):
         """
         Args:
-            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the element to replace
-            variables (:obj:`list` of :obj:``): variables
-            parameters (:obj:`list` of :obj:``): parameters
-            math (:obj:`str`): mathematical expression
+            variables (:obj:`list` of :obj:`Variable`, optional): variables
+            parameters (:obj:`list` of :obj:`Parameter`, optional): parameters
+            math (:obj:`str`, optional): mathematical expression
         """
-        super(ComputeModelChange, self).__init__(name=name, target=target)
+        super(ComputeModelChange, self).__init__(target=target)
         self.variables = variables or []
         self.parameters = parameters or []
-        self.math = math or []
+        self.math = math
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -635,7 +624,7 @@ class ComputeModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.name, self.target,
+        return (self.target,
                 tuple(none_sorted(variable.to_tuple() for variable in self.variables)),
                 tuple(none_sorted(parameter.to_tuple() for parameter in self.parameters)),
                 self.math)
@@ -652,8 +641,7 @@ class ComputeModelChange(ModelChange):
         return super(ComputeModelChange, self).is_equal(other) \
             and are_lists_equal(self.variables, other.variables) \
             and are_lists_equal(self.parameters, other.parameters) \
-            and self.math == other.math \
-
+            and self.math == other.math
 
 
 class AbstractTask(abc.ABC):
@@ -725,8 +713,8 @@ class Task(AbstractTask):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (self.id, self.name,
-                self.model.to_tuple() if self.model else None,
-                self.simulation.to_tuple() if self.simulation else None)
+                self.model.id if self.model else None,
+                self.simulation.id if self.simulation else None)
 
     def is_equal(self, other):
         """ Determine if tasks are equal
@@ -739,9 +727,9 @@ class Task(AbstractTask):
         """
         return super(Task, self).is_equal(other) \
             and ((self.model is None and self.model == other.model)
-                 or (self.model is not None and self.model.is_equal(other.model))) \
+                 or (self.model is not None and other.model is not None and self.model.id == other.model.id)) \
             and ((self.simulation is None and self.simulation == other.simulation)
-                 or (self.simulation is not None and self.simulation.is_equal(other.simulation)))
+                 or (self.simulation is not None and other.simulation is not None and self.simulation.id == other.simulation.id))
 
 
 class DataGenerator(object):
@@ -751,7 +739,7 @@ class DataGenerator(object):
         id (:obj:`str`): id
         name (:obj:`str`): name
         variables (:obj:`list` of :obj:`Variable`): variables
-        parameters (:obj:`list` of :obj:`Parameters`): variables
+        parameters (:obj:`list` of :obj:`Parameter`): variables
         math (:obj:`str`): mathematical expression
     """
 
@@ -761,7 +749,7 @@ class DataGenerator(object):
             id (:obj:`str`, optional): id
             name (:obj:`str`, optional): name
             variables (:obj:`list` of :obj:`Variable`, optional): variables
-            parameters (:obj:`list` of :obj:`Parameters`, optional): variables
+            parameters (:obj:`list` of :obj:`Parameter`, optional): variables
             math (:obj:`str`, optional): mathematical expression
         """
         self.id = id
@@ -835,8 +823,8 @@ class Variable(object):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (self.id, self.name, self.target, self.symbol,
-                self.task.to_tuple() if self.task else None,
-                self.model.to_tuple() if self.model else None)
+                self.task.id if self.task else None,
+                self.model.id if self.model else None)
 
     def is_equal(self, other):
         """ Determine if data generator variables are equal
@@ -853,9 +841,9 @@ class Variable(object):
             and self.target == other.target \
             and self.symbol == other.symbol \
             and ((self.task is None and self.task == other.task)
-                 or (self.task is not None and self.task.is_equal(other.task))) \
+                 or (self.task is not None and other.task is not None and self.task.id == other.task.id)) \
             and ((self.model is None and self.model == other.model)
-                 or (self.model is not None and self.model.is_equal(other.model)))
+                 or (self.model is not None and other.model is not None and self.model.id == other.model.id))
 
 
 class Parameter(object):
@@ -899,42 +887,6 @@ class Parameter(object):
             and self.id == other.id \
             and self.name == other.name \
             and self.value == other.value
-
-
-MATHEMATICAL_FUNCTIONS = {
-    'root': lambda x, n: x**(1 / float(n)),
-    'abs': abs,
-    'exp': math.exp,
-    'ln': math.log,
-    'log': math.log,
-    'floor': math.floor,
-    'ceiling': math.ceil,
-    'factorial': math.factorial,
-    'sin': math.sin,
-    'cos': math.cos,
-    'tan': math.tan,
-    'sec': mpmath.sec,
-    'csc': mpmath.csc,
-    'cot': mpmath.cot,
-    'sinh': math.sinh,
-    'cosh': math.cosh,
-    'tanh': math.tanh,
-    'sech': mpmath.sech,
-    'csch': mpmath.csch,
-    'coth': mpmath.coth,
-    'arcsin': math.asin,
-    'arccos': math.acos,
-    'arctan': math.atan,
-    'arcsec': mpmath.asec,
-    'arccsc': mpmath.acsc,
-    'arccot': mpmath.acot,
-    'arcsinh': math.asinh,
-    'arccosh': math.acosh,
-    'arctanh': math.atanh,
-    'arcsech': mpmath.asech,
-    'arccsch': mpmath.acsch,
-    'arccoth': mpmath.acoth,
-}
 
 
 class Output(abc.ABC):
@@ -1048,7 +1000,7 @@ class DataSet(object):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (self.id, self.name, self.label,
-                self.data_generator.to_tuple() if self.data_generator is not None else None)
+                self.data_generator.id if self.data_generator is not None else None)
 
     def is_equal(self, other):
         """ Determine if data sets are equal
@@ -1064,8 +1016,9 @@ class DataSet(object):
             and self.name == other.name \
             and self.label == other.label \
             and ((self.data_generator is None and self.data_generator == other.data_generator)
-                 or (self.data_generator is not None and self.data_generator.is_equal(other.data_generator))) \
-
+                 or (self.data_generator is not None
+                     and other.data_generator is not None
+                     and self.data_generator.id == other.data_generator.id))
 
 
 class Plot2D(Output):
@@ -1200,8 +1153,8 @@ class Curve(object):
         return (self.id, self.name,
                 self.x_scale.value if self.x_scale else None,
                 self.y_scale.value if self.y_scale else None,
-                self.x_data_generator.to_tuple() if self.x_data_generator else None,
-                self.y_data_generator.to_tuple() if self.y_data_generator else None)
+                self.x_data_generator.id if self.x_data_generator else None,
+                self.y_data_generator.id if self.y_data_generator else None)
 
     def is_equal(self, other):
         """ Determine if curves are equal
@@ -1218,9 +1171,13 @@ class Curve(object):
             and self.x_scale == other.x_scale \
             and self.y_scale == other.y_scale \
             and ((self.x_data_generator is None and self.x_data_generator == other.x_data_generator)
-                 or (self.x_data_generator is not None and self.x_data_generator.is_equal(other.x_data_generator))) \
+                 or (self.x_data_generator is not None
+                     and other.x_data_generator is not None
+                     and self.x_data_generator.id == other.x_data_generator.id)) \
             and ((self.y_data_generator is None and self.y_data_generator == other.y_data_generator)
-                 or (self.y_data_generator is not None and self.y_data_generator.is_equal(other.y_data_generator)))
+                 or (self.y_data_generator is not None
+                     and other.y_data_generator is not None
+                     and self.y_data_generator.id == other.y_data_generator.id))
 
 
 class Surface(object):
@@ -1270,9 +1227,9 @@ class Surface(object):
                 self.x_scale.value if self.x_scale else None,
                 self.y_scale.value if self.y_scale else None,
                 self.z_scale.value if self.z_scale else None,
-                self.x_data_generator.to_tuple() if self.x_data_generator else None,
-                self.y_data_generator.to_tuple() if self.y_data_generator else None,
-                self.z_data_generator.to_tuple() if self.z_data_generator else None)
+                self.x_data_generator.id if self.x_data_generator else None,
+                self.y_data_generator.id if self.y_data_generator else None,
+                self.z_data_generator.id if self.z_data_generator else None)
 
     def is_equal(self, other):
         """ Determine if surfaces are equal
@@ -1290,8 +1247,59 @@ class Surface(object):
             and self.y_scale == other.y_scale \
             and self.z_scale == other.z_scale \
             and ((self.x_data_generator is None and self.x_data_generator == other.x_data_generator)
-                 or (self.x_data_generator is not None and self.x_data_generator.is_equal(other.x_data_generator))) \
+                 or (self.x_data_generator is not None
+                     and other.x_data_generator is not None
+                     and self.x_data_generator.id == other.x_data_generator.id)) \
             and ((self.y_data_generator is None and self.y_data_generator == other.y_data_generator)
-                 or (self.y_data_generator is not None and self.y_data_generator.is_equal(other.y_data_generator))) \
+                 or (self.y_data_generator is not None
+                     and other.y_data_generator is not None
+                     and self.y_data_generator.id == other.y_data_generator.id)) \
             and ((self.z_data_generator is None and self.z_data_generator == other.z_data_generator)
-                 or (self.z_data_generator is not None and self.z_data_generator.is_equal(other.z_data_generator)))
+                 or (self.z_data_generator is not None
+                     and other.z_data_generator is not None
+                     and self.z_data_generator.id == other.z_data_generator.id))
+
+
+MATHEMATICAL_FUNCTIONS = {
+    'root': lambda x, n: x**(1 / float(n)),
+    'abs': abs,
+    'exp': math.exp,
+    'ln': math.log,
+    'log': math.log,
+    'floor': math.floor,
+    'ceiling': math.ceil,
+    'factorial': math.factorial,
+    'sin': math.sin,
+    'cos': math.cos,
+    'tan': math.tan,
+    'sec': mpmath.sec,
+    'csc': mpmath.csc,
+    'cot': mpmath.cot,
+    'sinh': math.sinh,
+    'cosh': math.cosh,
+    'tanh': math.tanh,
+    'sech': mpmath.sech,
+    'csch': mpmath.csch,
+    'coth': mpmath.coth,
+    'arcsin': math.asin,
+    'arccos': math.acos,
+    'arctan': math.atan,
+    'arcsec': mpmath.asec,
+    'arccsc': mpmath.acsc,
+    'arccot': mpmath.acot,
+    'arcsinh': math.asinh,
+    'arccosh': math.acosh,
+    'arctanh': math.atanh,
+    'arcsech': mpmath.asech,
+    'arccsch': mpmath.acsch,
+    'arccoth': mpmath.acoth,
+}
+
+RESERVED_MATHEMATICAL_SYMBOLS = {
+    'true': True,
+    'false': False,
+    'notanumber': math.nan,
+    'pi': math.pi,
+    'infinity': math.inf,
+    'exponentiale': math.e,
+}

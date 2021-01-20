@@ -1,4 +1,5 @@
 from biosimulators_utils.xml import utils
+from lxml import etree
 import os
 import unittest
 
@@ -6,6 +7,10 @@ import unittest
 class XmlUtilsTestCase(unittest.TestCase):
     XML_FILENAME = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.xml')
     MULTIPLE_NAMESPACES_XML_FILENAME = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-fbc-textbook.xml')
+
+    def test_get_namespaces_for_xml_doc(self):
+        et = etree.parse(self.XML_FILENAME)
+        self.assertEqual(utils.get_namespaces_for_xml_doc(et), {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
 
     def test_get_attributes_of_xpaths(self):
         ids = utils.get_attributes_of_xpaths(self.XML_FILENAME, [

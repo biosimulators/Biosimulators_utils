@@ -134,9 +134,8 @@ class SedmlSimulationWriter(object):
             elif isinstance(change, data_model.RemoveElementModelChange):
                 self._add_remove_model_element_to_model(model, change)
 
-            # Todo
-            # elif isinstance(change, data_model.ComputeModelChange):
-            #     self._add_compute_change_to_model(model, change)
+            elif isinstance(change, data_model.ComputeModelChange):
+                self._add_compute_change_to_model(model, change)
 
             else:
                 # this is an error rather than a warning because skipping a model change would alter the semantic
@@ -149,6 +148,9 @@ class SedmlSimulationWriter(object):
         Args:
             model (:obj:`data_model.Model`): model
             change (:obj:`data_model.ModelAttributeChange`): model attribute change
+
+        Returns:
+            :obj:`libsedml.SedChangeAttribute`
         """
         model_sed = self._obj_to_sed_obj_map[model]
         change_sed = model_sed.createChangeAttribute()
@@ -159,12 +161,17 @@ class SedmlSimulationWriter(object):
         if change.new_value is not None:
             self._call_libsedml_method(change_sed, 'setNewValue', change.new_value)
 
+        return change_sed
+
     def _add_add_model_element_to_model(self, model, change):
         """ Add an add element change change to a SED model
 
         Args:
             model (:obj:`data_model.Model`): model
             change (:obj:`data_model.ModelAttributeChange`): add model element change
+
+        Returns:
+            :obj:`libsedml.SedAddXML`
         """
         model_sed = self._obj_to_sed_obj_map[model]
         change_sed = model_sed.createAddXML()
@@ -178,12 +185,17 @@ class SedmlSimulationWriter(object):
                 raise ValueError('`{}` is not valid XML.'.format(change.new_elements))
             self._call_libsedml_method(change_sed, 'setNewXML', new_xml)
 
+        return change_sed
+
     def _add_change_model_element_to_model(self, model, change):
         """ Add a change element change to a SED model
 
         Args:
             model (:obj:`data_model.Model`): model
             change (:obj:`data_model.ReplaceElementModelChange`): change model element change
+
+        Returns:
+            :obj:`libsedml.SedChangeXML`
         """
         model_sed = self._obj_to_sed_obj_map[model]
         change_sed = model_sed.createChangeXML()
@@ -197,12 +209,17 @@ class SedmlSimulationWriter(object):
                 raise ValueError('`{}` is not valid XML.'.format(change.new_elements))
             self._call_libsedml_method(change_sed, 'setNewXML', new_xml)
 
+        return change_sed
+
     def _add_remove_model_element_to_model(self, model, change):
         """ Add a remove element change to a SED model
 
         Args:
             model (:obj:`data_model.Model`): model
             change (:obj:`data_model.RemoveElementModelChange`): remove model element change
+
+        Returns:
+            :obj:`libsedml.SedRemoveXML`
         """
         model_sed = self._obj_to_sed_obj_map[model]
         change_sed = model_sed.createRemoveXML()
@@ -211,12 +228,17 @@ class SedmlSimulationWriter(object):
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
 
+        return change_sed
+
     def _add_compute_change_to_model(self, model, change):
         """ Add a compute change to a SED model
 
         Args:
             model (:obj:`data_model.Model`): model
             change (:obj:`data_model.ComputeModelChange`): compute change
+
+        Returns:
+            :obj:`libsedml.SedComputeChange`
         """
         model_sed = self._obj_to_sed_obj_map[model]
         change_sed = model_sed.createComputeChange()
@@ -225,7 +247,16 @@ class SedmlSimulationWriter(object):
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
 
-        # TODO
+        for param in change.parameters:
+            self._add_param_to_obj(change, param)
+
+        for var in change.variables:
+            self._add_var_to_obj(change, var)
+
+        if change.math is not None:
+            self._call_libsedml_method(change_sed, 'setMath', libsedml.parseFormula(change.math))
+
+        return change_sed
 
     def _add_sim_to_doc(self, sim):
         """ Add a simulation to a SED document
@@ -349,24 +380,46 @@ class SedmlSimulationWriter(object):
         if data_gen.name is not None:
             self._call_libsedml_method(data_gen_sed, 'setName', data_gen.name)
 
-        for var in data_gen.variables:
-            self._add_var_to_data_gen(data_gen, var)
-
         for param in data_gen.parameters:
-            self._add_param_to_data_gen(data_gen, param)
+            self._add_param_to_obj(data_gen, param)
+
+        for var in data_gen.variables:
+            self._add_var_to_obj(data_gen, var)
 
         if data_gen.math is not None:
             self._call_libsedml_method(data_gen_sed, 'setMath', libsedml.parseFormula(data_gen.math))
 
-    def _add_var_to_data_gen(self, data_gen, var):
-        """ Add a variable to a SED data generator
+    def _add_param_to_obj(self, obj, param):
+        """ Add a parameter to a SED object
 
         Args:
-            data_gen (:obj:`data_model.DataGenerator`): data generator
+            obj (:obj:`data_model.ComputeModelChange`, :obj:`data_model.DataGenerator`):
+                compute change, data generator, functional range or set value
+            param (:obj:`data_model.Parameter`): parameter
+        """
+        obj_sed = self._obj_to_sed_obj_map[obj]
+        param_sed = obj_sed.createParameter()
+        self._obj_to_sed_obj_map[param] = param_sed
+
+        if param.id is not None:
+            self._call_libsedml_method(param_sed, 'setId', param.id)
+
+        if param.name is not None:
+            self._call_libsedml_method(param_sed, 'setName', param.name)
+
+        if param.value is not None:
+            self._call_libsedml_method(param_sed, 'setValue', param.value)
+
+    def _add_var_to_obj(self, obj, var):
+        """ Add a variable to a SED object
+
+        Args:
+            obj (:obj:`data_model.ComputeModelChange`, :obj:`data_model.DataGenerator`):
+                compute change, data generator, functional range or set value
             var (:obj:`data_model.Variable`): variable
         """
-        data_gen_sed = self._obj_to_sed_obj_map[data_gen]
-        var_sed = data_gen_sed.createVariable()
+        obj_sed = self._obj_to_sed_obj_map[obj]
+        var_sed = obj_sed.createVariable()
         self._obj_to_sed_obj_map[var] = var_sed
 
         if var.id is not None:
@@ -390,26 +443,6 @@ class SedmlSimulationWriter(object):
             if not var.model.id:  # pragma: no cover: already validated
                 raise ValueError('Model must have an id to be referenced')
             self._call_libsedml_method(var_sed, 'setModelReference', var.model.id)
-
-    def _add_param_to_data_gen(self, data_gen, param):
-        """ Add a parameter to a SED data generator
-
-        Args:
-            data_gen (:obj:`data_model.DataGenerator`): data generator
-            param (:obj:`data_model.Parameter`): parameter
-        """
-        data_gen_sed = self._obj_to_sed_obj_map[data_gen]
-        param_sed = data_gen_sed.createParameter()
-        self._obj_to_sed_obj_map[param] = param_sed
-
-        if param.id is not None:
-            self._call_libsedml_method(param_sed, 'setId', param.id)
-
-        if param.name is not None:
-            self._call_libsedml_method(param_sed, 'setName', param.name)
-
-        if param.value is not None:
-            self._call_libsedml_method(param_sed, 'setValue', param.value)
 
     def _add_report_to_doc(self, report):
         """ Add a report to a SED document
@@ -798,45 +831,6 @@ class SedmlSimulationReader(object):
             model.source = model_sed.getSource() or None
             model.language = model_sed.getLanguage() or None
 
-            for change_sed in model_sed.getListOfChanges():
-                if isinstance(change_sed, libsedml.SedChangeAttribute):
-                    change = data_model.ModelAttributeChange()
-                    model.changes.append(change)
-                    change.target = change_sed.getTarget() or None
-                    change.new_value = change_sed.getNewValue() or None
-
-                elif isinstance(change_sed, libsedml.SedAddXML):
-                    change = data_model.AddElementModelChange()
-                    model.changes.append(change)
-                    change.target = change_sed.getTarget() or None
-
-                    new_xml = change_sed.getNewXML() or None
-                    if new_xml is not None:
-                        change.new_elements = libsedml.XMLNode_convertXMLNodeToString(new_xml)
-
-                elif isinstance(change_sed, libsedml.SedChangeXML):
-                    change = data_model.ReplaceElementModelChange()
-                    model.changes.append(change)
-                    change.target = change_sed.getTarget() or None
-                    new_xml = change_sed.getNewXML() or None
-                    if new_xml is not None:
-                        change.new_elements = libsedml.XMLNode_convertXMLNodeToString(new_xml)
-
-                elif isinstance(change_sed, libsedml.SedRemoveXML):
-                    change = data_model.RemoveElementModelChange()
-                    model.changes.append(change)
-                    change.target = change_sed.getTarget() or None
-
-                # Todo
-                # elif isinstance(change_sed, libsedml.SedComputeChange):
-                #    change = data_model.ComputeModelChange()
-                #    model.changes.append(change)
-                #    change.target = change_sed.getTarget() or None
-
-                else:  # pragma: no cover: already validated by libSED-ML
-                    # this is an error rather than a warning because SED doesn't define any other types of changes
-                    raise NotImplementedError('Change type {} is not supported'.format(change_sed.__class__.__name__))
-
             doc.models.append(model)
             self._add_obj_to_id_to_obj_map(model_sed, model, id_to_model_map)
 
@@ -908,6 +902,41 @@ class SedmlSimulationReader(object):
                 # this is an error rather than a warning because SED doesn't define any other types of tasks
                 raise NotImplementedError('Task type {} is not supported'.format(task_sed.__class__.__name__))
 
+        # model changes
+        for model_sed, model in zip(doc_sed.getListOfModels(), doc.models):
+            for change_sed in model_sed.getListOfChanges():
+                if isinstance(change_sed, libsedml.SedChangeAttribute):
+                    change = data_model.ModelAttributeChange()
+                    change.new_value = change_sed.getNewValue() or None
+
+                elif isinstance(change_sed, libsedml.SedAddXML):
+                    change = data_model.AddElementModelChange()
+                    new_xml = change_sed.getNewXML() or None
+                    if new_xml is not None:
+                        change.new_elements = libsedml.XMLNode_convertXMLNodeToString(new_xml)
+
+                elif isinstance(change_sed, libsedml.SedChangeXML):
+                    change = data_model.ReplaceElementModelChange()
+                    new_xml = change_sed.getNewXML() or None
+                    if new_xml is not None:
+                        change.new_elements = libsedml.XMLNode_convertXMLNodeToString(new_xml)
+
+                elif isinstance(change_sed, libsedml.SedRemoveXML):
+                    change = data_model.RemoveElementModelChange()
+
+                elif isinstance(change_sed, libsedml.SedComputeChange):
+                    change = data_model.ComputeModelChange()
+                    change.parameters = self._read_parameters(change_sed)
+                    change.variables = self._read_variables(change_sed, id_to_model_map, id_to_task_map)
+                    change.math = self._read_math(change_sed)
+
+                else:  # pragma: no cover: already validated by libSED-ML
+                    # this is an error rather than a warning because SED doesn't define any other types of changes
+                    raise NotImplementedError('Change type {} is not supported'.format(change_sed.__class__.__name__))
+
+                change.target = change_sed.getTarget() or None
+                model.changes.append(change)
+
         # data generators
         id_to_data_gen_map = {}
         for data_gen_sed in doc_sed.getListOfDataGenerators():
@@ -915,32 +944,9 @@ class SedmlSimulationReader(object):
 
             data_gen.id = data_gen_sed.getId() or None
             data_gen.name = data_gen_sed.getName() or None
-
-            for var_sed in data_gen_sed.getListOfVariables():
-                var = data_model.Variable()
-                data_gen.variables.append(var)
-
-                var.id = var_sed.getId() or None
-                var.name = var_sed.getName() or None
-                var.symbol = var_sed.getSymbol() or None
-                var.target = var_sed.getTarget() or None
-
-                self._deserialize_reference(var_sed, var, 'task', 'Task', 'task', id_to_task_map)
-                self._deserialize_reference(var_sed, var, 'model', 'Model', 'model', id_to_model_map)
-
-            for param_sed in data_gen_sed.getListOfParameters():
-                param = data_model.Parameter()
-                data_gen.parameters.append(param)
-
-                param.id = param_sed.getId() or None
-                param.name = param_sed.getName() or None
-                param.value = param_sed.getValue() or None
-                if param.value is not None:
-                    param.value = float(param.value)
-
-            data_gen.math = data_gen_sed.getMath() or None
-            if data_gen.math is not None:
-                data_gen.math = libsedml.formulaToL3String(data_gen.math)
+            data_gen.parameters = self._read_parameters(data_gen_sed)
+            data_gen.variables = self._read_variables(data_gen_sed, id_to_model_map, id_to_task_map)
+            data_gen.math = self._read_math(data_gen_sed)
 
             doc.data_generators.append(data_gen)
             self._add_obj_to_id_to_obj_map(data_gen_sed, data_gen, id_to_data_gen_map)
@@ -1020,6 +1026,66 @@ class SedmlSimulationReader(object):
 
         # return SED document
         return doc
+
+    def _read_parameters(self, obj_sed):
+        """ Read a list of variables
+
+        Args:
+            obj_sed (:obj:`libsedml.SedBase`): compute change, data generator, functional range or set value
+
+        Returns:
+            :obj:`list` of :obj:`Parameter`
+        """
+        parameters = []
+        for param_sed in obj_sed.getListOfParameters():
+            param = data_model.Parameter()
+            parameters.append(param)
+
+            param.id = param_sed.getId() or None
+            param.name = param_sed.getName() or None
+            param.value = param_sed.getValue() or None
+            if param.value is not None:
+                param.value = float(param.value)
+        return parameters
+
+    def _read_variables(self, obj_sed, id_to_model_map, id_to_task_map):
+        """ Read a list of variables
+
+        Args:
+            obj_sed (:obj:`libsedml.SedBase`): compute change, data generator, functional range or set value
+            id_to_model_map (:obj:`dict` of :obj:`str` to :obj:`Model`): map from the ids of models to models
+            id_to_task_map (:obj:`dict` of :obj:`str` to :obj:`Task`): map from the ids of tasks to tasks
+
+        Returns:
+            :obj:`list` of :obj:`Variable`
+        """
+        variables = []
+        for var_sed in obj_sed.getListOfVariables():
+            var = data_model.Variable()
+            variables.append(var)
+
+            var.id = var_sed.getId() or None
+            var.name = var_sed.getName() or None
+            var.symbol = var_sed.getSymbol() or None
+            var.target = var_sed.getTarget() or None
+
+            self._deserialize_reference(var_sed, var, 'task', 'Task', 'task', id_to_task_map)
+            self._deserialize_reference(var_sed, var, 'model', 'Model', 'model', id_to_model_map)
+        return variables
+
+    def _read_math(self, obj_sed):
+        """ Read a mathematical expression
+
+        Args:
+            obj_sed (:obj:`libsedml.SedBase`): compute change, data generator, functional range or set value
+
+        Returns:
+            :obj:`str`: expression
+        """
+        math = obj_sed.getMath() or None
+        if math:
+            math = libsedml.formulaToL3String(math)
+        return math
 
     def _add_obj_to_id_to_obj_map(self, obj_sed, obj, id_to_obj_map):
         """ Add an object to an id to object map

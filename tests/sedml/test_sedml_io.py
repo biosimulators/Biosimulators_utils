@@ -31,7 +31,7 @@ class IoTestCase(unittest.TestCase):
                 data_model.ModelAttributeChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_value='432'),
                 data_model.AddElementModelChange(
                     target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters',
-                    new_elements='<parameter id="new_parameter" value="1.0"/>'
+                    new_elements='<sbml:parameter xmlns:sbml="http://sed-ml.org/sed-ml/level1/version3" id="new_parameter" value="1.0"/>'
                 ),
                 data_model.AddElementModelChange(
                     target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters',
@@ -48,8 +48,23 @@ class IoTestCase(unittest.TestCase):
                 data_model.RemoveElementModelChange(
                     target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters/sbml:parameter[@id=\'p1\']',
                 ),
+                data_model.ComputeModelChange(
+                    target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters/sbml:parameter[@id=\'p1\']',
+                    parameters=[
+                        data_model.Parameter(id='a', value=1.5),
+                        data_model.Parameter(id='b', value=2.25),
+                    ],
+                    variables=[
+                        data_model.Variable(id='x', target='variable_target_x'),
+                        data_model.Variable(id='y', target='variable_target_y'),
+                    ],
+                    math='a * x + b * y',
+                ),
             ],
         )
+        for var in model1.changes[-1].variables:
+            var.model = model1
+
         model2 = data_model.Model(
             id='model2',
             name='Model2',
@@ -111,7 +126,7 @@ class IoTestCase(unittest.TestCase):
                         name='DataGen1',
                         variables=[
                             data_model.Variable(
-                                id='DataGenVar1', name='DataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task1, model=model1)
+                                id='DataGenVar1', name='DataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task1)
                         ],
                         parameters=[
                             data_model.Parameter(
@@ -136,7 +151,7 @@ class IoTestCase(unittest.TestCase):
                         name='XDataGen2',
                         variables=[
                             data_model.Variable(
-                                id='xDataGenVar1', name='XDataGenVar1', symbol='urn:sedml:symbol:time', task=task2, model=model2)
+                                id='xDataGenVar1', name='XDataGenVar1', symbol='urn:sedml:symbol:time', task=task2)
                         ],
                         parameters=[
                             data_model.Parameter(
@@ -149,7 +164,7 @@ class IoTestCase(unittest.TestCase):
                         name='yDataGen3',
                         variables=[
                             data_model.Variable(
-                                id='xDataGenVar1', name='XDataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
+                                id='xDataGenVar1', name='XDataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task2)
                         ],
                         parameters=[
                             data_model.Parameter(
@@ -167,7 +182,7 @@ class IoTestCase(unittest.TestCase):
                         name='yDataGen4',
                         variables=[
                             data_model.Variable(
-                                id='yDataGenVar1', name='YDataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task1, model=model1)
+                                id='yDataGenVar1', name='YDataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task1)
                         ],
                         parameters=[
                             data_model.Parameter(
@@ -180,7 +195,7 @@ class IoTestCase(unittest.TestCase):
                         name='yDataGen5',
                         variables=[
                             data_model.Variable(
-                                id='yDataGenVar1', name='YDataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task1, model=model1)
+                                id='yDataGenVar1', name='YDataGenVar1', target='/sbml:sbml/sbml:model/@id', task=task1)
                         ],
                         parameters=[
                             data_model.Parameter(
@@ -206,7 +221,7 @@ class IoTestCase(unittest.TestCase):
                         name='XDataGen6',
                         variables=[
                             data_model.Variable(
-                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
+                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2)
                         ],
                         parameters=[
                             data_model.Parameter(
@@ -219,7 +234,7 @@ class IoTestCase(unittest.TestCase):
                         name='XDataGen8',
                         variables=[
                             data_model.Variable(
-                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
+                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2)
                         ],
                         parameters=[
                             data_model.Parameter(
@@ -232,7 +247,7 @@ class IoTestCase(unittest.TestCase):
                         name='XDataGen9',
                         variables=[
                             data_model.Variable(
-                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
+                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2)
                         ],
                         parameters=[
                             data_model.Parameter(
@@ -252,7 +267,7 @@ class IoTestCase(unittest.TestCase):
                         name='XDataGen10',
                         variables=[
                             data_model.Variable(
-                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
+                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2)
                         ],
                         parameters=[
                             data_model.Parameter(
@@ -265,7 +280,7 @@ class IoTestCase(unittest.TestCase):
                         name='XDataGen11',
                         variables=[
                             data_model.Variable(
-                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
+                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2)
                         ],
                         parameters=[
                             data_model.Parameter(
@@ -278,7 +293,7 @@ class IoTestCase(unittest.TestCase):
                         name='XDataGen12',
                         variables=[
                             data_model.Variable(
-                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2, model=model2)
+                                id='xDataGenVar2', name='XDataGenVar2', target='/sbml:sbml/sbml:model/@id', task=task2)
                         ],
                         parameters=[
                             data_model.Parameter(
@@ -409,6 +424,7 @@ class IoTestCase(unittest.TestCase):
             models=[
                 data_model.Model(
                     id='model',
+                    source='model.xml',
                     changes=[
                         mock.Mock()
                     ],
@@ -493,7 +509,7 @@ class IoTestCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'must have a model'):
             io.SedmlSimulationWriter().run(document, None)
 
-        document = data_model.SedDocument(tasks=[data_model.Task(id='task', model=data_model.Model(id='model'))])
+        document = data_model.SedDocument(tasks=[data_model.Task(id='task', model=data_model.Model(id='model', source='model.xml'))])
         utils.append_all_nested_children_to_doc(document)
         with self.assertRaisesRegex(ValueError, 'must have a simulation'):
             io.SedmlSimulationWriter().run(document, None)
@@ -502,7 +518,7 @@ class IoTestCase(unittest.TestCase):
             tasks=[
                 data_model.Task(
                     id='task',
-                    model=data_model.Model(id='model'),
+                    model=data_model.Model(id='model', source='model.xml'),
                     simulation=data_model.UniformTimeCourseSimulation(id='sim'),
                 ),
             ],

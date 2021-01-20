@@ -7,12 +7,13 @@
 """
 
 from ..xml.utils import validate_xpaths_ref_to_unique_objects
-from .data_model import (Task, ModelLanguage, ModelChange,  # noqa: F401
+from .data_model import (Task, ModelLanguage, ModelChange, ComputeModelChange,  # noqa: F401
                          Simulation, UniformTimeCourseSimulation, Variable,
                          Report, Plot2D, Plot3D)
 from .utils import append_all_nested_children_to_doc
 import copy
 import math
+import networkx
 import os
 import re
 
@@ -22,6 +23,7 @@ __all__ = [
     'validate_task',
     'validate_model_language',
     'validate_model_change_types',
+    'validate_model_changes',
     'validate_simulation_type',
     'validate_uniform_time_course_simulation',
     'validate_data_generator_variables',
@@ -60,12 +62,72 @@ def validate_doc(doc, validate_semantics=True):
             if len(getattr(doc, child_type)) != len(getattr(doc_copy, child_type)):
                 raise ValueError('{} must be direct children of SED document'.format(child_type))
 
-        # validate that model attribute changes have targets
+        # internal model sources are defined
+        model_ids = [model.id for model in doc.models]
         for model in doc.models:
-            for change in model.changes:
+            if model.source.startswith('#'):
+                if model.source[1:] not in model_ids:
+                    raise ValueError('Source `{}` of model `{}` is not defined.'.format(model.source, model.id))
+
+        # model sources are acyclic
+        model_source_graph = networkx.DiGraph()
+
+        for model in doc.models:
+            model_source_graph.add_node(model.id)
+
+        for model in doc.models:
+            if model.source.startswith('#'):
+                model_source_graph.add_edge(model.id, model.source[1:])
+
+        try:
+            networkx.algorithms.cycles.find_cycle(model_source_graph)
+            raise ValueError('The sources of the models are defined cyclically. The sources of models must be acyclic.')
+        except networkx.NetworkXNoCycle:
+            pass
+
+        # validate that model changes have targets
+        for model in doc.models:
+            for i_change, change in enumerate(model.changes):
                 if not change.target:
                     raise ValueError('Model change attributes must define a target')
 
+                if isinstance(change, ComputeModelChange):
+                    for var in change.variables:
+                        if not var.id:
+                            raise ValueError('Variables must have ids')
+                        if not var.target:
+                            raise ValueError('Compute change variables must define a target')
+                        if var.symbol:
+                            raise ValueError('Compute change variables must define a target, not a symbol')
+                        # task reference not validated because its optional in this context
+                        validate_reference(var, 'Variable {} of model change "{}"'.format(var.id, i_change + 1), 'model', 'model')
+
+                        if var.task:
+                            raise ValueError('Task of variable "{}" of model change "{}" should be null.'.format(
+                                var.id, i_change + 1))
+                    if not change.math:
+                        raise ValueError('Compute model changes must have math')
+
+        # validate the compute model changes are acyclic
+        model_change_graph = networkx.DiGraph()
+
+        for model in doc.models:
+            model_change_graph.add_node(model.id)
+
+        for model in doc.models:
+            for change in model.changes:
+                if isinstance(change, ComputeModelChange):
+                    for variable in change.variables:
+                        if variable.model != model:
+                            model_change_graph.add_edge(model.id, variable.model.id)
+
+        try:
+            networkx.algorithms.cycles.find_cycle(model_change_graph)
+            raise ValueError('The compute changes of the models are defined cyclically. The changes must be acyclic.')
+        except networkx.NetworkXNoCycle:
+            pass
+
+        # algorithms and parameters are described with valid ids of KiSAO terms
         for sim in doc.simulations:
             if sim.algorithm:
                 if not sim.algorithm.kisao_id or not re.match(r'^KISAO_\d{7}$', sim.algorithm.kisao_id):
@@ -84,12 +146,12 @@ def validate_doc(doc, validate_semantics=True):
                 if not var.id:
                     raise ValueError('Variables must have ids')
                 if (not var.target and not var.symbol) or (var.target and var.symbol):
-                    raise ValueError('Variables must define a target or symbol')
+                    raise ValueError('Data generator variables must define a target or symbol')
                 validate_reference(var, 'Variable {} of data generator "{}"'.format(var.id, data_gen.id), 'task', 'task')
                 # model reference not validated because its optional in this context
 
-                if var.model and var.task and var.task.model and var.task.model != var.model:
-                    raise ValueError('Model of variable {} of data generator "{}" and model of task must be consistent'.format(
+                if var.model:
+                    raise ValueError('Model of variable {} of data generator "{}" should be null.'.format(
                         var.id, data_gen.id))
             if not data_gen.math:
                 raise ValueError('Data generators must have math')
@@ -184,12 +246,12 @@ def validate_model_language(language, valid_language):
             language, valid_language.value))
 
 
-def validate_model_change_types(changes, types):
+def validate_model_change_types(changes, types=(ModelChange, )):
     """ Check that model changes are valid
 
     Args:
         changes (:obj:`list` of :obj:`ModelChange`): model changes
-        types (:obj:`tuple` of :obj:`type`): valid model change types
+        types (:obj:`type` or :obj:`tuple` of :obj:`type`, optional): valid type(s) of model changes
 
     Raises:
         :obj:`NotImplementedError`: if the model uses different types of changes
@@ -203,8 +265,33 @@ def validate_model_change_types(changes, types):
 
             ]))
 
+
+def validate_model_changes(changes):
+    """ Check that model changes are semantically valid
+
+    * Check that the variables of compute model changes are valid
+
+    Args:
+        changes (:obj:`list` of :obj:`ModelChange`): model changes
+
+    Raises:
+        :obj:`ValueError`: if a model change is invalid
+    """
+    for change in changes:
         if not change.target:
             raise ValueError('Model change attributes must define a target')
+
+        if isinstance(change, ComputeModelChange):
+            for variable in change.variables:
+                if not variable.model:
+                    raise ValueError('Compute model change variables must define a model')
+                if variable.task:
+                    raise ValueError('Compute model change variables should not define a task')
+
+                if not variable.target:
+                    raise ValueError('Compute model change variables must define a target')
+                if variable.symbol:
+                    raise ValueError('Compute model change variables must define a target, not a symbol')
 
 
 def validate_simulation_type(simulation, types):
@@ -252,15 +339,20 @@ def validate_data_generator_variables(variables):
         variables (:obj:`list` of :obj:`Variable`): variables
 
     Raises:
-        :obj:`ValidateError`: if a variable is invalid
+        :obj:`ValueError`: if a variable is invalid
     """
     for variable in variables:
+        if variable.model:
+            raise ValueError('Variable should not define a model')
+        if not variable.task:
+            raise ValueError('Variable must define a task')
+
         if (variable.symbol and variable.target) or (not variable.symbol and not variable.target):
             raise ValueError('Variable must define a symbol or target')
 
 
-def validate_data_generator_variable_xpaths(variables, model_source, attr='id'):
-    """ Validate that the target of each data generator variable matches one object in
+def validate_variable_xpaths(variables, model_source, attr='id'):
+    """ Validate that the target of each variable matches one object in
     an XML-encoded model
 
     Args:

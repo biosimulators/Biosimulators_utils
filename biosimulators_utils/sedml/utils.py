@@ -8,10 +8,11 @@
 
 from ..report.data_model import VariableResults  # noqa: F401
 from ..warnings import warn
+from ..xml.utils import get_namespaces_for_xml_doc
 from .data_model import (SedDocument, Model, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange,
                          Task, Report, Plot2D, Plot3D,
-                         DataGenerator, Variable, MATHEMATICAL_FUNCTIONS)
+                         DataGenerator, Variable, MATHEMATICAL_FUNCTIONS, RESERVED_MATHEMATICAL_SYMBOLS)
 from .warnings import InconsistentVariableShapesWarning
 from lxml import etree
 import copy
@@ -26,8 +27,15 @@ import tempfile
 
 __all__ = [
     'append_all_nested_children_to_doc',
+    'resolve_model_and_apply_xml_changes',
     'resolve_model',
     'apply_changes_to_xml_model',
+    'get_values_of_variable_model_xml_targets_of_model_change',
+    'get_value_of_variable_model_xml_targets',
+    'calc_compute_model_change_new_value',
+    'calc_data_generator_results',
+    'compile_math',
+    'eval_math',
     'remove_model_changes',
     'remove_algorithm_parameter_changes',
     'replace_complex_data_generators_with_generators_for_individual_variables',
@@ -45,6 +53,14 @@ def append_all_nested_children_to_doc(doc):
     tasks = set(doc.tasks)
     simulations = set(doc.simulations)
     models = set(doc.models)
+
+    for model in doc.models:
+        for change in model.changes:
+            if isinstance(change, ComputeModelChange):
+                for var in change.variables:
+                    # tasks not added because `var.task` should be null
+                    if var.model:
+                        models.add(var.model)
 
     for output in doc.outputs:
         if isinstance(output, Report):
@@ -72,8 +88,7 @@ def append_all_nested_children_to_doc(doc):
         for var in data_gen.variables:
             if var.task:
                 tasks.add(var.task)
-            if var.model:
-                models.add(var.model)
+            # models not added because `var.model` should be null
 
     for task in tasks:
         if isinstance(task, Task):
@@ -109,8 +124,71 @@ def get_variables_for_task(doc, task):
 BIOMODELS_DOWNLOAD_ENDPOINT = 'https://www.ebi.ac.uk/biomodels/model/download/{}?filename={}_url.xml'
 
 
+def resolve_model_and_apply_xml_changes(model, sed_doc, working_dir,
+                                        apply_xml_model_changes=True,
+                                        save_to_file=True,
+                                        pretty_print_modified_xml_models=False):
+    """ Resolve the source of a model and, optionally, apply XML changes to the model.
+
+    Args:
+        model (:obj:`Model`): model whose ``source`` is one of the following
+
+            * A path to a file
+            * A URL
+            * A MIRIAM URN for an entry in the BioModelsl database (e.g., ``urn:miriam:biomodels.db:BIOMD0000000012``)
+            * A reference to another model, using the ``id`` of the other model (e.g., ``#other-model-id``).
+              In this case, the model also inherits changes from the parent model.
+
+        sed_doc (:obj:`SedDocument`): parent SED document; used to resolve sources defined by reference to other models
+        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
+        apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file before
+            calling :obj:`task_executer`.
+        save_to_file (:obj:`bool`): whether to save the resolved/modified model to a file
+        pretty_print_modified_xml_models (:obj:`bool`, optional): if :obj:`True`, pretty print modified XML models
+
+    Returns:
+        :obj:`tuple`:
+
+            * :obj:`Model`: modified model
+            * :obj:`str`: temporary path to the source of the modified model, if the model needed to be resolved from
+              a remote source of modified
+            * :obj:`etree._Element`: element tree for the resolved/modified model
+    """
+    model = copy.deepcopy(model)
+
+    # resolve model
+    temp_model_source = resolve_model(model, sed_doc, working_dir)
+
+    # apply changes to model
+    if apply_xml_model_changes:
+        # read model from file
+        model_etree = etree.parse(model.source)
+
+        if model.changes:
+            # apply changes
+            apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir)
+            model.changes.clear()
+
+            # write model to file
+            if save_to_file:
+                if temp_model_source is None:
+                    modified_model_file, temp_model_source = tempfile.mkstemp(suffix='.xml')
+                    os.close(modified_model_file)
+                    model.source = temp_model_source
+
+                model_etree.write(model.source,
+                                  xml_declaration=True,
+                                  encoding="utf-8",
+                                  standalone=False,
+                                  pretty_print=pretty_print_modified_xml_models)
+    else:
+        model_etree = None
+
+    return model, temp_model_source, model_etree
+
+
 def resolve_model(model, sed_doc, working_dir):
-    """ Resolve the source of a model and return a temporary file with the content of the source
+    """ Resolve the source of a model
 
     Args:
         model (:obj:`Model`): model whose ``source`` is one of the following
@@ -125,7 +203,7 @@ def resolve_model(model, sed_doc, working_dir):
         working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
 
     Returns:
-        :obj:`bool`: whether the model source is a temporary file obtained from an external source
+        :obj:`str`: temporary path to the source of the modified model, if the model needed to be resolved from
     """
     source = model.source
 
@@ -146,7 +224,7 @@ def resolve_model(model, sed_doc, working_dir):
         else:
             raise NotImplementedError('URN model source `{}` could be resolved.'.format(source))
 
-        return True
+        return model.source
 
     elif re.match(r'^http(s)?://', source, re.IGNORECASE):
         response = requests.get(source)
@@ -160,7 +238,7 @@ def resolve_model(model, sed_doc, working_dir):
         with open(model.source, 'wb') as file:
             file.write(response.content)
 
-        return True
+        return model.source
 
     elif source.startswith('#'):
         other_model_id = source[1:]
@@ -181,58 +259,55 @@ def resolve_model(model, sed_doc, working_dir):
         if not os.path.isfile(model.source):
             raise FileNotFoundError('Model source file `{}` does not exist.'.format(source))
 
-        return False
+        return None
 
 
-def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename,
-                               validate_unique_xml_targets=True,
-                               pretty_print=False):
-    """ Modify an XML-encoded model according to the model attribute changes in a simulation
+def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
+                               variable_values=None,
+                               validate_unique_xml_targets=True):
+    """ Modify an XML-encoded model according to a model change
 
     Args:
-        changes (:obj:`list` of :obj:`ModelChange`): changes
-        in_model_filename (:obj:`str`): path to model
-        out_model_filename (:obj:`str`): path to save modified model
+        model (:obj:`Model`): model
+        model_etree (:obj:`etree._ElementTree`): element tree for model
+        sed_doc (:obj:`SedDocument`): parent SED document; used to resolve sources defined by reference to other models
+        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
+        variable_values (:obj:`dict`, optional): dictionary which contains the value of each variable of each
+            compute model change
         validate_unique_xml_targets (:obj:`bool`, optional): whether to validate the XML targets match
             uniue objects
-        pretty_print (:obj:`bool`, optional): if :obj:`True`, pretty print output
     """
-    # read model
-    et = etree.parse(in_model_filename)
-
     # get namespaces
-    root = et.getroot()
-    namespaces = root.nsmap
-    if None in namespaces:
-        namespaces.pop(None)
-        match = re.match(r'^{(.*?)}(.*?)$', root.tag)
-        if match:
-            namespaces[match.group(2)] = match.group(1)
+    namespaces = get_namespaces_for_xml_doc(model_etree)
+
+    # get XPATH evaluator
+    xpath_evaluator = etree.XPathEvaluator(model_etree, namespaces=namespaces)
 
     # apply changes
-    for change in changes:
+    model_etrees = {model.id: model_etree}
+    for change in model.changes:
         if isinstance(change, ModelAttributeChange):
 
             # get object to change
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if sep != '/@':
                 raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
-            objs = et.xpath(obj_xpath, namespaces=namespaces)
+            objs = xpath_evaluator(obj_xpath)
             if validate_unique_xml_targets and len(objs) != 1:
-                raise ValueError('xpath {} must match a single object in {}'.format(obj_xpath, in_model_filename))
+                raise ValueError('xpath {} must match a single object'.format(obj_xpath))
 
             # change value
             for obj in objs:
                 obj.set(attr, change.new_value)
 
         elif isinstance(change, AddElementModelChange):
-            parents = et.xpath(change.target, namespaces=namespaces)
+            parents = xpath_evaluator(change.target)
 
             if validate_unique_xml_targets and len(parents) != 1:
-                raise ValueError('xpath {} must match a single object in {}'.format(change.target, in_model_filename))
+                raise ValueError('xpath {} must match a single object'.format(change.target))
 
             try:
-                new_elements = etree.parse(io.StringIO('<root>' + change.new_elements + '</root>')).getroot().getchildren()
+                new_elements = etree.fromstring('<root>' + change.new_elements + '</root>').getchildren()
             except etree.XMLSyntaxError as exception:
                 raise ValueError('`{}` is not valid XML. {}'.format(change.new_elements, str(exception)))
 
@@ -241,10 +316,10 @@ def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename,
                     parent.append(new_element)
 
         elif isinstance(change, ReplaceElementModelChange):
-            old_elements = et.xpath(change.target, namespaces=namespaces)
+            old_elements = xpath_evaluator(change.target)
 
             if validate_unique_xml_targets and len(old_elements) != 1:
-                raise ValueError('xpath {} must match a single object in {}'.format(change.target, in_model_filename))
+                raise ValueError('xpath {} must match a single object'.format(change.target))
 
             try:
                 new_elements = etree.parse(io.StringIO('<root>' + change.new_elements + '</root>')).getroot().getchildren()
@@ -260,27 +335,130 @@ def apply_changes_to_xml_model(changes, in_model_filename, out_model_filename,
                     parent.append(new_element)
 
         elif isinstance(change, RemoveElementModelChange):
-            elements = et.xpath(change.target, namespaces=namespaces)
+            elements = xpath_evaluator(change.target)
 
             if validate_unique_xml_targets and len(elements) != 1:
-                raise ValueError('xpath {} must match a single object in {}'.format(change.target, in_model_filename))
+                raise ValueError('xpath {} must match a single object'.format(change.target))
 
             for element in elements:
                 parent = element.getparent()
                 parent.remove(element)
 
         elif isinstance(change, ComputeModelChange):
-            pass
+            # get the values of model variables referenced by compute model changes
+            if variable_values is None:
+                variable_values = get_values_of_variable_model_xml_targets_of_model_change(change, sed_doc, model_etrees, working_dir)
+
+            # calculate new value
+            new_value = calc_compute_model_change_new_value(change, variable_values)
+
+            # get object to change
+            obj_xpath, sep, attr = change.target.rpartition('/@')
+            if sep != '/@':
+                raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
+            objs = xpath_evaluator(obj_xpath)
+            if validate_unique_xml_targets and len(objs) != 1:
+                raise ValueError('xpath {} must match a single object'.format(obj_xpath))
+
+            # change value
+            for obj in objs:
+                obj.set(attr, str(new_value))
 
         else:
             raise NotImplementedError('Change{} of type {} is not supported'.format(
                 ' ' + change.name if change.name else '', change.__class__.__name__))
 
-    # remove changes from list of changes
-    changes.clear()
 
-    # write model
-    et.write(out_model_filename, xml_declaration=True, encoding="utf-8", standalone=False, pretty_print=pretty_print)
+def get_values_of_variable_model_xml_targets_of_model_change(change, sed_doc, model_etrees, working_dir):
+    """ Get the values of the model variables of a compute model change
+
+    Args:
+        change (:obj:`ComputeModelChange`): compute model change
+        sed_doc (:obj:`SedDocument`): SED document
+        model_etrees (:obj:`dict` of :obj:`str` to :obj:`etree._Element`): map from the ids of models to element
+            trees of their sources
+        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
+
+    Returns:
+        :obj:`dict`: dictionary which contains the value of each variable of each
+            compute model change
+    """
+    variable_values = {}
+    for variable in change.variables:
+        variable_model = variable.model
+        if variable_model.id not in model_etrees:
+            copy_variable_model, temp_model_source, variable_model_etree = resolve_model_and_apply_xml_changes(
+                variable_model, sed_doc, working_dir,
+                apply_xml_model_changes=True,
+                save_to_file=False)
+            model_etrees[variable_model.id] = variable_model_etree
+
+            if temp_model_source:
+                os.remove(temp_model_source)
+
+        variable_values[variable.id] = get_value_of_variable_model_xml_targets(
+            variable, model_etrees)
+
+    return variable_values
+
+
+def get_value_of_variable_model_xml_targets(variable, model_etrees):
+    """ Get the value of a variable of a model
+
+    Args:
+        variable (:obj:`Variable`): variable
+        model_etrees (:obj:`dict` of :obj:`str` to :obj:`etree._Element`): dictionary that maps the
+            ids of models to paths to files which contain their XML definitions
+
+    Returns:
+        :obj:`float`: value
+    """
+    if not variable.target:
+        raise NotImplementedError('Compute model change variable `{}` must have a target'.format(variable.id))
+
+    obj_xpath, sep, attr = variable.target.rpartition('/@')
+    if sep != '/@':
+        raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(variable.target))
+
+    et = model_etrees[variable.model.id]
+    namespaces = get_namespaces_for_xml_doc(et)
+    obj = et.xpath(obj_xpath, namespaces=namespaces)
+    if len(obj) != 1:
+        raise ValueError('xpath {} must match a single object in model {}'.format(obj_xpath, variable.model.id))
+
+    value = obj[0].get(attr)
+    if value is None:
+        raise ValueError('Target `{}` is not defined in model `{}`.'.format(variable.target, variable.model.id))
+    try:
+        value = float(value)
+    except ValueError:
+        raise ValueError('Target `{}` in model `{}` must be a float.'.format(variable.target, variable.model.id))
+
+    return value
+
+
+def calc_compute_model_change_new_value(change, variable_values):
+    """ Calculate the new value of a compute model change
+
+    Args:
+        change (:obj:`ComputeModelChange`): change
+        variable_values (:obj:`dict`, optional): dictionary which contains the value of each variable of each
+            compute model change
+
+    Returns:
+        :obj:`float`: new value
+    """
+    compiled_math = compile_math(change.math)
+
+    workspace = {}
+    for param in change.parameters:
+        workspace[param.id] = param.value
+    for var in change.variables:
+        workspace[var.id] = variable_values.get(var.id, None)
+        if workspace[var.id] is None:
+            raise ValueError('Value of variable `{}` is not defined.'.format(var.id))
+
+    return eval_math(change.math, compiled_math, workspace)
 
 
 def calc_data_generator_results(data_generator, variable_results):
@@ -310,34 +488,14 @@ def calc_data_generator_results(data_generator, variable_results):
         warn('Variables for data generator {} do not have consistent shapes'.format(data_generator.id),
              InconsistentVariableShapesWarning)
 
-    math_node = evalidate.evalidate(data_generator.math,
-                                    addnodes=[
-                                        'Eq', 'NotEq', 'Gt', 'Lt', 'GtE', 'LtE',
-                                        'Sub', 'Mult', 'Div' 'Pow',
-                                        'And', 'Or', 'Not',
-                                        'BitAnd', 'BitOr', 'BitXor',
-                                        'Call',
-                                    ],
-                                    funcs=MATHEMATICAL_FUNCTIONS.keys())
-    compiled_math = compile(math_node, '<data_generator.math>', 'eval')
+    compiled_math = compile_math(data_generator.math)
 
-    workspace = {
-        'true': True,
-        'false': False,
-        'notanumber': math.nan,
-        'pi': math.pi,
-        'infinity': math.inf,
-        'exponentiale': math.e,
-    }
+    workspace = {}
     for param in data_generator.parameters:
         workspace[param.id] = param.value
 
     if not var_shapes:
-        try:
-            value = eval(compiled_math, MATHEMATICAL_FUNCTIONS, workspace)
-        except Exception as exception:
-            raise ValueError('Expression for data generator {} could not be evaluated:\n  {}'.format(
-                data_generator.id, str(exception)))
+        value = eval_math(math, compiled_math, workspace)
         result = numpy.array(value)
 
     else:
@@ -377,11 +535,7 @@ def calc_data_generator_results(data_generator, variable_results):
             if not vars_available:
                 continue
 
-            try:
-                result_el = eval(compiled_math, MATHEMATICAL_FUNCTIONS, workspace)
-            except Exception as exception:
-                raise ValueError('Expression for data generator {} could not be evaluated:\n  {}'.format(
-                    data_generator.id, str(exception)))
+            result_el = eval_math(math, compiled_math, workspace)
 
             if n_dims == 0:
                 result = numpy.array(result_el)
@@ -389,6 +543,54 @@ def calc_data_generator_results(data_generator, variable_results):
                 result.flat[i_el] = result_el
 
     return result
+
+
+def compile_math(math):
+    """ Compile a mathematical expression
+
+    Args:
+        math (:obj:`str`): mathematical expression
+
+    Returns:
+        :obj:`_ast.Expression`: compiled expression
+    """
+    math_node = evalidate.evalidate(math,
+                                    addnodes=[
+                                        'Eq', 'NotEq', 'Gt', 'Lt', 'GtE', 'LtE',
+                                        'Sub', 'Mult', 'Div' 'Pow',
+                                        'And', 'Or', 'Not',
+                                        'BitAnd', 'BitOr', 'BitXor',
+                                        'Call',
+                                    ],
+                                    funcs=MATHEMATICAL_FUNCTIONS.keys())
+    compiled_math = compile(math_node, '<math>', 'eval')
+    return compiled_math
+
+
+def eval_math(math, compiled_math, workspace):
+    """ Compile a mathematical expression
+
+    Args:
+        math (:obj:`str`): mathematical expression
+        compiled_math (:obj:`_ast.Expression`): compiled expression
+        workspace (:obj:`dict`): values to use for the symbols in the expression
+
+    Returns:
+        :obj:`object`: result of the expression
+
+    Raises:
+        :obj:`ValueError`: if the expression could not be evaluated
+    """
+    invalid_symbols = set(RESERVED_MATHEMATICAL_SYMBOLS.keys()).intersection(set(workspace.keys()))
+    if invalid_symbols:
+        raise ValueError('Variables for mathematical expressions cannot have ids equal to the following reserved symbols:\n  - {}'.format(
+            '\n  - '.join('`' + symbol + '`' for symbol in sorted(invalid_symbols))))
+
+    try:
+        return eval(compiled_math, MATHEMATICAL_FUNCTIONS, dict(**RESERVED_MATHEMATICAL_SYMBOLS, **workspace))
+    except Exception as exception:
+        raise ValueError('Expression `{}` could not be evaluated:\n  {}'.format(
+            math, str(exception)))
 
 
 def remove_model_changes(sed_doc):

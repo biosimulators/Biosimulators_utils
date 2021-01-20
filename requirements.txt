@@ -4,6 +4,7 @@ evalidate
 lxml
 matplotlib
 mpmath
+networkx
 numpy
 pandas
 python_dateutil

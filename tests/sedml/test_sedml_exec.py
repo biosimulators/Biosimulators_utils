@@ -71,7 +71,6 @@ class ExecTaskCase(unittest.TestCase):
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                     task=doc.tasks[0],
-                    model=doc.models[0],
                 ),
             ],
             math='data_gen_1_var_1',
@@ -84,7 +83,6 @@ class ExecTaskCase(unittest.TestCase):
                     id='data_gen_2_var_2',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_2']/@concentration",
                     task=doc.tasks[0],
-                    model=doc.models[0],
                 ),
             ],
             math='data_gen_2_var_2',
@@ -97,7 +95,6 @@ class ExecTaskCase(unittest.TestCase):
                     id='data_gen_3_var_3',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_3']/@concentration",
                     task=doc.tasks[1],
-                    model=doc.models[1],
                 ),
             ],
             math='data_gen_3_var_3',
@@ -110,7 +107,6 @@ class ExecTaskCase(unittest.TestCase):
                     id='data_gen_4_var_4',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_4']/@concentration",
                     task=doc.tasks[1],
-                    model=doc.models[1],
                 ),
             ],
             math='data_gen_4_var_4',
@@ -227,7 +223,7 @@ class ExecTaskCase(unittest.TestCase):
             ),
         })
         self.assertEqual(sorted(output_results.keys()), sorted(expected_output_results.keys()))
-        for key in output_results.keys():
+        for key in output_results.keys():            
             self.assertTrue(output_results[key].equals(expected_output_results[key]))
 
         df = ReportReader().run(out_dir, doc.outputs[0].id, format=ReportFormat.csv)
@@ -373,17 +369,84 @@ class ExecTaskCase(unittest.TestCase):
     def test_with_model_changes(self):
         doc = data_model.SedDocument()
 
-        doc.models.append(data_model.Model(
+        model1 = data_model.Model(
             id='model1',
+            source='model1.xml',
+            language='urn:sedml:language:sbml',
+        )
+        doc.models.append(model1)
+
+        model2 = data_model.Model(
+            id='model2',
             source='model1.xml',
             language='urn:sedml:language:sbml',
             changes=[
                 data_model.ModelAttributeChange(
-                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
-                    new_value="2.0",
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z']/@id",
+                    new_value="Z2",
+                )
+            ]
+        )
+        doc.models.append(model2)
+
+        model3 = data_model.Model(
+            id='model3',
+            source='#model2',
+            language='urn:sedml:language:sbml',
+            changes=[
+                data_model.ModelAttributeChange(
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z2']/@initialConcentration",
+                    new_value="4.0",
+                ),
+                data_model.ComputeModelChange(
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z2']/@initialConcentration",
+                    parameters=[
+                        data_model.Parameter(
+                            id='p',
+                            value=3.1,
+                        ),
+                    ],
+                    variables=[
+                        data_model.Variable(
+                            id='var_Z2',
+                            target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z2']/@initialConcentration",
+                        ),
+                    ],
+                    math='p * var_Z2',
                 ),
             ],
-        ))
+        )
+        model3.changes[1].variables[0].model = model3
+        doc.models.append(model3)
+
+        model1.changes.append(
+            data_model.ModelAttributeChange(
+                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
+                new_value="2.5",
+            )
+        ),
+        model1.changes.append(
+            data_model.ComputeModelChange(
+                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Y']/@initialConcentration",
+                parameters=[
+                    data_model.Parameter(id='a', value=0.2),
+                    data_model.Parameter(id='b', value=2.0),
+                ],
+                variables=[
+                    data_model.Variable(
+                        id='y',
+                        model=model1,
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
+                    ),
+                    data_model.Variable(
+                        id='z',
+                        model=model3,
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z2']/@initialConcentration",
+                    ),
+                ],
+                math='a * y + b * z',
+            ),
+        )
 
         doc.simulations.append(data_model.SteadyStateSimulation(
             id='sim1',
@@ -402,10 +465,21 @@ class ExecTaskCase(unittest.TestCase):
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
                     task=doc.tasks[0],
-                    model=doc.models[0],
                 ),
             ],
             math='data_gen_1_var_1',
+        ))
+
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen_2',
+            variables=[
+                data_model.Variable(
+                    id='data_gen_2_var_2',
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Y']/@initialConcentration",
+                    task=doc.tasks[0],
+                ),
+            ],
+            math='data_gen_2_var_2',
         ))
 
         doc.outputs.append(data_model.Report(
@@ -415,6 +489,11 @@ class ExecTaskCase(unittest.TestCase):
                     id='dataset_1',
                     label='dataset_1',
                     data_generator=doc.data_generators[0],
+                ),
+                data_model.DataSet(
+                    id='dataset_2',
+                    label='dataset_2',
+                    data_generator=doc.data_generators[1],
                 ),
             ],
         ))
@@ -429,19 +508,25 @@ class ExecTaskCase(unittest.TestCase):
 
         def execute_task(task, variables, log):
             et = etree.parse(task.model.source)
-            obj_xpath, _, attr = variables[0].target.rpartition('/@')
-            obj = et.xpath(obj_xpath, namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'})[0]
+
             results = VariableResults()
-            results[doc.data_generators[0].variables[0].id] = numpy.array((float(obj.get(attr)),))
+            for variable in variables:
+                obj_xpath, _, attr = variable.target.rpartition('/@')
+                obj = et.xpath(obj_xpath, namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'})[0]
+                results[variable.id] = numpy.array((float(obj.get(attr)),))
+
             return results, log
 
         out_dir = os.path.join(self.tmp_dir, 'results')
 
         report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=False)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((1., )))
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :], numpy.array((2., )))
 
         report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=True)
-        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((2., )))
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((2.5, )))
+        expected_value = 0.2 * 2.5 + 2.0 * 3.1 * 4.0
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :], numpy.array((expected_value)))
 
     def test_warnings(self):
         # no tasks
@@ -495,7 +580,6 @@ class ExecTaskCase(unittest.TestCase):
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
                     task=doc.tasks[0],
-                    model=doc.models[0],
                 ),
             ],
             math='data_gen_1_var_1',
@@ -571,7 +655,6 @@ class ExecTaskCase(unittest.TestCase):
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                     task=doc.tasks[0],
-                    model=doc.models[0],
                 ),
             ],
             math='data_gen_1_var_1',
@@ -637,13 +720,11 @@ class ExecTaskCase(unittest.TestCase):
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                     task=doc.tasks[0],
-                    model=doc.models[0],
                 ),
                 data_model.Variable(
                     id='data_gen_1_var_2',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                     task=doc.tasks[0],
-                    model=doc.models[0],
                 ),
             ],
             math='data_gen_1_var_1 * data_gen_1_var_2',
@@ -682,7 +763,6 @@ class ExecTaskCase(unittest.TestCase):
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                         task=doc.tasks[0],
-                        model=doc.models[0],
                     ),
                 ],
                 math='xx',
@@ -723,13 +803,11 @@ class ExecTaskCase(unittest.TestCase):
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                         task=doc.tasks[0],
-                        model=doc.models[0],
                     ),
                     data_model.Variable(
                         id='data_gen_1_var_2',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_2']/@concentration",
                         task=doc.tasks[0],
-                        model=doc.models[0],
                     ),
                 ],
                 math='data_gen_1_var_1 * data_gen_1_var_2',
@@ -772,7 +850,6 @@ class ExecTaskCase(unittest.TestCase):
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                         task=doc.tasks[0],
-                        model=doc.models[0],
                     ),
                 ],
                 math='data_gen_1_var_1',
@@ -784,7 +861,6 @@ class ExecTaskCase(unittest.TestCase):
                         id='data_gen_2_var_2',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_2']/@concentration",
                         task=doc.tasks[0],
-                        model=doc.models[0],
                     ),
                 ],
                 math='data_gen_2_var_2',
@@ -796,7 +872,6 @@ class ExecTaskCase(unittest.TestCase):
                         id='data_gen_3_var_3',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_3']/@concentration",
                         task=doc.tasks[0],
-                        model=doc.models[0],
                     ),
                 ],
                 math='data_gen_3_var_3',
@@ -869,7 +944,6 @@ class ExecTaskCase(unittest.TestCase):
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                         task=doc.tasks[0],
-                        model=doc.models[0],
                     ),
                 ],
                 math='data_gen_1_var_1',
@@ -881,7 +955,6 @@ class ExecTaskCase(unittest.TestCase):
                         id='data_gen_2_var_2',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
                         task=doc.tasks[0],
-                        model=doc.models[0],
                     ),
                 ],
                 math='data_gen_2_var_2',

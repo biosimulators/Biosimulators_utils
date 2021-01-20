@@ -17,7 +17,7 @@ from .data_model import SedDocument, Task, Report, Plot2D, Plot3D
 from .exceptions import SedmlExecutionError
 from .warnings import RepeatDataSetLabelsWarning, SedmlFeatureNotSupportedWarning
 from .io import SedmlSimulationReader
-from .utils import resolve_model, apply_changes_to_xml_model, get_variables_for_task, calc_data_generator_results
+from .utils import resolve_model_and_apply_xml_changes, get_variables_for_task, calc_data_generator_results
 from .warnings import NoTasksWarning, NoOutputsWarning
 import capturer
 import copy
@@ -27,7 +27,6 @@ import os
 import pandas
 import sys
 import termcolor
-import tempfile
 import types  # noqa: F401
 
 
@@ -38,7 +37,7 @@ __all__ = [
 
 def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=None,
                  apply_xml_model_changes=False, report_formats=None, plot_formats=None,
-                 log=None, indent=0):
+                 log=None, indent=0, pretty_print_modified_xml_models=False):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -74,6 +73,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
         log (:obj:`SedDocumentLog`, optional): log of the document
         indent (:obj:`int`, optional): degree to indent status messages
+        pretty_print_modified_xml_models (:obj:`bool`, optional): if :obj:`True`, pretty print modified XML models
 
     Returns:
         :obj:`tuple`:
@@ -137,23 +137,12 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             start_time = datetime.datetime.now()
             try:
                 if isinstance(task, Task):
-                    # resolve model
+                    # get model and apply changes
                     original_model = task.model
-                    model = copy.deepcopy(original_model)
-                    task.model = model
-                    is_model_source_temp = resolve_model(model, doc, working_dir)
-
-                    # apply changes to model
-                    unmodified_model_filename = model.source
-                    if apply_xml_model_changes and model.changes:
-                        modified_model_file, modified_model_filename = tempfile.mkstemp(suffix='.xml')
-                        os.close(modified_model_file)
-
-                        apply_changes_to_xml_model(model.changes, unmodified_model_filename, modified_model_filename)
-
-                        model.source = modified_model_filename
-                    else:
-                        modified_model_filename = None
+                    task.model, temp_model_source, _ = resolve_model_and_apply_xml_changes(
+                        task.model, doc, working_dir,
+                        apply_xml_model_changes=apply_xml_model_changes,
+                        pretty_print_modified_xml_models=pretty_print_modified_xml_models)
 
                     # get a list of the variables that the task needs to record
                     task_vars = get_variables_for_task(doc, task)
@@ -172,15 +161,15 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                             task.id, '\n  - '.join('`' + var + '`' for var in sorted(missing_vars)))
                         raise ValueError(msg)
 
-                    # cleanup modified models
+                    # cleanup modified model source
+                    if temp_model_source:
+                        os.remove(temp_model_source)
                     task.model = original_model
-                    if is_model_source_temp:
-                        os.remove(unmodified_model_filename)
-                    if modified_model_filename:
-                        os.remove(modified_model_filename)
 
                 else:
                     raise NotImplementedError('Tasks of type {} are not supported.'.format(task.__class__.__name__))
+
+                print(task_vars)
 
                 task_status = Status.SUCCEEDED
                 task_exception = None
