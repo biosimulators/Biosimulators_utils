@@ -31,7 +31,7 @@ class IoTestCase(unittest.TestCase):
                 data_model.ModelAttributeChange(target='/sbml:sbml/sbml:model[id=\'b\']/@id', new_value='432'),
                 data_model.AddElementModelChange(
                     target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters',
-                    new_elements='<sbml:parameter xmlns:sbml="http://sed-ml.org/sed-ml/level1/version3" id="new_parameter" value="1.0"/>'
+                    new_elements='<sbml:parameter xmlns:sbml="http://www.sbml.org/sbml/level2/version3" id="new_parameter" value="1.0"/>'
                 ),
                 data_model.AddElementModelChange(
                     target='/sbml:sbml/sbml:model[id=\'b\']/sbml:listOfParameters',
@@ -480,7 +480,7 @@ class IoTestCase(unittest.TestCase):
         doc = io.SedmlSimulationReader().run(filename)
         self.assertEqual(doc.models[0].changes[0].new_elements,
                          '<sbml:parameter xmlns:{}="{}" id="V_mT" value="0.7"/>'.format(
-            'sbml', 'http://sed-ml.org/sed-ml/level1/version3'))
+            'sbml', 'http://www.sbml.org/sbml/level2/version3'))
 
     @unittest.skip('Not yet implemented')
     def test_read_repeated_task(self):

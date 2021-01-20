@@ -275,7 +275,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         self.assertEqual(namespaces.getIndexByPrefix('sbml'), 0)
         self.assertEqual(utils.convert_xml_node_to_string(node),
                          '<sbml:parameter xmlns:{}="{}" id="V_mT" value="0.7"/>'.format(
-            'sbml', 'http://sed-ml.org/sed-ml/level1/version3'))
+            'sbml', 'http://www.sbml.org/sbml/level2/version3'))
 
     def test_change_attributes_multiple_targets(self):
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
