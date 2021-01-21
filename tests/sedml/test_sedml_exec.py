@@ -3,7 +3,7 @@ from biosimulators_utils.log.data_model import (
     Status, CombineArchiveLog, SedDocumentLog, TaskLog, ReportLog)
 from biosimulators_utils.log.utils import init_sed_document_log
 from biosimulators_utils.plot.data_model import PlotFormat
-from biosimulators_utils.report.data_model import VariableResults, ReportResults, ReportFormat
+from biosimulators_utils.report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
@@ -196,43 +196,41 @@ class ExecTaskCase(unittest.TestCase):
                                                   out_dir, report_formats=[ReportFormat.csv], plot_formats=[])
 
         expected_output_results = ReportResults({
-            doc.outputs[0].id: pandas.DataFrame(
-                numpy.array([
-                    numpy.array((1., 2.)),
-                    numpy.array((5., 6.)),
-                ]),
-                index=['dataset_1', 'dataset_2'],
-            ),
-            doc.outputs[1].id: pandas.DataFrame(
-                numpy.array([
-                    numpy.array((3., 4.)),
-                    numpy.array((7., 8.)),
-                ]),
-                index=['dataset_3', 'dataset_4'],
-            ),
-            doc.outputs[2].id: pandas.DataFrame(
-                numpy.array([
-                    numpy.array((1., 2.)),
-                ]),
-                index=['dataset_5'],
-            ),
-            doc.outputs[3].id: pandas.DataFrame(
-                numpy.array([
-                    numpy.array((7., 8.)),
-                    numpy.array((7., 8.)),
-                ]),
-                index=['dataset_6', 'dataset_7'],
-            ),
+            doc.outputs[0].id: DataSetResults({
+                'dataset_1': numpy.array((1., 2.)),
+                'dataset_2': numpy.array((5., 6.)),
+            }),
+            doc.outputs[1].id: DataSetResults({
+                'dataset_3': numpy.array((3., 4.)),
+                'dataset_4': numpy.array((7., 8.)),
+            }),
+            doc.outputs[2].id: DataSetResults({
+                'dataset_5': numpy.array((1., 2.)),
+            }),
+            doc.outputs[3].id: DataSetResults({
+                'dataset_6': numpy.array((7., 8.)),
+                'dataset_7': numpy.array((7., 8.)),
+            }),
         })
         self.assertEqual(sorted(output_results.keys()), sorted(expected_output_results.keys()))
-        for key in output_results.keys():
-            self.assertTrue(output_results[key].equals(expected_output_results[key]))
+        for report_id, data_set_results in output_results.items():
+            self.assertEqual(sorted(output_results[report_id].keys()), sorted(expected_output_results[report_id].keys()))
+            for data_set_id in data_set_results.keys():
+                numpy.testing.assert_allclose(
+                    output_results[report_id][data_set_id],
+                    expected_output_results[report_id][data_set_id])
 
-        df = ReportReader().run(out_dir, doc.outputs[0].id, format=ReportFormat.csv)
-        self.assertTrue(output_results[doc.outputs[0].id].equals(df))
+        data_set_results = ReportReader().run(doc.outputs[0], out_dir, doc.outputs[0].id, format=ReportFormat.csv)
+        for data_set in doc.outputs[0].data_sets:
+            numpy.testing.assert_allclose(
+                output_results[doc.outputs[0].id][data_set.id],
+                data_set_results[data_set.id])
 
-        df = ReportReader().run(out_dir, doc.outputs[1].id, format=ReportFormat.csv)
-        self.assertTrue(output_results[doc.outputs[1].id].equals(df))
+        data_set_results = ReportReader().run(doc.outputs[1], out_dir, doc.outputs[1].id, format=ReportFormat.csv)
+        for data_set in doc.outputs[1].data_sets:
+            numpy.testing.assert_allclose(
+                output_results[doc.outputs[1].id][data_set.id],
+                data_set_results[data_set.id])
 
         # save in HDF5 format
         doc.models[1].source = doc.models[0].source
@@ -240,11 +238,17 @@ class ExecTaskCase(unittest.TestCase):
         shutil.rmtree(out_dir)
         exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[])
 
-        df = ReportReader().run(out_dir, doc.outputs[0].id, format=ReportFormat.h5)
-        self.assertTrue(output_results[doc.outputs[0].id].equals(df))
+        data_set_results = ReportReader().run(doc.outputs[0], out_dir, doc.outputs[0].id, format=ReportFormat.h5)
+        for data_set in doc.outputs[0].data_sets:
+            numpy.testing.assert_allclose(
+                output_results[doc.outputs[0].id][data_set.id],
+                data_set_results[data_set.id])
 
-        df = ReportReader().run(out_dir, doc.outputs[1].id, format=ReportFormat.h5)
-        self.assertTrue(output_results[doc.outputs[1].id].equals(df))
+        data_set_results = ReportReader().run(doc.outputs[1], out_dir, doc.outputs[1].id, format=ReportFormat.h5)
+        for data_set in doc.outputs[1].data_sets:
+            numpy.testing.assert_allclose(
+                output_results[doc.outputs[1].id][data_set.id],
+                data_set_results[data_set.id])
 
         # track execution status
         shutil.rmtree(out_dir)
@@ -522,13 +526,13 @@ class ExecTaskCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'results')
 
         report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=False)
-        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((1., )))
-        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :], numpy.array((2., )))
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id], numpy.array((1., )))
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id], numpy.array((2., )))
 
         report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=True)
-        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((2.5, )))
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id], numpy.array((2.5, )))
         expected_value = 0.2 * 2.5 + 2.0 * 3.1 * 4.0
-        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :], numpy.array((expected_value)))
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id], numpy.array((expected_value)))
 
     def test_warnings(self):
         # no tasks
@@ -890,8 +894,8 @@ class ExecTaskCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
             report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
-        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((1., numpy.nan)))
-        numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :], numpy.array((1., 2.)))
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id], numpy.array((1.)))
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id], numpy.array((1., 2.)))
 
         doc.outputs[0].data_sets.append(
             data_model.DataSet(
@@ -910,11 +914,11 @@ class ExecTaskCase(unittest.TestCase):
         with self.assertRaisesRegex(SedmlExecutionError, 'Must pass 2-d input'):
             with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
                 report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
-        # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :],
+        # numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id],
         #                            numpy.array(((1., numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
-        # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :],
+        # numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id],
         #                            numpy.array(((1., 2., numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
-        # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[2].id, :],
+        # numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[2].id],
         #                            numpy.array(((1., 2., 3.), (4., 5., 6.), (7., 8., 9.))))
 
         # warning: data set labels are not unique

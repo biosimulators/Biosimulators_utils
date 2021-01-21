@@ -1076,7 +1076,7 @@ class SedmlSimulationReader(object):
             var.symbol = var_sed.getSymbol() or None
             var.target = var_sed.getTarget() or None
 
-            if var.target.startswith('#'):
+            if var.target and var.target.startswith('#'):
                 raise NotImplementedError('Variable targets to data descriptions are not supported.')
 
             self._deserialize_reference(var_sed, var, 'task', 'Task', 'task', id_to_task_map)

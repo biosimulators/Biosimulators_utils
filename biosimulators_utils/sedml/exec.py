@@ -11,21 +11,18 @@ from ..log.data_model import Status, SedDocumentLog, TaskLog, ReportLog, Plot2DL
 from ..log.utils import init_sed_document_log
 from ..plot.data_model import PlotFormat
 from ..plot.io import write_plot_2d, write_plot_3d
-from ..report.data_model import VariableResults, ReportResults, ReportFormat
+from ..report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat  # noqa: F401
 from ..report.io import ReportWriter
 from ..warnings import warn
 from .data_model import SedDocument, Task, Report, Plot2D, Plot3D
 from .exceptions import SedmlExecutionError
-from .warnings import RepeatDataSetLabelsWarning
 from .io import SedmlSimulationReader
 from .utils import resolve_model_and_apply_xml_changes, get_variables_for_task, calc_data_generators_results
 from .warnings import NoTasksWarning, NoOutputsWarning
 import capturer
 import copy
 import datetime
-import numpy
 import os
-import pandas
 import sys
 import termcolor
 import types  # noqa: F401
@@ -307,7 +304,7 @@ def exec_report(report, variable_results, base_out_path, rel_out_path, formats, 
     Returns:
         :obj:`tuple`:
 
-            * :obj:`pandas.DataFrame`: report
+            * :obj:`DataSetResults`: report
             * :obj:`Status`: status
             * :obj:`Exception`: exception for failure
             * :obj:`bool`: whether :obj:`task` contribute a variable to the report
@@ -318,21 +315,18 @@ def exec_report(report, variable_results, base_out_path, rel_out_path, formats, 
         data_generators.add(data_set.data_generator)
 
     data_gen_results, data_gen_statuses, data_gen_exceptions, task_contributes_to_report = calc_data_generators_results(
-        data_generators, variable_results, report, task)
+        data_generators, variable_results, report, task, make_shapes_consistent=False)
 
     # collect data sets
-    dataset_labels = []
-    dataset_results = []
+    data_set_results = {}
 
     running = False
     succeeded = True
     failed = False
 
     for data_set in report.data_sets:
-        dataset_labels.append(data_set.label)
-
         data_gen_res = data_gen_results[data_set.data_generator.id]
-        dataset_results.append(data_gen_res)
+        data_set_results[data_set.id] = data_gen_res
 
         data_gen_status = data_gen_statuses[data_set.data_generator.id]
         log.data_sets[data_set.id] = data_gen_status
@@ -343,13 +337,9 @@ def exec_report(report, variable_results, base_out_path, rel_out_path, formats, 
         else:
             succeeded = False
 
-    if len(set(dataset_labels)) < len(dataset_labels):
-        warn('To facilitate machine interpretation, data sets should have unique ids.',
-             RepeatDataSetLabelsWarning)
-
-    output_df = pandas.DataFrame(numpy.array(dataset_results), index=dataset_labels)
     for format in formats:
-        ReportWriter().run(output_df,
+        ReportWriter().run(report,
+                           data_set_results,
                            base_out_path,
                            os.path.join(rel_out_path, report.id) if rel_out_path else report.id,
                            format=format)
@@ -366,7 +356,7 @@ def exec_report(report, variable_results, base_out_path, rel_out_path, formats, 
     else:
         status = Status.QUEUED
 
-    return output_df, status, data_gen_exceptions, task_contributes_to_report
+    return data_set_results, status, data_gen_exceptions, task_contributes_to_report
 
 
 def exec_plot_2d(plot, variable_results, base_out_path, rel_out_path, formats, task, log):
@@ -375,25 +365,19 @@ def exec_plot_2d(plot, variable_results, base_out_path, rel_out_path, formats, t
     Args:
         plot (:obj:`Plot2D`): plot
         variable_results (:obj:`VariableResults`): result of each data generator
-        base_out_path (:obj:`str`): path to store the outputs
-
-            * CSV: directory in which to save outputs to files
-              ``{base_out_path}/{rel_out_path}/{report.id}.csv``
-            * HDF5: directory in which to save a single HDF5 file (``{base_out_path}/reports.h5``),
-              with reports at keys ``{rel_out_path}/{report.id}`` within the HDF5 file
-
-        rel_out_path (:obj:`str`, optional): path relative to :obj:`base_out_path` to store the outputs
+        base_out_path (:obj:`str`): base path to store the plot. Complete path is
+            ``{base_out_path}/{rel_out_path}/{plot.id}.csv``
+        rel_out_path (:obj:`str`, optional): path relative to :obj:`base_out_path` to store the plot
         formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
         task (:obj:`Task`): task
-        log (:obj:`ReportLog`, optional): log of report
+        log (:obj:`ReportLog`, optional): log of plot
 
     Returns:
         :obj:`tuple`:
 
-            * :obj:`pandas.DataFrame`: results of data generators
             * :obj:`Status`: status
             * :obj:`Exception`: exception for failure
-            * :obj:`bool`: whether :obj:`task` contribute a variable to the report
+            * :obj:`bool`: whether :obj:`task` contributes a variable to the plot
     """
     # calculate data generators
     data_generators = set()
@@ -456,30 +440,24 @@ def exec_plot_2d(plot, variable_results, base_out_path, rel_out_path, formats, t
 
 
 def exec_plot_3d(plot, variable_results, base_out_path, rel_out_path, formats, task, log):
-    """ Execute a 3D plot, generating the curves which are available
+    """ Execute a 3D plot, generating the surfaces which are available
 
     Args:
         plot (:obj:`Plot3D`): plot
         variable_results (:obj:`VariableResults`): result of each data generator
-        base_out_path (:obj:`str`): path to store the outputs
-
-            * CSV: directory in which to save outputs to files
-              ``{base_out_path}/{rel_out_path}/{report.id}.csv``
-            * HDF5: directory in which to save a single HDF5 file (``{base_out_path}/reports.h5``),
-              with reports at keys ``{rel_out_path}/{report.id}`` within the HDF5 file
-
-        rel_out_path (:obj:`str`, optional): path relative to :obj:`base_out_path` to store the outputs
+        base_out_path (:obj:`str`): base path to store the plot. Complete path is
+          ``{base_out_path}/{rel_out_path}/{plot.id}.pdf``
+        rel_out_path (:obj:`str`, optional): path relative to :obj:`base_out_path` to store the plot
         formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
         task (:obj:`Task`): task
-        log (:obj:`ReportLog`, optional): log of report
+        log (:obj:`ReportLog`, optional): log of plot
 
     Returns:
         :obj:`tuple`:
 
-            * :obj:`pandas.DataFrame`: results of data generators
             * :obj:`Status`: status
             * :obj:`Exception`: exception for failure
-            * :obj:`bool`: whether :obj:`task` contribute a variable to the report
+            * :obj:`bool`: whether :obj:`task` contributes a variable to the plot
     """
     # calculate data generators
     data_generators = set()

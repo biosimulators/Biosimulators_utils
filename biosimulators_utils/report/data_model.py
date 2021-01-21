@@ -9,7 +9,7 @@
 import enum
 
 
-__all__ = ['DataGeneratorResults', 'VariableResults', 'ReportResults', 'ReportFormat']
+__all__ = ['VariableResults', 'DataGeneratorResults', 'DataSetResults', 'ReportResults', 'ReportFormat']
 
 
 class VariableResults(dict):
@@ -38,21 +38,24 @@ class DataGeneratorResults(dict):
     pass
 
 
+class DataSetResults(dict):
+    """ Dictionary that maps the ids of data sets to their results (:obj:`numpy.ndarray`)
+
+    * Keys (:obj:`str`): ids of data sets
+    * Values (:obj:`numpy.ndarray`): result of each data set
+
+        * Steady-state tasks of non-spatial models: results should be arrays of shape ``(number of data sets, 1)``
+        * One-step tasks of non-spatial models: results should be arrays of shape ``(number of data sets, 2)``
+        * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_points + 1)``
+    """
+    pass
+
+
 class ReportResults(dict):
-    """ Dictionary that maps the ids of reports (e.g., :obj:`Report`) to their results (:obj:`pandas.DataFrame`)
+    """ Dictionary that maps the ids of reports (e.g., :obj:`Report`) to their results (:obj:`DataSetResults`)
 
     * Keys (:obj:`str`): ids of reports (e.g., :obj:`Report`)
-    * Values (:obj:`pandas.DataFrame`): result of each reports
-
-        * Data:
-
-            * Steady-state tasks of non-spatial models: results should be arrays of shape ``(number of data sets, 1)``
-            * One-step tasks of non-spatial models: results should be arrays of shape ``(number of data sets, 2)``
-            * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number of data sets, number_of_points + 1)``
-
-        * Indices (row labels)
-
-            * Reports: equal to the ids of the data sets if each report
+    * Values (:obj:`DataSetResults`): result of each report
     """
     pass
 

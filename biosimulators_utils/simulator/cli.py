@@ -26,7 +26,7 @@ def build_cli(cli_name=None, cli_version=None,
     The command-line application will have two inputs
 
     * A path to a COMBINE/OMEX archive that describes one or more simulations or one or more models
-    * A path to a directory to store the ouputs of the execution of the simulations defined in the archive
+    * A path to a directory to store the outputs of the execution of the simulations defined in the archive
 
     The command-line application will also support two additional commands
 

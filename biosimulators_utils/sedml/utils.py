@@ -38,6 +38,7 @@ __all__ = [
     'calc_compute_model_change_new_value',
     'calc_data_generator_results',
     'calc_data_generators_results',
+    'pad_arrays_to_consistent_shapes',
     'compile_math',
     'eval_math',
     'remove_model_changes',
@@ -644,40 +645,9 @@ def calc_data_generators_results(data_generators, variable_results, output, task
         results[data_gen.id] = result
 
     if make_shapes_consistent:
-        shapes = set()
-        for result in results.values():
-            if result is not None:
-                shape = result.shape
-                if not shape and result.size:
-                    shape = (1,)
-                shapes.add(shape)
-
-        if len(shapes) > 1:
-            warn('Data generators for ouput {} do not have consistent shapes'.format(output.id), UserWarning)
-
-        max_shape = []
-        for shape in shapes:
-            max_shape = max_shape + [1 if max_shape else 0] * (len(shape) - len(max_shape))
-            shape = list(shape) + [1 if shape else 0] * (len(max_shape) - len(shape))
-            max_shape = [max(x, y) for x, y in zip(max_shape, shape)]
-
-        for data_gen_id, result in results.items():
-            if result is None:
-                result = numpy.full(max_shape, numpy.nan)
-
-            shape = tuple(list(result.shape)
-                          + [1 if result.size else 0]
-                          * (len(max_shape) - result.ndim))
-            result = result.reshape(shape)
-
-            pad_width = tuple((0, x - y) for x, y in zip(max_shape, shape))
-
-            if pad_width:
-                result = numpy.pad(result,
-                                   pad_width,
-                                   mode='constant',
-                                   constant_values=numpy.nan)
-
+        arrays = results.values()
+        consistent_arrays = pad_arrays_to_consistent_shapes(arrays)
+        for data_gen_id, result in zip(results.keys(), consistent_arrays):
             results[data_gen_id] = result
 
     if exceptions:
@@ -687,6 +657,55 @@ def calc_data_generators_results(data_generators, variable_results, output, task
         exception = None
 
     return results, statuses, exception, task_contributes_to_data_generators
+
+
+def pad_arrays_to_consistent_shapes(arrays):
+    """ Pad a list of NumPy arrays to a consistent shape
+
+    Args:
+        arrays (:obj:`list` of :obj:`numpy.ndarray`): list of NumPy arrays
+
+    Returns:
+        :obj:`list` of :obj:`numpy.ndarray`: list of padded arrays
+    """
+    shapes = set()
+    for array in arrays:
+        if array is not None:
+            shape = array.shape
+            if not shape and array.size:
+                shape = (1,)
+            shapes.add(shape)
+
+    if len(shapes) > 1:
+        warn('Arrays do not have consistent shapes', UserWarning)
+
+    max_shape = []
+    for shape in shapes:
+        max_shape = max_shape + [1 if max_shape else 0] * (len(shape) - len(max_shape))
+        shape = list(shape) + [1 if shape else 0] * (len(max_shape) - len(shape))
+        max_shape = [max(x, y) for x, y in zip(max_shape, shape)]
+
+    padded_arrays = []
+    for array in arrays:
+        if array is None:
+            array = numpy.full(max_shape, numpy.nan)
+
+        shape = tuple(list(array.shape)
+                      + [1 if array.size else 0]
+                      * (len(max_shape) - array.ndim))
+        array = array.reshape(shape)
+
+        pad_width = tuple((0, x - y) for x, y in zip(max_shape, shape))
+
+        if pad_width:
+            array = numpy.pad(array,
+                              pad_width,
+                              mode='constant',
+                              constant_values=numpy.nan)
+
+        padded_arrays.append(array)
+
+    return padded_arrays
 
 
 def compile_math(math):
