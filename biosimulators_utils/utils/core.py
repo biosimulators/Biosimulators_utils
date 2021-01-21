@@ -7,13 +7,15 @@
 """
 
 from ..data_model import ValueType, OntologyTerm
+from ..warnings import warn
 import json
+import numpy
 import re
 
 __all__ = [
     'are_lists_equal', 'none_sorted', 'assert_exception',
     'validate_value', 'validate_str_value', 'format_value', 'parse_value',
-    'patch_dict',
+    'patch_dict', 'pad_arrays_to_consistent_shapes',
 ]
 
 
@@ -275,3 +277,52 @@ def patch_dict(dictionary, patch):
 
             else:
                 props[key] = new_val
+
+
+def pad_arrays_to_consistent_shapes(arrays):
+    """ Pad a list of NumPy arrays to a consistent shape
+
+    Args:
+        arrays (:obj:`list` of :obj:`numpy.ndarray`): list of NumPy arrays
+
+    Returns:
+        :obj:`list` of :obj:`numpy.ndarray`: list of padded arrays
+    """
+    shapes = set()
+    for array in arrays:
+        if array is not None:
+            shape = array.shape
+            if not shape and array.size:
+                shape = (1,)
+            shapes.add(shape)
+
+    if len(shapes) > 1:
+        warn('Arrays do not have consistent shapes', UserWarning)
+
+    max_shape = []
+    for shape in shapes:
+        max_shape = max_shape + [1 if max_shape else 0] * (len(shape) - len(max_shape))
+        shape = list(shape) + [1 if shape else 0] * (len(max_shape) - len(shape))
+        max_shape = [max(x, y) for x, y in zip(max_shape, shape)]
+
+    padded_arrays = []
+    for array in arrays:
+        if array is None:
+            array = numpy.full(max_shape, numpy.nan)
+
+        shape = tuple(list(array.shape)
+                      + [1 if array.size else 0]
+                      * (len(max_shape) - array.ndim))
+        array = array.astype('float64').reshape(shape)
+
+        pad_width = tuple((0, x - y) for x, y in zip(max_shape, shape))
+
+        if pad_width:
+            array = numpy.pad(array,
+                              pad_width,
+                              mode='constant',
+                              constant_values=numpy.nan)
+
+        padded_arrays.append(array)
+
+    return padded_arrays

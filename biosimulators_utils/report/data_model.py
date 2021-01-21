@@ -66,3 +66,5 @@ class ReportFormat(str, enum.Enum):
     h5 = 'h5'
     hdf = 'h5'
     hdf5 = 'h5'
+    tsv = 'tsv'
+    xlsx = 'xlsx'

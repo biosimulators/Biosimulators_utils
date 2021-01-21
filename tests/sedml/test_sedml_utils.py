@@ -448,7 +448,6 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
         parameters = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species/sbml:parameter", namespaces=namespaces)
         species_ids = [s.get('id') for s in species]
-        parameter_ids = [p.get('id') for p in parameters]
 
         # apply changes
         et = etree.parse(self.FIXTURE_FILENAME)
@@ -656,7 +655,6 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         self.assertEqual(utils.get_value_of_variable_model_xml_targets(change.variables[0], models), 2.0)
         self.assertEqual(utils.get_value_of_variable_model_xml_targets(change.variables[1], models), 3.0)
 
-        model = data_model.Model(changes=[change])
         doc = data_model.SedDocument(models=[change.variables[0].model, change.variables[1].model])
 
         change.variables[0].model.source = 'https://models.com/model_1.xml'
@@ -674,7 +672,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         # calc new value
         variable_values = {}
         with self.assertRaisesRegex(ValueError, 'is not defined'):
-            self.assertEqual(utils.calc_compute_model_change_new_value(change, variable_values), expected_value)
+            utils.calc_compute_model_change_new_value(change, variable_values)
 
         variable_values = {
             'x': 2.,

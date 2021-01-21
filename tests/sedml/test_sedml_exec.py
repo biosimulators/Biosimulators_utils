@@ -5,19 +5,17 @@ from biosimulators_utils.log.utils import init_sed_document_log
 from biosimulators_utils.plot.data_model import PlotFormat
 from biosimulators_utils.report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
+from biosimulators_utils.report.warnings import RepeatDataSetLabelsWarning
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
 from biosimulators_utils.sedml import io
 from biosimulators_utils.sedml.exceptions import SedmlExecutionError
-from biosimulators_utils.sedml.warnings import (NoTasksWarning, NoOutputsWarning, RepeatDataSetLabelsWarning,
-                                                SedmlFeatureNotSupportedWarning, InconsistentVariableShapesWarning)
+from biosimulators_utils.sedml.warnings import NoTasksWarning, NoOutputsWarning, InconsistentVariableShapesWarning
 from lxml import etree
 from unittest import mock
 import numpy
 import numpy.testing
 import os
-import pandas
-import requests
 import shutil
 import tempfile
 import unittest
@@ -910,19 +908,21 @@ class ExecTaskCase(unittest.TestCase):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results2')
-        # TODO: remove once multidimensional results supported
-        with self.assertRaisesRegex(SedmlExecutionError, 'Must pass 2-d input'):
+        with self.assertRaisesRegex(SedmlExecutionError, 'Multidimensional reports cannot be exported to CSV'):
             with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-                report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
-        # numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id],
-        #                            numpy.array(((1., numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
-        # numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id],
-        #                            numpy.array(((1., 2., numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
-        # numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[2].id],
-        #                            numpy.array(((1., 2., 3.), (4., 5., 6.), (7., 8., 9.))))
+                exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+
+        with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
+            report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir, report_formats=[ReportFormat.h5])
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id],
+                                   numpy.array((1.,)))
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id],
+                                   numpy.array((1., 2.)))
+        numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[2].id],
+                                   numpy.array(((1., 2., 3.), (4., 5., 6.), (7., 8., 9.))))
 
         # warning: data set labels are not unique
-        doc.data_generators = [
+        doc.data_generators=[
             data_model.DataGenerator(
                 id='data_gen_1',
                 variables=[
@@ -947,7 +947,7 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
-        doc.outputs = [
+        doc.outputs=[
             data_model.Report(
                 id='report_1',
                 data_sets=[
@@ -966,38 +966,38 @@ class ExecTaskCase(unittest.TestCase):
         ]
 
         def execute_task(task, variables, log):
-            results = VariableResults()
-            results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
-            results[doc.data_generators[1].variables[0].id] = numpy.array((2., 3.))
+            results=VariableResults()
+            results[doc.data_generators[0].variables[0].id]=numpy.array((1., 2.))
+            results[doc.data_generators[1].variables[0].id]=numpy.array((2., 3.))
             return results, log
 
-        working_dir = self.tmp_dir
+        working_dir=self.tmp_dir
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
-        out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertWarnsRegex(RepeatDataSetLabelsWarning, 'should have unique ids'):
+        out_dir=os.path.join(self.tmp_dir, 'results')
+        with self.assertWarnsRegex(RepeatDataSetLabelsWarning, 'should have unique labels'):
             exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
 
         # error: unsupported outputs
-        doc.outputs = [
+        doc.outputs=[
             mock.Mock(id='unsupported')
         ]
 
-        working_dir = self.tmp_dir
+        working_dir=self.tmp_dir
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
-        log = SedDocumentLog(tasks={}, outputs={})
+        log=SedDocumentLog(tasks={}, outputs={})
         for task in doc.tasks:
-            log.tasks[task.id] = TaskLog(parent=log)
+            log.tasks[task.id]=TaskLog(parent=log)
         for output in doc.outputs:
-            log.outputs[output.id] = ReportLog(parent=log)
+            log.outputs[output.id]=ReportLog(parent=log)
         with self.assertRaisesRegex(SedmlExecutionError, 'are not supported'):
             exec.exec_sed_doc(execute_task, doc, working_dir, out_dir, log=log)
 
     def test_2d_plot(self):
-        doc = data_model.SedDocument()
+        doc=data_model.SedDocument()
 
         doc.models.append(data_model.Model(
             id='model',
@@ -1082,21 +1082,21 @@ class ExecTaskCase(unittest.TestCase):
             ],
         ))
 
-        filename = os.path.join(self.tmp_dir, 'test.sedml')
+        filename=os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename)
 
         def execute_task(task, variables, log=None):
-            results = VariableResults()
-            results[doc.data_generators[0].variables[0].id] = numpy.linspace(0., 10., 10 + 1)
-            results[doc.data_generators[1].variables[0].id] = 2 * results[doc.data_generators[0].variables[0].id]
+            results=VariableResults()
+            results[doc.data_generators[0].variables[0].id]=numpy.linspace(0., 10., 10 + 1)
+            results[doc.data_generators[1].variables[0].id]=2 * results[doc.data_generators[0].variables[0].id]
             return results, log
 
-        working_dir = os.path.dirname(filename)
+        working_dir=os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
-        out_dir = os.path.join(self.tmp_dir, 'results')
-        _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
+        out_dir=os.path.join(self.tmp_dir, 'results')
+        _, log=exec.exec_sed_doc(execute_task, filename, working_dir,
                                    out_dir, plot_formats=[PlotFormat.pdf])
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
@@ -1135,9 +1135,9 @@ class ExecTaskCase(unittest.TestCase):
         os.remove(os.path.join(out_dir, 'plot_2d_2.pdf'))
 
         # error with a curve
-        doc.data_generators[0].math = 'time * var'
+        doc.data_generators[0].math='time * var'
         io.SedmlSimulationWriter().run(doc, filename)
-        log = init_sed_document_log(doc)
+        log=init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
             exec.exec_sed_doc(execute_task, filename, working_dir,
                               out_dir, log=log, plot_formats=[PlotFormat.pdf])
@@ -1176,14 +1176,14 @@ class ExecTaskCase(unittest.TestCase):
 
         # error with a task
         def execute_task(task, variables, log=None):
-            results = VariableResults()
-            results[doc.data_generators[0].variables[0].id] = None
-            results[doc.data_generators[1].variables[0].id] = 2 * numpy.linspace(0., 10., 10 + 1)
+            results=VariableResults()
+            results[doc.data_generators[0].variables[0].id]=None
+            results[doc.data_generators[1].variables[0].id]=2 * numpy.linspace(0., 10., 10 + 1)
             return results, log
 
-        doc.data_generators[0].math = 'time'
+        doc.data_generators[0].math='time'
         io.SedmlSimulationWriter().run(doc, filename)
-        log = init_sed_document_log(doc)
+        log=init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "Some generators could not be produced:"):
             exec.exec_sed_doc(execute_task, filename, working_dir,
                               out_dir, log=log, plot_formats=[PlotFormat.pdf])
@@ -1221,7 +1221,7 @@ class ExecTaskCase(unittest.TestCase):
         )
 
     def test_3d_plot(self):
-        doc = data_model.SedDocument()
+        doc=data_model.SedDocument()
 
         doc.models.append(data_model.Model(
             id='model',
@@ -1312,23 +1312,23 @@ class ExecTaskCase(unittest.TestCase):
             ],
         ))
 
-        filename = os.path.join(self.tmp_dir, 'test.sedml')
+        filename=os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename)
 
         def execute_task(task, variables, log=None):
-            results = VariableResults()
-            x = numpy.arange(-5, 5, 0.25)
-            x, _ = numpy.meshgrid(x, x)
-            results[doc.data_generators[0].variables[0].id] = x
-            results[doc.data_generators[1].variables[0].id] = x
+            results=VariableResults()
+            x=numpy.arange(-5, 5, 0.25)
+            x, _=numpy.meshgrid(x, x)
+            results[doc.data_generators[0].variables[0].id]=x
+            results[doc.data_generators[1].variables[0].id]=x
             return results, log
 
-        working_dir = os.path.dirname(filename)
+        working_dir=os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
-        out_dir = os.path.join(self.tmp_dir, 'results')
-        _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
+        out_dir=os.path.join(self.tmp_dir, 'results')
+        _, log=exec.exec_sed_doc(execute_task, filename, working_dir,
                                    out_dir, plot_formats=[PlotFormat.pdf])
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_1.pdf')))
@@ -1367,9 +1367,9 @@ class ExecTaskCase(unittest.TestCase):
         os.remove(os.path.join(out_dir, 'plot_3d_2.pdf'))
 
         # error with a surface
-        doc.data_generators[0].math = 'time * var'
+        doc.data_generators[0].math='time * var'
         io.SedmlSimulationWriter().run(doc, filename)
-        log = init_sed_document_log(doc)
+        log=init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
             exec.exec_sed_doc(execute_task, filename, working_dir,
                               out_dir, log=log, plot_formats=[PlotFormat.pdf])

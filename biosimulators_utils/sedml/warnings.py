@@ -9,7 +9,6 @@
 from ..warnings import BioSimulatorsWarning
 
 __all__ = [
-    'RepeatDataSetLabelsWarning',
     'IllogicalSedmlWarning',
     'InconsistentVariableShapesWarning',
     'NoTasksWarning',
@@ -19,11 +18,6 @@ __all__ = [
     'NoSurfacesWarning',
     'SedmlFeatureNotSupportedWarning',
 ]
-
-
-class RepeatDataSetLabelsWarning(BioSimulatorsWarning):
-    """ Warning that multiple data sets with a report have the same label """
-    pass  # pragma: no cover
 
 
 class IllogicalSedmlWarning(BioSimulatorsWarning):

@@ -8,16 +8,16 @@
 
 from ..config import get_config
 from ..sedml.data_model import Report  # noqa: F401
-from ..sedml.utils import pad_arrays_to_consistent_shapes
-from ..sedml.warnings import RepeatDataSetLabelsWarning
+from ..utils.core import pad_arrays_to_consistent_shapes
 from ..warnings import warn
 from .data_model import DataSetResults, ReportFormat
+from .warnings import RepeatDataSetLabelsWarning, MissingReportMetadataWarning, MissingDataWarning, ExtraDataWarning
 import glob
+import h5py
 import numpy
+import openpyxl
 import os
 import pandas
-import tables
-import warnings
 
 __all__ = [
     'ReportWriter',
@@ -46,43 +46,74 @@ class ReportWriter(object):
 
             format (:obj:`ReportFormat`, optional): report format
         """
-        data_set_labels = [data_set.label for data_set in report.data_sets]
-        if len(set(data_set_labels)) < len(report.data_sets):
-            warn('To facilitate machine interpretation, data sets should have unique ids.',
-                 RepeatDataSetLabelsWarning)
-
-        results_list = []
+        results_array = []
+        data_set_ids = []
         data_set_labels = []
+        data_set_data_types = []
+        data_set_shapes = []
         for data_set in report.data_sets:
             if data_set.id in results:
-                results_list.append(results[data_set.id])
+                data_set_result = results[data_set.id]
+                results_array.append(data_set_result)
+                data_set_ids.append(data_set.id)
                 data_set_labels.append(data_set.label)
-        results_list = pad_arrays_to_consistent_shapes(results_list)
-        results_df = pandas.DataFrame(numpy.array(results_list), index=data_set_labels)
+                if data_set_result is None:
+                    data_set_data_types.append('__None__')
+                    data_set_shapes.append('')
+                else:
+                    data_set_data_types.append(data_set_result.dtype.name)
+                    data_set_shapes.append(','.join(str(dim_len) for dim_len in data_set_result.shape))
+        results_array = pad_arrays_to_consistent_shapes(results_array)
+        results_array = numpy.array(results_array)
 
-        if format == ReportFormat.csv:
-            filename = os.path.join(base_path, rel_path + '.' + format.value)
-            out_dir = os.path.dirname(filename)
-            if not os.path.isdir(out_dir):
-                os.makedirs(out_dir)
-            results_df.to_csv(filename,
-                              header=False)
+        if format in [ReportFormat.csv, ReportFormat.tsv, ReportFormat.xlsx]:
+            if results_array.ndim > 2:
+                raise ValueError('Report has {} dimensions. Multidimensional reports cannot be exported to {}.'.format(
+                    results_array.ndim, format.value.upper()))
+
+            if len(set(data_set.label for data_set in report.data_sets)) < len(report.data_sets):
+                warn('To facilitate machine interpretation, data sets should have unique labels.',
+                     RepeatDataSetLabelsWarning)
+
+            warn('Reports exported to {} do not contain information about the data type or size of each data set.',
+                 MissingReportMetadataWarning)
+
+            results_df = pandas.DataFrame(results_array, index=data_set_labels)
+
+            if format in [ReportFormat.csv, ReportFormat.tsv]:
+                filename = os.path.join(base_path, rel_path + '.' + format.value)
+                out_dir = os.path.dirname(filename)
+                if not os.path.isdir(out_dir):
+                    os.makedirs(out_dir)
+
+                results_df.to_csv(filename, header=False, sep=',' if format == ReportFormat.csv else '\t')
+            else:
+                filename = os.path.join(base_path, os.path.dirname(rel_path) + '.' + format.value)
+                out_dir = os.path.dirname(filename)
+                if not os.path.isdir(out_dir):
+                    os.makedirs(out_dir)
+
+                with pandas.ExcelWriter(filename, mode='a' if os.path.isfile(filename) else 'w', engine='openpyxl') as writer:
+                    results_df.to_excel(writer, sheet_name=os.path.basename(rel_path), header=False)
 
         elif format == ReportFormat.h5:
             filename = os.path.join(base_path, get_config().H5_REPORTS_PATH)
             if not os.path.isdir(base_path):
                 os.makedirs(base_path)
 
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore", tables.NaturalNameWarning)
-                results_df.to_hdf(filename,
-                                  key=rel_path,
-                                  format='table',
-                                  complevel=9,
-                                  complib='zlib',
-                                  mode='a',
-                                  append=False,
-                                  )
+            with h5py.File(filename, 'a') as file:
+                try:
+                    file[rel_path]
+                    del file[rel_path]
+                except KeyError:
+                    pass
+
+                data_set = file.create_dataset(rel_path, data=results_array,
+                                               chunks=True, compression="gzip", compression_opts=9)
+                data_set.attrs['dataSetIds'] = data_set_ids
+                data_set.attrs['dataSetLabels'] = data_set_labels
+                data_set.attrs['dataSetDataTypes'] = data_set_data_types
+                data_set.attrs['dataSetShapes'] = data_set_shapes
 
         else:
             raise NotImplementedError('Report format {} is not supported'.format(format))
@@ -111,49 +142,111 @@ class ReportReader(object):
         Returns:
             :obj:`DataSetResults`: report results
         """
-        if format == ReportFormat.csv:
-            filename = os.path.join(base_path, rel_path + '.' + format.value)
-            df = pandas.read_csv(filename,
-                                 index_col=0,
-                                 header=None)
+        if format in [ReportFormat.csv, ReportFormat.tsv, ReportFormat.xlsx]:
+            warn('Reports exported to {} do not contain information about the data type or size of each data set.',
+                 MissingReportMetadataWarning)
+
+            if format in [ReportFormat.csv, ReportFormat.tsv]:
+                filename = os.path.join(base_path, rel_path + '.' + format.value)
+                df = pandas.read_csv(filename,
+                                     index_col=0,
+                                     header=None,
+                                     sep=',' if format == ReportFormat.csv else '\t')
+            else:
+                filename = os.path.join(base_path, os.path.dirname(rel_path) + '.' + format.value)
+                df = pandas.read_excel(filename,
+                                       sheet_name=os.path.basename(rel_path),
+                                       index_col=0,
+                                       header=None,
+                                       engine='openpyxl')
             df.columns = pandas.RangeIndex(start=0, stop=df.shape[1], step=1)
+
+            results = DataSetResults()
+
+            data_set_labels = [data_set.label for data_set in report.data_sets]
+            if df.index.tolist() == data_set_labels:
+                data = df.to_numpy()
+                for i_data_set, data_set in enumerate(report.data_sets):
+                    results[data_set.id] = data[i_data_set, :]
+                extra_data_sets = set()
+
+            else:
+                data_set_label_to_index = {}
+                for i_data_set, data_set_label in enumerate(df.index):
+                    if data_set_label not in data_set_label_to_index:
+                        data_set_label_to_index[data_set_label] = i_data_set
+                    else:
+                        data_set_label_to_index[data_set_label] = None
+
+                unreadable_data_sets = []
+                for data_set in report.data_sets:
+                    i_data_set = data_set_label_to_index.get(data_set.label, None)
+                    if i_data_set is None:
+                        # results[data_set.id] = None
+                        unreadable_data_sets.append(data_set.id)
+                    else:
+                        results[data_set.id] = df.loc[data_set.label, :].to_numpy()
+
+                if unreadable_data_sets:
+                    warn('Some data sets could not be read because their labels are not unique:\n  - {}'.format(
+                        '\n'.join('`' + id + '`' for id in sorted(unreadable_data_sets))), RepeatDataSetLabelsWarning)
+
+                data_set_id_to_label = {data_set.id: data_set.label for data_set in report.data_sets}
+                extra_data_sets = set(df.index) - set(data_set_id_to_label[id] for id in results.keys()) - set(unreadable_data_sets)
+
+            file_data_set_ids = set(results.keys()) | extra_data_sets
 
         elif format == ReportFormat.h5:
             filename = os.path.join(base_path, get_config().H5_REPORTS_PATH)
-            df = pandas.read_hdf(filename,
-                                 key=rel_path,
-                                 )
+
+            with h5py.File(filename, 'r') as file:
+                data_set = file[rel_path]
+                data_set_results = data_set[:]
+                file_data_set_ids = data_set.attrs['dataSetIds']
+                data_set_data_types = data_set.attrs['dataSetDataTypes']
+                data_set_shapes = []
+                for data_set_shape in data_set.attrs['dataSetShapes']:
+                    if data_set_shape:
+                        data_set_shapes.append([int(dim_len) for dim_len in data_set_shape.split(',')])
+                    else:
+                        data_set_shapes.append([])
+
+            results = DataSetResults()
+            data_set_id_to_index = {data_set_id: i_data_set for i_data_set, data_set_id in enumerate(file_data_set_ids)}
+
+            data_set_ndim = data_set_results.ndim - 1
+            for data_set in report.data_sets:
+                i_data_set = data_set_id_to_index.get(data_set.id, None)
+                if i_data_set is not None:
+                    data_set_data_type = data_set_data_types[i_data_set]
+                    if data_set_data_type == '__None__':
+                        results[data_set.id] = None
+                    else:
+                        data_set_shape = data_set_shapes[i_data_set]
+                        data_set_slice = [slice(0, dim_len) for dim_len in data_set_shape] + \
+                            [slice(0, 1)] * (data_set_ndim - len(data_set_shape))
+                        results[data_set.id] = (
+                            data_set_results[i_data_set][data_set_slice]
+                            .reshape(data_set_shape)
+                            .astype(data_set_data_type)
+                        )
+
+            file_data_set_ids = set(file_data_set_ids)
 
         else:
             raise NotImplementedError('Report format {} is not supported'.format(format))
 
-        results = DataSetResults()
+        report_data_set_ids = set(data_set.id for data_set in report.data_sets)
+        missing_data_set_ids = report_data_set_ids.difference(file_data_set_ids)
+        extra_data_set_ids = file_data_set_ids.difference(report_data_set_ids)
 
-        data_set_labels = [data_set.label for data_set in report.data_sets]
-        unreadable_data_sets = []
-        if df.index.tolist() == data_set_labels:
-            for data_set in report.data_sets:
-                results[data_set.id] = df.loc[data_set.label, :]
+        if missing_data_set_ids:
+            warn('File does not contain data for the following data sets of the report:\n  - {}'.format(
+                '\n'.join('`' + id + '`' for id in sorted(missing_data_set_ids))), MissingDataWarning)
 
-        else:
-            data_set_label_to_index = {}
-            for i_data_set, data_set_label in enumerate(df.index):
-                if data_set_label not in data_set_label_to_index:
-                    data_set_label_to_index[data_set_label] = i_data_set
-                else:
-                    data_set_label_to_index[data_set_label] = None
-
-            for data_set in report.data_sets:
-                i_data_set = data_set_label_to_index.get(data_set.label, None)
-                if i_data_set is None:
-                    # results[data_set.id] = None
-                    unreadable_data_sets.append(data_set.id)
-                else:
-                    results[data_set.id] = df.loc[data_set.label, :]
-
-        if unreadable_data_sets:
-            warn('Some data sets could not be read because their labels are not unique:\n  - {}'.format(
-                '\n'.join('`' + id + '`' for id in sorted(unreadable_data_sets))), RepeatDataSetLabelsWarning)
+        if extra_data_set_ids:
+            warn('File contains additional data that could not be mapped to data sets of the report:\n  - {}'.format(
+                '\n'.join('`' + id + '`' for id in sorted(extra_data_set_ids))), ExtraDataWarning)
 
         return results
 
@@ -169,23 +262,33 @@ class ReportReader(object):
             format (:obj:`ReportFormat`, optional): report format
 
         Returns:
-            :obj:`set` of :obj:`str`: ids of reports
+            :obj:`list` of :obj:`str`: ids of reports
         """
-        if format == ReportFormat.csv:
-            report_ids = set()
+        if format in [ReportFormat.csv, ReportFormat.tsv]:
+            report_ids = []
             for path in glob.glob(os.path.join(base_path, '**/*.' + format.value), recursive=True):
-                report_ids.add(os.path.relpath(path, base_path)[0:-len(format.value)-1])
+                report_ids.append(os.path.relpath(path, base_path)[0:-len(format.value)-1])
+            return report_ids
+
+        elif format == ReportFormat.xlsx:
+            report_ids = []
+            for path in glob.glob(os.path.join(base_path, '**/*.' + format.value), recursive=True):
+                wb = openpyxl.load_workbook(path)
+                for sheet_name in wb.get_sheet_names():
+                    report_ids.append(os.path.join(os.path.relpath(path, base_path)[0:-len(format.value)-1], sheet_name))
             return report_ids
 
         elif format == ReportFormat.h5:
             filename = os.path.join(base_path, get_config().H5_REPORTS_PATH)
-            reports_file = tables.open_file(filename, mode="r")
-            report_ids = set()
-            for node in reports_file.walk_nodes():
-                base_path, _, rel_path = node._v_pathname.rpartition('/')
-                if rel_path == 'table':
-                    report_ids.add(base_path[1:])
-            reports_file.close()
+            with h5py.File(filename, 'r') as file:
+                report_ids = []
+
+                def append_report_id(name, object):
+                    if isinstance(object, h5py.Dataset):
+                        report_ids.append(name)
+
+                file.visititems(append_report_id)
+
             return report_ids
 
         else:
