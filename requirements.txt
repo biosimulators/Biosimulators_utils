@@ -1,6 +1,7 @@
 capturer
 cement
 evalidate
+h5py
 lxml
 matplotlib
 mpmath
