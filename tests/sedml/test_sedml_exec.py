@@ -3,7 +3,7 @@ from biosimulators_utils.log.data_model import (
     Status, CombineArchiveLog, SedDocumentLog, TaskLog, ReportLog)
 from biosimulators_utils.log.utils import init_sed_document_log
 from biosimulators_utils.plot.data_model import PlotFormat
-from biosimulators_utils.report.data_model import VariableResults, OutputResults, ReportFormat
+from biosimulators_utils.report.data_model import VariableResults, ReportResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
@@ -195,7 +195,7 @@ class ExecTaskCase(unittest.TestCase):
             output_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir,
                                                   out_dir, report_formats=[ReportFormat.csv], plot_formats=[])
 
-        expected_output_results = OutputResults({
+        expected_output_results = ReportResults({
             doc.outputs[0].id: pandas.DataFrame(
                 numpy.array([
                     numpy.array((1., 2.)),

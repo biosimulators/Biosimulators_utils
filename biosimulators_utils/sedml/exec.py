@@ -11,7 +11,7 @@ from ..log.data_model import Status, SedDocumentLog, TaskLog, ReportLog, Plot2DL
 from ..log.utils import init_sed_document_log
 from ..plot.data_model import PlotFormat
 from ..plot.io import write_plot_2d, write_plot_3d
-from ..report.data_model import VariableResults, OutputResults, ReportFormat
+from ..report.data_model import VariableResults, ReportResults, ReportFormat
 from ..report.io import ReportWriter
 from ..warnings import warn
 from .data_model import SedDocument, Task, Report, Plot2D, Plot3D
@@ -80,7 +80,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     Returns:
         :obj:`tuple`:
 
-            * :obj:`OutputResults`: results of each report
+            * :obj:`ReportResults`: results of each report
             * :obj:`SedDocumentLog`: log of the document
     """
     config = get_config()
@@ -111,7 +111,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     # TODO: initialize reports with their eventual shapes; this requires individual simulation tools to pass
     # information about the shape of their output to this method
     variable_results = VariableResults()
-    report_results = OutputResults()
+    report_results = ReportResults()
 
     doc.tasks.sort(key=lambda task: task.id)
     print('{}Found {} tasks and {} outputs:\n{}Tasks:\n{}{}\n{}Outputs:\n{}{}'.format(

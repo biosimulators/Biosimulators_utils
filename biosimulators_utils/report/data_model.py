@@ -9,20 +9,7 @@
 import enum
 
 
-__all__ = ['DataGeneratorResults', 'VariableResults', 'OutputResults', 'ReportFormat']
-
-
-class DataGeneratorResults(dict):
-    """ Dictionary that maps the ids of data generators (:obj:`DataGenerator`) to their results (:obj:`numpy.ndarray`)
-
-    * Keys (:obj:`str`): ids of data generators (:obj:`DataGenerator`)
-    * Values (:obj:`numpy.ndarray`): result of each variable
-
-        * Steady-state tasks of non-spatial models: results should be arrays of shape ``(1,)``
-        * One-step tasks of non-spatial models: results should be arrays of shape ``(2,)``
-        * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_points + 1,)``
-    """
-    pass
+__all__ = ['DataGeneratorResults', 'VariableResults', 'ReportResults', 'ReportFormat']
 
 
 class VariableResults(dict):
@@ -38,11 +25,24 @@ class VariableResults(dict):
     pass
 
 
-class OutputResults(dict):
-    """ Dictionary that maps the ids of outputs (e.g., :obj:`Report`) to their results (:obj:`pandas.DataFrame`)
+class DataGeneratorResults(dict):
+    """ Dictionary that maps the ids of data generators (:obj:`DataGenerator`) to their results (:obj:`numpy.ndarray`)
 
-    * Keys (:obj:`str`): ids of outputs (e.g., :obj:`Report`)
-    * Values (:obj:`pandas.DataFrame`): result of each output
+    * Keys (:obj:`str`): ids of data generators (:obj:`DataGenerator`)
+    * Values (:obj:`numpy.ndarray`): result of each variable
+
+        * Steady-state tasks of non-spatial models: results should be arrays of shape ``(1,)``
+        * One-step tasks of non-spatial models: results should be arrays of shape ``(2,)``
+        * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_points + 1,)``
+    """
+    pass
+
+
+class ReportResults(dict):
+    """ Dictionary that maps the ids of reports (e.g., :obj:`Report`) to their results (:obj:`pandas.DataFrame`)
+
+    * Keys (:obj:`str`): ids of reports (e.g., :obj:`Report`)
+    * Values (:obj:`pandas.DataFrame`): result of each reports
 
         * Data:
 

@@ -12,7 +12,7 @@ from ..config import get_config
 from ..log.data_model import Status, CombineArchiveLog  # noqa: F401
 from ..log.utils import init_combine_archive_log, get_summary_combine_archive_log
 from ..plot.data_model import PlotFormat  # noqa: F401
-from ..report.data_model import VariableResults, OutputResults, ReportFormat  # noqa: F401
+from ..report.data_model import VariableResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import (SedDocument, Task, Output, Report, DataSet, Plot2D, Curve,  # noqa: F401
                                 Plot3D, Surface, Variable)
 from ..sedml.io import SedmlSimulationReader  # noqa: F401
