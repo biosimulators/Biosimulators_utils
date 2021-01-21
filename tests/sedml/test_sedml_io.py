@@ -589,5 +589,5 @@ class IoTestCase(unittest.TestCase):
         document = data_model.SedDocument(level=1, version=4)
         io.SedmlSimulationWriter().run(document, filename)
 
-        with self.assertRaises(NotImplementedError):
+        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'Only features available in L1V3 are supported'):
             io.SedmlSimulationReader().run(filename)
