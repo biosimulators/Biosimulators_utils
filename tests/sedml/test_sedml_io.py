@@ -582,3 +582,12 @@ class IoTestCase(unittest.TestCase):
         doc_2 = io.SedmlSimulationReader().run(filename_2)
 
         self.assertTrue(doc_2.is_equal(doc))
+
+    def test_read_unsupported_sedml_version(self):
+        filename = os.path.join(self.tmp_dir, 'sim.sedml')
+
+        document = data_model.SedDocument(level=1, version=4)
+        io.SedmlSimulationWriter().run(document, filename)
+
+        with self.assertRaises(NotImplementedError):
+            io.SedmlSimulationReader().run(filename)

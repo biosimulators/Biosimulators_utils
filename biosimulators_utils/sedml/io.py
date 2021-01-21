@@ -815,6 +815,12 @@ class SedmlSimulationReader(object):
             version=doc_sed.getVersion(),
         )
 
+        if doc.level > 1 or doc.version > 3:
+            raise NotImplementedError((
+                '`{}` cannot be read because it is implemented using SED-ML L{}V{}. '
+                'Simulation experiments must be encoded in SED-ML L1V3 and lower.'
+            ).format(filename, doc.level, doc.version))
+
         doc.metadata = self._read_metadata(doc_sed)
 
         # data descriptions
