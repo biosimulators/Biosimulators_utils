@@ -12,7 +12,6 @@ python_libcombine >= 0.2.9
 python_libsedml >= 2.0.14
 pyyaml
 requests
-seaborn
 simplejson
 tables
 termcolor

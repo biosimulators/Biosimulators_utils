@@ -1,6 +1,8 @@
 from biosimulators_utils.config import get_config
 from biosimulators_utils.log.data_model import (
     Status, CombineArchiveLog, SedDocumentLog, TaskLog, ReportLog)
+from biosimulators_utils.log.utils import init_sed_document_log
+from biosimulators_utils.plot.data_model import PlotFormat
 from biosimulators_utils.report.data_model import VariableResults, OutputResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
 from biosimulators_utils.sedml import data_model
@@ -223,7 +225,7 @@ class ExecTaskCase(unittest.TestCase):
             ),
         })
         self.assertEqual(sorted(output_results.keys()), sorted(expected_output_results.keys()))
-        for key in output_results.keys():            
+        for key in output_results.keys():
             self.assertTrue(output_results[key].equals(expected_output_results[key]))
 
         df = ReportReader().run(out_dir, doc.outputs[0].id, format=ReportFormat.csv)
@@ -589,28 +591,6 @@ class ExecTaskCase(unittest.TestCase):
             data_model.DataSet(id='data_set_1', label='data_set_1', data_generator=doc.data_generators[0]),
         ]))
 
-        doc.outputs.append(data_model.Plot2D(id='plot_1', curves=[
-            data_model.Curve(
-                id='curve_1',
-                x_data_generator=doc.data_generators[0],
-                y_data_generator=doc.data_generators[0],
-                x_scale=data_model.AxisScale.linear,
-                y_scale=data_model.AxisScale.linear,
-            ),
-        ]))
-
-        doc.outputs.append(data_model.Plot3D(id='plot_2', surfaces=[
-            data_model.Surface(
-                id='surface_1',
-                x_data_generator=doc.data_generators[0],
-                y_data_generator=doc.data_generators[0],
-                z_data_generator=doc.data_generators[0],
-                x_scale=data_model.AxisScale.linear,
-                y_scale=data_model.AxisScale.linear,
-                z_scale=data_model.AxisScale.linear,
-            ),
-        ]))
-
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename)
 
@@ -913,27 +893,29 @@ class ExecTaskCase(unittest.TestCase):
         numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :], numpy.array((1., numpy.nan)))
         numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :], numpy.array((1., 2.)))
 
-        # doc.outputs[0].data_sets.append(
-        #    data_model.DataSet(
-        #        id='dataset_3',
-        #        label='dataset_3',
-        #        data_generator=doc.data_generators[2],
-        #    ),
-        # )
+        doc.outputs[0].data_sets.append(
+            data_model.DataSet(
+                id='dataset_3',
+                label='dataset_3',
+                data_generator=doc.data_generators[2],
+            ),
+        )
 
-        # working_dir = self.tmp_dir
-        # with open(os.path.join(working_dir, doc.models[0].source), 'w'):
-        #    pass
+        working_dir = self.tmp_dir
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
 
-        #out_dir = os.path.join(self.tmp_dir, 'results2')
-        # with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-        #    report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+        out_dir = os.path.join(self.tmp_dir, 'results2')
+        # TODO: remove once multidimensional results supported
+        with self.assertRaisesRegex(SedmlExecutionError, 'Must pass 2-d input'):
+            with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
+                report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
         # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[0].id, :],
-        #    numpy.array(((1., numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
+        #                            numpy.array(((1., numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
         # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[1].id, :],
-        #    numpy.array(((1., 2., numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
+        #                            numpy.array(((1., 2., numpy.nan), (numpy.nan, numpy.nan, numpy.nan), (numpy.nan, numpy.nan, numpy.nan))))
         # numpy.testing.assert_equal(report_results[doc.outputs[0].id].loc[doc.outputs[0].data_sets[2].id, :],
-        #    numpy.array(((1., 2., 3.), (4., 5., 6.), (7., 8., 9.))))
+        #                            numpy.array(((1., 2., 3.), (4., 5., 6.), (7., 8., 9.))))
 
         # warning: data set labels are not unique
         doc.data_generators = [
@@ -995,24 +977,6 @@ class ExecTaskCase(unittest.TestCase):
 
         # error: unsupported outputs
         doc.outputs = [
-            data_model.Plot2D(
-                id='plot_2d',
-            ),
-            data_model.Plot3D(
-                id='plot_3d',
-            ),
-        ]
-
-        working_dir = self.tmp_dir
-        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
-            pass
-
-        out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'skipped because outputs of type'):
-            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
-
-        # error: unsupported outputs
-        doc.outputs = [
             mock.Mock(id='unsupported')
         ]
 
@@ -1027,3 +991,413 @@ class ExecTaskCase(unittest.TestCase):
             log.outputs[output.id] = ReportLog(parent=log)
         with self.assertRaisesRegex(SedmlExecutionError, 'are not supported'):
             exec.exec_sed_doc(execute_task, doc, working_dir, out_dir, log=log)
+
+    def test_2d_plot(self):
+        doc = data_model.SedDocument()
+
+        doc.models.append(data_model.Model(
+            id='model',
+            source='model1.xml',
+            language='urn:sedml:language:sbml',
+        ))
+
+        doc.simulations.append(data_model.UniformTimeCourseSimulation(
+            id='sim',
+            initial_time=0.,
+            output_start_time=10.,
+            output_end_time=10.,
+            number_of_points=10,
+        ))
+
+        doc.tasks.append(data_model.Task(
+            id='task1',
+            model=doc.models[0],
+            simulation=doc.simulations[0],
+        ))
+
+        doc.tasks.append(data_model.Task(
+            id='task2',
+            model=doc.models[0],
+            simulation=doc.simulations[0],
+        ))
+
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen_time',
+            variables=[
+                data_model.Variable(
+                    id='time',
+                    symbol=data_model.Symbol.time,
+                    task=doc.tasks[0],
+                ),
+            ],
+            math='time',
+        ))
+
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen_var',
+            variables=[
+                data_model.Variable(
+                    id='var',
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var']/@concentration",
+                    task=doc.tasks[1],
+                ),
+            ],
+            math='var',
+        ))
+
+        doc.outputs.append(data_model.Plot2D(
+            id='plot_2d_1',
+            curves=[
+                data_model.Curve(
+                    id='curve1',
+                    x_data_generator=doc.data_generators[0],
+                    y_data_generator=doc.data_generators[0],
+                    x_scale=data_model.AxisScale.linear,
+                    y_scale=data_model.AxisScale.linear,
+                ),
+                data_model.Curve(
+                    id='curve2',
+                    x_data_generator=doc.data_generators[1],
+                    y_data_generator=doc.data_generators[1],
+                    x_scale=data_model.AxisScale.linear,
+                    y_scale=data_model.AxisScale.linear,
+                ),
+            ],
+        ))
+
+        doc.outputs.append(data_model.Plot2D(
+            id='plot_2d_2',
+            curves=[
+                data_model.Curve(
+                    id='curve3',
+                    x_data_generator=doc.data_generators[1],
+                    y_data_generator=doc.data_generators[1],
+                    x_scale=data_model.AxisScale.linear,
+                    y_scale=data_model.AxisScale.linear,
+                ),
+            ],
+        ))
+
+        filename = os.path.join(self.tmp_dir, 'test.sedml')
+        io.SedmlSimulationWriter().run(doc, filename)
+
+        def execute_task(task, variables, log=None):
+            results = VariableResults()
+            results[doc.data_generators[0].variables[0].id] = numpy.linspace(0., 10., 10 + 1)
+            results[doc.data_generators[1].variables[0].id] = 2 * results[doc.data_generators[0].variables[0].id]
+            return results, log
+
+        working_dir = os.path.dirname(filename)
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
+                                   out_dir, plot_formats=[PlotFormat.pdf])
+
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_2.pdf')))
+
+        self.assertEqual(
+            log.to_json()['outputs'],
+            [
+                {
+                    'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.to_json()['outputs'][0]['output'],
+                    'duration': log.to_json()['outputs'][0]['duration'],
+                    'id': 'plot_2d_1',
+                    'curves': [
+                        {'id': 'curve1', 'status': 'SUCCEEDED'},
+                        {'id': 'curve2', 'status': 'SUCCEEDED'},
+                    ],
+                },
+                {
+                    'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.to_json()['outputs'][1]['output'],
+                    'duration': log.to_json()['outputs'][1]['duration'],
+                    'id': 'plot_2d_2',
+                    'curves': [
+                        {'id': 'curve3', 'status': 'SUCCEEDED'},
+                    ],
+                },
+            ]
+        )
+
+        os.remove(os.path.join(out_dir, 'plot_2d_1.pdf'))
+        os.remove(os.path.join(out_dir, 'plot_2d_2.pdf'))
+
+        # error with a curve
+        doc.data_generators[0].math = 'time * var'
+        io.SedmlSimulationWriter().run(doc, filename)
+        log = init_sed_document_log(doc)
+        with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
+            exec.exec_sed_doc(execute_task, filename, working_dir,
+                              out_dir, log=log, plot_formats=[PlotFormat.pdf])
+
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_2.pdf')))
+
+        self.assertEqual(
+            log.to_json()['outputs'],
+            [
+                {
+                    'status': 'FAILED',
+                    'exception': log.to_json()['outputs'][0]['exception'],
+                    'skipReason': None,
+                    'output': log.to_json()['outputs'][0]['output'],
+                    'duration': log.to_json()['outputs'][0]['duration'],
+                    'id': 'plot_2d_1',
+                    'curves': [
+                        {'id': 'curve1', 'status': 'FAILED'},
+                        {'id': 'curve2', 'status': 'SUCCEEDED'},
+                    ],
+                },
+                {
+                    'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.to_json()['outputs'][1]['output'],
+                    'duration': log.to_json()['outputs'][1]['duration'],
+                    'id': 'plot_2d_2',
+                    'curves': [
+                        {'id': 'curve3', 'status': 'SUCCEEDED'},
+                    ],
+                },
+            ]
+        )
+
+        # error with a task
+        def execute_task(task, variables, log=None):
+            results = VariableResults()
+            results[doc.data_generators[0].variables[0].id] = None
+            results[doc.data_generators[1].variables[0].id] = 2 * numpy.linspace(0., 10., 10 + 1)
+            return results, log
+
+        doc.data_generators[0].math = 'time'
+        io.SedmlSimulationWriter().run(doc, filename)
+        log = init_sed_document_log(doc)
+        with self.assertRaisesRegex(SedmlExecutionError, "Some generators could not be produced:"):
+            exec.exec_sed_doc(execute_task, filename, working_dir,
+                              out_dir, log=log, plot_formats=[PlotFormat.pdf])
+
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_2.pdf')))
+
+        self.assertEqual(
+            log.to_json()['outputs'],
+            [
+                {
+                    'status': 'FAILED',
+                    'exception': log.to_json()['outputs'][0]['exception'],
+                    'skipReason': None,
+                    'output': log.to_json()['outputs'][0]['output'],
+                    'duration': log.to_json()['outputs'][0]['duration'],
+                    'id': 'plot_2d_1',
+                    'curves': [
+                        {'id': 'curve1', 'status': 'FAILED'},
+                        {'id': 'curve2', 'status': 'SUCCEEDED'},
+                    ],
+                },
+                {
+                    'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.to_json()['outputs'][1]['output'],
+                    'duration': log.to_json()['outputs'][1]['duration'],
+                    'id': 'plot_2d_2',
+                    'curves': [
+                        {'id': 'curve3', 'status': 'SUCCEEDED'},
+                    ],
+                },
+            ]
+        )
+
+    def test_3d_plot(self):
+        doc = data_model.SedDocument()
+
+        doc.models.append(data_model.Model(
+            id='model',
+            source='model1.xml',
+            language='urn:sedml:language:sbml',
+        ))
+
+        doc.simulations.append(data_model.UniformTimeCourseSimulation(
+            id='sim',
+            initial_time=0.,
+            output_start_time=10.,
+            output_end_time=10.,
+            number_of_points=10,
+        ))
+
+        doc.tasks.append(data_model.Task(
+            id='task1',
+            model=doc.models[0],
+            simulation=doc.simulations[0],
+        ))
+
+        doc.tasks.append(data_model.Task(
+            id='task2',
+            model=doc.models[0],
+            simulation=doc.simulations[0],
+        ))
+
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen_time',
+            variables=[
+                data_model.Variable(
+                    id='time',
+                    symbol=data_model.Symbol.time,
+                    task=doc.tasks[0],
+                ),
+            ],
+            math='time',
+        ))
+
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen_var',
+            variables=[
+                data_model.Variable(
+                    id='var',
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var']/@concentration",
+                    task=doc.tasks[1],
+                ),
+            ],
+            math='var',
+        ))
+
+        doc.outputs.append(data_model.Plot3D(
+            id='plot_3d_1',
+            surfaces=[
+                data_model.Surface(
+                    id='surface1',
+                    x_data_generator=doc.data_generators[0],
+                    y_data_generator=doc.data_generators[0],
+                    z_data_generator=doc.data_generators[0],
+                    x_scale=data_model.AxisScale.linear,
+                    y_scale=data_model.AxisScale.linear,
+                    z_scale=data_model.AxisScale.linear,
+                ),
+                data_model.Surface(
+                    id='surface2',
+                    x_data_generator=doc.data_generators[1],
+                    y_data_generator=doc.data_generators[1],
+                    z_data_generator=doc.data_generators[1],
+                    x_scale=data_model.AxisScale.linear,
+                    y_scale=data_model.AxisScale.linear,
+                    z_scale=data_model.AxisScale.linear,
+                ),
+            ],
+        ))
+
+        doc.outputs.append(data_model.Plot3D(
+            id='plot_3d_2',
+            surfaces=[
+                data_model.Surface(
+                    id='surface3',
+                    x_data_generator=doc.data_generators[1],
+                    y_data_generator=doc.data_generators[1],
+                    z_data_generator=doc.data_generators[1],
+                    x_scale=data_model.AxisScale.linear,
+                    y_scale=data_model.AxisScale.linear,
+                    z_scale=data_model.AxisScale.linear,
+                ),
+            ],
+        ))
+
+        filename = os.path.join(self.tmp_dir, 'test.sedml')
+        io.SedmlSimulationWriter().run(doc, filename)
+
+        def execute_task(task, variables, log=None):
+            results = VariableResults()
+            x = numpy.arange(-5, 5, 0.25)
+            x, _ = numpy.meshgrid(x, x)
+            results[doc.data_generators[0].variables[0].id] = x
+            results[doc.data_generators[1].variables[0].id] = x
+            return results, log
+
+        working_dir = os.path.dirname(filename)
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
+                                   out_dir, plot_formats=[PlotFormat.pdf])
+
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_1.pdf')))
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_2.pdf')))
+
+        self.assertEqual(
+            log.to_json()['outputs'],
+            [
+                {
+                    'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.to_json()['outputs'][0]['output'],
+                    'duration': log.to_json()['outputs'][0]['duration'],
+                    'id': 'plot_3d_1',
+                    'surfaces': [
+                        {'id': 'surface1', 'status': 'SUCCEEDED'},
+                        {'id': 'surface2', 'status': 'SUCCEEDED'},
+                    ],
+                },
+                {
+                    'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.to_json()['outputs'][1]['output'],
+                    'duration': log.to_json()['outputs'][1]['duration'],
+                    'id': 'plot_3d_2',
+                    'surfaces': [
+                        {'id': 'surface3', 'status': 'SUCCEEDED'},
+                    ],
+                },
+            ]
+        )
+
+        os.remove(os.path.join(out_dir, 'plot_3d_1.pdf'))
+        os.remove(os.path.join(out_dir, 'plot_3d_2.pdf'))
+
+        # error with a surface
+        doc.data_generators[0].math = 'time * var'
+        io.SedmlSimulationWriter().run(doc, filename)
+        log = init_sed_document_log(doc)
+        with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
+            exec.exec_sed_doc(execute_task, filename, working_dir,
+                              out_dir, log=log, plot_formats=[PlotFormat.pdf])
+
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_1.pdf')))
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_2.pdf')))
+
+        self.assertEqual(
+            log.to_json()['outputs'],
+            [
+                {
+                    'status': 'FAILED',
+                    'exception': log.to_json()['outputs'][0]['exception'],
+                    'skipReason': None,
+                    'output': log.to_json()['outputs'][0]['output'],
+                    'duration': log.to_json()['outputs'][0]['duration'],
+                    'id': 'plot_3d_1',
+                    'surfaces': [
+                        {'id': 'surface1', 'status': 'FAILED'},
+                        {'id': 'surface2', 'status': 'SUCCEEDED'},
+                    ],
+                },
+                {
+                    'status': 'SUCCEEDED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': log.to_json()['outputs'][1]['output'],
+                    'duration': log.to_json()['outputs'][1]['duration'],
+                    'id': 'plot_3d_2',
+                    'surfaces': [
+                        {'id': 'surface3', 'status': 'SUCCEEDED'},
+                    ],
+                },
+            ]
+        )

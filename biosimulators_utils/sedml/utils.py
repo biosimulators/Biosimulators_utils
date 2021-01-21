@@ -6,7 +6,8 @@
 :License: MIT
 """
 
-from ..report.data_model import VariableResults  # noqa: F401
+from ..log.data_model import Status
+from ..report.data_model import VariableResults, DataGeneratorResults  # noqa: F401
 from ..warnings import warn
 from ..xml.utils import get_namespaces_for_xml_doc
 from .data_model import (SedDocument, Model, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
@@ -36,6 +37,7 @@ __all__ = [
     'get_value_of_variable_model_xml_targets',
     'calc_compute_model_change_new_value',
     'calc_data_generator_results',
+    'calc_data_generators_results',
     'compile_math',
     'eval_math',
     'remove_model_changes',
@@ -580,6 +582,111 @@ def calc_data_generator_results(data_generator, variable_results):
                 result.flat[i_el] = result_el
 
     return result
+
+
+def calc_data_generators_results(data_generators, variable_results, output, task, make_shapes_consistent=True):
+    """ Calculator the values of a list of data generators
+
+    Args:
+        data_generators (:obj:`list` of :obj:`DataGenerator`): SED task
+        variable_results (:obj:`VariableResults`): results of the SED variables involved in the data generators
+        output (:obj:`Output`): SED output
+        task (:obj:`Task`): SED task
+        make_shapes_consistent (:obj:`bool`, optional): where to make the shapes of the data generators consistent
+            (e.g., for concatenation into a table for a report)
+
+    Returns:
+        :obj:`tuple`:
+
+            * :obj:`DataGeneratorResults`: values of the data generators
+            * :obj:`dict` of :obj:`str` to :obj:`Status`: dictionary that maps the id of each data generator to its status
+            * :obj:`Exception`: exception for failures
+            * :obj:`bool`: where the task contributes to any of the data generators
+    """
+    task_contributes_to_data_generators = False
+    statuses = {}
+    exceptions = []
+    results = DataGeneratorResults()
+
+    for data_gen in data_generators:
+        vars_available = True
+        vars_failed = False
+        for variable in data_gen.variables:
+            if variable.task == task:
+                task_contributes_to_data_generators = True
+            if variable.id in variable_results:
+                if variable_results.get(variable.id, None) is None:
+                    vars_available = False
+                    vars_failed = True
+            else:
+                vars_available = False
+
+        if vars_failed:
+            status = Status.FAILED
+            msg = 'Data generator {} cannot be calculated because its variables were not successfully produced.'.format(data_gen.id)
+            exceptions.append(ValueError(msg))
+            result = None
+
+        elif vars_available:
+            try:
+                result = calc_data_generator_results(data_gen, variable_results)
+                status = Status.SUCCEEDED
+            except Exception as exception:
+                result = None
+                exceptions.append(exception)
+                status = Status.FAILED
+
+        else:
+            status = Status.QUEUED
+            result = None
+
+        statuses[data_gen.id] = status
+        results[data_gen.id] = result
+
+    if make_shapes_consistent:
+        shapes = set()
+        for result in results.values():
+            if result is not None:
+                shape = result.shape
+                if not shape and result.size:
+                    shape = (1,)
+                shapes.add(shape)
+
+        if len(shapes) > 1:
+            warn('Data generators for ouput {} do not have consistent shapes'.format(output.id), UserWarning)
+
+        max_shape = []
+        for shape in shapes:
+            max_shape = max_shape + [1 if max_shape else 0] * (len(shape) - len(max_shape))
+            shape = list(shape) + [1 if shape else 0] * (len(max_shape) - len(shape))
+            max_shape = [max(x, y) for x, y in zip(max_shape, shape)]
+
+        for data_gen_id, result in results.items():
+            if result is None:
+                result = numpy.full(max_shape, numpy.nan)
+
+            shape = tuple(list(result.shape)
+                          + [1 if result.size else 0]
+                          * (len(max_shape) - result.ndim))
+            result = result.reshape(shape)
+
+            pad_width = tuple((0, x - y) for x, y in zip(max_shape, shape))
+
+            if pad_width:
+                result = numpy.pad(result,
+                                   pad_width,
+                                   mode='constant',
+                                   constant_values=numpy.nan)
+
+            results[data_gen_id] = result
+
+    if exceptions:
+        exception = ValueError('Some generators could not be produced:\n  - {}'.format(
+            '\n  '.join(str(exception) for exception in exceptions)))
+    else:
+        exception = None
+
+    return results, statuses, exception, task_contributes_to_data_generators
 
 
 def compile_math(math):
