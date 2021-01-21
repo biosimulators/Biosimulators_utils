@@ -1070,15 +1070,19 @@ class SedmlSimulationReader(object):
         variables = []
         for var_sed in obj_sed.getListOfVariables():
             var = data_model.Variable()
-            variables.append(var)
 
             var.id = var_sed.getId() or None
             var.name = var_sed.getName() or None
             var.symbol = var_sed.getSymbol() or None
             var.target = var_sed.getTarget() or None
 
+            if var.target.startswith('#'):
+                raise NotImplementedError('Variable targets to data descriptions are not supported.')
+
             self._deserialize_reference(var_sed, var, 'task', 'Task', 'task', id_to_task_map)
             self._deserialize_reference(var_sed, var, 'model', 'Model', 'model', id_to_model_map)
+
+            variables.append(var)
         return variables
 
     def _read_math(self, obj_sed):

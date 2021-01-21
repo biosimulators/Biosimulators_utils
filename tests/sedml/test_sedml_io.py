@@ -555,6 +555,10 @@ class IoTestCase(unittest.TestCase):
         with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'data descriptions are not yet supported'):
             io.SedmlSimulationReader().run(filename)
 
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'data-description-with-variable.sedml')
+        with self.assertRaisesRegex(NotImplementedError, 'Variable targets to data descriptions are not supported'):
+            io.SedmlSimulationReader().run(filename)
+
     def test_read_error_simulation_times(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'initialTime-more-than-outputStartTime.sedml')
         with self.assertRaises(ValueError):
