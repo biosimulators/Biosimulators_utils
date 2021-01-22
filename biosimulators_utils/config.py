@@ -65,10 +65,22 @@ def get_config():
     Returns:
         :obj:`Config`: configuration
     """
+    report_formats = os.environ.get('REPORT_FORMATS', 'csv, h5').strip()
+    if report_formats:
+        report_formats = [format.strip().lower() for format in report_formats.split(',')]
+    else:
+        report_formats = []
+
+    plot_formats = os.environ.get('PLOT_FORMATS', 'pdf').strip()
+    if plot_formats:
+        plot_formats = [format.strip().lower() for format in plot_formats.split(',')]
+    else:
+        plot_formats = []
+
     return Config(
         ALGORITHM_SUBSTITUTION_POLICY=os.environ.get('ALGORITHM_SUBSTITUTION_POLICY', 'SIMILAR_VARIABLES'),
-        REPORT_FORMATS=[format.strip().lower() for format in os.environ.get('REPORT_FORMATS', 'csv, h5').split(',')],
-        PLOT_FORMATS=[format.strip().lower() for format in os.environ.get('PLOT_FORMATS', 'pdf').split(',')],
+        REPORT_FORMATS=report_formats,
+        PLOT_FORMATS=plot_formats,
         H5_REPORTS_PATH=os.environ.get('H5_REPORTS_PATH', 'reports.h5'),
         REPORTS_PATH=os.environ.get('REPORTS_PATH', 'reports.zip'),
         PLOTS_PATH=os.environ.get('PLOTS_PATH', 'plots.zip'),
