@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.6. biosimulators_utils.log package &#8212; BioSimulators utils 0.1.33 documentation</title>
+    <title>2.1.6. biosimulators_utils.log package &#8212; BioSimulators utils 0.1.34 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -151,22 +151,87 @@
 </dl>
 <dl class="py class">
 <dt id="biosimulators_utils.log.data_model.CombineArchiveLog">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">CombineArchiveLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sed_documents</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">CombineArchiveLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sed_documents</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.log.data_model.Log" title="biosimulators_utils.log.data_model.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.log.data_model.Log</span></code></a></p>
 <p>Log of a COMBINE/OMEX archive</p>
-<dl>
-<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a>): execution status of the archive
-exception (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): exception
-skip_reason (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): reason of skip
-output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): output
-duration (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>): duration in seconds
-sed_documents (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a>): execution status of each</p>
-<blockquote>
-<div><p>SED document in the archive</p>
-</div></blockquote>
-<p>out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): directory to export status</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.CombineArchiveLog.status">
+<code class="sig-name descname">status</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.CombineArchiveLog.exception">
+<code class="sig-name descname">exception</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog.exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.CombineArchiveLog.skip_reason">
+<code class="sig-name descname">skip_reason</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog.skip_reason" title="Permalink to this definition">¶</a></dt>
+<dd><p>reason of skip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.CombineArchiveLog.output">
+<code class="sig-name descname">output</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.CombineArchiveLog.duration">
+<code class="sig-name descname">duration</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>duration in seconds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.CombineArchiveLog.sed_documents">
+<code class="sig-name descname">sed_documents</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog.sed_documents" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of each
+SED document in the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.CombineArchiveLog.out_dir">
+<code class="sig-name descname">out_dir</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog.out_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>directory to export status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="biosimulators_utils.log.data_model.CombineArchiveLog.finalize">
 <code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog.finalize" title="Permalink to this definition">¶</a></dt>
@@ -174,8 +239,8 @@ sed_documents (<code class="xref py py-obj docutils literal notranslate"><span c
 </dd></dl>
 
 <dl class="py method">
-<dt id="biosimulators_utils.log.data_model.CombineArchiveLog.to_dict">
-<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog.to_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="biosimulators_utils.log.data_model.CombineArchiveLog.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.CombineArchiveLog.to_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a JSON-compatible representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -191,19 +256,86 @@ sed_documents (<code class="xref py py-obj docutils literal notranslate"><span c
 
 <dl class="py class">
 <dt id="biosimulators_utils.log.data_model.Log">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">Log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">Log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Log of a COMBINE/OMEX archive or one of its components</p>
-<dl class="simple">
-<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a>): execution status of the archive
-exception (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): exception
-skip_reason (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): reason of skip
-output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): output
-duration (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>): duration in seconds
-parent (<a class="reference internal" href="#biosimulators_utils.log.data_model.Log" title="biosimulators_utils.log.data_model.Log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Log</span></code></a>): execution status of parent COMBINE/OMEX archive
-out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): directory to export status</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Log.status">
+<code class="sig-name descname">status</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Log.exception">
+<code class="sig-name descname">exception</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log.exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Log.skip_reason">
+<code class="sig-name descname">skip_reason</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log.skip_reason" title="Permalink to this definition">¶</a></dt>
+<dd><p>reason of skip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Log.output">
+<code class="sig-name descname">output</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Log.duration">
+<code class="sig-name descname">duration</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>duration in seconds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Log.parent">
+<code class="sig-name descname">parent</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of parent COMBINE/OMEX archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.Log" title="biosimulators_utils.log.data_model.Log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Log</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Log.out_dir">
+<code class="sig-name descname">out_dir</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log.out_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>directory to export status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="biosimulators_utils.log.data_model.Log.export">
 <code class="sig-name descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log.export" title="Permalink to this definition">¶</a></dt>
@@ -217,8 +349,8 @@ out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="biosimulators_utils.log.data_model.Log.to_dict">
-<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log.to_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="biosimulators_utils.log.data_model.Log.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Log.to_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a JSON-compatible representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -234,40 +366,218 @@ out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="
 
 <dl class="py class">
 <dt id="biosimulators_utils.log.data_model.OutputLog">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">OutputLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.OutputLog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">OutputLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.OutputLog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.log.data_model.Log" title="biosimulators_utils.log.data_model.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.log.data_model.Log</span></code></a></p>
 <p>Log of a SED output</p>
-<dl class="simple">
-<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a>): execution status of the archive
-exception (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): exception
-skip_reason (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): reason of skip
-output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): output
-duration (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>): duration in seconds
-parent (<a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a>): execution status of parent SED document
-out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): directory to export status</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.OutputLog.id">
+<code class="sig-name descname">id</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.OutputLog.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>id of the output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py class">
-<dt id="biosimulators_utils.log.data_model.Plot2DLog">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">Plot2DLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">curves</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.log.data_model.OutputLog" title="biosimulators_utils.log.data_model.OutputLog"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.log.data_model.OutputLog</span></code></a></p>
-<p>Log of a 2D SED plot</p>
-<dl>
-<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a>): execution status of the archive
-exception (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): exception
-skip_reason (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): reason of skip
-output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): output
-duration (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>): duration in seconds
-curves (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a>): execution status of each</p>
-<blockquote>
-<div><p>curve</p>
-</div></blockquote>
-<p>parent (<a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a>): execution status of parent SED document
-out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): directory to export status</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.OutputLog.status">
+<code class="sig-name descname">status</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.OutputLog.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.OutputLog.exception">
+<code class="sig-name descname">exception</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.OutputLog.exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.OutputLog.skip_reason">
+<code class="sig-name descname">skip_reason</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.OutputLog.skip_reason" title="Permalink to this definition">¶</a></dt>
+<dd><p>reason of skip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.OutputLog.output">
+<code class="sig-name descname">output</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.OutputLog.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.OutputLog.duration">
+<code class="sig-name descname">duration</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.OutputLog.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>duration in seconds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.OutputLog.parent">
+<code class="sig-name descname">parent</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.OutputLog.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of parent SED document</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.OutputLog.out_dir">
+<code class="sig-name descname">out_dir</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.OutputLog.out_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>directory to export status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.log.data_model.OutputLog.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.OutputLog.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a JSON-compatible representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>JSON-compatible representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.log.data_model.Plot2DLog">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">Plot2DLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">curves</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.log.data_model.OutputLog" title="biosimulators_utils.log.data_model.OutputLog"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.log.data_model.OutputLog</span></code></a></p>
+<p>Log of a 2D SED plot</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot2DLog.id">
+<code class="sig-name descname">id</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>id of the plot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot2DLog.status">
+<code class="sig-name descname">status</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot2DLog.exception">
+<code class="sig-name descname">exception</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot2DLog.skip_reason">
+<code class="sig-name descname">skip_reason</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.skip_reason" title="Permalink to this definition">¶</a></dt>
+<dd><p>reason of skip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot2DLog.output">
+<code class="sig-name descname">output</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot2DLog.duration">
+<code class="sig-name descname">duration</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>duration in seconds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot2DLog.curves">
+<code class="sig-name descname">curves</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.curves" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of each
+curve</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot2DLog.parent">
+<code class="sig-name descname">parent</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of parent SED document</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot2DLog.out_dir">
+<code class="sig-name descname">out_dir</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.out_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>directory to export status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="biosimulators_utils.log.data_model.Plot2DLog.finalize">
 <code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.finalize" title="Permalink to this definition">¶</a></dt>
@@ -275,8 +585,8 @@ out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="biosimulators_utils.log.data_model.Plot2DLog.to_dict">
-<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.to_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="biosimulators_utils.log.data_model.Plot2DLog.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot2DLog.to_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a JSON-compatible representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -292,23 +602,109 @@ out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="
 
 <dl class="py class">
 <dt id="biosimulators_utils.log.data_model.Plot3DLog">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">Plot3DLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">surfaces</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">Plot3DLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">surfaces</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.log.data_model.OutputLog" title="biosimulators_utils.log.data_model.OutputLog"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.log.data_model.OutputLog</span></code></a></p>
 <p>Log of a 3D SED plot</p>
-<dl>
-<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a>): execution status of the archive
-exception (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): exception
-skip_reason (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): reason of skip
-output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): output
-duration (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>): duration in seconds
-surfaces (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a>): execution status of each</p>
-<blockquote>
-<div><p>surface</p>
-</div></blockquote>
-<p>parent (<a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a>): execution status of parent SED document
-out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): directory to export status</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot3DLog.id">
+<code class="sig-name descname">id</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>id of the plot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot3DLog.status">
+<code class="sig-name descname">status</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot3DLog.exception">
+<code class="sig-name descname">exception</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot3DLog.skip_reason">
+<code class="sig-name descname">skip_reason</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.skip_reason" title="Permalink to this definition">¶</a></dt>
+<dd><p>reason of skip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot3DLog.output">
+<code class="sig-name descname">output</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot3DLog.duration">
+<code class="sig-name descname">duration</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>duration in seconds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot3DLog.surfaces">
+<code class="sig-name descname">surfaces</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.surfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of each
+surface</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot3DLog.parent">
+<code class="sig-name descname">parent</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of parent SED document</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.Plot3DLog.out_dir">
+<code class="sig-name descname">out_dir</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.out_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>directory to export status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="biosimulators_utils.log.data_model.Plot3DLog.finalize">
 <code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.finalize" title="Permalink to this definition">¶</a></dt>
@@ -316,8 +712,8 @@ out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="biosimulators_utils.log.data_model.Plot3DLog.to_dict">
-<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.to_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="biosimulators_utils.log.data_model.Plot3DLog.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.Plot3DLog.to_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a JSON-compatible representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -333,23 +729,109 @@ out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="
 
 <dl class="py class">
 <dt id="biosimulators_utils.log.data_model.ReportLog">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">ReportLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_sets</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">ReportLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_sets</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.log.data_model.OutputLog" title="biosimulators_utils.log.data_model.OutputLog"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.log.data_model.OutputLog</span></code></a></p>
 <p>Log of a SED report</p>
-<dl>
-<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a>): execution status of the archive
-exception (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): exception
-skip_reason (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): reason of skip
-output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): output
-duration (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>): duration in seconds
-data_sets (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a>): execution status of each</p>
-<blockquote>
-<div><p>data set</p>
-</div></blockquote>
-<p>parent (<a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a>): execution status of parent SED document
-out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): directory to export status</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.ReportLog.id">
+<code class="sig-name descname">id</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>id of the report</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.ReportLog.status">
+<code class="sig-name descname">status</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.ReportLog.exception">
+<code class="sig-name descname">exception</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.ReportLog.skip_reason">
+<code class="sig-name descname">skip_reason</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.skip_reason" title="Permalink to this definition">¶</a></dt>
+<dd><p>reason of skip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.ReportLog.output">
+<code class="sig-name descname">output</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.ReportLog.duration">
+<code class="sig-name descname">duration</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>duration in seconds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.ReportLog.data_sets">
+<code class="sig-name descname">data_sets</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.data_sets" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of each
+data set</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.ReportLog.parent">
+<code class="sig-name descname">parent</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of parent SED document</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.ReportLog.out_dir">
+<code class="sig-name descname">out_dir</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.out_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>directory to export status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="biosimulators_utils.log.data_model.ReportLog.finalize">
 <code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.finalize" title="Permalink to this definition">¶</a></dt>
@@ -357,8 +839,8 @@ out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="biosimulators_utils.log.data_model.ReportLog.to_dict">
-<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.to_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="biosimulators_utils.log.data_model.ReportLog.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.ReportLog.to_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a JSON-compatible representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -374,27 +856,121 @@ out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="
 
 <dl class="py class">
 <dt id="biosimulators_utils.log.data_model.SedDocumentLog">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">SedDocumentLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tasks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">SedDocumentLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">location</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tasks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.log.data_model.Log" title="biosimulators_utils.log.data_model.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.log.data_model.Log</span></code></a></p>
 <p>Log of a SED document</p>
-<dl>
-<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a>): execution status of the archive
-exception (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): exception
-skip_reason (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): reason of skip
-output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): output
-duration (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>): duration in seconds
-tasks (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.TaskLog" title="biosimulators_utils.log.data_model.TaskLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskLog</span></code></a>): execution status of each</p>
-<blockquote>
-<div><p>task</p>
-</div></blockquote>
-<dl class="simple">
-<dt>outputs (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.OutputLog" title="biosimulators_utils.log.data_model.OutputLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OutputLog</span></code></a>): execution status of each</dt><dd><p>output</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.SedDocumentLog.location">
+<code class="sig-name descname">location</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.location" title="Permalink to this definition">¶</a></dt>
+<dd><p>location of the SED document</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
-<p>parent (<a class="reference internal" href="#biosimulators_utils.log.data_model.CombineArchiveLog" title="biosimulators_utils.log.data_model.CombineArchiveLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveLog</span></code></a>): execution status of parent COMBINE/OMEX archive
-out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): directory to export status</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.SedDocumentLog.status">
+<code class="sig-name descname">status</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.SedDocumentLog.exception">
+<code class="sig-name descname">exception</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.SedDocumentLog.skip_reason">
+<code class="sig-name descname">skip_reason</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.skip_reason" title="Permalink to this definition">¶</a></dt>
+<dd><p>reason of skip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.SedDocumentLog.output">
+<code class="sig-name descname">output</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.SedDocumentLog.duration">
+<code class="sig-name descname">duration</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>duration in seconds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.SedDocumentLog.tasks">
+<code class="sig-name descname">tasks</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of each
+task</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.TaskLog" title="biosimulators_utils.log.data_model.TaskLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskLog</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.SedDocumentLog.outputs">
+<code class="sig-name descname">outputs</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.outputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of each
+output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <a class="reference internal" href="#biosimulators_utils.log.data_model.OutputLog" title="biosimulators_utils.log.data_model.OutputLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OutputLog</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.SedDocumentLog.parent">
+<code class="sig-name descname">parent</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of parent COMBINE/OMEX archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.CombineArchiveLog" title="biosimulators_utils.log.data_model.CombineArchiveLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveLog</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.SedDocumentLog.out_dir">
+<code class="sig-name descname">out_dir</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.out_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>directory to export status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="biosimulators_utils.log.data_model.SedDocumentLog.finalize">
 <code class="sig-name descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.finalize" title="Permalink to this definition">¶</a></dt>
@@ -402,8 +978,8 @@ out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
-<dt id="biosimulators_utils.log.data_model.SedDocumentLog.to_dict">
-<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.to_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="biosimulators_utils.log.data_model.SedDocumentLog.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.SedDocumentLog.to_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a JSON-compatible representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -451,24 +1027,122 @@ out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="
 
 <dl class="py class">
 <dt id="biosimulators_utils.log.data_model.TaskLog">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">TaskLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">algorithm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">simulator_details</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.log.data_model.</code><code class="sig-name descname">TaskLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exception</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_reason</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">duration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">algorithm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">simulator_details</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.log.data_model.Log" title="biosimulators_utils.log.data_model.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.log.data_model.Log</span></code></a></p>
 <p>Log of a SED task</p>
-<dl class="simple">
-<dt>Attributes</dt><dd><p>status (<a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a>): execution status of the archive
-exception (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): exception
-skip_reason (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>): reason of skip
-output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): output
-duration (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>): duration in seconds
-algorithm (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): KiSAO id of the requested algorithm
-simulator_details (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>): additional simulator-specific information
-parent (<a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a>): execution status of parent SED document
-out_dir (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): directory to export status</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.TaskLog.id">
+<code class="sig-name descname">id</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>id of the task</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.TaskLog.status">
+<code class="sig-name descname">status</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of the archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.Status" title="biosimulators_utils.log.data_model.Status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.TaskLog.exception">
+<code class="sig-name descname">exception</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.TaskLog.skip_reason">
+<code class="sig-name descname">skip_reason</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.skip_reason" title="Permalink to this definition">¶</a></dt>
+<dd><p>reason of skip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.TaskLog.output">
+<code class="sig-name descname">output</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.TaskLog.duration">
+<code class="sig-name descname">duration</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>duration in seconds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.TaskLog.algorithm">
+<code class="sig-name descname">algorithm</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.algorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>KiSAO id of the requested algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.TaskLog.simulator_details">
+<code class="sig-name descname">simulator_details</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.simulator_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>additional simulator-specific information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.TaskLog.parent">
+<code class="sig-name descname">parent</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>execution status of parent SED document</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.log.data_model.SedDocumentLog" title="biosimulators_utils.log.data_model.SedDocumentLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentLog</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.data_model.TaskLog.out_dir">
+<code class="sig-name descname">out_dir</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.out_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>directory to export status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
-<dt id="biosimulators_utils.log.data_model.TaskLog.to_dict">
-<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.to_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="biosimulators_utils.log.data_model.TaskLog.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.log.data_model.TaskLog.to_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a JSON-compatible representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
