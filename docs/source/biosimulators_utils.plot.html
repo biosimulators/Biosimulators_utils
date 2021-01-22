@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.7. biosimulators_utils.plot package &#8212; BioSimulators utils 0.1.33 documentation</title>
+    <title>2.1.7. biosimulators_utils.plot package &#8212; BioSimulators utils 0.1.34 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -196,19 +196,64 @@
 </dl>
 <dl class="py function">
 <dt id="biosimulators_utils.plot.io.write_plot_2d">
-<code class="sig-prename descclassname">biosimulators_utils.plot.io.</code><code class="sig-name descname">write_plot_2d</code><span class="sig-paren">(</span><em class="sig-param">data_generator_results</em>, <em class="sig-param">plot</em>, <em class="sig-param">base_path</em>, <em class="sig-param">rel_path</em>, <em class="sig-param">format=&lt;PlotFormat.pdf: 'pdf'&gt;</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/plot/io.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.plot.io.write_plot_2d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">biosimulators_utils.plot.io.</code><code class="sig-name descname">write_plot_2d</code><span class="sig-paren">(</span><em class="sig-param">plot</em>, <em class="sig-param">data_generator_results</em>, <em class="sig-param">base_path</em>, <em class="sig-param">rel_path</em>, <em class="sig-param">format=&lt;PlotFormat.pdf: 'pdf'&gt;</em>, <em class="sig-param">style='seaborn-paper'</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/plot/io.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.plot.io.write_plot_2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a 2D plot</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_generator_results</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">DataGeneratorResults</span></code>) – results of data generators</p></li>
 <li><p><strong>plot</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot2D</span></code>) – description of plot</p></li>
+<li><p><strong>data_generator_results</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">DataGeneratorResults</span></code>) – results of data generators</p></li>
 <li><p><strong>base_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – base path to save plot</p></li>
 <li><p><strong>rel_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to save results relative to <code class="xref py py-obj docutils literal notranslate"><span class="pre">base_path</span></code></p></li>
 <li><p><strong>format</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotFormat</span></code>, optional) – format</p></li>
+<li><p><strong>style</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – matplotlib style</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.plot.io.write_plot_3d">
+<code class="sig-prename descclassname">biosimulators_utils.plot.io.</code><code class="sig-name descname">write_plot_3d</code><span class="sig-paren">(</span><em class="sig-param">plot, data_generator_results, base_path, rel_path, format=&lt;PlotFormat.pdf: 'pdf'&gt;, style='seaborn-paper', colormaps=[&lt;matplotlib.colors.ListedColormap object&gt;, &lt;matplotlib.colors.ListedColormap object&gt;, &lt;matplotlib.colors.ListedColormap object&gt;, &lt;matplotlib.colors.ListedColormap object&gt;, &lt;matplotlib.colors.ListedColormap object&gt;]</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/plot/io.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.plot.io.write_plot_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a 3D plot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plot</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot3D</span></code>) – description of plot</p></li>
+<li><p><strong>data_generator_results</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">DataGeneratorResults</span></code>) – results of data generators</p></li>
+<li><p><strong>base_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – base path to save plot</p></li>
+<li><p><strong>rel_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to save results relative to <code class="xref py py-obj docutils literal notranslate"><span class="pre">base_path</span></code></p></li>
+<li><p><strong>format</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotFormat</span></code>, optional) – format</p></li>
+<li><p><strong>style</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – matplotlib style</p></li>
+<li><p><strong>colormaps</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.colors.LinearSegmentedColormap</span></code>, optional) – colormaps</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-biosimulators_utils.plot.warnings">
+<span id="biosimulators-utils-plot-warnings-module"></span><h2><span class="section-number">2.1.7.4. </span>biosimulators_utils.plot.warnings module<a class="headerlink" href="#module-biosimulators_utils.plot.warnings" title="Permalink to this headline">¶</a></h2>
+<p>Warnings for plots</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2021-01-20</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2021, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py exception">
+<dt id="biosimulators_utils.plot.warnings.IllogicalPlotWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.plot.warnings.</code><code class="sig-name descname">IllogicalPlotWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/plot/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.plot.warnings.IllogicalPlotWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.warnings.BioSimulatorsWarning" title="biosimulators_utils.warnings.BioSimulatorsWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.warnings.BioSimulatorsWarning</span></code></a></p>
+<p>Warning that a plot is may be illogical (e.g., has mixed axes or scales)</p>
 </dd></dl>
 
 </div>
