@@ -1,7 +1,7 @@
 from biosimulators_utils.config import get_config
 from biosimulators_utils.plot.data_model import PlotFormat
 from biosimulators_utils.report.data_model import ReportFormat
-import mock
+from unittest import mock
 import os
 import unittest
 
