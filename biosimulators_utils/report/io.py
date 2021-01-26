@@ -75,7 +75,7 @@ class ReportWriter(object):
                 warn('To facilitate machine interpretation, data sets should have unique labels.',
                      RepeatDataSetLabelsWarning)
 
-            warn('Reports exported to {} do not contain information about the data type or size of each data set.',
+            warn('Reports exported to {} do not contain information about the data type or size of each data set.'.format(format.value.upper()),
                  MissingReportMetadataWarning)
 
             results_df = pandas.DataFrame(results_array, index=data_set_labels)
