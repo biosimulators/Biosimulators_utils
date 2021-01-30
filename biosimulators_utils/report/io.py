@@ -143,8 +143,8 @@ class ReportReader(object):
             :obj:`DataSetResults`: report results
         """
         if format in [ReportFormat.csv, ReportFormat.tsv, ReportFormat.xlsx]:
-            warn('Reports exported to {} do not contain information about the data type or size of each data set.',
-                 MissingReportMetadataWarning)
+            warn('Reports exported to {} do not contain information about the data type or size of each data set.'.format(
+                format.value.upper()), MissingReportMetadataWarning)
 
             if format in [ReportFormat.csv, ReportFormat.tsv]:
                 filename = os.path.join(base_path, rel_path + '.' + format.value)
