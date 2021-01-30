@@ -36,6 +36,6 @@ class SimulatorIoTestCase(unittest.TestCase):
             read_simulator_specs(url)
 
         with mock.patch('requests.get', return_value=mock.Mock(raise_for_status=lambda: True, json=lambda: {})):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(requests.RequestException):
                 url = 'https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/dev/README.md'
                 read_simulator_specs(url)

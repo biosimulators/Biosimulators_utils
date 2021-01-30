@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ..biosimulations.utils import validate_biosimulations_api_response
 from ..config import get_config
 from ..utils.core import patch_dict
 import json
@@ -64,14 +65,13 @@ def read_simulator_specs(path_or_url, patch=None):
     # validate specifications
     api_endpoint = get_config().BIOSIMULATORS_API_ENDPOINT
     response = requests.post('{}simulators/validate'.format(api_endpoint), json=specs)
-    try:
-        response.raise_for_status()
-    except requests.RequestException as error:
-        raise ValueError(''.join([
-            'Simulator specifications from {} are not valid. '.format(path_or_url),
-            'Specifications must be adhere to the BioSimulators schema. Documentation is available at {}.\n\n  {}'.format(
-                api_endpoint, str(error).replace('\n', '\n  ')),
-        ]))
+    intro_failure_msg = ''.join([
+        "The simulator specifications from `{}` are not valid. ".format(path_or_url),
+        "The specifications of simulation tools must adhere to BioSimulators' schema. ",
+        "BioSimulators' schema is available in both JSON Schema and Open API Specifications formats. ",
+        "Documentation is available at {}.".format(api_endpoint)
+    ])
+    validate_biosimulations_api_response(response, intro_failure_msg)
 
     # return validated specifications
     return specs
