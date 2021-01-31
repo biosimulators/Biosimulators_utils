@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.2. biosimulators_utils.biosimulations package &#8212; BioSimulators utils 0.1.35 documentation</title>
+    <title>2.1.2. biosimulators_utils.biosimulations package &#8212; BioSimulators utils 0.1.36 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -448,6 +447,41 @@
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+</div>
+<div class="section" id="module-biosimulators_utils.biosimulations.utils">
+<span id="biosimulators-utils-biosimulations-utils-module"></span><h2><span class="section-number">2.1.2.3. </span>biosimulators_utils.biosimulations.utils module<a class="headerlink" href="#module-biosimulators_utils.biosimulations.utils" title="Permalink to this headline">¶</a></h2>
+<p>Utility methods for working with BioSimulations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2021-01-30</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2021, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt id="biosimulators_utils.biosimulations.utils.validate_biosimulations_api_response">
+<code class="sig-prename descclassname">biosimulators_utils.biosimulations.utils.</code><code class="sig-name descname">validate_biosimulations_api_response</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">response</span></em>, <em class="sig-param"><span class="n">failure_introductory_message</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.validate_biosimulations_api_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a response from one of BioSimulation’s APIs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>response</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">requests.models.Response</span></code>) – API response</p></li>
+<li><p><strong>failure_introductory_message</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – introductory message for failures</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>requests.RequestException</strong> – </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
