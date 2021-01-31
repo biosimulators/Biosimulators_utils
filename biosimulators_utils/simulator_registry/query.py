@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ..biosimulations.utils import validate_biosimulations_api_response
 from ..config import get_config
 import requests
 
@@ -25,8 +26,10 @@ def get_simulator_version_specs(id):
 
     endpoint = get_config().BIOSIMULATORS_API_ENDPOINT
     response = requests.get('{}simulators/{}'.format(endpoint, id))
+
     try:
-        response.raise_for_status()
+        intro_failure_msg = "The specifications of the versions of `{}` could not be retrieved from the BioSimulators registry.".format(id)
+        validate_biosimulations_api_response(response, intro_failure_msg)
         version_specs = response.json()
     except requests.exceptions.HTTPError:
         if response.status_code != 404:
