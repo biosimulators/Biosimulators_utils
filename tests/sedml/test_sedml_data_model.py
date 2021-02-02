@@ -75,7 +75,7 @@ class DataModelTestCase(unittest.TestCase):
             initial_time=10.,
             output_start_time=20.,
             output_end_time=30,
-            number_of_points=10)
+            number_of_steps=10)
 
         task = data_model.Task(id='task1', name='Task1', model=model, simulation=time_course_simulation)
         for var in model.changes[-1].variables:
@@ -365,3 +365,37 @@ class DataModelTestCase(unittest.TestCase):
         self.assertTrue(document.is_equal(document_2))
         document_2.models = []
         self.assertFalse(document.is_equal(document_2))
+
+    def test_uniform_time_course_number_of_points(self):
+        sim = data_model.UniformTimeCourseSimulation(number_of_steps=10)
+        self.assertEqual(sim.number_of_steps, 10)
+        self.assertEqual(sim.number_of_points, 10)
+
+        sim = data_model.UniformTimeCourseSimulation(number_of_points=20)
+        self.assertEqual(sim.number_of_steps, 20)
+        self.assertEqual(sim.number_of_points, 20)
+
+        with self.assertRaises(ValueError):
+            data_model.UniformTimeCourseSimulation(number_of_steps=10, number_of_points=20)
+
+        sim.number_of_points = 20
+        self.assertEqual(sim.number_of_steps, 20)
+        sim.number_of_steps = 30
+        self.assertEqual(sim.number_of_points, 30)
+
+    def test_uniform_range_number_of_points(self):
+        range = data_model.UniformRange(number_of_steps=10)
+        self.assertEqual(range.number_of_steps, 10)
+        self.assertEqual(range.number_of_points, 10)
+
+        range = data_model.UniformRange(number_of_points=20)
+        self.assertEqual(range.number_of_steps, 20)
+        self.assertEqual(range.number_of_points, 20)
+
+        with self.assertRaises(ValueError):
+            data_model.UniformRange(number_of_steps=10, number_of_points=20)
+
+        range.number_of_points = 20
+        self.assertEqual(range.number_of_steps, 20)
+        range.number_of_steps = 30
+        self.assertEqual(range.number_of_points, 30)

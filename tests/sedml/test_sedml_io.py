@@ -8,6 +8,7 @@ from unittest import mock
 import datetime
 import dateutil.tz
 import os
+import re
 import shutil
 import tempfile
 import unittest
@@ -108,10 +109,81 @@ class IoTestCase(unittest.TestCase):
             initial_time=10.,
             output_start_time=20.,
             output_end_time=30,
-            number_of_points=10)
+            number_of_steps=10)
 
         task1 = data_model.Task(id='task1', name='Task1', model=model1, simulation=time_course_simulation)
         task2 = data_model.Task(id='task2', name='Task2', model=model2, simulation=time_course_simulation)
+        task3 = data_model.RepeatedTask(
+            id='task3',
+            name='Task3',
+            reset_model_for_each_iteration=True,
+            changes=[],
+            sub_tasks=[
+                data_model.SubTask(task=task1, order=1),
+                data_model.SubTask(task=task2, order=2),
+            ],
+            ranges=[
+                data_model.UniformRange(id='range1', start=10., end=20., number_of_steps=50, type=data_model.UniformRangeType.linear),
+                data_model.UniformRange(id='range2', start=10., end=20., number_of_steps=50, type=data_model.UniformRangeType.log),
+                data_model.VectorRange(id='range3', values=[3., 5., 7., 11., 13.]),
+            ],
+        )
+        task3.ranges.append(
+            data_model.FunctionalRange(
+                id='range4',
+                range=task3.ranges[0],
+                parameters=[
+                    data_model.Parameter(
+                        id='x',
+                        value=2.0,
+                    ),
+                ],
+                variables=[
+                    data_model.Variable(
+                        id='y',
+                        model=model1,
+                        target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:Parameter[@id='param_1']",
+                    ),
+                ],
+                math='{} * {} + {}'.format(task3.ranges[0].id, 'x', 'y'),
+            ),
+        )
+        task3.range = task3.ranges[1]
+        task3.changes.append(
+            data_model.SetValueComputeModelChange(
+                model=model1,
+                symbol=data_model.Symbol.time.value,
+                range=task3.ranges[0],
+                parameters=[],
+                variables=[],
+                math='range1',
+            ),
+        )
+        task3.changes.append(
+            data_model.SetValueComputeModelChange(
+                model=model1,
+                target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='p1']",
+                range=task3.ranges[0],
+                parameters=[],
+                variables=[
+                    data_model.Variable(id='range1_var1', model=model1,
+                                        target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='p1']")
+                ],
+                math='range1 * range1_var1',
+            ),
+        )
+        task3.changes.append(
+            data_model.SetValueComputeModelChange(
+                model=model1,
+                target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='p1']",
+                range=task3.ranges[0],
+                parameters=[
+                    data_model.Parameter(id='range1_p1', value=2.5),
+                ],
+                variables=[],
+                math='range1 * range1_p1',
+            ),
+        )
 
         report = data_model.Report(
             id='report1',
@@ -364,7 +436,7 @@ class IoTestCase(unittest.TestCase):
             version=3,
             models=[model1, model2],
             simulations=[ss_simulation, one_step_simulation, time_course_simulation],
-            tasks=[task1, task2],
+            tasks=[task1, task2, task3],
             data_generators=(
                 [d.data_generator for d in report.data_sets]
                 + [c.x_data_generator for c in plot2d.curves]
@@ -386,6 +458,7 @@ class IoTestCase(unittest.TestCase):
 
         filename = os.path.join(self.tmp_dir, 'test.xml')
         io.SedmlSimulationWriter().run(document, filename)
+        self._replace_uniform_range_number_points_with_number_of_steps(filename)
 
         document2 = io.SedmlSimulationReader().run(filename)
         self.assertTrue(document.is_equal(document2))
@@ -393,11 +466,13 @@ class IoTestCase(unittest.TestCase):
         document2.metadata.license.namespace = None
         document2.metadata.license.url = None
         io.SedmlSimulationWriter().run(document2, filename)
+        self._replace_uniform_range_number_points_with_number_of_steps(filename)
         document3 = io.SedmlSimulationReader().run(filename)
         self.assertTrue(document2.is_equal(document3))
 
         document3.metadata = None
         io.SedmlSimulationWriter().run(document3, filename)
+        self._replace_uniform_range_number_points_with_number_of_steps(filename)
         document4 = io.SedmlSimulationReader().run(filename)
         self.assertTrue(document4.is_equal(document3))
 
@@ -410,6 +485,14 @@ class IoTestCase(unittest.TestCase):
         document.models[0].changes[4].new_elements = '<parameter id="new_parameter" value="1.0/>'
         with self.assertRaisesRegex(ValueError, 'not valid XML'):
             io.SedmlSimulationWriter().run(document, filename)
+
+    def _replace_uniform_range_number_points_with_number_of_steps(self, filename):
+        # TODO: remove once numberOfPoints issue is fixed with libSED-ML
+        with open(filename, 'r') as file:
+            document = file.read()
+        document = re.sub(r'<uniformRange ([^>]*)numberOfPoints=', r'<uniformRange \1numberOfSteps=', document)
+        with open(filename, 'w') as file:
+            file.write(document)
 
     def test_write_error_unsupported_classes(self):
         document = data_model.SedDocument(tasks=[mock.Mock(id='task')])
@@ -466,6 +549,38 @@ class IoTestCase(unittest.TestCase):
         utils.append_all_nested_children_to_doc(document)
         with self.assertRaises(NotImplementedError):
             io.SedmlSimulationWriter().run(document, None)
+
+        document = data_model.SedDocument(
+            tasks=[
+                data_model.RepeatedTask(
+                    id='task',
+                    ranges=[
+                        None,
+                    ]
+                ),
+            ],
+        )
+        with self.assertRaises(NotImplementedError):
+            io.SedmlSimulationWriter().run(document, None)
+
+    def test_unsupported_uniform_range_type(self):
+        document = data_model.SedDocument(
+            tasks=[
+                data_model.RepeatedTask(
+                    id='task',
+                    ranges=[
+                        data_model.UniformRange(id='range', start=0., end=10., number_of_steps=10, type=mock.Mock(value='sin')),
+                    ],
+                ),
+            ],
+        )
+
+        filename = os.path.join(self.tmp_dir, 'test.xml')
+        io.SedmlSimulationWriter().run(document, filename)
+        self._replace_uniform_range_number_points_with_number_of_steps(filename)
+
+        with self.assertRaisesRegex(NotImplementedError, 'is not supported'):
+            io.SedmlSimulationReader().run(filename)
 
     def test_read_add_xml(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'add-xml.sedml')

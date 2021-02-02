@@ -68,12 +68,10 @@ class SedmlSimulationWriter(object):
             if isinstance(task, data_model.Task):
                 self._add_task_to_doc(task)
 
-            # Todo
-            # elif isinstance(task, data_model.RepeatedTask):
-            #    self._add_repeated_task_to_doc(task)
+            elif isinstance(task, data_model.RepeatedTask):
+                self._add_repeated_task_to_doc(task)
 
             else:
-                # this is an error rather than a warning because our data model currently only support 1 type of task
                 raise NotImplementedError('Task type {} is not supported'.format(task.__class__.__name__))
 
         for data_gen in doc.data_generators:
@@ -87,7 +85,6 @@ class SedmlSimulationWriter(object):
             elif isinstance(output, data_model.Plot3D):
                 self._add_plot3d_to_doc(output)
             else:
-                # this is an error rather than a warning because SED doesn't define any other types of outputs
                 raise NotImplementedError('Output type {} is not supported'.format(output.__class__.__name__))
 
         self._export_doc(filename)
@@ -139,8 +136,6 @@ class SedmlSimulationWriter(object):
                 self._add_compute_change_to_model(model, change)
 
             else:
-                # this is an error rather than a warning because skipping a model change would alter the semantic
-                # meaning of the remaining model
                 raise NotImplementedError('Model change type {} is not supported'.format(change.__class__.__name__))
 
     def _add_attribute_change_to_model(self, model, change):
@@ -279,10 +274,9 @@ class SedmlSimulationWriter(object):
                 self._call_libsedml_method(sim_sed, 'setOutputStartTime', sim.output_start_time)
             if sim.output_end_time is not None:
                 self._call_libsedml_method(sim_sed, 'setOutputEndTime', sim.output_end_time)
-            if sim.number_of_points is not None:
-                self._call_libsedml_method(sim_sed, 'setNumberOfPoints', sim.number_of_points)
+            if sim.number_of_steps is not None:
+                self._call_libsedml_method(sim_sed, 'setNumberOfSteps', sim.number_of_steps)
         else:
-            # this is an error rather than a warning because SED doesn't define any other types of simulations
             raise NotImplementedError('Simulation type {} is not supported'.format(sim.__class__.__name__))
 
         self._obj_to_sed_obj_map[sim] = sim_sed
@@ -365,6 +359,163 @@ class SedmlSimulationWriter(object):
             if not task.simulation.id:  # pragma: no cover: already validated
                 raise ValueError('Simulation must have an id to be referenced')
             self._call_libsedml_method(task_sed, 'setSimulationReference', task.simulation.id)
+
+    def _add_repeated_task_to_doc(self, task):
+        """ Add a repeated task to a SED document
+
+        Args:
+            task (:obj:`data_model.RepeatedTask`): task
+
+        Raises:
+            :obj:`ValueError`: if the referenced range doesn't have an id
+        """
+        task_sed = self._doc_sed.createRepeatedTask()
+        self._obj_to_sed_obj_map[task] = task_sed
+
+        if task.id is not None:
+            self._call_libsedml_method(task_sed, 'setId', task.id)
+
+        if task.name is not None:
+            self._call_libsedml_method(task_sed, 'setName', task.name)
+
+        if task.reset_model_for_each_iteration is not None:
+            self._call_libsedml_method(task_sed, 'setResetModel', task.reset_model_for_each_iteration)
+
+        if task.range is not None:
+            if not task.range.id:  # pragma: no cover: already validated
+                raise ValueError('Range must have an id to be referenced')
+            self._call_libsedml_method(task_sed, 'setRangeId', task.range.id)
+
+        for change in task.changes:
+            self._add_set_value_model_change_to_repeated_task(task, change)
+
+        for sub_task in task.sub_tasks:
+            self._add_sub_task_to_repeated_task(task, sub_task)
+
+        for range in task.ranges:
+            self._add_range_to_repeated_task(task, range)
+
+    def _add_set_value_model_change_to_repeated_task(self, task, change):
+        """ Add a set value change to a repeated task
+
+        Args:
+            task (:obj:`data_model.RepeatedTask`): task
+            change (:obj:`data_model.SetValueComputeModelChange`): change
+
+        Raises:
+            :obj:`ValueError`: if the referenced model or range doesn't have an id
+        """
+        task_sed = self._obj_to_sed_obj_map[task]
+
+        change_sed = task_sed.createTaskChange()
+        self._obj_to_sed_obj_map[change] = change_sed
+
+        if change.target is not None:
+            self._call_libsedml_method(change_sed, 'setTarget', change.target)
+
+        for param in change.parameters:
+            self._add_param_to_obj(change, param)
+
+        for var in change.variables:
+            self._add_var_to_obj(change, var)
+
+        if change.math is not None:
+            self._call_libsedml_method(change_sed, 'setMath', libsedml.parseFormula(change.math))
+
+        if change.model is not None:
+            if not change.model.id:  # pragma: no cover: already validated
+                raise ValueError('Model must have an id to be referenced')
+            self._call_libsedml_method(change_sed, 'setModelReference', change.model.id)
+
+        if change.range is not None:
+            if not change.range.id:  # pragma: no cover: already validated
+                raise ValueError('Range must have an id to be referenced')
+            self._call_libsedml_method(change_sed, 'setRange', change.range.id)
+
+        if change.symbol is not None:
+            self._call_libsedml_method(change_sed, 'setSymbol', change.symbol)
+
+    def _add_sub_task_to_repeated_task(self, task, sub_task):
+        """ Add a sub-task to a repeated task
+
+        Args:
+            task (:obj:`data_model.RepeatedTask`): task
+            sub_task (:obj:`data_model.SubTask`): sub-task
+
+        Raises:
+            :obj:`ValueError`: if the referenced task doesn't have an id
+        """
+        task_sed = self._obj_to_sed_obj_map[task]
+
+        sub_task_sed = task_sed.createSubTask()
+        self._obj_to_sed_obj_map[sub_task] = sub_task_sed
+
+        if sub_task.task is not None:
+            if not sub_task.task.id:  # pragma: no cover: already validated
+                raise ValueError('Task must have an id to be referenced')
+            self._call_libsedml_method(sub_task_sed, 'setTask', sub_task.task.id)
+
+        if sub_task.order is not None:
+            self._call_libsedml_method(sub_task_sed, 'setOrder', sub_task.order)
+
+    def _add_range_to_repeated_task(self, task, range):
+        """ Add a range to a repeated task
+
+        Args:
+            task (:obj:`data_model.RepeatedTask`): task
+            sub_task (:obj:`data_model.Range`): range
+
+        Raises:
+            :obj:`ValueError`: if the referenced range doesn't have an id
+        """
+        task_sed = self._obj_to_sed_obj_map[task]
+
+        if isinstance(range, data_model.UniformRange):
+            range_sed = task_sed.createUniformRange()
+            self._obj_to_sed_obj_map[range] = range_sed
+
+            if range.start is not None:
+                self._call_libsedml_method(range_sed, 'setStart', range.start)
+
+            if range.end is not None:
+                self._call_libsedml_method(range_sed, 'setEnd', range.end)
+
+            if range.number_of_steps is not None:
+                self._call_libsedml_method(range_sed, 'setNumberOfSteps', range.number_of_steps)
+
+            if range.type is not None:
+                self._call_libsedml_method(range_sed, 'setType', range.type.value)
+
+        elif isinstance(range, data_model.VectorRange):
+            range_sed = task_sed.createVectorRange()
+            self._obj_to_sed_obj_map[range] = range_sed
+
+            for value in range.values:
+                self._call_libsedml_method(range_sed, 'setValues', tuple(range.values))
+
+        elif isinstance(range, data_model.FunctionalRange):
+            range_sed = task_sed.createFunctionalRange()
+            self._obj_to_sed_obj_map[range] = range_sed
+
+            if range.range is not None:
+                if not range.range.id:  # pragma: no cover: already validated
+                    raise ValueError('Range must have an id to be referenced')
+                self._call_libsedml_method(range_sed, 'setRange', range.range.id)
+
+            for param in range.parameters:
+                self._add_param_to_obj(range, param)
+
+            for var in range.variables:
+                self._add_var_to_obj(range, var)
+
+            if range.math is not None:
+                self._call_libsedml_method(range_sed, 'setMath', libsedml.parseFormula(range.math))
+
+        else:
+            raise NotImplementedError('Range type {} is not supported'.format(range.__class__.__name__))
+
+        if range.id is not None:
+            self._call_libsedml_method(range_sed, 'setId', range.id)
 
     def _add_data_gen_to_doc(self, data_gen):
         """ Add a data generator to a SED document
@@ -848,14 +999,19 @@ class SedmlSimulationReader(object):
 
             elif isinstance(sim_sed, libsedml.SedOneStep):
                 sim = data_model.OneStepSimulation()
-                sim.step = sim_sed.getStep()
+                if sim_sed.isSetStep():
+                    sim.step = sim_sed.getStep()
 
             elif isinstance(sim_sed, libsedml.SedUniformTimeCourse):
                 sim = data_model.UniformTimeCourseSimulation()
-                sim.initial_time = float(sim_sed.getInitialTime())
-                sim.output_start_time = float(sim_sed.getOutputStartTime())
-                sim.output_end_time = float(sim_sed.getOutputEndTime())
-                sim.number_of_points = int(sim_sed.getNumberOfPoints())
+                if sim_sed.isSetInitialTime():
+                    sim.initial_time = float(sim_sed.getInitialTime())
+                if sim_sed.isSetOutputStartTime():
+                    sim.output_start_time = float(sim_sed.getOutputStartTime())
+                if sim_sed.isSetOutputEndTime():
+                    sim.output_end_time = float(sim_sed.getOutputEndTime())
+                if sim_sed.isSetNumberOfSteps():
+                    sim.number_of_steps = int(sim_sed.getNumberOfSteps())
 
                 if sim.output_start_time < sim.initial_time:
                     raise ValueError('Output start time must be at least the initial time')
@@ -887,26 +1043,102 @@ class SedmlSimulationReader(object):
 
         # tasks
         id_to_task_map = {}
+        id_to_range_map = {}
         for task_sed in doc_sed.getListOfTasks():
             if isinstance(task_sed, libsedml.SedTask):
                 task = data_model.Task()
 
-                task.id = task_sed.getId() or None
-                task.name = task_sed.getName() or None
+                self._deserialize_reference(task_sed, task, 'model', 'ModelReference', 'model', id_to_model_map)
+                self._deserialize_reference(task_sed, task, 'simulation', 'SimulationReference', 'simulation', id_to_sim_map)
 
-                doc.tasks.append(task)
-                self._add_obj_to_id_to_obj_map(task_sed, task, id_to_task_map)
+            elif isinstance(task_sed, libsedml.SedRepeatedTask):
+                task = data_model.RepeatedTask()
 
-                self._deserialize_reference(task_sed, task, 'model', 'Model', 'model', id_to_model_map)
-                self._deserialize_reference(task_sed, task, 'simulation', 'Simulation', 'simulation', id_to_sim_map)
+                if task_sed.isSetResetModel():
+                    task.reset_model_for_each_iteration = task_sed.getResetModel()
 
-            elif isinstance(task_sed.libsedmlSedRepeatedTask):
-                # todo
-                pass
+                for change_sed in task_sed.getListOfTaskChanges():
+                    change = data_model.SetValueComputeModelChange()
+
+                    change.target = change_sed.getTarget() or None
+                    change.parameters = self._read_parameters(change_sed)
+                    change.math = self._read_math(change_sed)
+                    self._deserialize_reference(change_sed, change, 'model', 'ModelReference', 'model', id_to_model_map)
+                    change.symbol = change_sed.getSymbol() or None
+
+                    task.changes.append(change)
+
+                for sub_task_sed in task_sed.getListOfSubTasks():
+                    sub_task = data_model.SubTask()
+
+                    if sub_task_sed.isSetOrder():
+                        sub_task.order = sub_task_sed.getOrder()
+
+                    task.sub_tasks.append(sub_task)
+
+                for range_sed in task_sed.getListOfRanges():
+                    if isinstance(range_sed, libsedml.SedUniformRange):
+                        range = data_model.UniformRange()
+
+                        if range_sed.isSetStart():
+                            range.start = range_sed.getStart()
+                        if range_sed.isSetEnd():
+                            range.end = range_sed.getEnd()
+                        if range_sed.isSetNumberOfSteps():
+                            range.number_of_steps = range_sed.getNumberOfSteps()
+                        if range_sed.isSetType():
+                            range_type = range_sed.getType()
+                            if range_type in data_model.UniformRangeType.__members__:
+                                range.type = data_model.UniformRangeType[range_type]
+                            else:
+                                raise NotImplementedError('Range type {} is not supported'.format(range_type))
+
+                    elif isinstance(range_sed, libsedml.SedVectorRange):
+                        range = data_model.VectorRange()
+
+                        range.values = list(range_sed.getValues())
+
+                    elif isinstance(range_sed, libsedml.SedFunctionalRange):
+                        range = data_model.FunctionalRange()
+
+                        range.parameters = self._read_parameters(range_sed)
+                        range.math = self._read_math(range_sed)
+
+                    else:  # pragma: no cover: already validated by libSED-ML
+                        # this is an error rather than a warning because SED doesn't define any other types of ranges
+                        raise NotImplementedError('Range type {} is not supported'.format(range_sed.__class__.__name__))
+
+                    range.id = range_sed.getId() or None
+
+                    task.ranges.append(range)
+                    self._add_obj_to_id_to_obj_map(range_sed, range, id_to_range_map)
 
             else:  # pragma: no cover: already validated by libSED-ML
                 # this is an error rather than a warning because SED doesn't define any other types of tasks
                 raise NotImplementedError('Task type {} is not supported'.format(task_sed.__class__.__name__))
+
+            task.id = task_sed.getId() or None
+            task.name = task_sed.getName() or None
+
+            doc.tasks.append(task)
+            self._add_obj_to_id_to_obj_map(task_sed, task, id_to_task_map)
+
+        # deserialize references from tasks
+        for task_sed, task in zip(doc_sed.getListOfTasks(), doc.tasks):
+            if isinstance(task_sed, libsedml.SedRepeatedTask):
+                self._deserialize_reference(task_sed, task, 'range', 'RangeId', 'range', id_to_range_map)
+
+                for change_sed, change in zip(task_sed.getListOfTaskChanges(), task.changes):
+                    change.variables = self._read_variables(change_sed, id_to_model_map, id_to_task_map)
+                    self._deserialize_reference(change_sed, change, 'range', 'Range', 'range', id_to_range_map)
+
+                for sub_task_sed, sub_task in zip(task_sed.getListOfSubTasks(), task.sub_tasks):
+                    self._deserialize_reference(sub_task_sed, sub_task, 'task', 'Task', 'task', id_to_task_map)
+
+                for range_sed, range in zip(task_sed.getListOfRanges(), task.ranges):
+                    if isinstance(range_sed, libsedml.SedFunctionalRange):
+                        self._deserialize_reference(range_sed, range, 'range', 'Range', 'range', id_to_range_map)
+                        range.variables = self._read_variables(range_sed, id_to_model_map, id_to_task_map)
 
         # model changes
         for model_sed, model in zip(doc_sed.getListOfModels(), doc.models):
@@ -973,7 +1205,8 @@ class SedmlSimulationReader(object):
                     data_set.label = dataset_sed.getLabel() or None
 
                     output.data_sets.append(data_set)
-                    self._deserialize_reference(dataset_sed, data_set, 'data generator', 'Data', 'data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(dataset_sed, data_set, 'data generator',
+                                                'DataReference', 'data_generator', id_to_data_gen_map)
 
             elif isinstance(output_sed, libsedml.SedPlot2D):
                 output = data_model.Plot2D()
@@ -988,8 +1221,10 @@ class SedmlSimulationReader(object):
                     curve.y_scale = data_model.AxisScale.log if curve_sed.getLogY() else data_model.AxisScale.linear
 
                     output.curves.append(curve)
-                    self._deserialize_reference(curve_sed, curve, 'data generator', 'XData', 'x_data_generator', id_to_data_gen_map)
-                    self._deserialize_reference(curve_sed, curve, 'data generator', 'YData', 'y_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(curve_sed, curve, 'data generator', 'XDataReference',
+                                                'x_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(curve_sed, curve, 'data generator', 'YDataReference',
+                                                'y_data_generator', id_to_data_gen_map)
 
             elif isinstance(output_sed, libsedml.SedPlot3D):
                 output = data_model.Plot3D()
@@ -1005,9 +1240,12 @@ class SedmlSimulationReader(object):
                     surface.z_scale = data_model.AxisScale.log if surface_sed.getLogZ() else data_model.AxisScale.linear
 
                     output.surfaces.append(surface)
-                    self._deserialize_reference(surface_sed, surface, 'data generator', 'XData', 'x_data_generator', id_to_data_gen_map)
-                    self._deserialize_reference(surface_sed, surface, 'data generator', 'YData', 'y_data_generator', id_to_data_gen_map)
-                    self._deserialize_reference(surface_sed, surface, 'data generator', 'ZData', 'z_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(surface_sed, surface, 'data generator',
+                                                'XDataReference', 'x_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(surface_sed, surface, 'data generator',
+                                                'YDataReference', 'y_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(surface_sed, surface, 'data generator',
+                                                'ZDataReference', 'z_data_generator', id_to_data_gen_map)
 
             else:  # pragma: no cover: already validated by libSED-ML
                 # this is an error rather than a warning because SED doesn't define any other types of outputs
@@ -1051,9 +1289,8 @@ class SedmlSimulationReader(object):
 
             param.id = param_sed.getId() or None
             param.name = param_sed.getName() or None
-            param.value = param_sed.getValue() or None
-            if param.value is not None:
-                param.value = float(param.value)
+            if param_sed.isSetValue():
+                param.value = float(param_sed.getValue())
         return parameters
 
     def _read_variables(self, obj_sed, id_to_model_map, id_to_task_map):
@@ -1079,8 +1316,8 @@ class SedmlSimulationReader(object):
             if var.target and var.target.startswith('#'):
                 raise NotImplementedError('Variable targets to data descriptions are not supported.')
 
-            self._deserialize_reference(var_sed, var, 'task', 'Task', 'task', id_to_task_map)
-            self._deserialize_reference(var_sed, var, 'model', 'Model', 'model', id_to_model_map)
+            self._deserialize_reference(var_sed, var, 'task', 'TaskReference', 'task', id_to_task_map)
+            self._deserialize_reference(var_sed, var, 'model', 'ModelReference', 'model', id_to_model_map)
 
             variables.append(var)
         return variables
@@ -1120,11 +1357,11 @@ class SedmlSimulationReader(object):
             obj_sed (:obj:`libsedml.SedBase`): SED object
             obj (:obj:`object`): object
             ref_type (:obj:`str`): type of reference (e.g., `data generator`)
-            sed_ref_getter (:obj:`str`): SED reference getter (e.g., `XData`)
+            sed_ref_getter (:obj:`str`): SED reference getter (e.g., `XDataReference`)
             obj_attr (:obj:`str`): object attribute (e.g., `x_data_generator`)
             id_to_obj_map (:obj:`dict` of :obj:`str` to :obj:`object`): map from the ids of objects to objects
         """
-        obj_id = getattr(obj_sed, 'get' + sed_ref_getter + 'Reference')() or None
+        obj_id = getattr(obj_sed, 'get' + sed_ref_getter)() or None
         if obj_id:
             if obj_id in id_to_obj_map:
                 setattr(obj, obj_attr, id_to_obj_map.get(obj_id, None))

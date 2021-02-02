@@ -433,7 +433,7 @@ class ValidationTestCase(unittest.TestCase):
             initial_time=10.,
             output_start_time=-10.,
             output_end_time=-20.,
-            number_of_points=10.1,
+            number_of_steps=10.1,
         )
 
         with self.assertRaisesRegex(ValueError, 'must be at least'):
@@ -446,7 +446,7 @@ class ValidationTestCase(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, 'must be an integer'):
             self._validate_task(task, variables)
-        task.simulation.number_of_points = 10.
+        task.simulation.number_of_steps = 10.
 
         variables = [
             data_model.Variable()

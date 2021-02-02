@@ -20,7 +20,7 @@ class VariableResults(dict):
 
         * Steady-state tasks of non-spatial models: results should be arrays of shape ``(1,)``
         * One-step tasks of non-spatial models: results should be arrays of shape ``(2,)``
-        * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_points + 1,)``
+        * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_steps + 1,)``
     """
     pass
 
@@ -33,7 +33,7 @@ class DataGeneratorResults(dict):
 
         * Steady-state tasks of non-spatial models: results should be arrays of shape ``(1,)``
         * One-step tasks of non-spatial models: results should be arrays of shape ``(2,)``
-        * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_points + 1,)``
+        * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_steps + 1,)``
     """
     pass
 
@@ -46,7 +46,7 @@ class DataSetResults(dict):
 
         * Steady-state tasks of non-spatial models: results should be arrays of shape ``(number of data sets, 1)``
         * One-step tasks of non-spatial models: results should be arrays of shape ``(number of data sets, 2)``
-        * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_points + 1)``
+        * Uniform time course tasks of non-spatial models: results should be arrays of shape ``(number_of_steps + 1,)``
     """
     pass
 

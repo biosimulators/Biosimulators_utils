@@ -32,8 +32,15 @@ __all__ = [
     'ReplaceElementModelChange',
     'RemoveElementModelChange',
     'ComputeModelChange',
+    'SetValueComputeModelChange',
     'AbstractTask',
     'Task',
+    'RepeatedTask',
+    'SubTask',
+    'Range',
+    'UniformRange',
+    'VectorRange',
+    'FunctionalRange',
     'DataGenerator',
     'Variable',
     'Parameter',
@@ -252,11 +259,12 @@ class UniformTimeCourseSimulation(Simulation):
         initial_time (:obj:`float`): initial time
         output_start_time (:obj:`float`): output start time
         output_end_time (:obj:`float`): output end time
-        number_of_points (:obj:`int`): number of time points
+        number_of_steps (:obj:`int`): number of time steps
     """
 
     def __init__(self, id=None, name=None, algorithm=None,
-                 initial_time=None, output_start_time=None, output_end_time=None, number_of_points=None):
+                 initial_time=None, output_start_time=None, output_end_time=None,
+                 number_of_steps=None, number_of_points=None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -265,13 +273,24 @@ class UniformTimeCourseSimulation(Simulation):
             initial_time (:obj:`float`, optional): initial time
             output_start_time (:obj:`float`, optional): output start time
             output_end_time (:obj:`float`, optional): output end time
-            number_of_points (:obj:`int`, optional): number of time points
+            number_of_steps (:obj:`int`, optional): number of time steps
+            number_of_points (:obj:`int`, optional): number of points
         """
         super(UniformTimeCourseSimulation, self).__init__(id=id, name=name, algorithm=algorithm)
         self.initial_time = initial_time
         self.output_start_time = output_start_time
         self.output_end_time = output_end_time
-        self.number_of_points = number_of_points
+        if number_of_steps is not None and number_of_points is not None and number_of_points != number_of_steps:
+            raise ValueError('Only one of `number_of_steps` or `number_of_points` should be used.')
+        self.number_of_steps = number_of_steps if number_of_steps is not None else number_of_points
+
+    @property
+    def number_of_points(self):
+        return self.number_of_steps
+
+    @number_of_points.setter
+    def number_of_points(self, value):
+        self.number_of_steps = value
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -280,7 +299,7 @@ class UniformTimeCourseSimulation(Simulation):
             :obj:`tuple` of :obj:`str`: tuple representation
         """
         return (self.id, self.name, self.algorithm.to_tuple() if self.algorithm else None,
-                self.initial_time, self.output_start_time, self.output_end_time, self.number_of_points)
+                self.initial_time, self.output_start_time, self.output_end_time, self.number_of_steps)
 
     def is_equal(self, other):
         """ Determine if simulations are equal
@@ -295,7 +314,7 @@ class UniformTimeCourseSimulation(Simulation):
             and self.initial_time == other.initial_time \
             and self.output_start_time == other.output_start_time \
             and self.output_end_time == other.output_end_time \
-            and self.number_of_points == other.number_of_points
+            and self.number_of_steps == other.number_of_steps
 
 
 class Algorithm(object):
@@ -529,13 +548,13 @@ class AddElementModelChange(ModelChange):
         return (self.target, self.new_elements)
 
     def is_equal(self, other):
-        """ Determine if model attribute changes are equal
+        """ Determine if model changes are equal
 
         Args:
             other (:obj:`AddElementModelChange`): another content item
 
         Returns:
-            :obj:`bool`: :obj:`True`, if two model attribute changes are equal
+            :obj:`bool`: :obj:`True`, if two model changes are equal
         """
         return super(AddElementModelChange, self).is_equal(other) \
             and self.new_elements == other.new_elements
@@ -567,13 +586,13 @@ class ReplaceElementModelChange(ModelChange):
         return (self.target, self.new_elements)
 
     def is_equal(self, other):
-        """ Determine if model attribute changes are equal
+        """ Determine if model changes are equal
 
         Args:
             other (:obj:`ReplaceElementModelChange`): another content item
 
         Returns:
-            :obj:`bool`: :obj:`True`, if two model attribute changes are equal
+            :obj:`bool`: :obj:`True`, if two model changes are equal
         """
         return super(ReplaceElementModelChange, self).is_equal(other) \
             and self.new_elements == other.new_elements
@@ -630,18 +649,85 @@ class ComputeModelChange(ModelChange):
                 self.math)
 
     def is_equal(self, other):
-        """ Determine if model attribute changes are equal
+        """ Determine if model changes are equal
 
         Args:
             other (:obj:`ComputeModelChange`): another content item
 
         Returns:
-            :obj:`bool`: :obj:`True`, if two model attribute changes are equal
+            :obj:`bool`: :obj:`True`, if two model changes are equal
         """
         return super(ComputeModelChange, self).is_equal(other) \
             and are_lists_equal(self.variables, other.variables) \
             and are_lists_equal(self.parameters, other.parameters) \
             and self.math == other.math
+
+
+class SetValueComputeModelChange(ComputeModelChange):
+    """ A change that sets the value of an attribute of a model within an iteration of a repeated task
+
+    Attributes:
+        target (:obj:`str`): path to the element to replace
+        variables (:obj:`list` of :obj:`Variable`): variables
+        parameters (:obj:`list` of :obj:`Parameter`): parameters
+        math (:obj:`str`): mathematical expression
+        model (:obj:`Model`): model
+        range (:obj:`Range`): range
+        symbol (:obj:`str`): symbol
+    """
+
+    def __init__(self, target=None, variables=None, parameters=None, math=None, model=None, range=None, symbol=None):
+        """
+        Args:
+            target (:obj:`str`, optional): path to the element to replace
+            variables (:obj:`list` of :obj:`Variable`, optional): variables
+            parameters (:obj:`list` of :obj:`Parameter`, optional): parameters
+            math (:obj:`str`, optional): mathematical expression
+            model (:obj:`Model`, optional): model
+            range (:obj:`Range`, optional): range
+            symbol (:obj:`str`, optional): symbol
+        """
+        super(ComputeModelChange, self).__init__(target=target)
+        self.variables = variables or []
+        self.parameters = parameters or []
+        self.math = math
+        self.model = model
+        self.range = range
+        self.symbol = symbol
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.target,
+                tuple(none_sorted(variable.to_tuple() for variable in self.variables)),
+                tuple(none_sorted(parameter.to_tuple() for parameter in self.parameters)),
+                self.math,
+                self.model.id if self.model else None,
+                self.range.id if self.range else None,
+                self.symbol,
+                )
+
+    def is_equal(self, other):
+        """ Determine if model changes are equal
+
+        Args:
+            other (:obj:`SetValueComputeModelChange`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two model changes are equal
+        """
+        return super(SetValueComputeModelChange, self).is_equal(other) \
+            and are_lists_equal(self.variables, other.variables) \
+            and are_lists_equal(self.parameters, other.parameters) \
+            and self.math == other.math \
+            and ((self.model is None and self.model == other.model)
+                 or (self.model is not None and other.model is not None and self.model.id == other.model.id)) \
+            and ((self.range is None and self.range == other.range)
+                 or (self.range is not None and other.range is not None and self.range.id == other.range.id)) \
+            and self.symbol == other.symbol
 
 
 class AbstractTask(abc.ABC):
@@ -730,6 +816,307 @@ class Task(AbstractTask):
                  or (self.model is not None and other.model is not None and self.model.id == other.model.id)) \
             and ((self.simulation is None and self.simulation == other.simulation)
                  or (self.simulation is not None and other.simulation is not None and self.simulation.id == other.simulation.id))
+
+
+class RepeatedTask(AbstractTask):
+    """ A repeated task
+
+    Attributes:
+        id (:obj:`str`): id
+        name (:obj:`str`): name
+        range (:obj:`Range`): range of the iterations of the repeated task
+        reset_model_for_each_iteration (:obj:`bool`): whether to reset the model for each iteration of the repeated task
+        changes (:obj:`list` of :obj:`SetValueComputeModelChange`): set value model changes
+        sub_tasks (:obj:`list` of :obj:`SubTask`): sub-tasks
+        ranges (:obj:`list` of :obj:`Range`): ranges
+    """
+
+    def __init__(self, id=None, name=None, range=None, reset_model_for_each_iteration=None, changes=None, sub_tasks=None, ranges=None):
+        """
+        Args:
+            id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
+            range (:obj:`Range`, optional): range of the iterations of the repeated task
+            reset_model_for_each_iteration (:obj:`bool`, optional): whether to reset the model for each iteration of the repeated task
+            changes (:obj:`list` of :obj:`SetValueComputeModelChange`, optional): set value model changes
+            sub_tasks (:obj:`list` of :obj:`SubTask`, optional): sub-tasks
+            ranges (:obj:`list` of :obj:`Range`, optional): ranges
+        """
+        super(RepeatedTask, self).__init__(id=id, name=name)
+        self.range = range
+        self.reset_model_for_each_iteration = reset_model_for_each_iteration
+        self.changes = changes or []
+        self.sub_tasks = sub_tasks or []
+        self.ranges = ranges or []
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.id, self.name,
+                self.range.id if self.range else None,
+                self.reset_model_for_each_iteration,
+                tuple(none_sorted(change.to_tuple() for change in self.changes)),
+                tuple(none_sorted(sub_task.to_tuple() for sub_task in self.sub_tasks)),
+                tuple(none_sorted(range.to_tuple() for range in self.ranges)),
+                )
+
+    def is_equal(self, other):
+        """ Determine if repeated tasks are equal
+
+        Args:
+            other (:obj:`RepeatedTask`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two repeated tasks are equal
+        """
+        return super(RepeatedTask, self).is_equal(other) \
+            and ((self.range is None and self.range == other.range)
+                 or (self.range is not None and other.range is not None and self.range.id == other.range.id)) \
+            and self.reset_model_for_each_iteration == other.reset_model_for_each_iteration \
+            and are_lists_equal(self.changes, other.changes) \
+            and are_lists_equal(self.sub_tasks, other.sub_tasks) \
+            and are_lists_equal(self.ranges, other.ranges)
+
+
+class SubTask(object):
+    """ A subtask of a repeated task
+
+    Attributes:
+        task (:obj:`AbstractTask`): task
+        order (:obj:`int`): order in which the subtask should be executed
+    """
+
+    def __init__(self, task=None, order=None):
+        """
+        Args:
+            task (:obj:`AbstractTask`, optional): task
+            order (:obj:`int`, optional): order in which the subtask should be executed
+        """
+        self.task = task
+        self.order = order
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.task.id if self.task else None,
+                self.order,
+                )
+
+    def is_equal(self, other):
+        """ Determine if repeated tasks are equal
+
+        Args:
+            other (:obj:`RepeatedTask`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two repeated tasks are equal
+        """
+        return self.__class__ == other.__class__ \
+            and ((self.task is None and self.task == other.task)
+                 or (self.task is not None and other.task is not None and self.task.id == other.task.id)) \
+            and self.order == other.order
+
+
+class Range(object):
+    """ A range
+
+    Attributes:
+        id (:obj:`str`): id
+    """
+
+    def __init__(self, id=None):
+        """
+        Args:
+            id (:obj:`str`, optional): id
+        """
+        self.id = id
+
+    @abc.abstractmethod
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        pass  # pragma: no cover
+
+    def is_equal(self, other):
+        """ Determine if ranges are equal
+
+        Args:
+            other (:obj:`Range`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two ranges are equal
+        """
+        return self.__class__ == other.__class__ \
+            and self.id == other.id
+
+
+class UniformRangeType(str, enum.Enum):
+    """ Type of a uniform range """
+    linear = 'linear'
+    log = 'log'
+
+
+class UniformRange(Range):
+    """ A uniform range
+
+    Attributes:
+        id (:obj:`str`): id
+        start (:obj:`float`): start value
+        end (:obj:`float`): end value
+        number_of_steps (:obj:`int`): number of steps
+        type (:obj:`UniformRangeType`): type
+    """
+
+    def __init__(self, id=None, start=None, end=None, number_of_steps=None, number_of_points=None, type=None):
+        """
+        Args:
+            id (:obj:`str`, optional): id
+            start (:obj:`float`, optional): start value
+            end (:obj:`float`, optional): end value
+            number_of_steps (:obj:`int`, optional): number of steps
+            number_of_points (:obj:`int`, optional): number of points
+            type (:obj:`UniformRangeType`, optional): type
+        """
+        super(UniformRange, self).__init__(id=id)
+        self.start = start
+        self.end = end
+        if number_of_steps is not None and number_of_points is not None and number_of_points != number_of_steps:
+            raise ValueError('Only one of `number_of_steps` or `number_of_points` should be used.')
+        self.number_of_steps = number_of_steps if number_of_steps is not None else number_of_points
+        self.type = type
+
+    @property
+    def number_of_points(self):
+        return self.number_of_steps
+
+    @number_of_points.setter
+    def number_of_points(self, value):
+        self.number_of_steps = value
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.id, self.start, self.end, self.number_of_steps, self.type.value)
+
+    def is_equal(self, other):
+        """ Determine if ranges are equal
+
+        Args:
+            other (:obj:`UniformRange`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two ranges are equal
+        """
+        return super(UniformRange, self).is_equal(other) \
+            and self.start == other.start \
+            and self.end == other.end \
+            and self.number_of_steps == other.number_of_steps \
+            and self.type == other.type
+
+
+class VectorRange(Range):
+    """ A vector range
+
+    Attributes:
+        id (:obj:`str`): id
+        values (:obj:`list` of :obj:`float`): values
+    """
+
+    def __init__(self, id=None, values=None):
+        """
+        Args:
+            id (:obj:`str`, optional): id
+            values (:obj:`list` of :obj:`float`): values
+        """
+        super(VectorRange, self).__init__(id=id)
+        self.values = values or []
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.id, tuple(self.values))
+
+    def is_equal(self, other):
+        """ Determine if ranges are equal
+
+        Args:
+            other (:obj:`VectorRange`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two ranges are equal
+        """
+        return super(VectorRange, self).is_equal(other) \
+            and self.values == other.values
+
+
+class FunctionalRange(Range):
+    """ A functional range
+
+    Attributes:
+        id (:obj:`str`): id
+        range (:obj:`Range`): range
+        variables (:obj:`list` of :obj:`Variable`): variables
+        parameters (:obj:`list` of :obj:`Parameter`): variables
+        math (:obj:`str`): mathematical expression
+    """
+
+    def __init__(self, id=None, range=None, variables=None, parameters=None, math=None):
+        """
+        Args:
+            id (:obj:`str`, optional): id
+            range (:obj:`Range`, optional): range
+            variables (:obj:`list` of :obj:`Variable`, optional): variables
+            parameters (:obj:`list` of :obj:`Parameter`, optional): variables
+            math (:obj:`str`, optional): mathematical expression
+        """
+        super(FunctionalRange, self).__init__(id=id)
+        self.range = range
+        self.variables = variables or []
+        self.parameters = parameters or []
+        self.math = math
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.id,
+                self.range.id if self.range else None,
+                tuple(none_sorted(variable.to_tuple() for variable in self.variables)),
+                tuple(none_sorted(parameter.to_tuple() for parameter in self.parameters)),
+                self.math)
+
+    def is_equal(self, other):
+        """ Determine if ranges are equal
+
+        Args:
+            other (:obj:`FunctionalRange`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two ranges are equal
+        """
+        return super(FunctionalRange, self).is_equal(other) \
+            and ((self.range is None and self.range == other.range)
+                 or (self.range is not None and other.range is not None and self.range.id == other.range.id)) \
+            and are_lists_equal(self.variables, other.variables) \
+            and are_lists_equal(self.parameters, other.parameters) \
+            and self.math == other.math
 
 
 class DataGenerator(object):

@@ -328,7 +328,7 @@ def validate_uniform_time_course_simulation(simulation):
             raise ValueError('Output end time {} must be at least the output start time {}.'.format(
                 simulation.output_end_time, simulation.output_start_time))
 
-        if math.floor(simulation.number_of_points) != simulation.number_of_points:
+        if math.floor(simulation.number_of_steps) != simulation.number_of_steps:
             raise ValueError('Number of points must be an integer.')
 
 

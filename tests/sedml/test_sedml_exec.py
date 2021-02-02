@@ -50,7 +50,7 @@ class ExecTaskCase(unittest.TestCase):
             initial_time=10.,
             output_start_time=20.,
             output_end_time=30.,
-            number_of_points=5,
+            number_of_steps=5,
         ))
 
         doc.tasks.append(data_model.Task(
@@ -1010,7 +1010,7 @@ class ExecTaskCase(unittest.TestCase):
             initial_time=0.,
             output_start_time=10.,
             output_end_time=10.,
-            number_of_points=10,
+            number_of_steps=10,
         ))
 
         doc.tasks.append(data_model.Task(
@@ -1234,7 +1234,7 @@ class ExecTaskCase(unittest.TestCase):
             initial_time=0.,
             output_start_time=10.,
             output_end_time=10.,
-            number_of_points=10,
+            number_of_steps=10,
         ))
 
         doc.tasks.append(data_model.Task(
