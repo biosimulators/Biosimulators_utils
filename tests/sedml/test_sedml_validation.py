@@ -1,7 +1,9 @@
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import utils
 from biosimulators_utils.sedml import validation
+from biosimulators_utils.sedml.warnings import IllogicalSedmlWarning
 from unittest import mock
+import copy
 import os
 import shutil
 import tempfile
@@ -130,6 +132,20 @@ class ValidationTestCase(unittest.TestCase):
             data_generators=[
                 data_model.DataGenerator(
                     id='data_gen',
+                    parameters=[
+                        data_model.Parameter(
+                        )
+                    ],
+                ),
+            ],
+        )
+        with self.assertRaisesRegex(ValueError, 'must have ids'):
+            validation.validate_doc(doc)
+
+        doc = data_model.SedDocument(
+            data_generators=[
+                data_model.DataGenerator(
+                    id='data_gen',
                     variables=[
                         data_model.Variable(
                         )
@@ -228,12 +244,18 @@ class ValidationTestCase(unittest.TestCase):
         doc.models.append(data_model.Model(id='model1', source=''))
         doc.models[0].changes.append(data_model.ComputeModelChange(
             target='x',
+            parameters=[data_model.Parameter(id='a', value=1.25)],
             variables=[data_model.Variable(id='y', target='y', model=doc.models[0])],
-            math='y'
+            math='a * y'
         ),
         )
         validation.validate_doc(doc)
 
+        doc.models[0].changes[0].parameters[0].id = None
+        with self.assertRaisesRegex(ValueError, 'must have ids'):
+            validation.validate_doc(doc)
+
+        doc.models[0].changes[0].parameters[0].id = 'a'
         doc.models[0].changes[0].variables[0].id = None
         with self.assertRaisesRegex(ValueError, 'must have ids'):
             validation.validate_doc(doc)
@@ -323,6 +345,205 @@ class ValidationTestCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'must be acyclic'):
             validation.validate_doc(doc)
 
+    def test_validate_doc_with_repeated_tasks(self):
+        doc = data_model.SedDocument()
+        doc.models.append(data_model.Model(id='model1', source='model1.xml', language=data_model.ModelLanguage.SBML))
+        doc.simulations.append(data_model.SteadyStateSimulation(id='sim1', algorithm=data_model.Algorithm(kisao_id='KISAO_0000001')))
+        doc.tasks.append(data_model.Task(id='task1', model=doc.models[0], simulation=doc.simulations[0]))
+        doc.tasks.append(
+            data_model.RepeatedTask(
+                id='task2',
+                sub_tasks=[
+                    data_model.SubTask(order=1, task=doc.tasks[0]),
+                    data_model.SubTask(order=2, task=doc.tasks[0]),
+                ],
+                ranges=[
+                    data_model.VectorRange(id='range1', values=[1., 2., 3.]),
+                    data_model.VectorRange(id='range2', values=[4., 5., 6.]),
+                ],
+                changes=[
+                    data_model.SetValueComputeModelChange(
+                        model=doc.models[0],
+                        target='x',
+                        range=None,
+                        parameters=[
+                            data_model.Parameter(id='a', value=1.25),
+                        ],
+                        variables=[
+                            data_model.Variable(
+                                id='x',
+                                model=doc.models[0],
+                                target='x',
+                            )
+                        ],
+                        math='a * x + b',
+                    )
+                ],
+            ),
+        )
+        doc.tasks[1].range = doc.tasks[1].ranges[0]
+        validation.validate_doc(doc)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].sub_tasks[0].task = None
+        with self.assertRaisesRegex(ValueError, 'Sub-tasks must reference tasks'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].sub_tasks[1].order = 1
+        with self.assertRaisesRegex(ValueError, 'The `order` of each sub-task should be distinct'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].sub_tasks[1].task = doc2.tasks[1]
+        with self.assertRaisesRegex(ValueError, 'must be acyclic'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].range = None
+        with self.assertRaisesRegex(ValueError, 'Repeated tasks must have main ranges'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].ranges[0].id = None
+        with self.assertRaisesRegex(ValueError, 'Ranges must have ids'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].ranges[1].id = 'range1'
+        with self.assertRaisesRegex(ValueError, 'Ranges must have unique ids'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].ranges[1].values.append(7.)
+        with self.assertWarnsRegex(IllogicalSedmlWarning, 'will be ignored'):
+            validation.validate_doc(doc2)
+
+        doc2.tasks[1].ranges[0].values.append(8.)
+        doc2.tasks[1].ranges[0].values.append(9.)
+        with self.assertRaisesRegex(ValueError, 'must be at least as long'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].ranges.append(None)
+        with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].ranges.append(
+            data_model.FunctionalRange(
+                id='range3',
+                range=doc.tasks[1].ranges[0],
+                parameters=[
+                    data_model.Parameter(id='p_2', value=3.7),
+                ],
+                variables=[
+                    data_model.Variable(
+                        id='var1',
+                        model=doc.models[0],
+                        target='x',
+                    ),
+                ],
+                math='var1',
+            )
+        )
+
+        doc2.tasks[1].ranges[2].range = None
+        with self.assertRaisesRegex(ValueError, 'must reference another range'):
+            validation.validate_doc(doc2)
+
+        doc2.tasks[1].ranges[2].range = doc.tasks[1].ranges[0]
+        doc2.tasks[1].ranges[2].parameters[0].id = None
+        with self.assertRaisesRegex(ValueError, 'Parameters must have ids'):
+            validation.validate_doc(doc2)
+
+        doc2.tasks[1].ranges[2].parameters[0].id = 'p_2'
+        doc2.tasks[1].ranges[2].variables[0].id = None
+        with self.assertRaisesRegex(ValueError, 'Variables must have ids'):
+            validation.validate_doc(doc2)
+
+        doc2.tasks[1].ranges[2].variables[0].id = 'var1'
+        doc2.tasks[1].ranges[2].variables[0].model = None
+        with self.assertRaisesRegex(ValueError, 'must reference models'):
+            validation.validate_doc(doc2)
+
+        doc2.tasks[1].ranges[2].variables[0].model = doc.models[0]
+        doc2.tasks[1].ranges[2].variables[0].task = doc.tasks[0]
+        with self.assertRaisesRegex(ValueError, 'should not reference tasks'):
+            validation.validate_doc(doc2)
+
+        doc2.tasks[1].ranges[2].variables[0].task = None
+        doc2.tasks[1].ranges[2].variables[0].target = None
+        with self.assertRaisesRegex(ValueError, 'should define a symbol or target'):
+            validation.validate_doc(doc2)
+
+        doc2.tasks[1].ranges[2].variables[0].target = 'x'
+        doc2.tasks[1].ranges[2].variables[0].symbol = 'y'
+        with self.assertRaisesRegex(ValueError, 'should define a symbol or target, not both'):
+            validation.validate_doc(doc2)
+
+        doc2.tasks[1].ranges[2].variables[0].target = None
+        validation.validate_doc(doc2)
+
+        doc2.tasks[1].ranges[2].math = None
+        with self.assertRaisesRegex(ValueError, 'must have math'):
+            validation.validate_doc(doc2)
+
+        doc2.tasks[1].ranges[2].math = 'var1'
+        doc2.tasks[1].ranges[2].range = doc2.tasks[1].ranges[2]
+        with self.assertRaisesRegex(ValueError, 'must be acyclic'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].changes[0].model = None
+        with self.assertRaisesRegex(ValueError, 'must reference models'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].changes[0].target = None
+        with self.assertRaisesRegex(ValueError, 'must define a symbol or a target'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].changes[0].symbol = 'x'
+        with self.assertRaisesRegex(ValueError, 'must define a symbol or a target, not both'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].changes[0].parameters[0].id = None
+        with self.assertRaisesRegex(ValueError, 'Parameters must have ids'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].changes[0].variables[0].id = None
+        with self.assertRaisesRegex(ValueError, 'Variables must have ids'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].changes[0].variables[0].model = None
+        with self.assertRaisesRegex(ValueError, 'variables must reference a model'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].changes[0].variables[0].task = doc2.tasks[0]
+        with self.assertRaisesRegex(ValueError, 'should not reference a task'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].changes[0].variables[0].target = None
+        with self.assertRaisesRegex(ValueError, 'must define a target'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].changes[0].variables[0].symbol = 'x'
+        with self.assertRaisesRegex(ValueError, 'must define a target, not a symbol'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].changes[0].math = None
+        with self.assertRaisesRegex(ValueError, 'must have math'):
+            validation.validate_doc(doc2)
+
     def _validate_task(self, task, variables):
         validation.validate_task(task)
         validation.validate_model_language(task.model.language, data_model.ModelLanguage.SBML)
@@ -387,7 +608,7 @@ class ValidationTestCase(unittest.TestCase):
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
-                variables=[data_model.Variable(model=task.model, target='y', symbol='y')],
+                variables=[data_model.Variable(id='y', model=task.model, target='y', symbol='y')],
                 math='y',
             ),
         ]
@@ -397,7 +618,7 @@ class ValidationTestCase(unittest.TestCase):
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
-                variables=[data_model.Variable(model=task.model)],
+                variables=[data_model.Variable(id='y', model=task.model)],
                 math='y',
             ),
         ]
@@ -407,22 +628,42 @@ class ValidationTestCase(unittest.TestCase):
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
-                variables=[data_model.Variable(target='y')],
+                variables=[data_model.Variable(id='y', target='y')],
                 math='y',
             ),
         ]
 
-        with self.assertRaisesRegex(ValueError, 'must define a model'):
+        with self.assertRaisesRegex(ValueError, 'must reference a model'):
             self._validate_task(task, variables)
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
-                variables=[data_model.Variable(model=task.model, task=data_model.Task(), target='y')],
+                variables=[data_model.Variable(id='y', model=task.model, task=data_model.Task(), target='y')],
                 math='y',
             ),
         ]
 
-        with self.assertRaisesRegex(ValueError, 'should not define a task'):
+        with self.assertRaisesRegex(ValueError, 'should not reference a task'):
+            self._validate_task(task, variables)
+        task.model.changes = [
+            data_model.ComputeModelChange(
+                target='x',
+                variables=[data_model.Variable(model=task.model, target='y')],
+                math='y',
+            ),
+        ]
+
+        with self.assertRaisesRegex(ValueError, 'must have ids'):
+            self._validate_task(task, variables)
+        task.model.changes = [
+            data_model.ComputeModelChange(
+                target='x',
+                parameters=[data_model.Parameter(value=1.25)],
+                math='y',
+            ),
+        ]
+
+        with self.assertRaisesRegex(ValueError, 'must have ids'):
             self._validate_task(task, variables)
         task.model.changes = []
 
@@ -451,13 +692,13 @@ class ValidationTestCase(unittest.TestCase):
         variables = [
             data_model.Variable()
         ]
-        with self.assertRaisesRegex(ValueError, 'must define a task'):
+        with self.assertRaisesRegex(ValueError, 'must reference a task'):
             self._validate_task(task, variables)
 
         variables = [
             data_model.Variable(task=data_model.Task(), model=data_model.Model())
         ]
-        with self.assertRaisesRegex(ValueError, 'should not define a model'):
+        with self.assertRaisesRegex(ValueError, 'should not reference a model'):
             self._validate_task(task, variables)
 
         variables = [

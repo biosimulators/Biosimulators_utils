@@ -123,8 +123,8 @@ class IoTestCase(unittest.TestCase):
                 data_model.SubTask(task=task2, order=2),
             ],
             ranges=[
-                data_model.UniformRange(id='range1', start=10., end=20., number_of_steps=50, type=data_model.UniformRangeType.linear),
-                data_model.UniformRange(id='range2', start=10., end=20., number_of_steps=50, type=data_model.UniformRangeType.log),
+                data_model.UniformRange(id='range1', start=10., end=20., number_of_steps=4, type=data_model.UniformRangeType.linear),
+                data_model.UniformRange(id='range2', start=10., end=20., number_of_steps=4, type=data_model.UniformRangeType.log),
                 data_model.VectorRange(id='range3', values=[3., 5., 7., 11., 13.]),
             ],
         )
@@ -563,6 +563,12 @@ class IoTestCase(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             io.SedmlSimulationWriter().run(document, None)
 
+        task = document.tasks[0]
+        writer = io.SedmlSimulationWriter()
+        writer._obj_to_sed_obj_map = {task: None}
+        with self.assertRaises(NotImplementedError):
+            writer._add_range_to_repeated_task(range=task.ranges[0], task=task)
+
     def test_unsupported_uniform_range_type(self):
         document = data_model.SedDocument(
             tasks=[
@@ -574,6 +580,7 @@ class IoTestCase(unittest.TestCase):
                 ),
             ],
         )
+        document.tasks[0].range = document.tasks[0].ranges[0]
 
         filename = os.path.join(self.tmp_dir, 'test.xml')
         io.SedmlSimulationWriter().run(document, filename)

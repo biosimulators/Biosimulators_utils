@@ -6,11 +6,15 @@
 :License: MIT
 """
 
+from ..warnings import warn
 from ..xml.utils import validate_xpaths_ref_to_unique_objects
-from .data_model import (Task, ModelLanguage, ModelChange, ComputeModelChange,  # noqa: F401
+from .data_model import (AbstractTask, Task, RepeatedTask, ModelLanguage, ModelChange, ComputeModelChange,  # noqa: F401
                          Simulation, UniformTimeCourseSimulation, Variable,
+                         Range, FunctionalRange,
                          Report, Plot2D, Plot3D)
-from .utils import append_all_nested_children_to_doc
+from .utils import append_all_nested_children_to_doc, get_range_len
+from .warnings import IllogicalSedmlWarning
+import collections
 import copy
 import math
 import networkx
@@ -92,6 +96,10 @@ def validate_doc(doc, validate_semantics=True):
                     raise ValueError('Model change attributes must define a target')
 
                 if isinstance(change, ComputeModelChange):
+                    for param in change.parameters:
+                        if not param.id:
+                            raise ValueError('Parameters must have ids')
+
                     for var in change.variables:
                         if not var.id:
                             raise ValueError('Variables must have ids')
@@ -136,12 +144,196 @@ def validate_doc(doc, validate_semantics=True):
                     if not change.kisao_id or not re.match(r'^KISAO_\d{7}$', change.kisao_id):
                         raise ValueError('Algorithm of simulation {} has an invalid KiSAO id: {}'.format(sim.id, sim.algorithm.kisao_id))
 
+        # basic tasks reference a model and a simulation
         for task in doc.tasks:
             if isinstance(task, Task):
                 validate_reference(task, 'Task {}'.format(task.id), 'model', 'model')
                 validate_reference(task, 'Task {}'.format(task.id), 'simulation', 'simulation')
 
+        # sub tasks of repeated tasks reference tasks and have unique orders
+        sub_task_graph = networkx.DiGraph()
+        for task in doc.tasks:
+            sub_task_graph.add_node(task.id)
+
+            if isinstance(task, RepeatedTask):
+                for i_sub_task, sub_task in enumerate(task.sub_tasks):
+                    if not isinstance(sub_task.task, AbstractTask):
+                        msg = ('Sub-tasks must reference tasks. '
+                               'Sub-task {} of repeated task {} does not reference a task.').format(
+                            i_sub_task + 1, task.id)
+                        raise ValueError(msg)
+
+                    sub_task_graph.add_edge(task.id, sub_task.task.id)
+
+                duplicate_orders = [item for item, count in collections.Counter(
+                    sub_task.order for sub_task in task.sub_tasks).items() if count > 1]
+                if duplicate_orders:
+                    msg = ('The `order` of each sub-task should be distinct within a repeated task. '
+                           'Multiple sub-tasks of repeated task `{}` have the following orders:\n  - {}').format(
+                        task.id, '\n  - '.join([str(order) for order in sorted(duplicate_orders)]))
+                    raise ValueError(msg)
+
+        try:
+            networkx.algorithms.cycles.find_cycle(sub_task_graph)
+            raise ValueError('The subtasks are defined cyclically. The graph of subtasks must be acyclic.')
+        except networkx.NetworkXNoCycle:
+            pass
+
+        # ranges of repeated tasks have unique ids
+        range_ids = []
+        for task in doc.tasks:
+            if isinstance(task, RepeatedTask):
+                for i_range, range in enumerate(task.ranges):
+                    if not isinstance(range, Range):
+                        raise NotImplementedError('Ranges of type `{}` are not supported.'.format(range.__class__.__name__))
+
+                    if not range.id:
+                        raise ValueError('Ranges must have ids. Range {} of task `{}` does not have an id.'.format(i_range + 1, task.id))
+                    range_ids.append(range.id)
+
+        duplicate_range_ids = [item for item, count in collections.Counter(range_ids).items() if count > 1]
+        if duplicate_range_ids:
+            msg = ('Ranges must have unique ids. The following range ids are repeated:\n  - {}').format(
+                '\n  - '.join(sorted(duplicate_range_ids)))
+            raise ValueError(msg)
+
+        # Functional ranges of repeated tasks
+        # - Functional ranges reference other ranges
+        # - Parameters of functional ranges
+        #   - Have ids
+        # - Variables of functional ranges
+        #   - Have ids
+        #   - Reference models
+        #   - Have symbols or targets
+        # - Functional ranges have math
+        # - Functional range graph is acyclic
+        functional_range_graph = networkx.DiGraph()
+        for task in doc.tasks:
+            if isinstance(task, RepeatedTask):
+                for i_range, range in enumerate(task.ranges):
+                    if isinstance(range, FunctionalRange):
+                        if not range.range:
+                            msg = ('Functional ranges must reference another range. '
+                                   'Functional range `{}` does not reference another range.').format(range.id)
+                            raise ValueError(msg)
+
+                        for param in range.parameters:
+                            if not param.id:
+                                raise ValueError('Parameters must have ids')
+
+                        for variable in range.variables:
+                            if not variable.id:
+                                raise ValueError('Variables must have ids')
+
+                            if not variable.model:
+                                raise ValueError('Variables of functional ranges must reference models')
+                            if variable.task:
+                                raise ValueError('Variables of functional ranges should not reference tasks')
+
+                            if not variable.symbol and not variable.target:
+                                raise ValueError('Variables of functionl ranges should define a symbol or target')
+                            if variable.symbol and variable.target:
+                                raise ValueError('Variables of functionl ranges should define a symbol or target, not both')
+
+                        if not range.math:
+                            raise ValueError('Functional ranges must have math. Functional range `{}` does not have math.')
+
+                        functional_range_graph.add_node(range.id)
+                        functional_range_graph.add_edge(range.id, range.range.id)
+
+        try:
+            networkx.algorithms.cycles.find_cycle(functional_range_graph)
+            raise ValueError('The functional ranges are defined cyclically. The graph of functional ranges must be acyclic.')
+        except networkx.NetworkXNoCycle:
+            pass
+
+        # ranges of repeated tasks
+        # - are of a supported type (error)
+        # - are at least as long as the main range (error)
+        # - the same lengths (warnings)
+        for task in doc.tasks:
+            if isinstance(task, RepeatedTask):
+                if not isinstance(task.range, Range):
+                    raise ValueError('Repeated tasks must have main ranges. Repeated task `{}` does not have a main range.'.format(task.id))
+                main_range_len = get_range_len(task.range)
+
+                for i_range, range in enumerate(task.ranges):
+                    range_len = get_range_len(range)
+                    if range_len < main_range_len:
+                        msg = (
+                            'The child ranges of repeated tasks must be at least as long as the main range of their parent repeated tasks. '
+                            'Range `{}` of repeated task `{}` is shorter than its main range, {} < {}.'
+                        ).format(range.id, task.id, range_len, main_range_len)
+                        raise ValueError(msg)
+                    elif range_len > main_range_len:
+                        msg = ('Child range `{}` of repeated task `{}` is longer than its main range ({} > {}). '
+                               'The tail elements of the range will be ignored.').format(range.id, task.id, range_len, main_range_len)
+                        warn(msg, IllogicalSedmlWarning)
+
+        # Set value changes of repeated tasks
+        # - Changes reference models
+        # - Changes reference a symbol or target
+        # - Parameters
+        #   - Have ids
+        # - Variables
+        #   - Have ids
+        #   - Reference a model, not a task
+        #   - Define a target, not a symbol
+        # - Changes have math
+        for task in doc.tasks:
+            if isinstance(task, RepeatedTask):
+                for i_change, change in enumerate(task.changes):
+                    if not change.model:
+                        msg = ('Set value changes must reference models. '
+                               'Change {} of task `{}` does not reference a model.').format(
+                            i_change + 1, task.id)
+                        raise ValueError(msg)
+
+                    if not change.symbol and not change.target:
+                        msg = ('Set value changes must define a symbol or a target. '
+                               'Change {} of task `{}` does not define a symbol or a target.').format(
+                            i_change + 1, task.id)
+                        raise ValueError(msg)
+
+                    if change.symbol and change.target:
+                        msg = ('Set value changes must define a symbol or a target, not both. '
+                               'Change {} of task `{}` defines both a symbol and a target.').format(
+                            i_change + 1, task.id)
+                        raise ValueError(msg)
+
+                    for parameter in change.parameters:
+                        if not parameter.id:
+                            raise ValueError('Parameters must have ids')
+
+                    for variable in change.variables:
+                        if not variable.id:
+                            raise ValueError('Variables must have ids')
+
+                        if not variable.model:
+                            raise ValueError('Set value variables must reference a model')
+                        if variable.task:
+                            raise ValueError('Set value variables should not reference a task')
+
+                        if not variable.target:
+                            raise ValueError('Set value variables must define a target')
+                        if variable.symbol:
+                            raise ValueError('Set value variables must define a target, not a symbol')
+
+                    if not change.math:
+                        msg = 'Set value changes must have math. Change {} of task `{}` does not have math.'.format(
+                            i_change + 1, task.id)
+                        raise ValueError(msg)
+
+        # variables of data generators
+        # - have ids
+        # - have target OR symbol
+        # - don't have model references
+        # - have math
         for data_gen in doc.data_generators:
+            for param in data_gen.parameters:
+                if not param.id:
+                    raise ValueError('Parameters must have ids')
+
             for var in data_gen.variables:
                 if not var.id:
                     raise ValueError('Variables must have ids')
@@ -156,6 +348,13 @@ def validate_doc(doc, validate_semantics=True):
             if not data_gen.math:
                 raise ValueError('Data generators must have math')
 
+        # validate outputs
+        # - reports
+        #   - data sets have ids and labels
+        #   - data sets reference data generators
+        # - plots
+        #   - curves and surfaces have ids
+        #   - x, y, z attributes reference data generators
         for output in doc.outputs:
             if isinstance(output, Report):
                 for data_set in output.data_sets:
@@ -282,11 +481,18 @@ def validate_model_changes(changes):
             raise ValueError('Model change attributes must define a target')
 
         if isinstance(change, ComputeModelChange):
+            for parameter in change.parameters:
+                if not parameter.id:
+                    raise ValueError('Parameters must have ids')
+
             for variable in change.variables:
+                if not variable.id:
+                    raise ValueError('Variables must have ids')
+
                 if not variable.model:
-                    raise ValueError('Compute model change variables must define a model')
+                    raise ValueError('Compute model change variables must reference a model')
                 if variable.task:
-                    raise ValueError('Compute model change variables should not define a task')
+                    raise ValueError('Compute model change variables should not reference a task')
 
                 if not variable.target:
                     raise ValueError('Compute model change variables must define a target')
@@ -343,9 +549,9 @@ def validate_data_generator_variables(variables):
     """
     for variable in variables:
         if variable.model:
-            raise ValueError('Variable should not define a model')
+            raise ValueError('Variable should not reference a model')
         if not variable.task:
-            raise ValueError('Variable must define a task')
+            raise ValueError('Variable must reference a task')
 
         if (variable.symbol and variable.target) or (not variable.symbol and not variable.target):
             raise ValueError('Variable must define a symbol or target')

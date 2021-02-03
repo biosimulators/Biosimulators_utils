@@ -14,7 +14,8 @@ from ..xml.utils import get_namespaces_for_xml_doc
 from .data_model import (SedDocument, Model, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange,
                          Task, Report, Plot2D, Plot3D,
-                         DataGenerator, Variable, MATHEMATICAL_FUNCTIONS, RESERVED_MATHEMATICAL_SYMBOLS)
+                         DataGenerator, Variable, MATHEMATICAL_FUNCTIONS, RESERVED_MATHEMATICAL_SYMBOLS,
+                         UniformRange, VectorRange, FunctionalRange)
 from .warnings import InconsistentVariableShapesWarning
 from lxml import etree
 import copy
@@ -45,6 +46,7 @@ __all__ = [
     'remove_algorithm_parameter_changes',
     'replace_complex_data_generators_with_generators_for_individual_variables',
     'remove_plots',
+    'get_range_len',
 ]
 
 
@@ -790,3 +792,28 @@ def remove_plots(sed_doc):
     for output in list(sed_doc.outputs):
         if isinstance(output, (Plot2D, Plot3D)):
             sed_doc.outputs.remove(output)
+
+
+def get_range_len(range):
+    """ Get the length of a range
+    Args:
+        range (:obj:`Range`): range
+
+    Returns:
+        :obj:`int`: length of the range
+
+    Raises:
+        :obj:`NotImplementedError`: if range isn't an instance of :obj:`UniformRange`, :obj:`VectorRange`,
+            or :obj:`FunctionalRange`.
+    """
+    if isinstance(range, UniformRange):
+        return range.number_of_steps + 1
+
+    elif isinstance(range, VectorRange):
+        return len(range.values)
+
+    elif isinstance(range, FunctionalRange):
+        return get_range_len(range.range)
+
+    else:
+        raise NotImplementedError('Ranges of type `{}` are not supported.'.format(range.__class__.__name__))

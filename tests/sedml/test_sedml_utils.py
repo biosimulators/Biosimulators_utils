@@ -971,3 +971,17 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         utils.remove_plots(doc)
         self.assertEqual(len(doc.outputs), 1)
         self.assertEqual(doc.outputs[0], report)
+
+    def test_get_range_len(self):
+        range1 = data_model.UniformRange(start=0., end=10., number_of_steps=10)
+        self.assertEqual(utils.get_range_len(range1), 11)
+
+        range2 = data_model.VectorRange(values=[1., 2., 3.])
+        self.assertEqual(utils.get_range_len(range2), 3)
+
+        range3 = data_model.FunctionalRange(range=range2)
+        range4 = data_model.FunctionalRange(range=range3)
+        self.assertEqual(utils.get_range_len(range4), 3)
+
+        with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
+            utils.get_range_len(None)
