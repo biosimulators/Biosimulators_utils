@@ -1,6 +1,6 @@
 from biosimulators_utils.report import data_model
 from biosimulators_utils.report import io
-from biosimulators_utils.report.warnings import MissingDataWarning, ExtraDataWarning
+from biosimulators_utils.report.warnings import MissingDataWarning, ExtraDataWarning, CannotExportMultidimensionalTableWarning
 from biosimulators_utils.sedml.data_model import Report, DataSet
 import numpy
 import numpy.testing
@@ -72,7 +72,7 @@ class ReportIoTestCase(unittest.TestCase):
 
             io.ReportWriter().run(report_1, data_set_results_1, self.dirname, rel_path_1, format=format)
             io.ReportWriter().run(report_2, data_set_results_2, self.dirname, rel_path_2, format=format)
-            with self.assertRaisesRegex(ValueError, 'Multidimensional reports cannot be exported'):
+            with self.assertWarnsRegex(CannotExportMultidimensionalTableWarning, 'Multidimensional reports cannot be exported'):
                 io.ReportWriter().run(report_3, data_set_results_3, self.dirname, rel_path_3, format=format)
             data_set_results_1_b = io.ReportReader().run(report_1, self.dirname, rel_path_1, format=format)
             data_set_results_2_b = io.ReportReader().run(report_2, self.dirname, rel_path_2, format=format)
@@ -273,7 +273,7 @@ class ReportIoTestCase(unittest.TestCase):
         io.ReportWriter().run(report, data_set_results, self.dirname, '.', format=data_model.ReportFormat.csv)
 
         data_set_results['x'] = data_set_results['x'].reshape((3, 1))
-        with self.assertRaisesRegex(ValueError, 'Multidimensional reports cannot be exported'):
+        with self.assertWarnsRegex(CannotExportMultidimensionalTableWarning, 'Multidimensional reports cannot be exported'):
             io.ReportWriter().run(report, data_set_results, self.dirname, '.', format=data_model.ReportFormat.csv)
 
     def test_read_error_handling(self):

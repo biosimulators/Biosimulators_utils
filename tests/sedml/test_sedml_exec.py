@@ -7,7 +7,7 @@ from biosimulators_utils.log.warnings import StandardOutputNotLoggedWarning
 from biosimulators_utils.plot.data_model import PlotFormat
 from biosimulators_utils.report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
-from biosimulators_utils.report.warnings import RepeatDataSetLabelsWarning
+from biosimulators_utils.report.warnings import RepeatDataSetLabelsWarning, CannotExportMultidimensionalTableWarning
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
 from biosimulators_utils.sedml import io
@@ -915,9 +915,10 @@ class ExecTaskCase(unittest.TestCase):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results2')
-        with self.assertRaisesRegex(SedmlExecutionError, 'Multidimensional reports cannot be exported to CSV'):
-            with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-                exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+        with self.assertWarnsRegex(CannotExportMultidimensionalTableWarning, 'Multidimensional reports cannot be exported to CSV'):
+            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+        with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
+            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
 
         with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
             report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir, report_formats=[ReportFormat.h5])

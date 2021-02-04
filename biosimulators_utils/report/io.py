@@ -11,7 +11,8 @@ from ..sedml.data_model import Report  # noqa: F401
 from ..utils.core import pad_arrays_to_consistent_shapes
 from ..warnings import warn
 from .data_model import DataSetResults, ReportFormat
-from .warnings import RepeatDataSetLabelsWarning, MissingReportMetadataWarning, MissingDataWarning, ExtraDataWarning
+from .warnings import (RepeatDataSetLabelsWarning, MissingReportMetadataWarning, MissingDataWarning,
+                       ExtraDataWarning, CannotExportMultidimensionalTableWarning)
 import glob
 import h5py
 import numpy
@@ -68,15 +69,18 @@ class ReportWriter(object):
 
         if format in [ReportFormat.csv, ReportFormat.tsv, ReportFormat.xlsx]:
             if results_array.ndim > 2:
-                raise ValueError('Report has {} dimensions. Multidimensional reports cannot be exported to {}.'.format(
-                    results_array.ndim, format.value.upper()))
+                msg = 'Report has {} dimensions. Multidimensional reports cannot be exported to {}.'.format(
+                    results_array.ndim, format.value.upper())
+                warn(msg, CannotExportMultidimensionalTableWarning)
+                return
 
             if len(set(data_set.label for data_set in report.data_sets)) < len(report.data_sets):
                 warn('To facilitate machine interpretation, data sets should have unique labels.',
                      RepeatDataSetLabelsWarning)
 
-            warn('Reports exported to {} do not contain information about the data type or size of each data set.'.format(format.value.upper()),
-                 MissingReportMetadataWarning)
+            msg = 'Reports exported to {} do not contain information about the data type or size of each data set.'.format(
+                format.value.upper())
+            warn(msg, MissingReportMetadataWarning)
 
             results_df = pandas.DataFrame(results_array, index=data_set_labels)
 

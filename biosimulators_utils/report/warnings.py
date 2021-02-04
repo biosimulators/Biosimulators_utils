@@ -13,6 +13,7 @@ __all__ = [
     'MissingReportMetadataWarning',
     'MissingDataWarning',
     'ExtraDataWarning',
+    'CannotExportMultidimensionalTableWarning',
 ]
 
 
@@ -35,4 +36,9 @@ class MissingDataWarning(BioSimulatorsWarning):
 
 class ExtraDataWarning(BioSimulatorsWarning):
     """ Warning that a file contains additional data that could not be mapped to a data set of a report. """
+    pass  # pragma: no cover
+
+
+class CannotExportMultidimensionalTableWarning(BioSimulatorsWarning):
+    """ Warning that a multidimensional report cannot be exported (e.g., to CSV, Excel, or TSV). """
     pass  # pragma: no cover
