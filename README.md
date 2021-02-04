@@ -18,9 +18,12 @@ Utilities for building standardized command-line interfaces for biosimulation to
 
 ## Installation
 
-Requirements
+### Requirements
 * Python >= 3.7
 * pip
+
+### Optional requirements
+* Docker: required to execute containerized simulation tools
 
 ### Install latest release from PyPI
 ```
@@ -30,6 +33,18 @@ pip install biosimulators-utils
 ### Install latest revision from GitHub
 ```
 pip install git+https://github.com/biosimulators/Biosimulators_utils.git#biosimulators_utils
+```
+
+### Installation optional features
+
+To use BioSimulators utils to execute containerized simulation tools, install BioSimulators utils with the `containers` option:
+```
+pip install biosimulators-utils[containers]
+```
+
+To use BioSimulators utils to log the standard output and error produced by simulation tools, install BioSimulators utils with the `logging` option:
+```
+pip install biosimulators-utils[logging]
 ```
 
 ## API documentation

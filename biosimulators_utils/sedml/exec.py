@@ -8,7 +8,7 @@
 
 from ..config import get_config, Colors
 from ..log.data_model import Status, SedDocumentLog, TaskLog, ReportLog, Plot2DLog, Plot3DLog  # noqa: F401
-from ..log.utils import init_sed_document_log
+from ..log.utils import init_sed_document_log, StandardOutputErrorCapturer
 from ..plot.data_model import PlotFormat
 from ..plot.io import write_plot_2d, write_plot_3d
 from ..report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat  # noqa: F401
@@ -24,7 +24,6 @@ from .utils import (resolve_model_and_apply_xml_changes, get_variables_for_task,
                     apply_changes_to_xml_model)
 from .warnings import NoTasksWarning, NoOutputsWarning
 from lxml import etree  # noqa: F401
-import capturer
 import copy
 import datetime
 import numpy
@@ -143,7 +142,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         # Execute task
         print('{}Executing simulation ...'.format(' ' * 2 * (indent + 1)), end='')
         sys.stdout.flush()
-        with capturer.CaptureOutput(merged=True, relay=verbose) as captured:
+        with StandardOutputErrorCapturer(relay=verbose) as captured:
             start_time = datetime.datetime.now()
             try:
                 # get model and apply changes
@@ -202,7 +201,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         if task_log:
             task_log.status = task_status
             task_log.exception = task_exception
-            task_log.output = captured.get_bytes().decode()
+            task_log.output = captured.get_text()
             task_log.duration = (datetime.datetime.now() - start_time).total_seconds()
             task_log.export()
         print(' ' + termcolor.colored(task_status.value.lower(), Colors[task_status.value.lower()].value))
@@ -214,7 +213,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             print('{}Generating output {}: `{}` ...'.format(' ' * 2 * (indent + 2), i_output + 1, output.id), end='')
             sys.stdout.flush()
             start_time = datetime.datetime.now()
-            with capturer.CaptureOutput(merged=True, relay=verbose) as captured:
+            with StandardOutputErrorCapturer(relay=verbose) as captured:
                 try:
                     if log.outputs[output.id].status == Status.SUCCEEDED:
                         continue
@@ -253,7 +252,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
 
             log.outputs[output.id].status = output_status
             log.outputs[output.id].exception = output_exception
-            log.outputs[output.id].output = captured.get_bytes().decode()
+            log.outputs[output.id].output = captured.get_text()
             log.outputs[output.id].duration = (datetime.datetime.now() - start_time).total_seconds()
             log.outputs[output.id].export()
 

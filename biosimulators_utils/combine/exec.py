@@ -10,7 +10,7 @@ from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config
 from ..log.data_model import Status, CombineArchiveLog  # noqa: F401
-from ..log.utils import init_combine_archive_log, get_summary_combine_archive_log
+from ..log.utils import init_combine_archive_log, get_summary_combine_archive_log, StandardOutputErrorCapturer
 from ..plot.data_model import PlotFormat  # noqa: F401
 from ..report.data_model import VariableResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import (SedDocument, Task, Output, Report, DataSet, Plot2D, Curve,  # noqa: F401
@@ -21,7 +21,6 @@ from .exceptions import CombineArchiveExecutionError
 from .io import CombineArchiveReader
 from .utils import get_sedml_contents, get_summary_sedml_contents
 from .warnings import NoSedmlWarning
-import capturer
 import datetime
 import glob
 import os
@@ -156,7 +155,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         doc_log.status = Status.RUNNING
         doc_log.export()
 
-        with capturer.CaptureOutput(merged=True, relay=verbose) as captured:
+        with StandardOutputErrorCapturer(relay=verbose) as captured:
             doc_start_time = datetime.datetime.now()
             try:
                 working_dir = os.path.dirname(content_filename)
@@ -176,7 +175,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                 doc_log.exception = exception
 
             # update status
-            doc_log.output = captured.get_bytes().decode()
+            doc_log.output = captured.get_text()
             doc_log.duration = (datetime.datetime.now() - doc_start_time).total_seconds()
             doc_log.export()
 

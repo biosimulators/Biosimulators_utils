@@ -10,8 +10,15 @@ from ..combine.data_model import CombineArchive  # noqa: F401
 from ..combine.utils import get_sedml_contents
 from ..sedml.data_model import SedDocument, Task, Output, Report, Plot2D, Plot3D, DataSet, Curve, Surface
 from ..sedml.io import SedmlSimulationReader
+from ..warnings import warn
 from .data_model import (Status, CombineArchiveLog, SedDocumentLog,  # noqa: F401
                          TaskLog, OutputLog, ReportLog, Plot2DLog, Plot3DLog)
+from .warnings import StandardOutputNotLoggedWarning
+try:
+    import capturer
+except ModuleNotFoundError:
+    capturer = None
+import contextlib
 import os
 
 __all__ = [
@@ -250,6 +257,57 @@ def init_plot3d_log(plot,
         log.surfaces = None
 
     return log
+
+
+class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
+    """ Context manager for capturing standard output/error. When :obj:`capturer` is available (i.e.,
+    Linux, MacOS, Unix), :obj:`capturer` is used to capture standard output/error. When :obj:`capturer` is not
+    available (i.e. Windows), this context manager issues a warn and collects no output. The purpose of this
+    context manager is to encapsulate the handling of whether :obj:`capturer` is or isn't available so
+    that the other modules can work seamless in Linux, as well as Windows (except without the ability to log
+    standard output/error).
+
+    Attributes:
+        _captured (:obj:`capturer.CaptureOutput`)
+    """
+
+    def __init__(self, relay=False):
+        """
+        Args:
+            relay (:obj:`bool`): if :obj:`True`, collect the standard output/error streams and continue to pass
+                them along. if :obj:`False`, collect the stream, squash them, and do not pass them along.
+        """
+        if capturer:
+            self._captured = capturer.CaptureOutput(merged=True, relay=relay)
+        else:
+            msg = (
+                'Standard output and error could not be logged because capturer is not installed. '
+                'To install capturer, install BioSimulators utils with the `logging` option '
+                '(`pip install biosimulators-utils[logging]`).'
+            )
+            warn(msg, StandardOutputNotLoggedWarning)
+
+    def __enter__(self):
+        """ Enter a context """
+        if capturer:
+            self._captured.start_capture()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """ Exit a context """
+        if capturer:
+            self._captured.finish_capture()
+
+    def get_text(self):
+        """ Get the captured standard output/error
+
+        Returns:
+            :obj:`str`: captured standard output/error
+        """
+        if capturer:
+            return self._captured.get_bytes().decode()
+        else:
+            return None
 
 
 def get_summary_combine_archive_log(log):

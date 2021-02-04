@@ -1,7 +1,9 @@
 from biosimulators_utils.config import get_config
 from biosimulators_utils.log.data_model import (
     Status, CombineArchiveLog, SedDocumentLog, TaskLog, ReportLog)
+from biosimulators_utils.log import utils as log_utils
 from biosimulators_utils.log.utils import init_sed_document_log
+from biosimulators_utils.log.warnings import StandardOutputNotLoggedWarning
 from biosimulators_utils.plot.data_model import PlotFormat
 from biosimulators_utils.report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
@@ -14,6 +16,8 @@ from biosimulators_utils.sedml.exceptions import SedmlExecutionError
 from biosimulators_utils.sedml.warnings import NoTasksWarning, NoOutputsWarning, InconsistentVariableShapesWarning
 from lxml import etree
 from unittest import mock
+import builtins
+import importlib
 import numpy
 import numpy.testing
 import os
@@ -188,7 +192,7 @@ class ExecTaskCase(unittest.TestCase):
         working_dir = os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
-
+        
         out_dir = os.path.join(self.tmp_dir, 'results')
         with mock.patch('requests.get', return_value=mock.Mock(raise_for_status=lambda: None, content=b'')):
             output_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir,
@@ -1669,3 +1673,59 @@ class ExecTaskCase(unittest.TestCase):
         self.assertEqual(set(results['report'].keys()), set(['data_set_x', 'data_set_y']))
         numpy.testing.assert_allclose(results['report']['data_set_x'], [[numpy.linspace(10., 15., 6)]] * 3)
         numpy.testing.assert_allclose(results['report']['data_set_y'], [[numpy.linspace(20., 25., 6)]] * 3)
+
+    def test_capturer_not_available(self):
+        doc = data_model.SedDocument()
+        doc.models.append(data_model.Model(id='model', source='model.xml', language='sbml'))
+        doc.simulations.append(data_model.UniformTimeCourseSimulation(id='sim',
+                                                                      initial_time=0., output_start_time=0.,
+                                                                      output_end_time=5., number_of_steps=5))
+        doc.tasks.append(data_model.Task(id='task1', model=doc.models[0], simulation=doc.simulations[0]))
+
+        doc.data_generators = [
+            data_model.DataGenerator(
+                id='data_gen_x',
+                variables=[data_model.Variable(id='x', task=doc.tasks[0], target="/model/variable[@id='x']/@value")],
+                math='x',
+            ),
+        ]
+        doc.outputs.append(
+            data_model.Report(
+                id='report',
+                data_sets=[
+                    data_model.DataSet(id='data_set_x', label='x', data_generator=doc.data_generators[0]),
+                ]
+            )
+        )
+
+        model_filename1 = os.path.join(self.tmp_dir, 'model.xml')
+        with open(model_filename1, 'w') as file:
+            file.write('<model>')
+            file.write('  <variable id="x" value="1" />')
+            file.write('</model>')
+
+        def task_executer(task, variables, log=None):
+            results = VariableResults({
+                'x': numpy.linspace(10., 15., 6),
+            })
+            return results, log
+
+        builtin_import = builtins.__import__
+
+        def import_mock(name, *args):
+            if name == 'capturer':
+                raise ModuleNotFoundError
+            return builtin_import(name, *args)
+
+        with mock.patch('builtins.__import__', side_effect=import_mock):
+            importlib.reload(log_utils)
+
+            with self.assertWarnsRegex(StandardOutputNotLoggedWarning, 'could not be logged'):
+                _, log = exec.exec_sed_doc(task_executer, doc, self.tmp_dir, self.tmp_dir)
+        self.assertEqual(log.output, None)
+        for task_log in log.tasks.values():
+            self.assertEqual(task_log.output, None)
+        for output_log in log.outputs.values():
+            self.assertEqual(output_log.output, None)
+
+        importlib.reload(log_utils)

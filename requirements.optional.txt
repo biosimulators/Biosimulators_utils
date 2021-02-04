@@ -1,2 +1,5 @@
-[docker]
+[containers]
 docker >= 4.4
+
+[logging]
+capturer
