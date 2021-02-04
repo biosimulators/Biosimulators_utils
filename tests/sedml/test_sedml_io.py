@@ -152,7 +152,7 @@ class IoTestCase(unittest.TestCase):
         task3.changes.append(
             data_model.SetValueComputeModelChange(
                 model=model1,
-                symbol=data_model.Symbol.time.value,
+                target=data_model.Symbol.time.value,
                 range=task3.ranges[0],
                 parameters=[],
                 variables=[],
@@ -493,6 +493,33 @@ class IoTestCase(unittest.TestCase):
         document = re.sub(r'<uniformRange ([^>]*)numberOfPoints=', r'<uniformRange \1numberOfSteps=', document)
         with open(filename, 'w') as file:
             file.write(document)
+
+    def test_write_read_without_semantic_validation(self):
+        document = data_model.SedDocument(
+            level=1,
+            version=3,
+            models=[
+                data_model.Model(id='model', source='model.xml', language='urn:sedml:language:sbml')
+            ],
+            tasks=[
+                data_model.RepeatedTask(
+                    id='task',
+                    changes=[
+                        data_model.SetValueComputeModelChange(
+                            model=None,
+                            symbol='x',
+                            math='x'
+                        )
+                    ],
+                )
+            ],
+        )
+        document.tasks[0].changes[0].model = document.models[0]
+
+        filename = os.path.join(self.tmp_dir, 'sim.sedml')
+        io.SedmlSimulationWriter().run(document, filename, validate_semantics=False)
+        document2 = io.SedmlSimulationReader().run(filename, validate_semantics=False)
+        self.assertTrue(document2.is_equal(document))
 
     def test_write_error_unsupported_classes(self):
         document = data_model.SedDocument(tasks=[mock.Mock(id='task')])

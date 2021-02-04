@@ -1130,7 +1130,8 @@ class SedmlSimulationReader(object):
 
                 for change_sed, change in zip(task_sed.getListOfTaskChanges(), task.changes):
                     change.variables = self._read_variables(change_sed, id_to_model_map, id_to_task_map)
-                    self._deserialize_reference(change_sed, change, 'range', 'Range', 'range', id_to_range_map)
+                    if change_sed.isSetRange():
+                        self._deserialize_reference(change_sed, change, 'range', 'Range', 'range', id_to_range_map)
 
                 for sub_task_sed, sub_task in zip(task_sed.getListOfSubTasks(), task.sub_tasks):
                     self._deserialize_reference(sub_task_sed, sub_task, 'task', 'Task', 'task', id_to_task_map)

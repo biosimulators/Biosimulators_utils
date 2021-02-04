@@ -186,6 +186,29 @@ class SedmlUtilsTestCase(unittest.TestCase):
                 ),
             ]
         ))
+
+        self.assertTrue(are_lists_equal(
+            utils.get_variables_for_task(doc, doc.tasks[0]),
+            []))
+        doc.outputs.append(data_model.Report(
+            data_sets=[
+                data_model.DataSet(data_generator=doc.data_generators[0]),
+            ]
+        ))
+        self.assertTrue(are_lists_equal(
+            utils.get_variables_for_task(doc, doc.tasks[0]),
+            [
+                doc.data_generators[0].variables[0],
+                doc.data_generators[0].variables[1],
+            ]))
+        doc.outputs.append(data_model.Report(
+            data_sets=[
+                data_model.DataSet(data_generator=doc.data_generators[0]),
+                data_model.DataSet(data_generator=doc.data_generators[1]),
+                data_model.DataSet(data_generator=doc.data_generators[2]),
+                data_model.DataSet(data_generator=doc.data_generators[3]),
+            ]
+        ))
         self.assertTrue(are_lists_equal(
             utils.get_variables_for_task(doc, doc.tasks[0]),
             [
@@ -672,14 +695,14 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         # calc new value
         variable_values = {}
         with self.assertRaisesRegex(ValueError, 'is not defined'):
-            utils.calc_compute_model_change_new_value(change, variable_values)
+            utils.calc_compute_model_change_new_value(change, variable_values=variable_values)
 
         variable_values = {
             'x': 2.,
             'y': 3.,
         }
         expected_value = 1.5 * 2. + 2.25 * 3.
-        self.assertEqual(utils.calc_compute_model_change_new_value(change, variable_values), expected_value)
+        self.assertEqual(utils.calc_compute_model_change_new_value(change, variable_values=variable_values), expected_value)
 
         in_file = os.path.join(self.tmp_dir, 'in.xml')
         with open(in_file, 'w') as file:
@@ -711,6 +734,45 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         et = etree.parse(in_file)
         with self.assertRaisesRegex(ValueError, 'not a valid XPATH to an attribute'):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None, variable_values=variable_values)
+
+    def test_set_value_calc_compute_model_change_new_value(self):
+        change = data_model.SetValueComputeModelChange(
+            target="/model/parameter[@id='p1']/@value",
+            range=data_model.VectorRange(id='range1', values=[0.1, 0.2, 0.3]),
+            parameters=[
+                data_model.Parameter(id='a', value=1.5),
+                data_model.Parameter(id='b', value=2.25),
+            ],
+            variables=[
+                data_model.Variable(id='x', model=data_model.Model(id='model_1'), target="/model/parameter[@id='x']/@value"),
+                data_model.Variable(id='y', model=data_model.Model(id='model_2'), target="/model/parameter[@id='y']/@value"),
+            ],
+            math='a * x + b * y + range1',
+        )
+        self.assertEqual(
+            utils.calc_compute_model_change_new_value(
+                change,
+                variable_values={
+                    'x': 2.,
+                    'y': 3.,
+                },
+                range_values={
+                    'range1': 0.1,
+                },
+            ),
+            1.5 * 2. + 2.25 * 3. + 0.1,
+        )
+
+        with self.assertRaisesRegex(ValueError, 'is not defined'):
+            utils.calc_compute_model_change_new_value(
+                change,
+                variable_values={
+                    'x': 2.,
+                    'y': 3.,
+                },
+                range_values={
+                },
+            )
 
     def test_eval_math_error_handling(self):
         with self.assertRaisesRegex(ValueError, 'cannot have ids equal to the following reserved symbols'):
@@ -985,3 +1047,211 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
             utils.get_range_len(None)
+
+    def test_resolve_range(self):
+        range1 = data_model.UniformRange(id='range1', start=0., end=10., number_of_steps=5, type=data_model.UniformRangeType.linear)
+        self.assertEqual(utils.resolve_range(range1), [0., 2., 4., 6., 8., 10.])
+
+        range1 = data_model.UniformRange(id='range1', start=1., end=1000., number_of_steps=3, type=data_model.UniformRangeType.log)
+        self.assertEqual(utils.resolve_range(range1), [1., 10., 100., 1000.])
+
+        range1.type = mock.Mock(value='mock')
+        with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
+            utils.resolve_range(range1)
+
+        range1 = data_model.VectorRange(id='range1', values=[2., 3., 5., 7., 11., 13.])
+        self.assertEqual(utils.resolve_range(range1), [2., 3., 5., 7., 11., 13.])
+
+        range2 = data_model.FunctionalRange(
+            id='range2',
+            range=range1,
+            parameters=[
+                data_model.Parameter(id='a', value=2.),
+            ],
+            math='a * range1')
+        self.assertEqual(utils.resolve_range(range2), [4., 6., 10., 14., 22., 26.])
+
+        range3 = data_model.FunctionalRange(
+            id='range3',
+            range=range2,
+            parameters=[
+                data_model.Parameter(id='b', value=3.),
+            ],
+            math='b * range2')
+        self.assertEqual(utils.resolve_range(range3), [12., 18., 30., 42., 66., 78.])
+
+        model_filename = os.path.join(self.tmp_dir, 'model.xml')
+        with open(model_filename, 'w') as file:
+            file.write('<model>')
+            file.write('<parameter id="x" value="0.1" />')
+            file.write('<parameter id="y" value="0.2" />')
+            file.write('</model>')
+        range2 = data_model.FunctionalRange(
+            id='range2',
+            range=range1,
+            parameters=[
+                data_model.Parameter(id='a', value=2.),
+            ],
+            variables=[
+                data_model.Variable(
+                    id='x',
+                    model=data_model.Model(id='model', source=model_filename),
+                    target="/model/parameter[@id='x']/@value",
+                ),
+            ],
+            math='a * range1 + x')
+        model_etrees = {'model': etree.parse(model_filename)}
+        self.assertEqual(utils.resolve_range(range2, model_etrees), [4.1, 6.1, 10.1, 14.1, 22.1, 26.1])
+
+        with self.assertRaisesRegex(NotImplementedError, 'non-XML-encoded models are not supported'):
+            utils.resolve_range(range2, {'model': None})
+
+        range2.variables[0].model.source = model_filename
+        range2.variables[0].target = None
+        range2.variables[0].symbol = 'time'
+        with self.assertRaisesRegex(NotImplementedError, 'Symbols are not supported'):
+            utils.resolve_range(range2, model_etrees)
+
+        with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
+            utils.resolve_range(None, model_etrees)
+
+    def test_get_models_referenced_by_range(self):
+        self.assertEqual(utils.get_models_referenced_by_range(data_model.UniformRange()), set())
+        self.assertEqual(utils.get_models_referenced_by_range(data_model.VectorRange()), set())
+
+        model = data_model.Model(id='model1')
+        range = data_model.FunctionalRange()
+        range.range = data_model.FunctionalRange()
+        range.range.variables.append(data_model.Variable(model=model))
+        self.assertEqual(utils.get_models_referenced_by_range(range), set([model]))
+
+    def test_get_models_referenced_by_model_change(self):
+        self.assertEqual(utils.get_models_referenced_by_model_change(data_model.ModelAttributeChange()), set())
+        self.assertEqual(utils.get_models_referenced_by_model_change(data_model.AddElementModelChange()), set())
+        self.assertEqual(utils.get_models_referenced_by_model_change(data_model.RemoveElementModelChange()), set())
+        self.assertEqual(utils.get_models_referenced_by_model_change(data_model.ReplaceElementModelChange()), set())
+
+        models = [data_model.Model(id='model1'), data_model.Model(id='model2'), data_model.Model(id='model3')]
+
+        change = data_model.ComputeModelChange(
+            variables=[
+                data_model.Variable(model=models[0]),
+                data_model.Variable(model=models[1]),
+            ],
+        )
+        self.assertEqual(utils.get_models_referenced_by_model_change(change), set(models[0:2]))
+
+        change = data_model.SetValueComputeModelChange(
+            model=models[0],
+            variables=[
+                data_model.Variable(model=models[1]),
+            ],
+            range=data_model.FunctionalRange(
+                range=data_model.FunctionalRange(
+                    variables=[
+                        data_model.Variable(model=models[2]),
+                    ],
+                )
+            )
+        )
+        self.assertEqual(utils.get_models_referenced_by_model_change(change), set(models))
+
+    def test_get_models_referenced_by_task(self):
+        models = [data_model.Model(id='model1'), data_model.Model(id='model2'),
+                  data_model.Model(id='model3'), data_model.Model(id='model4'),
+                  data_model.Model(id='model5'), data_model.Model(id='model6')]
+
+        task = data_model.Task(model=models[0])
+        self.assertEqual(utils.get_models_referenced_by_task(task), set(models[0:1]))
+
+        task = data_model.RepeatedTask(
+            sub_tasks=[
+                data_model.SubTask(
+                    task=data_model.RepeatedTask(
+                        sub_tasks=[
+                            data_model.SubTask(
+                                task=data_model.Task(
+                                    model=models[0]
+                                )
+                            ),
+                            data_model.SubTask(
+                                task=data_model.Task(
+                                    model=models[1]
+                                )
+                            )
+                        ]
+                    )
+                )
+            ],
+        )
+        self.assertEqual(utils.get_models_referenced_by_task(task), set(models[0:2]))
+
+        task = data_model.RepeatedTask(
+            sub_tasks=[
+                data_model.SubTask(
+                    task=data_model.RepeatedTask(
+                        range=data_model.FunctionalRange(variables=[data_model.Variable(model=models[2])]),
+                        ranges=[
+                            data_model.FunctionalRange(
+                                range=data_model.FunctionalRange(
+                                    variables=[data_model.Variable(model=models[3])]),
+                            ),
+                        ],
+                        sub_tasks=[
+                            data_model.SubTask(
+                                task=data_model.Task(
+                                    model=models[0]
+                                )
+                            ),
+                            data_model.SubTask(
+                                task=data_model.Task(
+                                    model=models[1]
+                                )
+                            )
+                        ]
+                    )
+                )
+            ],
+        )
+        self.assertEqual(utils.get_models_referenced_by_task(task), set(models[0:4]))
+
+        task = data_model.RepeatedTask(
+            sub_tasks=[
+                data_model.SubTask(
+                    task=data_model.RepeatedTask(
+                        range=data_model.FunctionalRange(variables=[data_model.Variable(model=models[2])]),
+                        ranges=[
+                            data_model.FunctionalRange(
+                                range=data_model.FunctionalRange(
+                                    variables=[data_model.Variable(model=models[3])]),
+                            ),
+                        ],
+                        sub_tasks=[
+                            data_model.SubTask(
+                                task=data_model.Task(
+                                    model=models[0]
+                                )
+                            ),
+                            data_model.SubTask(
+                                task=data_model.Task(
+                                    model=models[1]
+                                )
+                            )
+                        ],
+                        changes=[
+                            data_model.SetValueComputeModelChange(
+                                model=models[4],
+                                range=data_model.FunctionalRange(
+                                    range=data_model.FunctionalRange(
+                                        variables=[data_model.Variable(model=models[5])]),
+                                ),
+                            )
+                        ]
+                    )
+                )
+            ],
+        )
+        self.assertEqual(utils.get_models_referenced_by_task(task), set(models[0:6]))
+
+        with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
+            utils.get_models_referenced_by_task(None)

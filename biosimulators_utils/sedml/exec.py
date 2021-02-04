@@ -13,23 +13,35 @@ from ..plot.data_model import PlotFormat
 from ..plot.io import write_plot_2d, write_plot_3d
 from ..report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat  # noqa: F401
 from ..report.io import ReportWriter
+from ..utils.core import pad_arrays_to_consistent_shapes
 from ..warnings import warn
-from .data_model import SedDocument, Task, Report, Plot2D, Plot3D
+from .data_model import SedDocument, Model, Task, RepeatedTask, Report, Plot2D, Plot3D, ModelAttributeChange
 from .exceptions import SedmlExecutionError
 from .io import SedmlSimulationReader
-from .utils import resolve_model_and_apply_xml_changes, get_variables_for_task, calc_data_generators_results
+from .utils import (resolve_model_and_apply_xml_changes, get_variables_for_task,
+                    calc_data_generators_results, resolve_range, get_models_referenced_by_task,
+                    get_value_of_variable_model_xml_targets, calc_compute_model_change_new_value,
+                    apply_changes_to_xml_model)
 from .warnings import NoTasksWarning, NoOutputsWarning
+from lxml import etree  # noqa: F401
 import capturer
 import copy
 import datetime
+import numpy
 import os
 import sys
+import tempfile
 import termcolor
 import types  # noqa: F401
 
 
 __all__ = [
     'exec_sed_doc',
+    'exec_task',
+    'exec_repeated_task',
+    'exec_report',
+    'exec_plot_2d',
+    'exec_plot_3d',
 ]
 
 
@@ -110,17 +122,16 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     variable_results = VariableResults()
     report_results = ReportResults()
 
-    doc.tasks.sort(key=lambda task: task.id)
     print('{}Found {} tasks and {} outputs:\n{}Tasks:\n{}{}\n{}Outputs:\n{}{}'.format(
         ' ' * 2 * indent,
         len(doc.tasks),
         len(doc.outputs),
         ' ' * 2 * (indent + 1),
         ' ' * 2 * (indent + 2),
-        ('\n' + ' ' * 2 * (indent + 2)).join(['`' + task.id + '`' for task in doc.tasks]),
+        ('\n' + ' ' * 2 * (indent + 2)).join(sorted('`' + task.id + '`' for task in doc.tasks)),
         ' ' * 2 * (indent + 1),
         ' ' * 2 * (indent + 2),
-        ('\n' + ' ' * 2 * (indent + 2)).join(['`' + output.id + '`' for output in doc.outputs]),
+        ('\n' + ' ' * 2 * (indent + 2)).join(sorted('`' + output.id + '`' for output in doc.outputs)),
     ))
     for i_task, task in enumerate(doc.tasks):
         print('{}Executing task {}: `{}`'.format(' ' * 2 * indent, i_task + 1, task.id))
@@ -135,41 +146,54 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         with capturer.CaptureOutput(merged=True, relay=verbose) as captured:
             start_time = datetime.datetime.now()
             try:
-                if isinstance(task, Task):
-                    # get model and apply changes
-                    original_model = task.model
-                    task.model, temp_model_source, _ = resolve_model_and_apply_xml_changes(
-                        task.model, doc, working_dir,
+                # get model and apply changes
+                original_models = get_models_referenced_by_task(task)
+                original_model_sources = {}
+                temp_model_sources = []
+                model_etrees = {}
+                for original_model in original_models:
+                    original_model_sources[original_model.id] = original_model.source
+
+                    temp_model, temp_model_source, model_etree = resolve_model_and_apply_xml_changes(
+                        original_model, doc, working_dir,
                         apply_xml_model_changes=apply_xml_model_changes,
                         pretty_print_modified_xml_models=pretty_print_modified_xml_models)
 
-                    # get a list of the variables that the task needs to record
-                    task_vars = get_variables_for_task(doc, task)
+                    original_model.source = temp_model.source
 
-                    # execute task
-                    task_variable_results, _ = task_executer(task, task_vars, log=task_log)
-
-                    # check that the expected variables were recorded
-                    missing_vars = []
-                    for var in task_vars:
-                        variable_results[var.id] = task_variable_results.get(var.id, None)
-                        if variable_results[var.id] is None:
-                            missing_vars.append(var.id)
-                    if missing_vars:
-                        msg = 'Task `{}` did not generate the following expected variables:\n  - {}'.format(
-                            task.id, '\n  - '.join('`' + var + '`' for var in sorted(missing_vars)))
-                        raise ValueError(msg)
-
-                    # cleanup modified model source
                     if temp_model_source:
-                        os.remove(temp_model_source)
-                    task.model = original_model
+                        temp_model_sources.append(temp_model_source)
 
-                else:
+                    model_etrees[original_model.id] = model_etree
+
+                task_vars = get_variables_for_task(doc, task)
+
+                # execute task
+                if isinstance(task, Task):
+                    task_var_results = exec_task(task, task_executer, task_vars, doc, log=task_log)
+
+                elif isinstance(task, RepeatedTask):
+                    task_var_results = exec_repeated_task(task, task_executer, task_vars, doc,
+                                                          apply_xml_model_changes=apply_xml_model_changes,
+                                                          model_etrees=model_etrees,
+                                                          pretty_print_modified_xml_models=pretty_print_modified_xml_models)
+
+                else:  # pragma: no cover: already validated by :obj:`get_models_referenced_by_task`
                     raise NotImplementedError('Tasks of type {} are not supported.'.format(task.__class__.__name__))
 
+                # append results
+                for key, value in task_var_results.items():
+                    variable_results[key] = value
+
+                # log status
                 task_status = Status.SUCCEEDED
                 task_exception = None
+
+                # cleanup modified model sources
+                for temp_model_source in temp_model_sources:
+                    os.remove(temp_model_source)
+                for original_model in original_models:
+                    original_model.source = original_model_sources[original_model.id]
             except Exception as exception:
                 exceptions.append(exception)
                 task_status = Status.FAILED
@@ -281,6 +305,200 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
 
     # return the results of the reports
     return report_results, log
+
+
+def exec_task(task, task_executer, task_vars, doc, log=None):
+    """ Execute a basic SED task
+
+    Args:
+        task (:obj:`Task`): task
+        task_executer (:obj:`types.FunctionType`): function to execute each task in the SED-ML file.
+            The function must implement the following interface::
+
+                def exec_task(task, variables, log=None):
+                    ''' Execute a simulation and return its results
+
+                    Args:
+                        task (:obj:`Task`): task
+                        variables (:obj:`list` of :obj:`Variable`): variables that should be recorded
+                        log (:obj:`TaskLog`, optional): log for the task
+
+                    Returns:
+                        :obj:`tuple`:
+
+                            * :obj:`VariableResults`: results of variables
+                            * :obj:`TaskLog`: log
+                    '''
+                    pass
+
+        task_vars (:obj:`list` of :obj:`Variable`): variables that task must record
+        doc (:obj:`SedDocument` or :obj:`str`): SED document or a path to SED-ML file which defines a SED document
+        log (:obj:`TaskLog`, optional): log
+
+    Returns:
+        :obj:`VariableResults`: results of the variables
+    """
+    # execute task
+    task_variable_results, _ = task_executer(task, task_vars, log=log)
+
+    # check that the expected variables were recorded
+    variable_results = VariableResults()
+    for var in task_vars:
+        variable_results[var.id] = task_variable_results.get(var.id, None)
+
+    # return results
+    return variable_results
+
+
+def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_changes=False, model_etrees=None,
+                       pretty_print_modified_xml_models=False):
+    """ Execute a repeated SED task
+
+    Args:
+        task (:obj:`RepeatedTask`): task
+        task_executer (:obj:`types.FunctionType`): function to execute each task in the SED-ML file.
+            The function must implement the following interface::
+
+                def exec_task(task, variables, log=None):
+                    ''' Execute a simulation and return its results
+
+                    Args:
+                       task (:obj:`Task`): task
+                       variables (:obj:`list` of :obj:`Variable`): variables that should be recorded
+                       log (:obj:`TaskLog`, optional): log for the task
+
+                    Returns:
+                       :obj:`VariableResults`: results of variables
+                    '''
+                    pass
+
+        task_vars (:obj:`list` of :obj:`Variable`): variables that task must record
+        doc (:obj:`SedDocument` or :obj:`str`): SED document or a path to SED-ML file which defines a SED document
+        apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file before
+            calling :obj:`task_executer`.
+        model_etrees (:obj:`dict` of :obj:`str` to :obj:`etree._Element`)
+        pretty_print_modified_xml_models (:obj:`bool`, optional): if :obj:`True`, pretty print modified XML models
+
+    Returns:
+        :obj:`VariableResults`: results of the variables
+    """
+    if task.reset_model_for_each_iteration:
+        original_doc = doc
+        original_task = task
+        original_model_etrees = model_etrees
+
+    # resolve the ranges
+    main_range_values = resolve_range(task.range, model_etrees=model_etrees)
+
+    range_values = {}
+    for range in task.ranges:
+        range_values[range.id] = resolve_range(range, model_etrees=model_etrees)
+    for change in task.changes:
+        if change.range:
+            range_values[change.range.id] = resolve_range(change.range, model_etrees=model_etrees)
+
+    # initialize the results of the sub-tasks
+    variable_results = VariableResults()
+    for var in task_vars:
+        variable_results[var.id] = []
+        for main_range_value in main_range_values:
+            variable_results[var.id].append([None] * len(task.sub_tasks))
+
+    # iterate over the main range, apply the changes to the model(s), execute the sub-tasks, and record the results of the tasks
+    for i_main_range, _ in enumerate(main_range_values):
+        # reset the models referenced by the task
+        if task.reset_model_for_each_iteration:
+            doc = copy.deepcopy(original_doc)
+            task = next(task for task in doc.tasks if task.id == original_task.id)
+            model_etrees = copy.deepcopy(original_model_etrees)
+
+        # get range values
+        current_range_values = {}
+        current_range_values[task.range.id] = range_values[task.range.id][i_main_range]
+        for range in task.ranges:
+            current_range_values[range.id] = range_values[range.id][i_main_range]
+        for change in task.changes:
+            if change.range:
+                current_range_values[change.range.id] = range_values[change.range.id][i_main_range]
+
+        # apply the changes to the models
+        for change in task.changes:
+            variable_values = {}
+            for variable in change.variables:
+                if not apply_xml_model_changes:
+                    raise NotImplementedError('Set value changes that involve variables of non-XML-encoded models are not supported.')
+                variable_values[variable.id] = get_value_of_variable_model_xml_targets(variable, model_etrees)
+
+            new_value = calc_compute_model_change_new_value(change, variable_values=variable_values, range_values=current_range_values)
+
+            if change.symbol:
+                raise NotImplementedError('Set value changes of symbols is not supported.')
+
+            attr_change = ModelAttributeChange(target=change.target, new_value=str(new_value))
+
+            if apply_xml_model_changes:
+                model = Model(changes=[attr_change])
+                apply_changes_to_xml_model(model, model_etrees[change.model.id], None, None)
+
+            else:
+                change.model.changes.append(attr_change)
+
+        # sort the sub-tasks
+        sub_tasks = sorted(task.sub_tasks, key=lambda sub_task: sub_task.order)
+
+        # execute the sub-tasks and record their results
+        for i_sub_task, sub_task in enumerate(sub_tasks):
+            if isinstance(sub_task.task, Task):
+                if apply_xml_model_changes:
+                    model = sub_task.task.model
+                    original_model_source = model.source
+                    fid, model.source = tempfile.mkstemp(suffix='.xml')
+                    os.close(fid)
+
+                    model_etrees[model.id].write(model.source,
+                                                 xml_declaration=True,
+                                                 encoding="utf-8",
+                                                 standalone=False,
+                                                 pretty_print=pretty_print_modified_xml_models)
+
+                sub_task_var_results = exec_task(sub_task.task, task_executer, task_vars, doc)
+
+                if apply_xml_model_changes:
+                    os.remove(model.source)
+                    model.source = original_model_source
+
+            elif isinstance(sub_task.task, RepeatedTask):
+                sub_task_var_results = exec_repeated_task(sub_task.task, task_executer, task_vars, doc,
+                                                          apply_xml_model_changes=apply_xml_model_changes,
+                                                          model_etrees=model_etrees,
+                                                          pretty_print_modified_xml_models=pretty_print_modified_xml_models)
+
+            else:
+                raise NotImplementedError('Tasks of type {} are not supported.'.format(sub_task.task.__class__.__name__))
+
+            for var in task_vars:
+                variable_results[var.id][i_main_range][i_sub_task] = sub_task_var_results.get(var.id, None)
+
+    # shape results to consistent size
+    arrays = []
+    for var in task_vars:
+        for i_main_range, _ in enumerate(main_range_values):
+            for i_sub_task, sub_task in enumerate(sub_tasks):
+                arrays.append(variable_results[var.id][i_main_range][i_sub_task])
+
+    padded_arrays = pad_arrays_to_consistent_shapes(arrays)
+
+    i_array = 0
+    for var in task_vars:
+        for i_main_range, _ in enumerate(main_range_values):
+            for i_sub_task, sub_task in enumerate(sub_tasks):
+                variable_results[var.id][i_main_range][i_sub_task] = padded_arrays[i_array]
+                i_array += 1
+
+        variable_results[var.id] = numpy.array(variable_results[var.id])
+
+    # return the results of the task
+    return variable_results
 
 
 def exec_report(report, variable_results, base_out_path, rel_out_path, formats, task, log):

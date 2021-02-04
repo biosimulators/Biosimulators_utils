@@ -231,9 +231,9 @@ def validate_doc(doc, validate_semantics=True):
                                 raise ValueError('Variables of functional ranges should not reference tasks')
 
                             if not variable.symbol and not variable.target:
-                                raise ValueError('Variables of functionl ranges should define a symbol or target')
+                                raise ValueError('Variables of functional ranges should define a symbol or target')
                             if variable.symbol and variable.target:
-                                raise ValueError('Variables of functionl ranges should define a symbol or target, not both')
+                                raise ValueError('Variables of functional ranges should define a symbol or target, not both')
 
                         if not range.math:
                             raise ValueError('Functional ranges must have math. Functional range `{}` does not have math.')
@@ -270,6 +270,23 @@ def validate_doc(doc, validate_semantics=True):
                                'The tail elements of the range will be ignored.').format(range.id, task.id, range_len, main_range_len)
                         warn(msg, IllogicalSedmlWarning)
 
+                for i_change, change in enumerate(task.changes):
+                    if change.range:
+                        range_len = get_range_len(change.range)
+                        if range_len < main_range_len:
+                            msg = (
+                                'The child ranges of repeated tasks must be '
+                                'at least as long as the main range of their parent repeated tasks. '
+                                'Range `{}` of repeated task `{}` is shorter than its main range, {} < {}.'
+                            ).format(change.range.id, task.id, range_len, main_range_len)
+                            raise ValueError(msg)
+                        elif range_len > main_range_len:
+                            msg = (
+                                'Child range `{}` of repeated task `{}` is longer than its main range ({} > {}). '
+                                'The tail elements of the range will be ignored.'
+                            ).format(change.range.id, task.id, range_len, main_range_len)
+                            warn(msg, IllogicalSedmlWarning)
+
         # Set value changes of repeated tasks
         # - Changes reference models
         # - Changes reference a symbol or target
@@ -289,15 +306,15 @@ def validate_doc(doc, validate_semantics=True):
                             i_change + 1, task.id)
                         raise ValueError(msg)
 
-                    if not change.symbol and not change.target:
-                        msg = ('Set value changes must define a symbol or a target. '
-                               'Change {} of task `{}` does not define a symbol or a target.').format(
+                    if not change.target:
+                        msg = ('Set value changes must define a target. '
+                               'Change {} of task `{}` does not define a target.').format(
                             i_change + 1, task.id)
                         raise ValueError(msg)
 
-                    if change.symbol and change.target:
-                        msg = ('Set value changes must define a symbol or a target, not both. '
-                               'Change {} of task `{}` defines both a symbol and a target.').format(
+                    if change.symbol:
+                        msg = ('Set value changes should not define a symbol. '
+                               'Change {} of task `{}` defines a symbol.').format(
                             i_change + 1, task.id)
                         raise ValueError(msg)
 
@@ -314,10 +331,10 @@ def validate_doc(doc, validate_semantics=True):
                         if variable.task:
                             raise ValueError('Set value variables should not reference a task')
 
-                        if not variable.target:
-                            raise ValueError('Set value variables must define a target')
-                        if variable.symbol:
-                            raise ValueError('Set value variables must define a target, not a symbol')
+                        if not variable.target and not variable.symbol:
+                            raise ValueError('Set value variables must define a target or a symbol')
+                        if variable.target and variable.symbol:
+                            raise ValueError('Set value variables must define a target or a symbol, not both')
 
                     if not change.math:
                         msg = 'Set value changes must have math. Change {} of task `{}` does not have math.'.format(

@@ -12,10 +12,10 @@ from ..utils.core import pad_arrays_to_consistent_shapes
 from ..warnings import warn
 from ..xml.utils import get_namespaces_for_xml_doc
 from .data_model import (SedDocument, Model, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
-                         ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange,
-                         Task, Report, Plot2D, Plot3D,
+                         ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange, SetValueComputeModelChange,
+                         Task, RepeatedTask, Report, Plot2D, Plot3D,
                          DataGenerator, Variable, MATHEMATICAL_FUNCTIONS, RESERVED_MATHEMATICAL_SYMBOLS,
-                         UniformRange, VectorRange, FunctionalRange)
+                         Range, UniformRange, VectorRange, FunctionalRange, UniformRangeType)
 from .warnings import InconsistentVariableShapesWarning
 from lxml import etree
 import copy
@@ -31,7 +31,9 @@ import tempfile
 
 __all__ = [
     'append_all_nested_children_to_doc',
+    'add_namespaces_to_xml_node',
     'convert_xml_node_to_string',
+    'get_variables_for_task',
     'resolve_model_and_apply_xml_changes',
     'resolve_model',
     'apply_changes_to_xml_model',
@@ -46,7 +48,11 @@ __all__ = [
     'remove_algorithm_parameter_changes',
     'replace_complex_data_generators_with_generators_for_individual_variables',
     'remove_plots',
+    'get_models_referenced_by_task',
+    'get_models_referenced_by_range',
+    'get_models_referenced_by_model_change',
     'get_range_len',
+    'resolve_range',
 ]
 
 
@@ -155,11 +161,32 @@ def get_variables_for_task(doc, task):
     Returns:
         :obj:`list` of :obj:`Variable`: variables that task must record
     """
+    data_generators = set()
+    for output in doc.outputs:
+        if isinstance(output, Report):
+            for data_set in output.data_sets:
+                data_generators.add(data_set.data_generator)
+
+        elif isinstance(output, Plot2D):
+            for curve in output.curves:
+                data_generators.add(curve.x_data_generator)
+                data_generators.add(curve.y_data_generator)
+
+        elif isinstance(output, Plot3D):
+            for surface in output.surfaces:
+                data_generators.add(surface.x_data_generator)
+                data_generators.add(surface.y_data_generator)
+                data_generators.add(surface.z_data_generator)
+
+        else:
+            raise NotImplementedError('Output of type {} is not supported'.format(output.__class__.__name__))
+
     variables = set()
-    for data_gen in doc.data_generators:
+    for data_gen in data_generators:
         for var in data_gen.variables:
             if var.task == task:
                 variables.add(var)
+
     return list(variables)
 
 
@@ -305,7 +332,7 @@ def resolve_model(model, sed_doc, working_dir):
 
 
 def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
-                               variable_values=None,
+                               variable_values=None, range_values=None,
                                validate_unique_xml_targets=True):
     """ Modify an XML-encoded model according to a model change
 
@@ -316,6 +343,8 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
         working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
         variable_values (:obj:`dict`, optional): dictionary which contains the value of each variable of each
             compute model change
+        range_values (:obj:`dict`, optional): dictionary which contains the value of each range of each
+            set value compute model change
         validate_unique_xml_targets (:obj:`bool`, optional): whether to validate the XML targets match
             uniue objects
     """
@@ -392,7 +421,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
                 variable_values = get_values_of_variable_model_xml_targets_of_model_change(change, sed_doc, model_etrees, working_dir)
 
             # calculate new value
-            new_value = calc_compute_model_change_new_value(change, variable_values)
+            new_value = calc_compute_model_change_new_value(change, variable_values=variable_values, range_values=range_values)
 
             # get object to change
             obj_xpath, sep, attr = change.target.rpartition('/@')
@@ -479,13 +508,15 @@ def get_value_of_variable_model_xml_targets(variable, model_etrees):
     return value
 
 
-def calc_compute_model_change_new_value(change, variable_values):
+def calc_compute_model_change_new_value(change, variable_values=None, range_values=None):
     """ Calculate the new value of a compute model change
 
     Args:
         change (:obj:`ComputeModelChange`): change
         variable_values (:obj:`dict`, optional): dictionary which contains the value of each variable of each
             compute model change
+        range_values (:obj:`dict`, optional): dictionary which contains the value of each range of each
+            set value compute model change
 
     Returns:
         :obj:`float`: new value
@@ -493,8 +524,16 @@ def calc_compute_model_change_new_value(change, variable_values):
     compiled_math = compile_math(change.math)
 
     workspace = {}
+
+    if isinstance(change, SetValueComputeModelChange):
+        if change.range:
+            workspace[change.range.id] = range_values.get(change.range.id, None)
+            if workspace[change.range.id] is None:
+                raise ValueError('Value of range `{}` is not defined.'.format(change.range.id))
+
     for param in change.parameters:
         workspace[param.id] = param.value
+
     for var in change.variables:
         workspace[var.id] = variable_values.get(var.id, None)
         if workspace[var.id] is None:
@@ -705,8 +744,8 @@ def eval_math(math, compiled_math, workspace):
     try:
         return eval(compiled_math, MATHEMATICAL_FUNCTIONS, dict(**RESERVED_MATHEMATICAL_SYMBOLS, **workspace))
     except Exception as exception:
-        raise ValueError('Expression `{}` could not be evaluated:\n  {}'.format(
-            math, str(exception)))
+        raise ValueError('Expression `{}` could not be evaluated:\n\n  {}\n\n  workspace:\n    {}'.format(
+            math, str(exception), '\n    '.join('{}: {}'.format(key, value) for key, value in workspace.items())))
 
 
 def remove_model_changes(sed_doc):
@@ -794,8 +833,94 @@ def remove_plots(sed_doc):
             sed_doc.outputs.remove(output)
 
 
+def get_models_referenced_by_task(task):
+    """ Get the models referenced from a task
+
+    Args:
+        task (:obj:`RepeatedTask`): task
+
+    Returns:
+        :obj:`set` of :obj:`Model`: models
+    """
+    if isinstance(task, Task):
+        return set([task.model])
+
+    elif isinstance(task, RepeatedTask):
+        models = set()
+
+        models.update(get_models_referenced_by_range(task.range))
+
+        for change in task.changes:
+            models.update(get_models_referenced_by_model_change(change))
+
+        for sub_task in task.sub_tasks:
+            models.update(get_models_referenced_by_task(sub_task.task))
+
+        if task.range:
+            models.update(get_models_referenced_by_range(task.range))
+        for range in task.ranges:
+            models.update(get_models_referenced_by_range(range))
+
+        return models
+
+    else:
+        raise NotImplementedError('Tasks of type `{}` are not supported.'.format(task.__class__.__name__))
+
+
+def get_models_referenced_by_model_change(change):
+    """ Get the models referenced from a model change
+
+    Args:
+        change (:obj:`ModelChange`): model change
+
+    Returns:
+        :obj:`set` of :obj:`Model`: models
+    """
+    models = set()
+
+    if isinstance(change, SetValueComputeModelChange):
+        if change.model:
+            models.add(change.model)
+
+        if change.range:
+            models.update(get_models_referenced_by_range(change.range))
+
+        for variable in change.variables:
+            if variable.model:
+                models.add(variable.model)
+
+    elif isinstance(change, ComputeModelChange):
+        for variable in change.variables:
+            if variable.model:
+                models.add(variable.model)
+
+    return models
+
+
+def get_models_referenced_by_range(range):
+    """ Get the models referenced by a range
+
+    Args:
+        range (:obj:`Range`): range
+
+    Returns:
+        :obj:`set` of :obj:`Model`: models
+    """
+    models = set()
+
+    if isinstance(range, FunctionalRange):
+        for variable in range.variables:
+            if variable.model:
+                models.add(variable.model)
+
+        models.update(get_models_referenced_by_range(range.range))
+
+    return models
+
+
 def get_range_len(range):
     """ Get the length of a range
+
     Args:
         range (:obj:`Range`): range
 
@@ -814,6 +939,68 @@ def get_range_len(range):
 
     elif isinstance(range, FunctionalRange):
         return get_range_len(range.range)
+
+    else:
+        raise NotImplementedError('Ranges of type `{}` are not supported.'.format(range.__class__.__name__))
+
+
+def resolve_range(range, model_etrees=None):
+    """ Resolve the values of a range
+
+    Args:
+        range (:obj:`Range`): range
+        model_etrees (:obj:`dict` of :obj:`str` to :obj:`etree._Element`): map from the ids of models to element
+            trees of their sources; required to resolve variables of functional ranges
+
+    Returns:
+        :obj:`list` of :obj:`float`: values of the range
+
+    Raises:
+        :obj:`NotImplementedError`: if range isn't an instance of :obj:`UniformRange`, :obj:`VectorRange`,
+            or :obj:`FunctionalRange`.
+    """
+    if isinstance(range, UniformRange):
+        if range.type == UniformRangeType.linear:
+            return numpy.linspace(range.start, range.end, range.number_of_steps + 1).tolist()
+
+        elif range.type == UniformRangeType.log:
+            return numpy.logspace(numpy.log10(range.start), numpy.log10(range.end), range.number_of_steps + 1).tolist()
+
+        else:
+            raise NotImplementedError('UniformRanges of type `{}` are not supported.'.format(range.type.value))
+
+    elif isinstance(range, VectorRange):
+        return range.values
+
+    elif isinstance(range, FunctionalRange):
+        # compile math
+        compiled_math = compile_math(range.math)
+
+        # setup workspace to evaluate math
+        workspace = {}
+
+        workspace[range.range.id] = None
+
+        for param in range.parameters:
+            workspace[param.id] = param.value
+
+        for var in range.variables:
+            if var.symbol:
+                raise NotImplementedError('Symbols are not supported for variables of functional ranges')
+            if model_etrees[var.model.id] is None:
+                raise NotImplementedError('Functional ranges that involve variables of non-XML-encoded models are not supported.')
+            workspace[var.id] = get_value_of_variable_model_xml_targets(var, model_etrees)
+
+        # calculate the values of the range
+        values = []
+        for child_range_value in resolve_range(range.range, model_etrees=model_etrees):
+            workspace[range.range.id] = child_range_value
+
+            value = eval_math(range.math, compiled_math, workspace)
+            values.append(value)
+
+        # return values
+        return values
 
     else:
         raise NotImplementedError('Ranges of type `{}` are not supported.'.format(range.__class__.__name__))

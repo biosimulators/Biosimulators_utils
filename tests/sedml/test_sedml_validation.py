@@ -425,6 +425,15 @@ class ValidationTestCase(unittest.TestCase):
             validation.validate_doc(doc2)
 
         doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].changes[0].range = data_model.VectorRange(id='change_range', values=range(0, 100))
+        with self.assertWarnsRegex(IllogicalSedmlWarning, 'will be ignored'):
+            validation.validate_doc(doc2)
+
+        doc2.tasks[1].changes[0].range = data_model.VectorRange(id='change_range', values=range(0, 2))
+        with self.assertRaisesRegex(ValueError, 'must be at least as long'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
         doc2.tasks[1].ranges.append(None)
         with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
             validation.validate_doc(doc2)
@@ -501,12 +510,12 @@ class ValidationTestCase(unittest.TestCase):
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].target = None
-        with self.assertRaisesRegex(ValueError, 'must define a symbol or a target'):
+        with self.assertRaisesRegex(ValueError, 'must define a target'):
             validation.validate_doc(doc2)
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].symbol = 'x'
-        with self.assertRaisesRegex(ValueError, 'must define a symbol or a target, not both'):
+        with self.assertRaisesRegex(ValueError, 'should not define a symbol'):
             validation.validate_doc(doc2)
 
         doc2 = copy.deepcopy(doc)
@@ -531,12 +540,12 @@ class ValidationTestCase(unittest.TestCase):
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].target = None
-        with self.assertRaisesRegex(ValueError, 'must define a target'):
+        with self.assertRaisesRegex(ValueError, 'must define a target or a symbol'):
             validation.validate_doc(doc2)
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].symbol = 'x'
-        with self.assertRaisesRegex(ValueError, 'must define a target, not a symbol'):
+        with self.assertRaisesRegex(ValueError, 'must define a target or a symbol, not both'):
             validation.validate_doc(doc2)
 
         doc2 = copy.deepcopy(doc)

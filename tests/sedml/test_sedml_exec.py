@@ -9,6 +9,7 @@ from biosimulators_utils.report.warnings import RepeatDataSetLabelsWarning
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import exec
 from biosimulators_utils.sedml import io
+from biosimulators_utils.sedml import utils
 from biosimulators_utils.sedml.exceptions import SedmlExecutionError
 from biosimulators_utils.sedml.warnings import NoTasksWarning, NoOutputsWarning, InconsistentVariableShapesWarning
 from lxml import etree
@@ -611,6 +612,12 @@ class ExecTaskCase(unittest.TestCase):
             exec.exec_sed_doc(execute_task, filename, working_dir, out_dir)
 
     def test_errors(self):
+        # unsupported type of task
+        doc = data_model.SedDocument()
+        doc.tasks.append(mock.Mock(id='task'))
+        with self.assertRaisesRegex(SedmlExecutionError, 'not supported'):
+            exec.exec_sed_doc(None, doc, None, None)
+
         # error: variable not recorded
         doc = data_model.SedDocument()
 
@@ -662,10 +669,6 @@ class ExecTaskCase(unittest.TestCase):
         working_dir = os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
-
-        out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertRaisesRegex(SedmlExecutionError, 'did not generate the following expected variables'):
-            exec.exec_sed_doc(execute_task, filename, working_dir, out_dir)
 
         # error: unsupported type of task
         doc = data_model.SedDocument()
@@ -922,7 +925,7 @@ class ExecTaskCase(unittest.TestCase):
                                    numpy.array(((1., 2., 3.), (4., 5., 6.), (7., 8., 9.))))
 
         # warning: data set labels are not unique
-        doc.data_generators=[
+        doc.data_generators = [
             data_model.DataGenerator(
                 id='data_gen_1',
                 variables=[
@@ -947,7 +950,7 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
-        doc.outputs=[
+        doc.outputs = [
             data_model.Report(
                 id='report_1',
                 data_sets=[
@@ -966,38 +969,38 @@ class ExecTaskCase(unittest.TestCase):
         ]
 
         def execute_task(task, variables, log):
-            results=VariableResults()
-            results[doc.data_generators[0].variables[0].id]=numpy.array((1., 2.))
-            results[doc.data_generators[1].variables[0].id]=numpy.array((2., 3.))
+            results = VariableResults()
+            results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
+            results[doc.data_generators[1].variables[0].id] = numpy.array((2., 3.))
             return results, log
 
-        working_dir=self.tmp_dir
+        working_dir = self.tmp_dir
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
-        out_dir=os.path.join(self.tmp_dir, 'results')
+        out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarnsRegex(RepeatDataSetLabelsWarning, 'should have unique labels'):
             exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
 
         # error: unsupported outputs
-        doc.outputs=[
+        doc.outputs = [
             mock.Mock(id='unsupported')
         ]
 
-        working_dir=self.tmp_dir
+        working_dir = self.tmp_dir
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
-        log=SedDocumentLog(tasks={}, outputs={})
+        log = SedDocumentLog(tasks={}, outputs={})
         for task in doc.tasks:
-            log.tasks[task.id]=TaskLog(parent=log)
+            log.tasks[task.id] = TaskLog(parent=log)
         for output in doc.outputs:
-            log.outputs[output.id]=ReportLog(parent=log)
+            log.outputs[output.id] = ReportLog(parent=log)
         with self.assertRaisesRegex(SedmlExecutionError, 'are not supported'):
             exec.exec_sed_doc(execute_task, doc, working_dir, out_dir, log=log)
 
     def test_2d_plot(self):
-        doc=data_model.SedDocument()
+        doc = data_model.SedDocument()
 
         doc.models.append(data_model.Model(
             id='model',
@@ -1082,21 +1085,21 @@ class ExecTaskCase(unittest.TestCase):
             ],
         ))
 
-        filename=os.path.join(self.tmp_dir, 'test.sedml')
+        filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename)
 
         def execute_task(task, variables, log=None):
-            results=VariableResults()
-            results[doc.data_generators[0].variables[0].id]=numpy.linspace(0., 10., 10 + 1)
-            results[doc.data_generators[1].variables[0].id]=2 * results[doc.data_generators[0].variables[0].id]
+            results = VariableResults()
+            results[doc.data_generators[0].variables[0].id] = numpy.linspace(0., 10., 10 + 1)
+            results[doc.data_generators[1].variables[0].id] = 2 * results[doc.data_generators[0].variables[0].id]
             return results, log
 
-        working_dir=os.path.dirname(filename)
+        working_dir = os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
-        out_dir=os.path.join(self.tmp_dir, 'results')
-        _, log=exec.exec_sed_doc(execute_task, filename, working_dir,
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
                                    out_dir, plot_formats=[PlotFormat.pdf])
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
@@ -1135,9 +1138,9 @@ class ExecTaskCase(unittest.TestCase):
         os.remove(os.path.join(out_dir, 'plot_2d_2.pdf'))
 
         # error with a curve
-        doc.data_generators[0].math='time * var'
+        doc.data_generators[0].math = 'time * var'
         io.SedmlSimulationWriter().run(doc, filename)
-        log=init_sed_document_log(doc)
+        log = init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
             exec.exec_sed_doc(execute_task, filename, working_dir,
                               out_dir, log=log, plot_formats=[PlotFormat.pdf])
@@ -1176,14 +1179,14 @@ class ExecTaskCase(unittest.TestCase):
 
         # error with a task
         def execute_task(task, variables, log=None):
-            results=VariableResults()
-            results[doc.data_generators[0].variables[0].id]=None
-            results[doc.data_generators[1].variables[0].id]=2 * numpy.linspace(0., 10., 10 + 1)
+            results = VariableResults()
+            results[doc.data_generators[0].variables[0].id] = None
+            results[doc.data_generators[1].variables[0].id] = 2 * numpy.linspace(0., 10., 10 + 1)
             return results, log
 
-        doc.data_generators[0].math='time'
+        doc.data_generators[0].math = 'time'
         io.SedmlSimulationWriter().run(doc, filename)
-        log=init_sed_document_log(doc)
+        log = init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "Some generators could not be produced:"):
             exec.exec_sed_doc(execute_task, filename, working_dir,
                               out_dir, log=log, plot_formats=[PlotFormat.pdf])
@@ -1221,7 +1224,7 @@ class ExecTaskCase(unittest.TestCase):
         )
 
     def test_3d_plot(self):
-        doc=data_model.SedDocument()
+        doc = data_model.SedDocument()
 
         doc.models.append(data_model.Model(
             id='model',
@@ -1312,23 +1315,23 @@ class ExecTaskCase(unittest.TestCase):
             ],
         ))
 
-        filename=os.path.join(self.tmp_dir, 'test.sedml')
+        filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename)
 
         def execute_task(task, variables, log=None):
-            results=VariableResults()
-            x=numpy.arange(-5, 5, 0.25)
-            x, _=numpy.meshgrid(x, x)
-            results[doc.data_generators[0].variables[0].id]=x
-            results[doc.data_generators[1].variables[0].id]=x
+            results = VariableResults()
+            x = numpy.arange(-5, 5, 0.25)
+            x, _ = numpy.meshgrid(x, x)
+            results[doc.data_generators[0].variables[0].id] = x
+            results[doc.data_generators[1].variables[0].id] = x
             return results, log
 
-        working_dir=os.path.dirname(filename)
+        working_dir = os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
 
-        out_dir=os.path.join(self.tmp_dir, 'results')
-        _, log=exec.exec_sed_doc(execute_task, filename, working_dir,
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
                                    out_dir, plot_formats=[PlotFormat.pdf])
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_1.pdf')))
@@ -1367,9 +1370,9 @@ class ExecTaskCase(unittest.TestCase):
         os.remove(os.path.join(out_dir, 'plot_3d_2.pdf'))
 
         # error with a surface
-        doc.data_generators[0].math='time * var'
+        doc.data_generators[0].math = 'time * var'
         io.SedmlSimulationWriter().run(doc, filename)
-        log=init_sed_document_log(doc)
+        log = init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
             exec.exec_sed_doc(execute_task, filename, working_dir,
                               out_dir, log=log, plot_formats=[PlotFormat.pdf])
@@ -1405,3 +1408,264 @@ class ExecTaskCase(unittest.TestCase):
                 },
             ]
         )
+
+    def test_exec_repeated_task(self):
+        # Tests
+        # - Multiple subtasks
+        # - Nested repeated tasks
+        # - UniformRange, VectorRange, FunctionalRange
+        # - Multiple models
+        # - Set value changes
+
+        doc = data_model.SedDocument()
+
+        model1 = data_model.Model(id='model1', source='model1.xml', language='sbml')
+        model2 = data_model.Model(id='model2', source='model2.xml', language='sbml')
+        doc.models.append(model1)
+        doc.models.append(model2)
+
+        sim = data_model.UniformTimeCourseSimulation(
+            id='sim', initial_time=0., output_start_time=0., output_end_time=10., number_of_steps=10)
+        doc.simulations.append(sim)
+
+        task1 = data_model.Task(id='task1', model=model1, simulation=sim)
+        task2 = data_model.Task(id='task2', model=model2, simulation=sim)
+        doc.tasks.append(task1)
+        doc.tasks.append(task2)
+
+        repeated_task1 = data_model.RepeatedTask(id='repeated_task1', reset_model_for_each_iteration=True)
+        repeated_task2 = data_model.RepeatedTask(id='repeated_task2', reset_model_for_each_iteration=False)
+        doc.tasks.append(repeated_task1)
+        doc.tasks.append(repeated_task2)
+
+        repeated_task1.range = data_model.UniformRange(
+            id='uniform_range',
+            start=0.,
+            end=4.,
+            number_of_steps=4,
+            type=data_model.UniformRangeType.linear,
+        )
+        repeated_task2.range = data_model.FunctionalRange(
+            id='functional_range',
+            range=data_model.VectorRange(
+                id='vector_range',
+                values=[10., 20., 30.],
+            ),
+            parameters=[
+                data_model.Parameter(id='p_1', value=1.5),
+            ],
+            math='vector_range * p_1',
+        )
+
+        repeated_task1.ranges.append(repeated_task1.range)
+        repeated_task2.ranges.append(repeated_task2.range)
+        repeated_task2.ranges.append(repeated_task2.range.range)
+
+        repeated_task1.changes = [
+            data_model.SetValueComputeModelChange(
+                model=model1,
+                target="/model/variable[@id='x']/@value",
+                range=repeated_task1.range,
+                parameters=[
+                    data_model.Parameter(id='p_1', value=2.0)
+                ],
+                math='{} * p_1'.format(repeated_task1.range.id),
+            ),
+            data_model.SetValueComputeModelChange(
+                model=model1,
+                target="/model/variable[@id='x']/@value",
+                range=repeated_task1.range,
+                parameters=[
+                    data_model.Parameter(id='p_2', value=1.0)
+                ],
+                variables=[
+                    data_model.Variable(id='x', model=model1, target="/model/variable[@id='x']/@value"),
+                ],
+                math='x + p_2 + {}'.format(repeated_task1.range.id),
+            )
+        ]
+
+        repeated_task2.changes = [
+            data_model.SetValueComputeModelChange(
+                model=model2,
+                target="/model/variable[@id='a']/@value",
+                range=repeated_task2.range,
+                parameters=[
+                    data_model.Parameter(id='p_3', value=0.1)
+                ],
+                variables=[
+                    data_model.Variable(id='a', model=model2, target="/model/variable[@id='a']/@value"),
+                ],
+                math='a + p_3 + {}'.format(repeated_task2.range.id),
+            ),
+        ]
+
+        sub_task1 = data_model.SubTask(task=task1, order=1)
+        sub_task2 = data_model.SubTask(task=repeated_task2, order=2)
+        sub_task3 = data_model.SubTask(task=task2, order=1)
+        repeated_task1.sub_tasks.append(sub_task1)
+        repeated_task1.sub_tasks.append(sub_task2)
+        repeated_task2.sub_tasks.append(sub_task3)
+
+        report = data_model.Report(id='report')
+        doc.outputs.append(report)
+
+        for id in ['x', 'y', 'z', 'a', 'b', 'c']:
+            report.data_sets.append(
+                data_model.DataSet(
+                    id='data_set_' + id,
+                    data_generator=data_model.DataGenerator(
+                        id='data_gen_' + id,
+                        variables=[
+                            data_model.Variable(
+                                id=id,
+                                task=repeated_task1,
+                                target="/model/variable[@id='{}']/@value".format(id),
+                            )
+                        ],
+                    ),
+                ),
+            )
+
+        model_filename1 = os.path.join(self.tmp_dir, 'model1.xml')
+        with open(model_filename1, 'w') as file:
+            file.write('<model>')
+            file.write('  <variable id="x" value="1" />')
+            file.write('  <variable id="y" value="2" />')
+            file.write('  <variable id="z" value="3" />')
+            file.write('</model>')
+
+        model_filename2 = os.path.join(self.tmp_dir, 'model2.xml')
+        with open(model_filename2, 'w') as file:
+            file.write('<model>')
+            file.write('  <variable id="a" value="4" />')
+            file.write('  <variable id="b" value="5" />')
+            file.write('  <variable id="c" value="6" />')
+            file.write('</model>')
+
+        model_etrees = {
+            model1.id: etree.parse(model_filename1),
+            model2.id: etree.parse(model_filename2),
+        }
+
+        def task_executer(task, variables, log=None):
+            et = etree.parse(task.model.source)
+
+            if task.id == task1.id:
+                x = float(et.xpath("/model/variable[@id='x']")[0].get('value'))
+                y = float(et.xpath("/model/variable[@id='y']")[0].get('value'))
+                z = float(et.xpath("/model/variable[@id='z']")[0].get('value'))
+
+                results = VariableResults()
+                results['x'] = x * numpy.linspace(0., 5., 6)
+                results['y'] = y * numpy.linspace(0., 5., 6)
+                results['z'] = z * numpy.linspace(0., 5., 6)
+                return results, None
+            else:
+                a = float(et.xpath("/model/variable[@id='a']")[0].get('value'))
+                b = float(et.xpath("/model/variable[@id='b']")[0].get('value'))
+                c = float(et.xpath("/model/variable[@id='c']")[0].get('value'))
+
+                results = VariableResults()
+                results['a'] = a * numpy.linspace(0., 5., 6)
+                results['b'] = b * numpy.linspace(0., 5., 6)
+                results['c'] = c * numpy.linspace(0., 5., 6)
+                return results, None
+
+        task_vars = utils.get_variables_for_task(doc, repeated_task1)
+        results = exec.exec_repeated_task(repeated_task1, task_executer, task_vars, doc, model_etrees=model_etrees,
+                                          apply_xml_model_changes=True)
+
+        self.assertEqual(set(results.keys()), set(['x', 'y', 'z', 'a', 'b', 'c']))
+
+        self.assertEqual(results['x'].shape, tuple([5, 2, 6, 1, 6]))
+        self.assertEqual(numpy.count_nonzero(~numpy.isnan(results['x'])), 5 * 1 * 6)
+        numpy.testing.assert_allclose(results['x'][0, 0, :, 0, 0], (1.) * numpy.linspace(0., 5., 6))
+        numpy.testing.assert_allclose(results['x'][1, 0, :, 0, 0], (4.) * numpy.linspace(0., 5., 6))
+        numpy.testing.assert_allclose(results['x'][2, 0, :, 0, 0], (7.) * numpy.linspace(0., 5., 6))
+        numpy.testing.assert_allclose(results['x'][3, 0, :, 0, 0], (10.) * numpy.linspace(0., 5., 6))
+        numpy.testing.assert_allclose(results['x'][4, 0, :, 0, 0], (13.) * numpy.linspace(0., 5., 6))
+
+        numpy.testing.assert_allclose(results['z'][0, 0, :, 0, 0], 3. * numpy.linspace(0., 5., 6))
+        numpy.testing.assert_allclose(results['z'][4, 0, :, 0, 0], 3. * numpy.linspace(0., 5., 6))
+
+        self.assertEqual(results['a'].shape, tuple([5, 2, 6, 1, 6]))
+        self.assertEqual(numpy.count_nonzero(~numpy.isnan(results['a'])), 5 * 1 * 3 * 6)
+        numpy.testing.assert_allclose(results['a'][0, 1, 0, 0, :], (19.1) * numpy.linspace(0., 5., 6))
+        numpy.testing.assert_allclose(results['a'][2, 1, 1, 0, :], (49.2) * numpy.linspace(0., 5., 6))
+        numpy.testing.assert_allclose(results['a'][4, 1, 2, 0, :], (94.3) * numpy.linspace(0., 5., 6))
+        numpy.testing.assert_allclose(results['c'][0, 1, 0, 0, :], 6. * numpy.linspace(0., 5., 6))
+        numpy.testing.assert_allclose(results['c'][4, 1, 2, 0, :], 6. * numpy.linspace(0., 5., 6))
+
+        with self.assertRaisesRegex(NotImplementedError, 'non-XML-encoded models are not supported.'):
+            exec.exec_repeated_task(repeated_task1, task_executer, task_vars, doc, model_etrees=model_etrees,
+                                    apply_xml_model_changes=False)
+
+        repeated_task1.changes[0].symbol = 'symbol'
+        with self.assertRaisesRegex(NotImplementedError, 'changes of symbols is not supported.'):
+            exec.exec_repeated_task(repeated_task1, task_executer, task_vars, doc, model_etrees=model_etrees,
+                                    apply_xml_model_changes=True)
+
+        repeated_task1.changes[0].symbol = None
+        repeated_task1.sub_tasks.append(data_model.SubTask(order=0, task=mock.Mock(id='task0')))
+        with self.assertRaisesRegex(NotImplementedError, 'are not supported.'):
+            exec.exec_repeated_task(repeated_task1, task_executer, task_vars, doc, model_etrees=model_etrees,
+                                    apply_xml_model_changes=True)
+
+    def test_exec_sed_doc_with_repeated_task(self):
+        doc = data_model.SedDocument()
+        doc.models.append(data_model.Model(id='model', source='model.xml', language='sbml'))
+        doc.simulations.append(data_model.UniformTimeCourseSimulation(id='sim',
+                                                                      initial_time=0., output_start_time=0.,
+                                                                      output_end_time=5., number_of_steps=5))
+        doc.tasks.append(data_model.Task(id='task1', model=doc.models[0], simulation=doc.simulations[0]))
+        doc.tasks.append(data_model.RepeatedTask(id='task2',
+                                                 range=data_model.VectorRange(values=[1., 2., 3.]),
+                                                 sub_tasks=[data_model.SubTask(order=0, task=doc.tasks[0])],
+                                                 reset_model_for_each_iteration=True,
+                                                 ))
+        doc.tasks[1].ranges.append(doc.tasks[1].range)
+
+        doc.data_generators = [
+            data_model.DataGenerator(
+                id='data_gen_x',
+                variables=[data_model.Variable(id='x', task=doc.tasks[1], target="/model/variable[@id='x']/@value")],
+                math='x',
+            ),
+            data_model.DataGenerator(
+                id='data_gen_y',
+                variables=[data_model.Variable(id='y', task=doc.tasks[1], target="/model/variable[@id='x']/@value")],
+                math='y',
+            ),
+        ]
+        doc.outputs.append(
+            data_model.Report(
+                id='report',
+                data_sets=[
+                    data_model.DataSet(id='data_set_x', label='x', data_generator=doc.data_generators[0]),
+                    data_model.DataSet(id='data_set_y', label='y', data_generator=doc.data_generators[1]),
+                ]
+            )
+        )
+
+        model_filename1 = os.path.join(self.tmp_dir, 'model.xml')
+        with open(model_filename1, 'w') as file:
+            file.write('<model>')
+            file.write('  <variable id="x" value="1" />')
+            file.write('  <variable id="y" value="2" />')
+            file.write('  <variable id="z" value="3" />')
+            file.write('</model>')
+
+        def task_executer(task, variables, log=None):
+            results = VariableResults({
+                'x': numpy.linspace(10., 15., 6),
+                'y': numpy.linspace(20., 25., 6),
+            })
+            return results, log
+
+        results, _ = exec.exec_sed_doc(task_executer, doc, self.tmp_dir, self.tmp_dir, apply_xml_model_changes=True,
+                                       report_formats=[ReportFormat.h5])
+        self.assertEqual(set(results.keys()), set(['report']))
+        self.assertEqual(set(results['report'].keys()), set(['data_set_x', 'data_set_y']))
+        numpy.testing.assert_allclose(results['report']['data_set_x'], [[numpy.linspace(10., 15., 6)]] * 3)
+        numpy.testing.assert_allclose(results['report']['data_set_y'], [[numpy.linspace(20., 25., 6)]] * 3)
