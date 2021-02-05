@@ -148,10 +148,12 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                 # get model and apply changes
                 original_models = get_models_referenced_by_task(task)
                 original_model_sources = {}
+                original_model_changes = {}
                 temp_model_sources = []
                 model_etrees = {}
                 for original_model in original_models:
                     original_model_sources[original_model.id] = original_model.source
+                    original_model_changes[original_model.id] = original_model.changes
 
                     temp_model, temp_model_source, model_etree = resolve_model_and_apply_xml_changes(
                         original_model, doc, working_dir,
@@ -159,6 +161,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                         pretty_print_modified_xml_models=pretty_print_modified_xml_models)
 
                     original_model.source = temp_model.source
+                    original_model.changes = temp_model.changes
 
                     if temp_model_source:
                         temp_model_sources.append(temp_model_source)
@@ -193,6 +196,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                     os.remove(temp_model_source)
                 for original_model in original_models:
                     original_model.source = original_model_sources[original_model.id]
+                    original_model.changes = original_model_changes[original_model.id]
             except Exception as exception:
                 exceptions.append(exception)
                 task_status = Status.FAILED
