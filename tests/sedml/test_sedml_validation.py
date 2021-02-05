@@ -385,6 +385,11 @@ class ValidationTestCase(unittest.TestCase):
         validation.validate_doc(doc)
 
         doc2 = copy.deepcopy(doc)
+        doc2.tasks[1].sub_tasks = []
+        with self.assertRaisesRegex(ValueError, 'must have at least one sub-task'):
+            validation.validate_doc(doc2)
+
+        doc2 = copy.deepcopy(doc)
         doc2.tasks[1].sub_tasks[0].task = None
         with self.assertRaisesRegex(ValueError, 'Sub-tasks must reference tasks'):
             validation.validate_doc(doc2)

@@ -21,8 +21,8 @@ from .io import SedmlSimulationReader
 from .utils import (resolve_model_and_apply_xml_changes, get_variables_for_task,
                     calc_data_generators_results, resolve_range, get_models_referenced_by_task,
                     get_value_of_variable_model_xml_targets, calc_compute_model_change_new_value,
-                    apply_changes_to_xml_model)
-from .warnings import NoTasksWarning, NoOutputsWarning
+                    apply_changes_to_xml_model, get_first_last_models_executed_by_task)
+from .warnings import NoTasksWarning, NoOutputsWarning, SedmlFeatureNotSupportedWarning
 from lxml import etree  # noqa: F401
 import copy
 import datetime
@@ -381,6 +381,27 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
     Returns:
         :obj:`VariableResults`: results of the variables
     """
+    # warn about inability to not reset models
+    if not task.reset_model_for_each_iteration:
+        models = get_first_last_models_executed_by_task(task)
+        if models[0] == models[-1]:
+            msg = (
+                'Only independent execution of iterations of repeated tasks is supported. '
+                'Successive iterations will not be executed starting from the end state of the previous iteration.'
+            )
+            warn(msg, SedmlFeatureNotSupportedWarning)
+
+    sub_tasks = sorted(task.sub_tasks, key=lambda sub_task: sub_task.order)
+    for prev_sub_task, next_sub_task in zip(sub_tasks[0:-1], sub_tasks[1:]):
+        if get_first_last_models_executed_by_task(prev_sub_task.task)[-1] == get_first_last_models_executed_by_task(next_sub_task.task)[0]:
+            msg = (
+                'Only independent execution of sub-tasks is supported. '
+                'Successive sub-tasks will not be executed starting from the end state of the previous sub-task.'
+            )
+            warn(msg, SedmlFeatureNotSupportedWarning)
+            break
+
+    # hold onto model to be able to reset it
     if task.reset_model_for_each_iteration:
         original_doc = doc
         original_task = task
@@ -472,7 +493,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                                                           model_etrees=model_etrees,
                                                           pretty_print_modified_xml_models=pretty_print_modified_xml_models)
 
-            else:
+            else:  # pragma: no cover: already validated by :obj:`get_first_last_models_executed_by_task`
                 raise NotImplementedError('Tasks of type {} are not supported.'.format(sub_task.task.__class__.__name__))
 
             for var in task_vars:

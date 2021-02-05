@@ -48,6 +48,7 @@ __all__ = [
     'remove_algorithm_parameter_changes',
     'replace_complex_data_generators_with_generators_for_individual_variables',
     'remove_plots',
+    'get_first_last_models_executed_by_task',
     'get_models_referenced_by_task',
     'get_models_referenced_by_range',
     'get_models_referenced_by_model_change',
@@ -833,11 +834,34 @@ def remove_plots(sed_doc):
             sed_doc.outputs.remove(output)
 
 
+def get_first_last_models_executed_by_task(task):
+    """ Get the models executed by a task in the order they are executed
+
+    Args:
+        task (:obj:`Task`): task
+
+    Returns:
+        :obj:`tuple` of :obj:`Model`: models
+    """
+    if isinstance(task, Task):
+        return (task.model, task.model)
+
+    elif isinstance(task, RepeatedTask):
+        sub_tasks = sorted(task.sub_tasks, key=lambda sub_task: sub_task.order)
+        return (
+            get_first_last_models_executed_by_task(sub_tasks[0].task)[0],
+            get_first_last_models_executed_by_task(sub_tasks[-1].task)[-1],
+        )
+
+    else:
+        raise NotImplementedError('Tasks of type `{}` are not supported.'.format(task.__class__.__name__))
+
+
 def get_models_referenced_by_task(task):
     """ Get the models referenced from a task
 
     Args:
-        task (:obj:`RepeatedTask`): task
+        task (:obj:`Task`): task
 
     Returns:
         :obj:`set` of :obj:`Model`: models

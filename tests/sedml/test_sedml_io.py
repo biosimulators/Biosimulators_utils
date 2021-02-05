@@ -583,7 +583,10 @@ class IoTestCase(unittest.TestCase):
                     id='task',
                     ranges=[
                         None,
-                    ]
+                    ],
+                    sub_tasks=[
+                        data_model.SubTask(order=1, task=data_model.Task())
+                    ],
                 ),
             ],
         )
@@ -598,16 +601,24 @@ class IoTestCase(unittest.TestCase):
 
     def test_unsupported_uniform_range_type(self):
         document = data_model.SedDocument(
+            models=[data_model.Model(id='model', source='model.xml')],
+            simulations=[data_model.SteadyStateSimulation(id='sim')],
             tasks=[
                 data_model.RepeatedTask(
                     id='task',
                     ranges=[
                         data_model.UniformRange(id='range', start=0., end=10., number_of_steps=10, type=mock.Mock(value='sin')),
                     ],
+                    sub_tasks=[
+                        data_model.SubTask(task=data_model.Task(id='task2'), order=1),
+                    ],
                 ),
             ],
         )
         document.tasks[0].range = document.tasks[0].ranges[0]
+        document.tasks[0].sub_tasks[0].task.model = document.models[0]
+        document.tasks[0].sub_tasks[0].task.simulation = document.simulations[0]
+        document.tasks.append(document.tasks[0].sub_tasks[0].task)
 
         filename = os.path.join(self.tmp_dir, 'test.xml')
         io.SedmlSimulationWriter().run(document, filename)

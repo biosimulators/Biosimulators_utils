@@ -1255,3 +1255,45 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
             utils.get_models_referenced_by_task(None)
+
+    def test_get_first_last_models_executed_by_task(self):
+        models = [data_model.Model(id='model1'), data_model.Model(id='model2'),
+                  data_model.Model(id='model3'), data_model.Model(id='model4'),
+                  data_model.Model(id='model5'), data_model.Model(id='model6')]
+
+        task = data_model.Task(model=models[0])
+        self.assertEqual(utils.get_first_last_models_executed_by_task(task), (models[0], models[0]))
+
+        task = data_model.RepeatedTask(
+            sub_tasks=[
+                data_model.SubTask(
+                    task=data_model.RepeatedTask(
+                        sub_tasks=[
+                            data_model.SubTask(
+                                task=data_model.Task(
+                                    model=models[0]
+                                ),
+                                order=1,
+                            ),
+                            data_model.SubTask(
+                                task=data_model.Task(
+                                    model=models[1]
+                                ),
+                                order=2,
+                            ),
+                        ]
+                    ),
+                    order=1,
+                ),
+                data_model.SubTask(
+                    task=data_model.Task(
+                        model=models[2]
+                    ),
+                    order=2,
+                ),
+            ],
+        )
+        self.assertEqual(utils.get_first_last_models_executed_by_task(task), (models[0], models[2]))
+
+        with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
+            utils.get_first_last_models_executed_by_task(None)

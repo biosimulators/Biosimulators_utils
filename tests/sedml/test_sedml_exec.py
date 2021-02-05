@@ -13,7 +13,8 @@ from biosimulators_utils.sedml import exec
 from biosimulators_utils.sedml import io
 from biosimulators_utils.sedml import utils
 from biosimulators_utils.sedml.exceptions import SedmlExecutionError
-from biosimulators_utils.sedml.warnings import NoTasksWarning, NoOutputsWarning, InconsistentVariableShapesWarning
+from biosimulators_utils.sedml.warnings import (NoTasksWarning, NoOutputsWarning,
+                                                InconsistentVariableShapesWarning, SedmlFeatureNotSupportedWarning)
 from lxml import etree
 from unittest import mock
 import builtins
@@ -192,7 +193,7 @@ class ExecTaskCase(unittest.TestCase):
         working_dir = os.path.dirname(filename)
         with open(os.path.join(working_dir, doc.models[0].source), 'w'):
             pass
-        
+
         out_dir = os.path.join(self.tmp_dir, 'results')
         with mock.patch('requests.get', return_value=mock.Mock(raise_for_status=lambda: None, content=b'')):
             output_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir,
@@ -1616,6 +1617,17 @@ class ExecTaskCase(unittest.TestCase):
         with self.assertRaisesRegex(NotImplementedError, 'are not supported.'):
             exec.exec_repeated_task(repeated_task1, task_executer, task_vars, doc, model_etrees=model_etrees,
                                     apply_xml_model_changes=True)
+
+        repeated_task1.sub_tasks.pop()
+        repeated_task1.sub_tasks.append(repeated_task1.sub_tasks[-1])
+        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'Only independent execution of sub-tasks is supported'):
+            results = exec.exec_repeated_task(repeated_task1, task_executer, task_vars, doc, model_etrees=model_etrees,
+                                              apply_xml_model_changes=True)
+
+        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning,
+                                   'Only independent execution of iterations of repeated tasks is supported'):
+            results = exec.exec_repeated_task(repeated_task1, task_executer, task_vars, doc, model_etrees=model_etrees,
+                                              apply_xml_model_changes=True)
 
     def test_exec_sed_doc_with_repeated_task(self):
         doc = data_model.SedDocument()

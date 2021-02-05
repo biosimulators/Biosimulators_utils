@@ -156,6 +156,10 @@ def validate_doc(doc, validate_semantics=True):
             sub_task_graph.add_node(task.id)
 
             if isinstance(task, RepeatedTask):
+                if not task.sub_tasks:
+                    msg = 'Repeated tasks must have at least one sub-task. Repeated task `{}` has no sub-tasks.'.format(task.id)
+                    raise ValueError(msg)
+
                 for i_sub_task, sub_task in enumerate(task.sub_tasks):
                     if not isinstance(sub_task.task, AbstractTask):
                         msg = ('Sub-tasks must reference tasks. '
