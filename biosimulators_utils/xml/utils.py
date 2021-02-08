@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+import copy
 import lxml.etree
 import re
 
@@ -39,13 +40,22 @@ def get_namespaces_for_xml_element(element_tree):
     Returns:
         :obj:`dict`: dictionary that maps the id of each namespace to its URI
     """
-    namespaces = {}
+    namespaces = copy.copy(element_tree.nsmap)
+    if None in namespaces:
+        namespaces.pop(None)
+        match = re.match(r'^{(.*?)}(.*?)$', element_tree.tag)
+        if match:
+            namespaces[match.group(2)] = match.group(1)
 
-    nodes_to_check = [element_tree]
+    nodes_to_check = [(element_tree, element_tree.nsmap)]
     while nodes_to_check:
-        node = nodes_to_check.pop()
+        node, parent_namespaces = nodes_to_check.pop()
 
-        node_namespaces = node.nsmap
+        node_namespaces = copy.copy(node.nsmap)
+        for prefix, uri in parent_namespaces.items():
+            if node_namespaces.get(prefix, None) == uri:
+                node_namespaces.pop(prefix)
+
         if None in node_namespaces:
             node_namespaces.pop(None)
             match = re.match(r'^{(.*?)}(.*?)$', node.tag)
@@ -58,7 +68,8 @@ def get_namespaces_for_xml_element(element_tree):
                 raise ValueError(msg)
             namespaces[prefix] = uri
 
-        nodes_to_check.extend(node.getchildren())
+        for child in node.getchildren():
+            nodes_to_check.append((child, node.nsmap))
 
     return namespaces
 

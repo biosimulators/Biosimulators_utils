@@ -19,7 +19,17 @@ class XmlUtilsTestCase(unittest.TestCase):
 
     def test_get_namespaces_for_xml_doc(self):
         et = etree.parse(self.XML_FILENAME)
-        self.assertEqual(utils.get_namespaces_for_xml_doc(et)['sbml'], 'http://www.sbml.org/sbml/level2/version4')
+        self.assertEqual(utils.get_namespaces_for_xml_doc(et), {
+            'sbml': 'http://www.sbml.org/sbml/level2/version4',
+            'math': 'http://www.w3.org/1998/Math/MathML',
+            'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+            'bqmodel': 'http://biomodels.net/model-qualifiers/',
+            'bqbiol': 'http://biomodels.net/biology-qualifiers/',
+            'vCard': 'http://www.w3.org/2001/vcard-rdf/3.0#',
+            'dc': 'http://purl.org/dc/elements/1.1/',
+            'dcterms': 'http://purl.org/dc/terms/',
+            'body': 'http://www.w3.org/1999/xhtml'
+        })
 
         xml_filename = os.path.join(self.tmp_dirname, 'file.xml')
         with open(xml_filename, 'w') as file:
