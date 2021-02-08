@@ -1,6 +1,9 @@
+
 from biosimulators_utils.xml import utils
 from lxml import etree
 import os
+import shutil
+import tempfile
 import unittest
 
 
@@ -8,9 +11,39 @@ class XmlUtilsTestCase(unittest.TestCase):
     XML_FILENAME = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.xml')
     MULTIPLE_NAMESPACES_XML_FILENAME = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-fbc-textbook.xml')
 
+    def setUp(self):
+        self.tmp_dirname = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp_dirname)
+
     def test_get_namespaces_for_xml_doc(self):
         et = etree.parse(self.XML_FILENAME)
-        self.assertEqual(utils.get_namespaces_for_xml_doc(et), {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
+        self.assertEqual(utils.get_namespaces_for_xml_doc(et)['sbml'], 'http://www.sbml.org/sbml/level2/version4')
+
+        xml_filename = os.path.join(self.tmp_dirname, 'file.xml')
+        with open(xml_filename, 'w') as file:
+            file.write('<ns1:tag1 xmlns:ns1="https://ns1.org">')
+            file.write('  <ns2:tag2 xmlns:ns2="https://ns2.org">')
+            file.write('  </ns2:tag2>')
+            file.write('</ns1:tag1>')
+        et = etree.parse(xml_filename)
+        self.assertEqual(utils.get_namespaces_for_xml_doc(et), {
+            'ns1': 'https://ns1.org',
+            'ns2': 'https://ns2.org',
+        })
+
+        xml_filename = os.path.join(self.tmp_dirname, 'file.xml')
+        with open(xml_filename, 'w') as file:
+            file.write('<ns1:tag1 xmlns:ns1="https://ns1.org">')
+            file.write('  <ns2:tag2 xmlns:ns2="https://ns2.org">')
+            file.write('    <ns1:tag2 xmlns:ns1="https://ns3.org">')
+            file.write('    </ns1:tag2>')
+            file.write('  </ns2:tag2>')
+            file.write('</ns1:tag1>')
+        et = etree.parse(xml_filename)
+        with self.assertRaisesRegex(ValueError, 'Prefixes must be used consistently'):
+            utils.get_namespaces_for_xml_doc(et)
 
     def test_get_attributes_of_xpaths(self):
         ids = utils.get_attributes_of_xpaths(self.XML_FILENAME, [

@@ -2,6 +2,7 @@ from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import io
 from biosimulators_utils.sedml import utils
 from biosimulators_utils.utils.core import are_lists_equal
+from biosimulators_utils.xml.utils import get_namespaces_for_xml_doc
 from lxml import etree
 from unittest import mock
 import copy
@@ -299,6 +300,54 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         self.assertEqual(utils.convert_xml_node_to_string(node),
                          '<sbml:parameter xmlns:{}="{}" id="V_mT" value="0.7"/>'.format(
             'sbml', 'http://www.sbml.org/sbml/level2/version3'))
+
+    def test_add_namespaces_to_xml_node_2(self):
+        changes = [
+            data_model.AddElementModelChange(
+                target='/sbml:sbml',
+                new_elements='<biosimulators:insertedNode xmlns:biosimulators="https://biosimulators.org"></biosimulators:insertedNode>',
+            ),
+            data_model.ReplaceElementModelChange(
+                target='/sbml:sbml/biosimulators:insertedNode',
+                new_elements='<biosimulators2:insertedNode xmlns:biosimulators2="https://biosimulators2.org"></biosimulators2:insertedNode>',
+            ),
+            data_model.RemoveElementModelChange(
+                target='/sbml:sbml/biosimulators2:insertedNode',
+            ),
+        ]
+
+        et = etree.parse(self.FIXTURE_FILENAME)
+        utils.apply_changes_to_xml_model(data_model.Model(changes=changes[0:1]), et, None, None, validate_unique_xml_targets=True)
+        namespaces = get_namespaces_for_xml_doc(et)
+        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators:insertedNode', namespaces=namespaces)), 1)
+
+        et = etree.parse(self.FIXTURE_FILENAME)
+        utils.apply_changes_to_xml_model(data_model.Model(changes=changes[0:2]), et, None, None, validate_unique_xml_targets=True)
+        namespaces = get_namespaces_for_xml_doc(et)
+        self.assertNotIn('biosimulators', namespaces)
+        namespaces['biosimulators'] = 'https://biosimulators.org'
+        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators:insertedNode', namespaces=namespaces)), 0)
+        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators2:insertedNode', namespaces=namespaces)), 1)
+
+        et = etree.parse(self.FIXTURE_FILENAME)
+        utils.apply_changes_to_xml_model(data_model.Model(changes=changes), et, None, None, validate_unique_xml_targets=True)
+        namespaces = get_namespaces_for_xml_doc(et)
+        self.assertNotIn('biosimulators', namespaces)
+        self.assertNotIn('biosimulators2', namespaces)
+        namespaces['biosimulators'] = 'https://biosimulators.org'
+        namespaces['biosimulators2'] = 'https://biosimulators2.org'
+        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators:insertedNode', namespaces=namespaces)), 0)
+        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators2:insertedNode', namespaces=namespaces)), 0)
+
+        et = etree.parse(self.FIXTURE_FILENAME)
+        changes[1].new_elements = '<biosimulators2:insertedNode xmlns:biosimulators="https://biosimulators2.org" xmlns:biosimulators2="https://biosimulators2.org"></biosimulators2:insertedNode>'
+        with self.assertRaisesRegex(ValueError, 'Prefixes must be used consistently'):
+            utils.apply_changes_to_xml_model(data_model.Model(changes=changes), et, None, None, validate_unique_xml_targets=True)
+
+        et = etree.parse(self.FIXTURE_FILENAME)
+        changes[0].new_elements = '<biosimulators:insertedNode xmlns:biosimulators="https://biosimulators.org" xmlns:sbml="https://biosimulators.org"></biosimulators:insertedNode>'
+        with self.assertRaisesRegex(ValueError, 'Prefixes must be used consistently'):
+            utils.apply_changes_to_xml_model(data_model.Model(changes=changes), et, None, None, validate_unique_xml_targets=True)
 
     def test_change_attributes_multiple_targets(self):
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}

@@ -9,7 +9,12 @@
 import lxml.etree
 import re
 
-__all__ = ['get_namespaces_for_xml_doc', 'get_attributes_of_xpaths', 'validate_xpaths_ref_to_unique_objects']
+__all__ = [
+    'get_namespaces_for_xml_doc',
+    'get_namespaces_for_xml_element',
+    'get_attributes_of_xpaths',
+    'validate_xpaths_ref_to_unique_objects',
+]
 
 
 def get_namespaces_for_xml_doc(element_tree):
@@ -22,12 +27,39 @@ def get_namespaces_for_xml_doc(element_tree):
         :obj:`dict`: dictionary that maps the id of each namespace to its URI
     """
     root = element_tree.getroot()
-    namespaces = root.nsmap
-    if None in namespaces:
-        namespaces.pop(None)
-        match = re.match(r'^{(.*?)}(.*?)$', root.tag)
-        if match:
-            namespaces[match.group(2)] = match.group(1)
+    return get_namespaces_for_xml_element(root)
+
+
+def get_namespaces_for_xml_element(element_tree):
+    """ Get the namespaces used by an XML document
+
+    Args:
+        et (:obj:`etree._ElementTree`)
+
+    Returns:
+        :obj:`dict`: dictionary that maps the id of each namespace to its URI
+    """
+    namespaces = {}
+
+    nodes_to_check = [element_tree]
+    while nodes_to_check:
+        node = nodes_to_check.pop()
+
+        node_namespaces = node.nsmap
+        if None in node_namespaces:
+            node_namespaces.pop(None)
+            match = re.match(r'^{(.*?)}(.*?)$', node.tag)
+            if match:
+                node_namespaces[match.group(2)] = match.group(1)
+
+        for prefix, uri in node_namespaces.items():
+            if prefix in namespaces and namespaces[prefix] != uri:
+                msg = 'Prefixes must be used consistently throughout the XML document. Prefix `{}` is not used consistently.'.format(prefix)
+                raise ValueError(msg)
+            namespaces[prefix] = uri
+
+        nodes_to_check.extend(node.getchildren())
+
     return namespaces
 
 
