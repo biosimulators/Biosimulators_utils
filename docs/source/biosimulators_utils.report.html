@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.8. biosimulators_utils.report package &#8212; BioSimulators utils 0.1.36 documentation</title>
+    <title>2.1.8. biosimulators_utils.report package &#8212; BioSimulators utils 0.1.37 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -160,7 +160,7 @@
 <div><ul class="simple">
 <li><p>Steady-state tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code></p></li>
 <li><p>One-step tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(2,)</span></code></p></li>
-<li><p>Uniform time course tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(number_of_points</span> <span class="pre">+</span> <span class="pre">1,)</span></code></p></li>
+<li><p>Uniform time course tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(number_of_steps</span> <span class="pre">+</span> <span class="pre">1,)</span></code></p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -179,7 +179,7 @@
 <div><ul class="simple">
 <li><p>Steady-state tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(number</span> <span class="pre">of</span> <span class="pre">data</span> <span class="pre">sets,</span> <span class="pre">1)</span></code></p></li>
 <li><p>One-step tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(number</span> <span class="pre">of</span> <span class="pre">data</span> <span class="pre">sets,</span> <span class="pre">2)</span></code></p></li>
-<li><p>Uniform time course tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(number_of_points</span> <span class="pre">+</span> <span class="pre">1)</span></code></p></li>
+<li><p>Uniform time course tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(number_of_steps</span> <span class="pre">+</span> <span class="pre">1,)</span></code></p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -246,7 +246,7 @@
 <div><ul class="simple">
 <li><p>Steady-state tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(1,)</span></code></p></li>
 <li><p>One-step tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(2,)</span></code></p></li>
-<li><p>Uniform time course tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(number_of_points</span> <span class="pre">+</span> <span class="pre">1,)</span></code></p></li>
+<li><p>Uniform time course tasks of non-spatial models: results should be arrays of shape <code class="docutils literal notranslate"><span class="pre">(number_of_steps</span> <span class="pre">+</span> <span class="pre">1,)</span></code></p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -387,6 +387,13 @@
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
+<dl class="py exception">
+<dt id="biosimulators_utils.report.warnings.CannotExportMultidimensionalTableWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.report.warnings.</code><code class="sig-name descname">CannotExportMultidimensionalTableWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/report/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.report.warnings.CannotExportMultidimensionalTableWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.warnings.BioSimulatorsWarning" title="biosimulators_utils.warnings.BioSimulatorsWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.warnings.BioSimulatorsWarning</span></code></a></p>
+<p>Warning that a multidimensional report cannot be exported (e.g., to CSV, Excel, or TSV).</p>
+</dd></dl>
+
 <dl class="py exception">
 <dt id="biosimulators_utils.report.warnings.ExtraDataWarning">
 <em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.report.warnings.</code><code class="sig-name descname">ExtraDataWarning</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/report/warnings.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.report.warnings.ExtraDataWarning" title="Permalink to this definition">¶</a></dt>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.9. biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.36 documentation</title>
+    <title>2.1.9. biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.37 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -238,13 +238,13 @@
 <dl class="py method">
 <dt id="biosimulators_utils.sedml.data_model.AddElementModelChange.is_equal">
 <code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.AddElementModelChange.is_equal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine if model attribute changes are equal</p>
+<dd><p>Determine if model changes are equal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.sedml.data_model.AddElementModelChange" title="biosimulators_utils.sedml.data_model.AddElementModelChange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AddElementModelChange</span></code></a>) – another content item</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two model attribute changes are equal</p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two model changes are equal</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
@@ -457,13 +457,13 @@
 <dl class="py method">
 <dt id="biosimulators_utils.sedml.data_model.ComputeModelChange.is_equal">
 <code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.ComputeModelChange.is_equal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine if model attribute changes are equal</p>
+<dd><p>Determine if model changes are equal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.sedml.data_model.ComputeModelChange" title="biosimulators_utils.sedml.data_model.ComputeModelChange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ComputeModelChange</span></code></a>) – another content item</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two model attribute changes are equal</p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two model changes are equal</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
@@ -756,6 +756,99 @@
 <dl class="py method">
 <dt id="biosimulators_utils.sedml.data_model.DataSet.to_tuple">
 <code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.DataSet.to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a tuple representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tuple representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.sedml.data_model.FunctionalRange">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">FunctionalRange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">range</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">variables</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parameters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">math</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.FunctionalRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.data_model.Range" title="biosimulators_utils.sedml.data_model.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.data_model.Range</span></code></a></p>
+<p>A functional range</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.FunctionalRange.id">
+<code class="sig-name descname">id</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.FunctionalRange.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.FunctionalRange.range">
+<code class="sig-name descname">range</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.FunctionalRange.range" title="Permalink to this definition">¶</a></dt>
+<dd><p>range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.sedml.data_model.Range" title="biosimulators_utils.sedml.data_model.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.FunctionalRange.variables">
+<code class="sig-name descname">variables</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.FunctionalRange.variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#biosimulators_utils.sedml.data_model.Variable" title="biosimulators_utils.sedml.data_model.Variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.FunctionalRange.parameters">
+<code class="sig-name descname">parameters</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.FunctionalRange.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#biosimulators_utils.sedml.data_model.Parameter" title="biosimulators_utils.sedml.data_model.Parameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameter</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.FunctionalRange.math">
+<code class="sig-name descname">math</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.FunctionalRange.math" title="Permalink to this definition">¶</a></dt>
+<dd><p>mathematical expression</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.FunctionalRange.is_equal">
+<code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.FunctionalRange.is_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if ranges are equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.sedml.data_model.FunctionalRange" title="biosimulators_utils.sedml.data_model.FunctionalRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FunctionalRange</span></code></a>) – another content item</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two ranges are equal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.FunctionalRange.to_tuple">
+<code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.FunctionalRange.to_tuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a tuple representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1359,6 +1452,55 @@
 </dd></dl>
 
 <dl class="py class">
+<dt id="biosimulators_utils.sedml.data_model.Range">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">Range</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.Range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A range</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.Range.id">
+<code class="sig-name descname">id</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.Range.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.Range.is_equal">
+<code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.Range.is_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if ranges are equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.sedml.data_model.Range" title="biosimulators_utils.sedml.data_model.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a>) – another content item</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two ranges are equal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.Range.to_tuple">
+<em class="property">abstract </em><code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.Range.to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a tuple representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tuple representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="biosimulators_utils.sedml.data_model.RemoveElementModelChange">
 <em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">RemoveElementModelChange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RemoveElementModelChange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.data_model.ModelChange" title="biosimulators_utils.sedml.data_model.ModelChange"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.data_model.ModelChange</span></code></a></p>
@@ -1377,6 +1519,121 @@
 <dl class="py method">
 <dt id="biosimulators_utils.sedml.data_model.RemoveElementModelChange.to_tuple">
 <code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RemoveElementModelChange.to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a tuple representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tuple representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.sedml.data_model.RepeatedTask">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">RepeatedTask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">range</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">reset_model_for_each_iteration</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">changes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sub_tasks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ranges</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RepeatedTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.data_model.AbstractTask" title="biosimulators_utils.sedml.data_model.AbstractTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.data_model.AbstractTask</span></code></a></p>
+<p>A repeated task</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.RepeatedTask.id">
+<code class="sig-name descname">id</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RepeatedTask.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.RepeatedTask.name">
+<code class="sig-name descname">name</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RepeatedTask.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.RepeatedTask.range">
+<code class="sig-name descname">range</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RepeatedTask.range" title="Permalink to this definition">¶</a></dt>
+<dd><p>range of the iterations of the repeated task</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.sedml.data_model.Range" title="biosimulators_utils.sedml.data_model.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.RepeatedTask.reset_model_for_each_iteration">
+<code class="sig-name descname">reset_model_for_each_iteration</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RepeatedTask.reset_model_for_each_iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>whether to reset the model for each iteration of the repeated task</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.RepeatedTask.changes">
+<code class="sig-name descname">changes</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RepeatedTask.changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>set value model changes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange" title="biosimulators_utils.sedml.data_model.SetValueComputeModelChange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SetValueComputeModelChange</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.RepeatedTask.sub_tasks">
+<code class="sig-name descname">sub_tasks</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RepeatedTask.sub_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>sub-tasks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#biosimulators_utils.sedml.data_model.SubTask" title="biosimulators_utils.sedml.data_model.SubTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SubTask</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.RepeatedTask.ranges">
+<code class="sig-name descname">ranges</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RepeatedTask.ranges" title="Permalink to this definition">¶</a></dt>
+<dd><p>ranges</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#biosimulators_utils.sedml.data_model.Range" title="biosimulators_utils.sedml.data_model.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.RepeatedTask.is_equal">
+<code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RepeatedTask.is_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if repeated tasks are equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.sedml.data_model.RepeatedTask" title="biosimulators_utils.sedml.data_model.RepeatedTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RepeatedTask</span></code></a>) – another content item</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two repeated tasks are equal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.RepeatedTask.to_tuple">
+<code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.RepeatedTask.to_tuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a tuple representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1420,13 +1677,13 @@
 <dl class="py method">
 <dt id="biosimulators_utils.sedml.data_model.ReplaceElementModelChange.is_equal">
 <code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.ReplaceElementModelChange.is_equal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine if model attribute changes are equal</p>
+<dd><p>Determine if model changes are equal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.sedml.data_model.ReplaceElementModelChange" title="biosimulators_utils.sedml.data_model.ReplaceElementModelChange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReplaceElementModelChange</span></code></a>) – another content item</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two model attribute changes are equal</p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two model changes are equal</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
@@ -1648,6 +1905,121 @@
 </dd></dl>
 
 <dl class="py class">
+<dt id="biosimulators_utils.sedml.data_model.SetValueComputeModelChange">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">SetValueComputeModelChange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">variables</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parameters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">math</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">range</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">symbol</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.data_model.ComputeModelChange" title="biosimulators_utils.sedml.data_model.ComputeModelChange"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.data_model.ComputeModelChange</span></code></a></p>
+<p>A change that sets the value of an attribute of a model within an iteration of a repeated task</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.SetValueComputeModelChange.target">
+<code class="sig-name descname">target</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange.target" title="Permalink to this definition">¶</a></dt>
+<dd><p>path to the element to replace</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.SetValueComputeModelChange.variables">
+<code class="sig-name descname">variables</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange.variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#biosimulators_utils.sedml.data_model.Variable" title="biosimulators_utils.sedml.data_model.Variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.SetValueComputeModelChange.parameters">
+<code class="sig-name descname">parameters</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#biosimulators_utils.sedml.data_model.Parameter" title="biosimulators_utils.sedml.data_model.Parameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameter</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.SetValueComputeModelChange.math">
+<code class="sig-name descname">math</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange.math" title="Permalink to this definition">¶</a></dt>
+<dd><p>mathematical expression</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.SetValueComputeModelChange.model">
+<code class="sig-name descname">model</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.sedml.data_model.Model" title="biosimulators_utils.sedml.data_model.Model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Model</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.SetValueComputeModelChange.range">
+<code class="sig-name descname">range</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange.range" title="Permalink to this definition">¶</a></dt>
+<dd><p>range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.sedml.data_model.Range" title="biosimulators_utils.sedml.data_model.Range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.SetValueComputeModelChange.symbol">
+<code class="sig-name descname">symbol</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange.symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>symbol</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.SetValueComputeModelChange.is_equal">
+<code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange.is_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if model changes are equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange" title="biosimulators_utils.sedml.data_model.SetValueComputeModelChange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SetValueComputeModelChange</span></code></a>) – another content item</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two model changes are equal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.SetValueComputeModelChange.to_tuple">
+<code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SetValueComputeModelChange.to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a tuple representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tuple representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="biosimulators_utils.sedml.data_model.Simulation">
 <em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">Simulation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">algorithm</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.Simulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
@@ -1759,6 +2131,66 @@
 <dl class="py method">
 <dt id="biosimulators_utils.sedml.data_model.SteadyStateSimulation.to_tuple">
 <code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SteadyStateSimulation.to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a tuple representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tuple representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="biosimulators_utils.sedml.data_model.SubTask">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">SubTask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SubTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A subtask of a repeated task</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.SubTask.task">
+<code class="sig-name descname">task</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SubTask.task" title="Permalink to this definition">¶</a></dt>
+<dd><p>task</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.sedml.data_model.AbstractTask" title="biosimulators_utils.sedml.data_model.AbstractTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AbstractTask</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.SubTask.order">
+<code class="sig-name descname">order</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SubTask.order" title="Permalink to this definition">¶</a></dt>
+<dd><p>order in which the subtask should be executed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.SubTask.is_equal">
+<code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SubTask.is_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if repeated tasks are equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.sedml.data_model.RepeatedTask" title="biosimulators_utils.sedml.data_model.RepeatedTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RepeatedTask</span></code></a>) – another content item</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two repeated tasks are equal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.SubTask.to_tuple">
+<code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.SubTask.to_tuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a tuple representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1993,8 +2425,106 @@
 </dd></dl>
 
 <dl class="py class">
+<dt id="biosimulators_utils.sedml.data_model.UniformRange">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">UniformRange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">end</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">number_of_steps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">number_of_points</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.data_model.Range" title="biosimulators_utils.sedml.data_model.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.data_model.Range</span></code></a></p>
+<p>A uniform range</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.UniformRange.id">
+<code class="sig-name descname">id</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformRange.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.UniformRange.start">
+<code class="sig-name descname">start</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformRange.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>start value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.UniformRange.end">
+<code class="sig-name descname">end</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformRange.end" title="Permalink to this definition">¶</a></dt>
+<dd><p>end value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.UniformRange.number_of_steps">
+<code class="sig-name descname">number_of_steps</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformRange.number_of_steps" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of steps</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.UniformRange.type">
+<code class="sig-name descname">type</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformRange.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UniformRangeType</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.UniformRange.is_equal">
+<code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformRange.is_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if ranges are equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.sedml.data_model.UniformRange" title="biosimulators_utils.sedml.data_model.UniformRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UniformRange</span></code></a>) – another content item</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two ranges are equal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.UniformRange.number_of_points">
+<em class="property">property </em><code class="sig-name descname">number_of_points</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformRange.number_of_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.UniformRange.to_tuple">
+<code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformRange.to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a tuple representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tuple representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="biosimulators_utils.sedml.data_model.UniformTimeCourseSimulation">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">UniformTimeCourseSimulation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">algorithm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">initial_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_start_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_end_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">number_of_points</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformTimeCourseSimulation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">UniformTimeCourseSimulation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">algorithm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">initial_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_start_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_end_time</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">number_of_steps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">number_of_points</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformTimeCourseSimulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.data_model.Simulation" title="biosimulators_utils.sedml.data_model.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.data_model.Simulation</span></code></a></p>
 <p>A uniform time course simulation</p>
 <dl class="py attribute">
@@ -2064,9 +2594,9 @@
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="biosimulators_utils.sedml.data_model.UniformTimeCourseSimulation.number_of_points">
-<code class="sig-name descname">number_of_points</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformTimeCourseSimulation.number_of_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>number of time points</p>
+<dt id="biosimulators_utils.sedml.data_model.UniformTimeCourseSimulation.number_of_steps">
+<code class="sig-name descname">number_of_steps</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformTimeCourseSimulation.number_of_steps" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of time steps</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></p>
@@ -2090,6 +2620,11 @@
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.UniformTimeCourseSimulation.number_of_points">
+<em class="property">property </em><code class="sig-name descname">number_of_points</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.UniformTimeCourseSimulation.number_of_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="biosimulators_utils.sedml.data_model.UniformTimeCourseSimulation.to_tuple">
@@ -2211,6 +2746,66 @@
 
 </dd></dl>
 
+<dl class="py class">
+<dt id="biosimulators_utils.sedml.data_model.VectorRange">
+<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.sedml.data_model.</code><code class="sig-name descname">VectorRange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">values</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.VectorRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.sedml.data_model.Range" title="biosimulators_utils.sedml.data_model.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.sedml.data_model.Range</span></code></a></p>
+<p>A vector range</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.VectorRange.id">
+<code class="sig-name descname">id</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.VectorRange.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.sedml.data_model.VectorRange.values">
+<code class="sig-name descname">values</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.VectorRange.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.VectorRange.is_equal">
+<code class="sig-name descname">is_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.VectorRange.is_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if ranges are equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.sedml.data_model.VectorRange" title="biosimulators_utils.sedml.data_model.VectorRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VectorRange</span></code></a>) – another content item</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two ranges are equal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.sedml.data_model.VectorRange.to_tuple">
+<code class="sig-name descname">to_tuple</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.VectorRange.to_tuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a tuple representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tuple representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-biosimulators_utils.sedml.exceptions">
 <span id="biosimulators-utils-sedml-exceptions-module"></span><h2><span class="section-number">2.1.9.3. </span>biosimulators_utils.sedml.exceptions module<a class="headerlink" href="#module-biosimulators_utils.sedml.exceptions" title="Permalink to this headline">¶</a></h2>
@@ -2254,6 +2849,148 @@
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.exec.exec_plot_2d">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.exec.</code><code class="sig-name descname">exec_plot_2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">plot</span></em>, <em class="sig-param"><span class="n">variable_results</span></em>, <em class="sig-param"><span class="n">base_out_path</span></em>, <em class="sig-param"><span class="n">rel_out_path</span></em>, <em class="sig-param"><span class="n">formats</span></em>, <em class="sig-param"><span class="n">task</span></em>, <em class="sig-param"><span class="n">log</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.exec.exec_plot_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a 2D plot, generating the curves which are available</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plot</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot2D</span></code>) – plot</p></li>
+<li><p><strong>variable_results</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableResults</span></code>) – result of each data generator</p></li>
+<li><p><strong>base_out_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – base path to store the plot. Complete path is
+<code class="docutils literal notranslate"><span class="pre">{base_out_path}/{rel_out_path}/{plot.id}.csv</span></code></p></li>
+<li><p><strong>rel_out_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – path relative to <code class="xref py py-obj docutils literal notranslate"><span class="pre">base_out_path</span></code> to store the plot</p></li>
+<li><p><strong>formats</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotFormat</span></code>, optional) – plot format (e.g., pdf)</p></li>
+<li><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>) – task</p></li>
+<li><p><strong>log</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ReportLog</span></code>, optional) – log of plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code>: status</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>: exception for failure</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>: whether <code class="xref py py-obj docutils literal notranslate"><span class="pre">task</span></code> contributes a variable to the plot</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.exec.exec_plot_3d">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.exec.</code><code class="sig-name descname">exec_plot_3d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">plot</span></em>, <em class="sig-param"><span class="n">variable_results</span></em>, <em class="sig-param"><span class="n">base_out_path</span></em>, <em class="sig-param"><span class="n">rel_out_path</span></em>, <em class="sig-param"><span class="n">formats</span></em>, <em class="sig-param"><span class="n">task</span></em>, <em class="sig-param"><span class="n">log</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.exec.exec_plot_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a 3D plot, generating the surfaces which are available</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plot</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot3D</span></code>) – plot</p></li>
+<li><p><strong>variable_results</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableResults</span></code>) – result of each data generator</p></li>
+<li><p><strong>base_out_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – base path to store the plot. Complete path is
+<code class="docutils literal notranslate"><span class="pre">{base_out_path}/{rel_out_path}/{plot.id}.pdf</span></code></p></li>
+<li><p><strong>rel_out_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – path relative to <code class="xref py py-obj docutils literal notranslate"><span class="pre">base_out_path</span></code> to store the plot</p></li>
+<li><p><strong>formats</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotFormat</span></code>, optional) – plot format (e.g., pdf)</p></li>
+<li><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>) – task</p></li>
+<li><p><strong>log</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ReportLog</span></code>, optional) – log of plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code>: status</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>: exception for failure</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>: whether <code class="xref py py-obj docutils literal notranslate"><span class="pre">task</span></code> contributes a variable to the plot</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.exec.exec_repeated_task">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.exec.</code><code class="sig-name descname">exec_repeated_task</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task</span></em>, <em class="sig-param"><span class="n">task_executer</span></em>, <em class="sig-param"><span class="n">task_vars</span></em>, <em class="sig-param"><span class="n">doc</span></em>, <em class="sig-param"><span class="n">apply_xml_model_changes</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">model_etrees</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pretty_print_modified_xml_models</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.exec.exec_repeated_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a repeated SED task</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">RepeatedTask</span></code>) – task</p></li>
+<li><p><strong>task_executer</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.FunctionType</span></code>) – <p>function to execute each task in the SED-ML file.
+The function must implement the following interface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">exec_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Execute a simulation and return its results</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">       task (:obj:`Task`): task</span>
+<span class="sd">       variables (:obj:`list` of :obj:`Variable`): variables that should be recorded</span>
+<span class="sd">       log (:obj:`TaskLog`, optional): log for the task</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">       :obj:`VariableResults`: results of variables</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>task_vars</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code>) – variables that task must record</p></li>
+<li><p><strong>doc</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocument</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – SED document or a path to SED-ML file which defines a SED document</p></li>
+<li><p><strong>apply_xml_model_changes</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, apply any model changes specified in the SED-ML file before
+calling <code class="xref py py-obj docutils literal notranslate"><span class="pre">task_executer</span></code>.</p></li>
+<li><p><strong>model_etrees</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <code class="xref py py-obj docutils literal notranslate"><span class="pre">etree._Element</span></code>) – </p></li>
+<li><p><strong>pretty_print_modified_xml_models</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, pretty print modified XML models</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>results of the variables</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableResults</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.exec.exec_report">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.exec.</code><code class="sig-name descname">exec_report</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">report</span></em>, <em class="sig-param"><span class="n">variable_results</span></em>, <em class="sig-param"><span class="n">base_out_path</span></em>, <em class="sig-param"><span class="n">rel_out_path</span></em>, <em class="sig-param"><span class="n">formats</span></em>, <em class="sig-param"><span class="n">task</span></em>, <em class="sig-param"><span class="n">log</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.exec.exec_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a report, generating the data sets which are available</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>report</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Report</span></code>) – report</p></li>
+<li><p><strong>variable_results</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableResults</span></code>) – result of each data generator</p></li>
+<li><p><strong>base_out_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – <p>path to store the outputs</p>
+<ul>
+<li><p>CSV: directory in which to save outputs to files
+<code class="docutils literal notranslate"><span class="pre">{base_out_path}/{rel_out_path}/{report.id}.csv</span></code></p></li>
+<li><p>HDF5: directory in which to save a single HDF5 file (<code class="docutils literal notranslate"><span class="pre">{base_out_path}/reports.h5</span></code>),
+with reports at keys <code class="docutils literal notranslate"><span class="pre">{rel_out_path}/{report.id}</span></code> within the HDF5 file</p></li>
+</ul>
+</p></li>
+<li><p><strong>rel_out_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – path relative to <code class="xref py py-obj docutils literal notranslate"><span class="pre">base_out_path</span></code> to store the outputs</p></li>
+<li><p><strong>formats</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">ReportFormat</span></code>, optional) – report format (e.g., csv or h5)</p></li>
+<li><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>) – task</p></li>
+<li><p><strong>log</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ReportLog</span></code>, optional) – log of report</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataSetResults</span></code>: report</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Status</span></code>: status</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>: exception for failure</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>: whether <code class="xref py py-obj docutils literal notranslate"><span class="pre">task</span></code> contribute a variable to the report</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt id="biosimulators_utils.sedml.exec.exec_sed_doc">
 <code class="sig-prename descclassname">biosimulators_utils.sedml.exec.</code><code class="sig-name descname">exec_sed_doc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task_executer</span></em>, <em class="sig-param"><span class="n">doc</span></em>, <em class="sig-param"><span class="n">working_dir</span></em>, <em class="sig-param"><span class="n">base_out_path</span></em>, <em class="sig-param"><span class="n">rel_out_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">apply_xml_model_changes</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">report_formats</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">plot_formats</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">log</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">indent</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">pretty_print_modified_xml_models</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.exec.exec_sed_doc" title="Permalink to this definition">¶</a></dt>
@@ -2307,6 +3044,48 @@ calling <code class="xref py py-obj docutils literal notranslate"><span class="p
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.exec.exec_task">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.exec.</code><code class="sig-name descname">exec_task</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task</span></em>, <em class="sig-param"><span class="n">task_executer</span></em>, <em class="sig-param"><span class="n">task_vars</span></em>, <em class="sig-param"><span class="n">doc</span></em>, <em class="sig-param"><span class="n">log</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/exec.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.exec.exec_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a basic SED task</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>) – task</p></li>
+<li><p><strong>task_executer</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.FunctionType</span></code>) – <p>function to execute each task in the SED-ML file.
+The function must implement the following interface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">exec_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Execute a simulation and return its results</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        task (:obj:`Task`): task</span>
+<span class="sd">        variables (:obj:`list` of :obj:`Variable`): variables that should be recorded</span>
+<span class="sd">        log (:obj:`TaskLog`, optional): log for the task</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        :obj:`tuple`:</span>
+
+<span class="sd">            * :obj:`VariableResults`: results of variables</span>
+<span class="sd">            * :obj:`TaskLog`: log</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>task_vars</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code>) – variables that task must record</p></li>
+<li><p><strong>doc</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocument</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – SED document or a path to SED-ML file which defines a SED document</p></li>
+<li><p><strong>log</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskLog</span></code>, optional) – log</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>results of the variables</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">VariableResults</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2440,6 +3219,21 @@ calling <code class="xref py py-obj docutils literal notranslate"><span class="p
 </dd>
 </dl>
 <dl class="py function">
+<dt id="biosimulators_utils.sedml.utils.add_namespaces_to_xml_node">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">add_namespaces_to_xml_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em>, <em class="sig-param"><span class="n">namespaces</span></em>, <em class="sig-param"><span class="n">include_default</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.add_namespaces_to_xml_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add namespaces to an XML node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">libsedml.XMLNode</span></code>) – XML node</p></li>
+<li><p><strong>namespaces</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">libsedml.XMLNamespaces</span></code>) – namespaces for the parent document</p></li>
+<li><p><strong>include_default</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – include the default (SED-ML) namespace</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="biosimulators_utils.sedml.utils.append_all_nested_children_to_doc">
 <code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">append_all_nested_children_to_doc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.append_all_nested_children_to_doc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Append all nested children to a SED document</p>
@@ -2452,7 +3246,7 @@ calling <code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py function">
 <dt id="biosimulators_utils.sedml.utils.apply_changes_to_xml_model">
-<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">apply_changes_to_xml_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">model_etree</span></em>, <em class="sig-param"><span class="n">sed_doc</span></em>, <em class="sig-param"><span class="n">working_dir</span></em>, <em class="sig-param"><span class="n">variable_values</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">validate_unique_xml_targets</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.apply_changes_to_xml_model" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">apply_changes_to_xml_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">model_etree</span></em>, <em class="sig-param"><span class="n">sed_doc</span></em>, <em class="sig-param"><span class="n">working_dir</span></em>, <em class="sig-param"><span class="n">variable_values</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">range_values</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">validate_unique_xml_targets</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.apply_changes_to_xml_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Modify an XML-encoded model according to a model change</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2463,6 +3257,8 @@ calling <code class="xref py py-obj docutils literal notranslate"><span class="p
 <li><p><strong>working_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – working directory of the SED document (path relative to which models are located)</p></li>
 <li><p><strong>variable_values</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – dictionary which contains the value of each variable of each
 compute model change</p></li>
+<li><p><strong>range_values</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – dictionary which contains the value of each range of each
+set value compute model change</p></li>
 <li><p><strong>validate_unique_xml_targets</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – whether to validate the XML targets match
 uniue objects</p></li>
 </ul>
@@ -2472,7 +3268,7 @@ uniue objects</p></li>
 
 <dl class="py function">
 <dt id="biosimulators_utils.sedml.utils.calc_compute_model_change_new_value">
-<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">calc_compute_model_change_new_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">change</span></em>, <em class="sig-param"><span class="n">variable_values</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.calc_compute_model_change_new_value" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">calc_compute_model_change_new_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">change</span></em>, <em class="sig-param"><span class="n">variable_values</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">range_values</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.calc_compute_model_change_new_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the new value of a compute model change</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2480,6 +3276,8 @@ uniue objects</p></li>
 <li><p><strong>change</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ComputeModelChange</span></code>) – change</p></li>
 <li><p><strong>variable_values</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – dictionary which contains the value of each variable of each
 compute model change</p></li>
+<li><p><strong>range_values</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – dictionary which contains the value of each range of each
+set value compute model change</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2600,6 +3398,95 @@ compute model change</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="biosimulators_utils.sedml.utils.get_first_last_models_executed_by_task">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">get_first_last_models_executed_by_task</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.get_first_last_models_executed_by_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the models executed by a task in the order they are executed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>) – task</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>models</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Model</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.utils.get_models_referenced_by_model_change">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">get_models_referenced_by_model_change</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">change</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.get_models_referenced_by_model_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the models referenced from a model change</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>change</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelChange</span></code>) – model change</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>models</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Model</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.utils.get_models_referenced_by_range">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">get_models_referenced_by_range</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">range</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.get_models_referenced_by_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the models referenced by a range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>range</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code>) – range</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>models</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Model</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.utils.get_models_referenced_by_task">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">get_models_referenced_by_task</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.get_models_referenced_by_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the models referenced from a task</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>) – task</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>models</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Model</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.utils.get_range_len">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">get_range_len</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">range</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.get_range_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the length of a range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>range</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code>) – range</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>length of the range</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – if range isn’t an instance of <code class="xref py py-obj docutils literal notranslate"><span class="pre">UniformRange</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">VectorRange</span></code>,
+    or <code class="xref py py-obj docutils literal notranslate"><span class="pre">FunctionalRange</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="biosimulators_utils.sedml.utils.get_value_of_variable_model_xml_targets">
 <code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">get_value_of_variable_model_xml_targets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variable</span></em>, <em class="sig-param"><span class="n">model_etrees</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.get_value_of_variable_model_xml_targets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value of a variable of a model</p>
@@ -2643,6 +3530,26 @@ trees of their sources</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.utils.get_variables_for_task">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">get_variables_for_task</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em>, <em class="sig-param"><span class="n">task</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.get_variables_for_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the variables that a task must record</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>doc</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocument</span></code>) – SED document</p></li>
+<li><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>) – task</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>variables that task must record</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2755,6 +3662,31 @@ a remote source of modified</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.utils.resolve_range">
+<code class="sig-prename descclassname">biosimulators_utils.sedml.utils.</code><code class="sig-name descname">resolve_range</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">range</span></em>, <em class="sig-param"><span class="n">model_etrees</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.resolve_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolve the values of a range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>range</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Range</span></code>) – range</p></li>
+<li><p><strong>model_etrees</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <code class="xref py py-obj docutils literal notranslate"><span class="pre">etree._Element</span></code>) – map from the ids of models to element
+trees of their sources; required to resolve variables of functional ranges</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>values of the range</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – if range isn’t an instance of <code class="xref py py-obj docutils literal notranslate"><span class="pre">UniformRange</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">VectorRange</span></code>,
+    or <code class="xref py py-obj docutils literal notranslate"><span class="pre">FunctionalRange</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>

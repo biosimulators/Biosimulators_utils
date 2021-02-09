@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>1. Installation instructions &#8212; BioSimulators utils 0.1.36 documentation</title>
+    <title>1. Installation instructions &#8212; BioSimulators utils 0.1.37 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -49,8 +49,11 @@
 <h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">1. Installation instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installing-the-latest-release-from-pypi">1.1. Installing the latest release from PyPI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installing-the-latest-revision-from-github">1.2. Installing the latest revision from GitHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">1.1. Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-requirements">1.2. Optional requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-the-latest-release-from-pypi">1.3. Installing the latest release from PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-the-latest-revision-from-github">1.4. Installing the latest revision from GitHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-the-optional-features">1.5. Installing the optional features</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="source/biosimulators_utils.html">2. API documentation</a></li>
@@ -106,17 +109,41 @@
             
   <div class="section" id="installation-instructions">
 <h1><span class="section-number">1. </span>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="requirements">
+<h2><span class="section-number">1.1. </span>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Python &gt;= 3.7</p></li>
+<li><p>pip</p></li>
+</ul>
+</div>
+<div class="section" id="optional-requirements">
+<h2><span class="section-number">1.2. </span>Optional requirements<a class="headerlink" href="#optional-requirements" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Docker: required to execute containerized simulation tools</p></li>
+</ul>
+</div>
 <div class="section" id="installing-the-latest-release-from-pypi">
-<h2><span class="section-number">1.1. </span>Installing the latest release from PyPI<a class="headerlink" href="#installing-the-latest-release-from-pypi" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">1.3. </span>Installing the latest release from PyPI<a class="headerlink" href="#installing-the-latest-release-from-pypi" title="Permalink to this headline">¶</a></h2>
 <p>After installing <a class="reference external" href="https://www.python.org/downloads/">Python</a> (&gt;= 3.7) and <a class="reference external" href="https://pip.pypa.io/">pip</a>, run the following command to install BioSimulators utils:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pip install biosimulators-utils
 </pre></div>
 </div>
 </div>
 <div class="section" id="installing-the-latest-revision-from-github">
-<h2><span class="section-number">1.2. </span>Installing the latest revision from GitHub<a class="headerlink" href="#installing-the-latest-revision-from-github" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">1.4. </span>Installing the latest revision from GitHub<a class="headerlink" href="#installing-the-latest-revision-from-github" title="Permalink to this headline">¶</a></h2>
 <p>After installing <a class="reference external" href="https://www.python.org/downloads/">Python</a> (&gt;= 3.7) and <a class="reference external" href="https://pip.pypa.io/">pip</a>, run the following command to install BioSimulators utils:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pip install git+https://github.com/biosimulators/Biosimulators_utils#egg=biosimulators_utils
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-the-optional-features">
+<h2><span class="section-number">1.5. </span>Installing the optional features<a class="headerlink" href="#installing-the-optional-features" title="Permalink to this headline">¶</a></h2>
+<p>To use BioSimulators utils to execute containerized simulation tools, install BioSimulators utils with the <cite>containers</cite> option:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pip install biosimulators-utils[containers]
+</pre></div>
+</div>
+<p>To use BioSimulators utils to log the standard output and error produced by simulation tools, install BioSimulators utils with the <cite>logging</cite> option:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pip install biosimulators-utils[logging]
 </pre></div>
 </div>
 </div>
