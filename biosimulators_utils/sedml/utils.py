@@ -435,10 +435,12 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
         elif isinstance(change, ComputeModelChange):
             # get the values of model variables referenced by compute model changes
             if variable_values is None:
-                variable_values = get_values_of_variable_model_xml_targets_of_model_change(change, sed_doc, model_etrees, working_dir)
+                iter_variable_values = get_values_of_variable_model_xml_targets_of_model_change(change, sed_doc, model_etrees, working_dir)
+            else:
+                iter_variable_values = variable_values
 
             # calculate new value
-            new_value = calc_compute_model_change_new_value(change, variable_values=variable_values, range_values=range_values)
+            new_value = calc_compute_model_change_new_value(change, variable_values=iter_variable_values, range_values=range_values)
 
             # get object to change
             obj_xpath, sep, attr = change.target.rpartition('/@')
