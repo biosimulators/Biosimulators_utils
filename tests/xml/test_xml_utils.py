@@ -56,6 +56,10 @@ class XmlUtilsTestCase(unittest.TestCase):
             utils.get_namespaces_for_xml_doc(et)
 
     def test_get_attributes_of_xpaths(self):
+        namespaces = {
+            'sbml': 'http://www.sbml.org/sbml/level2/version4',
+        }
+
         ids = utils.get_attributes_of_xpaths(self.XML_FILENAME, [
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='BE']",
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='BUD']",
@@ -77,7 +81,7 @@ class XmlUtilsTestCase(unittest.TestCase):
             "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='not_exist']",
             "/invalid:target",
             "--invalid--",
-        ], 'id')
+        ], namespaces, 'id')
 
         expected_ids = {
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='BE']": ['BE'],
@@ -105,17 +109,22 @@ class XmlUtilsTestCase(unittest.TestCase):
 
         ids = utils.get_attributes_of_xpaths(self.XML_FILENAME, [
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
-        ], 'id')
+        ], namespaces, 'id')
         self.assertEqual(len(ids["/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species"]), 19)
 
     def test_get_attributes_of_xpaths_in_namespaces(self):
+        namespaces = {
+            'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+            'fbc': 'http://www.sbml.org/sbml/level3/version1/fbc/version2',
+        }
+
         ids = utils.get_attributes_of_xpaths(self.MULTIPLE_NAMESPACES_XML_FILENAME, [
             "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='obj']",
             "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='inactive_obj']",
             "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']",
             "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']",
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='M_13dpg_c']",
-        ], 'id')
+        ], namespaces, 'id')
         expected_ids = {
             "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='obj']": [None],
             "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='inactive_obj']": [],
@@ -130,7 +139,7 @@ class XmlUtilsTestCase(unittest.TestCase):
             "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']",
             "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']",
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='M_13dpg_c']",
-        ], {'namespace': 'fbc', 'name': 'id'})
+        ], namespaces, {'namespace': 'fbc', 'name': 'id'})
         expected_ids = {
             "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='obj']": ['obj'],
             "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='inactive_obj']": [],
@@ -140,6 +149,8 @@ class XmlUtilsTestCase(unittest.TestCase):
         self.assertEqual(ids, expected_ids)
 
     def test_validate_xpaths_ref_to_unique_objects(self):
+        namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
+
         utils.validate_xpaths_ref_to_unique_objects(self.XML_FILENAME, [
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='BE']",
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='PSwe1M']",
@@ -148,14 +159,16 @@ class XmlUtilsTestCase(unittest.TestCase):
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Clg']",
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']",
             "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='BUD']",
-        ], 'id')
+        ],
+            namespaces,
+            'id')
 
         with self.assertRaises(ValueError):
             utils.validate_xpaths_ref_to_unique_objects(self.XML_FILENAME, [
                 "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='not_exist']"
-            ], 'id')
+            ], namespaces, 'id')
 
         with self.assertRaises(ValueError):
             utils.validate_xpaths_ref_to_unique_objects(self.XML_FILENAME, [
                 '/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species'
-            ], 'id')
+            ], namespaces, 'id')

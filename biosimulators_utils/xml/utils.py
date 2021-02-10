@@ -74,12 +74,13 @@ def get_namespaces_for_xml_element(element_tree):
     return namespaces
 
 
-def get_attributes_of_xpaths(filename, x_paths, attr='id'):
-    """ Determine the number of objects that match each XPath in an XML file.
+def get_attributes_of_xpaths(filename, x_paths, namespaces, attr='id'):
+    """ Determine the values of the attributes of the objects that match each XPATH
 
     Args:
         filename (:obj:`str`): path to XML file
         x_paths (:obj:`list` of `str`): XPaths
+        namespaces (:obj:`dict`): dictionary that maps the prefixes of namespaces to their URIs
         attr (:obj:`str` or :obj:`dict`, optional): attribute to get values of
 
     Returns:
@@ -90,37 +91,30 @@ def get_attributes_of_xpaths(filename, x_paths, attr='id'):
     etree = lxml.etree.parse(filename)
 
     # get namespaces
-    root = etree.getroot()
-    namespaces = root.nsmap
-    if None in namespaces:
-        namespaces.pop(None)
-        match = re.match(r'^{(.*?)}(.*?)$', root.tag)
-        if match:
-            namespaces[match.group(2)] = match.group(1)
-
     if isinstance(attr, dict):
         attr = '{{{}}}{}'.format(namespaces[attr['namespace']], attr['name'])
 
-    # determine number of objects that match each XPath
-    x_path_counts = {}
+    # determine the values of the attributes of the objects that match each XPATH
+    x_path_attrs = {}
     for x_path in x_paths:
         try:
             objects = etree.xpath(x_path, namespaces=namespaces)
 
-            x_path_counts[x_path] = [obj.attrib.get(attr, None) for obj in objects]
+            x_path_attrs[x_path] = [obj.attrib.get(attr, None) for obj in objects]
         except Exception:
-            x_path_counts[x_path] = []
+            x_path_attrs[x_path] = []
 
-    # return number of objects that match each XPath
-    return x_path_counts
+    # return the values of the attributes of the objects that match each XPATH
+    return x_path_attrs
 
 
-def validate_xpaths_ref_to_unique_objects(filename, x_paths, attr='id'):
+def validate_xpaths_ref_to_unique_objects(filename, x_paths, namespaces, attr='id'):
     """ Validate that each of a list of XPaths matches a single object in an XML file.
 
     Args:
         filename (:obj:`str`): path to XML file
-        x_paths (:obj:`list` of `str`): XPaths
+        x_paths (:obj:`list` of `str`): XPATHs
+        namespaces (:obj:`dict`): dictionary that maps the prefixes of namespaces to their URIs
         attr (:obj:`str` or :obj:`dict`, optional): attribute to get values of
 
     Returns:
@@ -130,7 +124,7 @@ def validate_xpaths_ref_to_unique_objects(filename, x_paths, attr='id'):
     Raises:
         :obj:`ValueError`: if one or more XPaths matches 0 or multiple objects
     """
-    x_path_attr_vals = get_attributes_of_xpaths(filename, x_paths, attr=attr)
+    x_path_attr_vals = get_attributes_of_xpaths(filename, x_paths, namespaces, attr=attr)
 
     errors = []
 

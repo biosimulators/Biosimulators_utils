@@ -728,28 +728,40 @@ class ValidationTestCase(unittest.TestCase):
             self._validate_task(task, variables)
 
     def test_validate_variable_xpaths(self):
+        namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
+
         model_source = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.xml')
 
         variables = [
-            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='BE']"),
-            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='PSwe1M']"),
-            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Swe1M']"),
-            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Swe1']"),
-            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Clg']"),
-            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']"),
-            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='BUD']"),
-            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']/@reducedCosts"),
+            data_model.Variable(target_namespaces=namespaces,
+                                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='BE']"),
+            data_model.Variable(target_namespaces=namespaces,
+                                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='PSwe1M']"),
+            data_model.Variable(target_namespaces=namespaces,
+                                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Swe1M']"),
+            data_model.Variable(target_namespaces=namespaces,
+                                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Swe1']"),
+            data_model.Variable(target_namespaces=namespaces,
+                                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Clg']"),
+            data_model.Variable(target_namespaces=namespaces,
+                                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']"),
+            data_model.Variable(target_namespaces=namespaces,
+                                target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='BUD']"),
+            data_model.Variable(target_namespaces=namespaces,
+                                target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='BUD']/@value"),
         ]
         validation.validate_variable_xpaths(variables, model_source)
 
         variables = [
-            data_model.Variable(target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='not_exist']"),
+            data_model.Variable(target_namespaces=namespaces,
+                                target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='not_exist']"),
         ]
         with self.assertRaises(ValueError):
             validation.validate_variable_xpaths(variables, model_source)
 
         variables = [
-            data_model.Variable(target='/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species'),
+            data_model.Variable(target_namespaces=namespaces,
+                                target='/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species'),
         ]
         with self.assertRaises(ValueError):
             validation.validate_variable_xpaths(variables, model_source)

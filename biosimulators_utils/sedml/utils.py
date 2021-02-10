@@ -10,7 +10,6 @@ from ..log.data_model import Status
 from ..report.data_model import VariableResults, DataGeneratorResults  # noqa: F401
 from ..utils.core import pad_arrays_to_consistent_shapes
 from ..warnings import warn
-from ..xml.utils import get_namespaces_for_xml_doc, get_namespaces_for_xml_element
 from .data_model import (SedDocument, Model, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange, SetValueComputeModelChange,
                          Task, RepeatedTask, Report, Plot2D, Plot3D,
@@ -343,14 +342,6 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
         validate_unique_xml_targets (:obj:`bool`, optional): whether to validate the XML targets match
             uniue objects
     """
-    # todo: get namespaces
-    namespaces = get_namespaces_for_xml_doc(model_etree)
-
-    # get XPATH evaluator
-    xpath_evaluator = etree.XPathEvaluator(model_etree, namespaces=namespaces)
-
-    # apply changes
-    model_etrees = {model.id: model_etree}
     for change in model.changes:
         if isinstance(change, ModelAttributeChange):
 
@@ -358,7 +349,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if sep != '/@':
                 raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
-            objs = xpath_evaluator(obj_xpath)
+            objs = model_etree.xpath(obj_xpath, namespaces=change.target_namespaces)
             if validate_unique_xml_targets and len(objs) != 1:
                 raise ValueError('xpath {} must match a single object'.format(obj_xpath))
 
@@ -367,7 +358,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
                 obj.set(attr, change.new_value)
 
         elif isinstance(change, AddElementModelChange):
-            parents = xpath_evaluator(change.target)
+            parents = model_etree.xpath(change.target, namespaces=change.target_namespaces)
 
             if validate_unique_xml_targets and len(parents) != 1:
                 raise ValueError('xpath {} must match a single object'.format(change.target))
@@ -377,23 +368,12 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             except etree.XMLSyntaxError as exception:
                 raise ValueError('`{}` is not valid XML. {}'.format(change.new_elements, str(exception)))
 
-            for new_element in new_elements:
-                for prefix, uri in get_namespaces_for_xml_element(new_element).items():
-                    if prefix in namespaces and namespaces[prefix] != uri:
-                        msg = (
-                            'Prefixes must be used consistently throughout the XML document. '
-                            'Prefix `{}` is not used consistently.'
-                        ).format(prefix)
-                        raise ValueError(msg)
-                    namespaces[prefix] = uri
-            xpath_evaluator = etree.XPathEvaluator(model_etree, namespaces=namespaces)
-
             for parent in parents:
                 for new_element in copy.deepcopy(new_elements):
                     parent.append(new_element)
 
         elif isinstance(change, ReplaceElementModelChange):
-            old_elements = xpath_evaluator(change.target)
+            old_elements = model_etree.xpath(change.target, namespaces=change.target_namespaces)
 
             if validate_unique_xml_targets and len(old_elements) != 1:
                 raise ValueError('xpath {} must match a single object'.format(change.target))
@@ -402,17 +382,6 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
                 new_elements = etree.parse(io.StringIO('<root>' + change.new_elements + '</root>')).getroot().getchildren()
             except etree.XMLSyntaxError as exception:
                 raise ValueError('`{}` is not valid XML. {}'.format(change.new_elements, str(exception)))
-
-            for new_element in new_elements:
-                for prefix, uri in get_namespaces_for_xml_element(new_element).items():
-                    if prefix in namespaces and namespaces[prefix] != uri:
-                        msg = (
-                            'Prefixes must be used consistently throughout the XML document. '
-                            'Prefix `{}` is not used consistently.'
-                        ).format(prefix)
-                        raise ValueError(msg)
-                    namespaces[prefix] = uri
-            xpath_evaluator = etree.XPathEvaluator(model_etree, namespaces=namespaces)
 
             for old_element in old_elements:
                 parent = old_element.getparent()
@@ -423,7 +392,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
                     parent.append(new_element)
 
         elif isinstance(change, RemoveElementModelChange):
-            elements = xpath_evaluator(change.target)
+            elements = model_etree.xpath(change.target, namespaces=change.target_namespaces)
 
             if validate_unique_xml_targets and len(elements) != 1:
                 raise ValueError('xpath {} must match a single object'.format(change.target))
@@ -435,6 +404,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
         elif isinstance(change, ComputeModelChange):
             # get the values of model variables referenced by compute model changes
             if variable_values is None:
+                model_etrees = {model.id: model_etree}
                 iter_variable_values = get_values_of_variable_model_xml_targets_of_model_change(change, sed_doc, model_etrees, working_dir)
             else:
                 iter_variable_values = variable_values
@@ -446,7 +416,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if sep != '/@':
                 raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
-            objs = xpath_evaluator(obj_xpath)
+            objs = model_etree.xpath(obj_xpath, namespaces=change.target_namespaces)
             if validate_unique_xml_targets and len(objs) != 1:
                 raise ValueError('xpath {} must match a single object'.format(obj_xpath))
 
@@ -511,8 +481,7 @@ def get_value_of_variable_model_xml_targets(variable, model_etrees):
         raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(variable.target))
 
     et = model_etrees[variable.model.id]
-    namespaces = get_namespaces_for_xml_doc(et)  # todo
-    obj = et.xpath(obj_xpath, namespaces=namespaces)
+    obj = et.xpath(obj_xpath, namespaces=variable.target_namespaces)
     if len(obj) != 1:
         raise ValueError('xpath {} must match a single object in model {}'.format(obj_xpath, variable.model.id))
 

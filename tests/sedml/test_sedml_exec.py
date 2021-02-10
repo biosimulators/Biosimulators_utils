@@ -76,6 +76,7 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.Variable(
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[0],
                 ),
             ],
@@ -88,6 +89,7 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.Variable(
                     id='data_gen_2_var_2',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_2']/@concentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[0],
                 ),
             ],
@@ -100,6 +102,7 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.Variable(
                     id='data_gen_3_var_3',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_3']/@concentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[1],
                 ),
             ],
@@ -112,6 +115,7 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.Variable(
                     id='data_gen_4_var_4',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_4']/@concentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[1],
                 ),
             ],
@@ -393,6 +397,7 @@ class ExecTaskCase(unittest.TestCase):
             changes=[
                 data_model.ModelAttributeChange(
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z']/@id",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     new_value="Z2",
                 )
             ]
@@ -406,10 +411,12 @@ class ExecTaskCase(unittest.TestCase):
             changes=[
                 data_model.ModelAttributeChange(
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z2']/@initialConcentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     new_value="4.0",
                 ),
                 data_model.ComputeModelChange(
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z2']/@initialConcentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     parameters=[
                         data_model.Parameter(
                             id='p',
@@ -420,6 +427,7 @@ class ExecTaskCase(unittest.TestCase):
                         data_model.Variable(
                             id='var_Z2',
                             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z2']/@initialConcentration",
+                            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                         ),
                     ],
                     math='p * var_Z2',
@@ -432,12 +440,14 @@ class ExecTaskCase(unittest.TestCase):
         model1.changes.append(
             data_model.ModelAttributeChange(
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
+                target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                 new_value="2.5",
             )
         ),
         model1.changes.append(
             data_model.ComputeModelChange(
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Y']/@initialConcentration",
+                target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                 parameters=[
                     data_model.Parameter(id='a', value=0.2),
                     data_model.Parameter(id='b', value=2.0),
@@ -447,11 +457,13 @@ class ExecTaskCase(unittest.TestCase):
                         id='y',
                         model=model1,
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
+                        target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     ),
                     data_model.Variable(
                         id='z',
                         model=model3,
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z2']/@initialConcentration",
+                        target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     ),
                 ],
                 math='a * y + b * z',
@@ -474,6 +486,7 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.Variable(
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[0],
                 ),
             ],
@@ -486,6 +499,7 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.Variable(
                     id='data_gen_2_var_2',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Y']/@initialConcentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[0],
                 ),
             ],
@@ -522,7 +536,7 @@ class ExecTaskCase(unittest.TestCase):
             results = VariableResults()
             for variable in variables:
                 obj_xpath, _, attr = variable.target.rpartition('/@')
-                obj = et.xpath(obj_xpath, namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'})[0]
+                obj = et.xpath(obj_xpath, namespaces=variable.target_namespaces)[0]
                 results[variable.id] = numpy.array((float(obj.get(attr)),))
 
             return results, log
@@ -562,6 +576,7 @@ class ExecTaskCase(unittest.TestCase):
             changes=[
                 data_model.ModelAttributeChange(
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     new_value="2.0",
                 ),
             ],
@@ -589,6 +604,7 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.Variable(
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[0],
                 ),
             ],
@@ -648,6 +664,7 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.Variable(
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[0],
                 ),
             ],
@@ -709,11 +726,13 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.Variable(
                     id='data_gen_1_var_1',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[0],
                 ),
                 data_model.Variable(
                     id='data_gen_1_var_2',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[0],
                 ),
             ],
@@ -752,6 +771,7 @@ class ExecTaskCase(unittest.TestCase):
                     data_model.Variable(
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                         task=doc.tasks[0],
                     ),
                 ],
@@ -792,11 +812,13 @@ class ExecTaskCase(unittest.TestCase):
                     data_model.Variable(
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                         task=doc.tasks[0],
                     ),
                     data_model.Variable(
                         id='data_gen_1_var_2',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_2']/@concentration",
+                        target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                         task=doc.tasks[0],
                     ),
                 ],
@@ -839,6 +861,7 @@ class ExecTaskCase(unittest.TestCase):
                     data_model.Variable(
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                         task=doc.tasks[0],
                     ),
                 ],
@@ -850,6 +873,7 @@ class ExecTaskCase(unittest.TestCase):
                     data_model.Variable(
                         id='data_gen_2_var_2',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_2']/@concentration",
+                        target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                         task=doc.tasks[0],
                     ),
                 ],
@@ -861,6 +885,7 @@ class ExecTaskCase(unittest.TestCase):
                     data_model.Variable(
                         id='data_gen_3_var_3',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_3']/@concentration",
+                        target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                         task=doc.tasks[0],
                     ),
                 ],
@@ -938,6 +963,7 @@ class ExecTaskCase(unittest.TestCase):
                     data_model.Variable(
                         id='data_gen_1_var_1',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                         task=doc.tasks[0],
                     ),
                 ],
@@ -949,6 +975,7 @@ class ExecTaskCase(unittest.TestCase):
                     data_model.Variable(
                         id='data_gen_2_var_2',
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                        target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                         task=doc.tasks[0],
                     ),
                 ],
@@ -1052,6 +1079,7 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.Variable(
                     id='var',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var']/@concentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[1],
                 ),
             ],
@@ -1276,6 +1304,7 @@ class ExecTaskCase(unittest.TestCase):
                 data_model.Variable(
                     id='var',
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var']/@concentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
                     task=doc.tasks[1],
                 ),
             ],

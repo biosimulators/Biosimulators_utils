@@ -245,18 +245,24 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         changes = [
             data_model.ModelAttributeChange(
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']/@initialConcentration",
+                target_namespaces=namespaces,
                 new_value='1.9'),
             data_model.ModelAttributeChange(
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']/@sboTerm",
+                target_namespaces=namespaces,
                 new_value='SBO:0000001'),
             data_model.AddElementModelChange(
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies",
+                target_namespaces=namespaces,
                 new_elements='<sbml:species xmlns:sbml="{}" id="NewSpecies" />'.format(namespaces['sbml'])),
             data_model.ReplaceElementModelChange(
                 target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='SpeciesToReplace']",
+                target_namespaces=namespaces,
                 new_elements='<sbml:species xmlns:sbml="{}" id="DifferentSpecies" />'.format(namespaces['sbml'])),
             data_model.RemoveElementModelChange(
-                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Sic']"),
+                target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Sic']",
+                target_namespaces=namespaces,
+            ),
         ]
         save_changes = copy.copy(changes)
         et = etree.parse(self.FIXTURE_FILENAME)
@@ -305,14 +311,26 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         changes = [
             data_model.AddElementModelChange(
                 target='/sbml:sbml',
+                target_namespaces={
+                    'sbml': 'http://www.sbml.org/sbml/level2/version4',
+                },
                 new_elements='<biosimulators:insertedNode xmlns:biosimulators="https://biosimulators.org"></biosimulators:insertedNode>',
             ),
             data_model.ReplaceElementModelChange(
                 target='/sbml:sbml/biosimulators:insertedNode',
-                new_elements='<biosimulators2:insertedNode xmlns:biosimulators2="https://biosimulators2.org"></biosimulators2:insertedNode>',
+                target_namespaces={
+                    'sbml': 'http://www.sbml.org/sbml/level2/version4',
+                    'biosimulators': "https://biosimulators.org",
+                },
+                new_elements=('<biosimulators2:insertedNode xmlns:biosimulators2="https://biosimulators2.org">'
+                              '</biosimulators2:insertedNode>'),
             ),
             data_model.RemoveElementModelChange(
                 target='/sbml:sbml/biosimulators2:insertedNode',
+                target_namespaces={
+                    'sbml': 'http://www.sbml.org/sbml/level2/version4',
+                    'biosimulators2': "https://biosimulators2.org",
+                },
             ),
         ]
 
@@ -339,21 +357,14 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators:insertedNode', namespaces=namespaces)), 0)
         self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators2:insertedNode', namespaces=namespaces)), 0)
 
-        et = etree.parse(self.FIXTURE_FILENAME)
-        changes[1].new_elements = '<biosimulators2:insertedNode xmlns:biosimulators="https://biosimulators2.org" xmlns:biosimulators2="https://biosimulators2.org"></biosimulators2:insertedNode>'
-        with self.assertRaisesRegex(ValueError, 'Prefixes must be used consistently'):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=changes), et, None, None, validate_unique_xml_targets=True)
-
-        et = etree.parse(self.FIXTURE_FILENAME)
-        changes[0].new_elements = '<biosimulators:insertedNode xmlns:biosimulators="https://biosimulators.org" xmlns:sbml="https://biosimulators.org"></biosimulators:insertedNode>'
-        with self.assertRaisesRegex(ValueError, 'Prefixes must be used consistently'):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=changes), et, None, None, validate_unique_xml_targets=True)
-
     def test_change_attributes_multiple_targets(self):
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@initialConcentration='0.1']/@initialConcentration",
+            target_namespaces={
+                'sbml': 'http://www.sbml.org/sbml/level2/version4',
+            },
             new_value='0.2')
         et = etree.parse(self.FIXTURE_FILENAME)
 
@@ -379,10 +390,12 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies",
+            target_namespaces=namespaces,
             new_elements=''.join([
                 '<sbml:species xmlns:sbml="{}" id="NewSpecies1"/>'.format(namespaces['sbml']),
                 '<sbml:species xmlns:sbml="{}" id="NewSpecies2"/>'.format(namespaces['sbml']),
-            ]))
+            ]),
+        )
         et = etree.parse(self.FIXTURE_FILENAME)
 
         species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
@@ -425,10 +438,14 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies",
+            target_namespaces={
+                'sbml': namespaces['sbml'],
+            },
             new_elements=''.join([
                 '<newXml:species xmlns:newXml="{}" id="NewSpecies1"/>'.format(namespaces['newXml']),
                 '<newXml:species xmlns:newXml="{}" id="NewSpecies2"/>'.format(namespaces['newXml']),
-            ]))
+            ]),
+        )
         et = etree.parse(self.FIXTURE_FILENAME)
 
         species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
@@ -470,10 +487,14 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies",
+            target_namespaces={
+                'sbml': namespaces['sbml'],
+            },
             new_elements=''.join([
                 '<newXml:species xmlns:newXml="{}" id="NewSpecies1"/>'.format(namespaces['newXml']),
                 '<newXml:species xmlns:newXml="{}" id="NewSpecies2"/>'.format(namespaces['newXml']),
-            ]))
+            ]),
+        )
         et = etree.parse(self.FIXTURE_FILENAME)
 
         species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
@@ -511,6 +532,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+            target_namespaces=namespaces,
             new_elements=''.join([
                 '<sbml:parameter xmlns:sbml="{}" id="p1" />'.format(namespaces['sbml']),
                 '<sbml:parameter xmlns:sbml="{}" id="p2" />'.format(namespaces['sbml']),
@@ -541,6 +563,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.ReplaceElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='SpeciesToReplace']",
+            target_namespaces=namespaces,
             new_elements=''.join([
                 '<sbml:species xmlns:sbml="{}" id="NewSpecies1"/>'.format(namespaces['sbml']),
                 '<sbml:species xmlns:sbml="{}" id="NewSpecies2"/>'.format(namespaces['sbml']),
@@ -582,6 +605,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.ReplaceElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+            target_namespaces=namespaces,
             new_elements=''.join([
                 '<sbml:species xmlns:sbml="{}" id="NewSpecies1" />'.format(namespaces['sbml']),
                 '<sbml:species xmlns:sbml="{}" id="NewSpecies2" />'.format(namespaces['sbml']),
@@ -607,7 +631,9 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
 
         change = data_model.RemoveElementModelChange(
-            target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@initialConcentration='0.1']")
+            target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@initialConcentration='0.1']",
+            target_namespaces=namespaces,
+        )
         et = etree.parse(self.FIXTURE_FILENAME)
 
         species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
@@ -628,6 +654,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         change = mock.MagicMock(
             name='c1',
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']/@initialConcentration",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
         et = etree.parse(self.FIXTURE_FILENAME)
         with self.assertRaises(NotImplementedError):
@@ -635,6 +662,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
         et = etree.parse(self.FIXTURE_FILENAME)
         with self.assertRaises(ValueError):
@@ -642,6 +670,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species/@initialConcentration",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
         et = etree.parse(self.FIXTURE_FILENAME)
         with self.assertRaises(ValueError):
@@ -649,6 +678,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_elements='<')
         et = etree.parse(self.FIXTURE_FILENAME)
         with self.assertRaisesRegex(ValueError, 'not valid XML'):
@@ -656,6 +686,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_elements='1.9')
         et = etree.parse(self.FIXTURE_FILENAME)
         with self.assertRaisesRegex(ValueError, 'must match a single object'):
@@ -663,6 +694,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.ReplaceElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_elements='<')
         et = etree.parse(self.FIXTURE_FILENAME)
         with self.assertRaisesRegex(ValueError, 'not valid XML'):
@@ -670,6 +702,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.ReplaceElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_elements='1.9')
         et = etree.parse(self.FIXTURE_FILENAME)
         with self.assertRaisesRegex(ValueError, 'must match a single object'):
