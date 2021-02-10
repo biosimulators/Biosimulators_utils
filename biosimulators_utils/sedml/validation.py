@@ -598,5 +598,5 @@ def validate_variable_xpaths(variables, model_source, attr='id'):
             if '/@' in x_path:
                 x_path, _, _ = x_path.rpartition('/@')
             x_path_attrs[variable.target] = validate_xpaths_ref_to_unique_objects(
-                model_source, [x_path], variable.target_namespaces, attr=attr)
+                model_source, [x_path], variable.target_namespaces, attr=attr)[x_path]
     return x_path_attrs
