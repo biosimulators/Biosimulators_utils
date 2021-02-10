@@ -294,7 +294,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         self.assertEqual(namespaces.getIndexByPrefix('sbml'), -1)
         self.assertEqual(utils.convert_xml_node_to_string(node), '<sbml:parameter id="V_mT" value="0.7"/>')
 
-        utils.add_namespaces_to_xml_node(node, doc.getNamespaces())
+        utils.add_namespaces_to_xml_node(node, set(['sbml']), doc.getNamespaces())
         namespaces = node.getNamespaces()
         self.assertEqual(namespaces.getIndexByPrefix('sbml'), 0)
         self.assertEqual(utils.convert_xml_node_to_string(node),

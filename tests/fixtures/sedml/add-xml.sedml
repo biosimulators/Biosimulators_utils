@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sedML xmlns="http://sed-ml.org/sed-ml/level1/version3" level="1" version="3">
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version3" level="1" version="3"
+  xmlns:sbml="http://www.sbml.org/sbml/level2/version3">
   <listOfModels>
     <model id="model_1" source="model.xml">
       <listOfChanges>
         <addXML target="/sbml:sbml/sbml:model/sbml:listOfParameters" >
           <newXML >
-            <sbml:parameter xmlns:sbml="http://www.sbml.org/sbml/level2/version3" id="V_mT" value="0.7" />
+            <sbml:parameter id="V_mT" value="0.7" />
           </newXML >
         </addXML >
       </listOfChanges>

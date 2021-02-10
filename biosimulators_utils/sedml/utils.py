@@ -54,6 +54,7 @@ __all__ = [
     'get_models_referenced_by_model_change',
     'get_range_len',
     'resolve_range',
+    'get_namespaces_for_sed_object',
 ]
 
 
@@ -117,26 +118,19 @@ def append_all_nested_children_to_doc(doc):
     doc.data_generators += list(data_generators - set(doc.data_generators))
 
 
-def add_namespaces_to_xml_node(node, namespaces, include_default=False):
+def add_namespaces_to_xml_node(node, namespace_prefixes, namespaces):
     """ Add namespaces to an XML node
 
     Args:
         node (:obj:`libsedml.XMLNode`): XML node
+        namespace_prefixes (:obj:`set` of :obj:`str`): namespace prefixes used in the node which aren't defined in the node
         namespaces (:obj:`libsedml.XMLNamespaces`): namespaces for the parent document
-        include_default (:obj:`bool`, optional): include the default (SED-ML) namespace
     """
-    node_namespaces = node.getNamespaces()
-
     for i_ns in range(namespaces.getNumNamespaces()):
         uri = namespaces.getURI(i_ns)
         prefix = namespaces.getPrefix(i_ns)
 
-        if prefix == '' and not include_default:
-            continue
-
-        i_node_ns_prefix = node_namespaces.getIndexByPrefix(prefix)
-
-        if i_node_ns_prefix == -1:
+        if prefix in namespace_prefixes:
             node.addNamespace(uri, prefix)
 
 
@@ -349,7 +343,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
         validate_unique_xml_targets (:obj:`bool`, optional): whether to validate the XML targets match
             uniue objects
     """
-    # get namespaces
+    # todo: get namespaces
     namespaces = get_namespaces_for_xml_doc(model_etree)
 
     # get XPATH evaluator
@@ -386,7 +380,10 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             for new_element in new_elements:
                 for prefix, uri in get_namespaces_for_xml_element(new_element).items():
                     if prefix in namespaces and namespaces[prefix] != uri:
-                        msg = 'Prefixes must be used consistently throughout the XML document. Prefix `{}` is not used consistently.'.format(prefix)
+                        msg = (
+                            'Prefixes must be used consistently throughout the XML document. '
+                            'Prefix `{}` is not used consistently.'
+                        ).format(prefix)
                         raise ValueError(msg)
                     namespaces[prefix] = uri
             xpath_evaluator = etree.XPathEvaluator(model_etree, namespaces=namespaces)
@@ -409,7 +406,10 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             for new_element in new_elements:
                 for prefix, uri in get_namespaces_for_xml_element(new_element).items():
                     if prefix in namespaces and namespaces[prefix] != uri:
-                        msg = 'Prefixes must be used consistently throughout the XML document. Prefix `{}` is not used consistently.'.format(prefix)
+                        msg = (
+                            'Prefixes must be used consistently throughout the XML document. '
+                            'Prefix `{}` is not used consistently.'
+                        ).format(prefix)
                         raise ValueError(msg)
                     namespaces[prefix] = uri
             xpath_evaluator = etree.XPathEvaluator(model_etree, namespaces=namespaces)
@@ -511,7 +511,7 @@ def get_value_of_variable_model_xml_targets(variable, model_etrees):
         raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(variable.target))
 
     et = model_etrees[variable.model.id]
-    namespaces = get_namespaces_for_xml_doc(et)
+    namespaces = get_namespaces_for_xml_doc(et)  # todo
     obj = et.xpath(obj_xpath, namespaces=namespaces)
     if len(obj) != 1:
         raise ValueError('xpath {} must match a single object in model {}'.format(obj_xpath, variable.model.id))
@@ -1046,3 +1046,21 @@ def resolve_range(range, model_etrees=None):
 
     else:
         raise NotImplementedError('Ranges of type `{}` are not supported.'.format(range.__class__.__name__))
+
+
+def get_namespaces_for_sed_object(obj):
+    """ Get the namespace prefixes and URIs defined for a SED object
+
+    Args:
+        obj (:obj:`libsedml.SedBase`): SED object
+
+    Returns:
+        :obj:`dict`: dictionary that maps the prefixes of namespaces to their URIs
+    """
+    namespaces_obj = obj.getNamespaces()
+    namespaces_dict = {}
+    for i_namespace in range(namespaces_obj.getNumNamespaces()):
+        prefix = namespaces_obj.getPrefix(i_namespace) or None
+        uri = namespaces_obj.getURI(i_namespace)
+        namespaces_dict[prefix] = uri
+    return namespaces_dict

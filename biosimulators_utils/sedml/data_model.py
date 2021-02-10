@@ -453,14 +453,17 @@ class ModelChange(abc.ABC):
 
     Attributes:
         target (:obj:`str`): path to the model element that should be changed
+        target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
     """
 
-    def __init__(self, target=None):
+    def __init__(self, target=None, target_namespaces=None):
         """
         Args:
             target (:obj:`str`, optional): path to the model element that should be changed
+            target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
         """
         self.target = target
+        self.target_namespaces = target_namespaces or {}
 
     @abc.abstractmethod
     def to_tuple(self):
@@ -481,7 +484,8 @@ class ModelChange(abc.ABC):
             :obj:`bool`: :obj:`True`, if two model changes are equal
         """
         return self.__class__ == other.__class__ \
-            and self.target == other.target
+            and self.target == other.target \
+            and self.target_namespaces == other.target_namespaces
 
 
 class ModelAttributeChange(ModelChange):
@@ -489,16 +493,18 @@ class ModelAttributeChange(ModelChange):
 
     Attributes:
         target (:obj:`str`): path to the model element that should be changed
+        target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
         new_value (:obj:`str`): new value
     """
 
-    def __init__(self, target=None, new_value=None):
+    def __init__(self, target=None, target_namespaces=None, new_value=None):
         """
         Args:
             target (:obj:`str`, optional): path to the model element that should be changed
+            target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
             new_value (:obj:`str`, optional): new value
         """
-        super(ModelAttributeChange, self).__init__(target=target)
+        super(ModelAttributeChange, self).__init__(target=target, target_namespaces=target_namespaces)
         self.new_value = new_value
 
     def to_tuple(self):
@@ -507,7 +513,7 @@ class ModelAttributeChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target, self.new_value)
+        return (self.target, self.target_namespaces, self.new_value)
 
     def is_equal(self, other):
         """ Determine if model attribute changes are equal
@@ -527,16 +533,18 @@ class AddElementModelChange(ModelChange):
 
     Attributes:
         target (:obj:`str`): path to the parent of the new element(s)
+        target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
         new_elements (:obj:`str`): new element(s)
     """
 
-    def __init__(self, target=None, new_elements=None):
+    def __init__(self, target=None, target_namespaces=None, new_elements=None):
         """
         Args:
             target (:obj:`str`, optional): path to the parent of the new element(s)
+            target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
             new_elements (:obj:`str`): new element(s)
         """
-        super(AddElementModelChange, self).__init__(target=target)
+        super(AddElementModelChange, self).__init__(target=target, target_namespaces=target_namespaces)
         self.new_elements = new_elements
 
     def to_tuple(self):
@@ -545,7 +553,7 @@ class AddElementModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target, self.new_elements)
+        return (self.target, self.target_namespaces, self.new_elements)
 
     def is_equal(self, other):
         """ Determine if model changes are equal
@@ -565,16 +573,18 @@ class ReplaceElementModelChange(ModelChange):
 
     Attributes:
         target (:obj:`str`): path to the element to replace
+        target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
         new_elements (:obj:`str`): new element(s)
     """
 
-    def __init__(self, target=None, new_elements=None):
+    def __init__(self, target=None, target_namespaces=None, new_elements=None):
         """
         Args:
             target (:obj:`str`, optional): path to the element to replace
+            target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
             new_elements (:obj:`str`): new element(s)
         """
-        super(ReplaceElementModelChange, self).__init__(target=target)
+        super(ReplaceElementModelChange, self).__init__(target=target, target_namespaces=target_namespaces)
         self.new_elements = new_elements
 
     def to_tuple(self):
@@ -583,7 +593,7 @@ class ReplaceElementModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target, self.new_elements)
+        return (self.target, self.target_namespaces, self.new_elements)
 
     def is_equal(self, other):
         """ Determine if model changes are equal
@@ -611,7 +621,7 @@ class RemoveElementModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target,)
+        return (self.target, self.target_namespaces)
 
 
 class ComputeModelChange(ModelChange):
@@ -619,20 +629,22 @@ class ComputeModelChange(ModelChange):
 
     Attributes:
         target (:obj:`str`): path to the element to replace
+        target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
         variables (:obj:`list` of :obj:`Variable`): variables
         parameters (:obj:`list` of :obj:`Parameter`): parameters
         math (:obj:`str`): mathematical expression
     """
 
-    def __init__(self, target=None, variables=None, parameters=None, math=None):
+    def __init__(self, target=None, target_namespaces=None, variables=None, parameters=None, math=None):
         """
         Args:
             target (:obj:`str`, optional): path to the element to replace
+            target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
             variables (:obj:`list` of :obj:`Variable`, optional): variables
             parameters (:obj:`list` of :obj:`Parameter`, optional): parameters
             math (:obj:`str`, optional): mathematical expression
         """
-        super(ComputeModelChange, self).__init__(target=target)
+        super(ComputeModelChange, self).__init__(target=target, target_namespaces=target_namespaces)
         self.variables = variables or []
         self.parameters = parameters or []
         self.math = math
@@ -643,7 +655,7 @@ class ComputeModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target,
+        return (self.target, self.target_namespaces,
                 tuple(none_sorted(variable.to_tuple() for variable in self.variables)),
                 tuple(none_sorted(parameter.to_tuple() for parameter in self.parameters)),
                 self.math)
@@ -668,6 +680,7 @@ class SetValueComputeModelChange(ComputeModelChange):
 
     Attributes:
         target (:obj:`str`): path to the element to replace
+        target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
         variables (:obj:`list` of :obj:`Variable`): variables
         parameters (:obj:`list` of :obj:`Parameter`): parameters
         math (:obj:`str`): mathematical expression
@@ -676,10 +689,12 @@ class SetValueComputeModelChange(ComputeModelChange):
         symbol (:obj:`str`): symbol
     """
 
-    def __init__(self, target=None, variables=None, parameters=None, math=None, model=None, range=None, symbol=None):
+    def __init__(self, target=None, target_namespaces=None, variables=None, parameters=None,
+                 math=None, model=None, range=None, symbol=None):
         """
         Args:
             target (:obj:`str`, optional): path to the element to replace
+            target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
             variables (:obj:`list` of :obj:`Variable`, optional): variables
             parameters (:obj:`list` of :obj:`Parameter`, optional): parameters
             math (:obj:`str`, optional): mathematical expression
@@ -687,7 +702,7 @@ class SetValueComputeModelChange(ComputeModelChange):
             range (:obj:`Range`, optional): range
             symbol (:obj:`str`, optional): symbol
         """
-        super(ComputeModelChange, self).__init__(target=target)
+        super(ComputeModelChange, self).__init__(target=target, target_namespaces=target_namespaces)
         self.variables = variables or []
         self.parameters = parameters or []
         self.math = math
@@ -701,7 +716,7 @@ class SetValueComputeModelChange(ComputeModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target,
+        return (self.target, self.target_namespaces,
                 tuple(none_sorted(variable.to_tuple() for variable in self.variables)),
                 tuple(none_sorted(parameter.to_tuple() for parameter in self.parameters)),
                 self.math,
@@ -1181,17 +1196,19 @@ class Variable(object):
         id (:obj:`str`): id
         name (:obj:`str`): name
         target (:obj:`str`): target
+        target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
         symbol (:obj:`str`): symbol
         task (:obj:`AbstractTask`): task
         model (:obj:`Model`): model
     """
 
-    def __init__(self, id=None, name=None, target=None, symbol=None, task=None, model=None):
+    def __init__(self, id=None, name=None, target=None, target_namespaces=None, symbol=None, task=None, model=None):
         """
         Args:
             id (:obj:`str`, optional): id
             name (:obj:`str`, optional): name
             target (:obj:`str`, optional): target
+            target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
             symbol (:obj:`str`, optional): symbol
             task (:obj:`AbstractTask`, optional): task
             model (:obj:`Model`, optional): model
@@ -1199,6 +1216,7 @@ class Variable(object):
         self.id = id
         self.name = name
         self.target = target
+        self.target_namespaces = target_namespaces or {}
         self.symbol = symbol
         self.task = task
         self.model = model
@@ -1209,7 +1227,7 @@ class Variable(object):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.id, self.name, self.target, self.symbol,
+        return (self.id, self.name, self.target, self.target_namespaces, self.symbol,
                 self.task.id if self.task else None,
                 self.model.id if self.model else None)
 
@@ -1226,6 +1244,7 @@ class Variable(object):
             and self.id == other.id \
             and self.name == other.name \
             and self.target == other.target \
+            and self.target_namespaces == other.target_namespaces \
             and self.symbol == other.symbol \
             and ((self.task is None and self.task == other.task)
                  or (self.task is not None and other.task is not None and self.task.id == other.task.id)) \

@@ -7,7 +7,7 @@
 """
 
 from . import data_model
-from .utils import add_namespaces_to_xml_node, convert_xml_node_to_string
+from .utils import add_namespaces_to_xml_node, convert_xml_node_to_string, get_namespaces_for_sed_object
 from .validation import validate_doc
 from .warnings import SedmlFeatureNotSupportedWarning
 from ..biosimulations.data_model import Metadata, ExternalReferences, Citation
@@ -154,6 +154,7 @@ class SedmlSimulationWriter(object):
 
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
+            self._add_namespaces_to_obj(change_sed, change.target_namespaces)
         if change.new_value is not None:
             self._call_libsedml_method(change_sed, 'setNewValue', change.new_value)
 
@@ -175,6 +176,7 @@ class SedmlSimulationWriter(object):
 
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
+            self._add_namespaces_to_obj(change_sed, change.target_namespaces)
         if change.new_elements is not None:
             new_xml = libsedml.XMLNode_convertStringToXMLNode(change.new_elements)
             if new_xml is None:
@@ -199,6 +201,7 @@ class SedmlSimulationWriter(object):
 
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
+            self._add_namespaces_to_obj(change_sed, change.target_namespaces)
         if change.new_elements is not None:
             new_xml = libsedml.XMLNode_convertStringToXMLNode(change.new_elements)
             if new_xml is None:
@@ -223,6 +226,7 @@ class SedmlSimulationWriter(object):
 
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
+            self._add_namespaces_to_obj(change_sed, change.target_namespaces)
 
         return change_sed
 
@@ -242,6 +246,7 @@ class SedmlSimulationWriter(object):
 
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
+            self._add_namespaces_to_obj(change_sed, change.target_namespaces)
 
         for param in change.parameters:
             self._add_param_to_obj(change, param)
@@ -412,6 +417,7 @@ class SedmlSimulationWriter(object):
 
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
+            self._add_namespaces_to_obj(change_sed, change.target_namespaces)
 
         for param in change.parameters:
             self._add_param_to_obj(change, param)
@@ -585,6 +591,7 @@ class SedmlSimulationWriter(object):
 
         if var.target is not None:
             self._call_libsedml_method(var_sed, 'setTarget', var.target)
+            self._add_namespaces_to_obj(var_sed, var.target_namespaces)
 
         if var.task is not None:
             if not var.task.id:  # pragma: no cover: already validated
@@ -909,6 +916,23 @@ class SedmlSimulationWriter(object):
         self._call_libsedml_method(obj_sed, 'setMetaId', meta_id)
         return meta_id
 
+    def _add_namespaces_to_obj(self, obj_sed, namespaces):
+        """ Add namespaces to a SED object
+
+        Args:
+            obj_sed (:obj:`libsedml.SedBase`): SED object
+            namespaces (:obj:`dict`): dictionary that maps the prefixes of namespaces to their URIs
+        """
+        existing_namespaces = get_namespaces_for_sed_object(obj_sed)
+        obj_namespaces = obj_sed.getNamespaces()
+        for prefix, uri in namespaces.items():
+            if prefix in existing_namespaces:
+                if uri != existing_namespaces[prefix]:
+                    obj_namespaces.remove(obj_namespaces.getIndexByPrefix(prefix or ''))
+                    obj_namespaces.add(uri, prefix or '')
+            else:
+                obj_namespaces.add(uri, prefix or '')
+
     def _call_libsedml_method(self, obj_sed, method_name, *args, **kwargs):
         """ Call a method of a SED object and check if there's an error
 
@@ -1061,6 +1085,8 @@ class SedmlSimulationReader(object):
                     change = data_model.SetValueComputeModelChange()
 
                     change.target = change_sed.getTarget() or None
+                    change.target_namespaces = self._get_namespaces_for_sed_object_targets(change_sed)
+
                     change.parameters = self._read_parameters(change_sed)
                     change.math = self._read_math(change_sed)
                     self._deserialize_reference(change_sed, change, 'model', 'ModelReference', 'model', id_to_model_map)
@@ -1152,14 +1178,18 @@ class SedmlSimulationReader(object):
                     change = data_model.AddElementModelChange()
                     new_xml = change_sed.getNewXML() or None
                     if new_xml is not None:
-                        add_namespaces_to_xml_node(new_xml, doc_sed.getNamespaces())
+                        parent_namespaces = change_sed.getNamespaces()
+                        prefixes = self._get_parent_namespaces_prefixes_used_in_xml_node(new_xml)
+                        add_namespaces_to_xml_node(new_xml, prefixes, parent_namespaces)
                         change.new_elements = convert_xml_node_to_string(new_xml)
 
                 elif isinstance(change_sed, libsedml.SedChangeXML):
                     change = data_model.ReplaceElementModelChange()
                     new_xml = change_sed.getNewXML() or None
                     if new_xml is not None:
-                        add_namespaces_to_xml_node(new_xml, doc_sed.getNamespaces())
+                        parent_namespaces = change_sed.getNamespaces()
+                        prefixes = self._get_parent_namespaces_prefixes_used_in_xml_node(new_xml)
+                        add_namespaces_to_xml_node(new_xml, prefixes, parent_namespaces)
                         change.new_elements = convert_xml_node_to_string(new_xml)
 
                 elif isinstance(change_sed, libsedml.SedRemoveXML):
@@ -1176,6 +1206,7 @@ class SedmlSimulationReader(object):
                     raise NotImplementedError('Change type {} is not supported'.format(change_sed.__class__.__name__))
 
                 change.target = change_sed.getTarget() or None
+                change.target_namespaces = self._get_namespaces_for_sed_object_targets(change_sed)
                 model.changes.append(change)
 
         # data generators
@@ -1313,6 +1344,7 @@ class SedmlSimulationReader(object):
             var.name = var_sed.getName() or None
             var.symbol = var_sed.getSymbol() or None
             var.target = var_sed.getTarget() or None
+            var.target_namespaces = self._get_namespaces_for_sed_object_targets(var_sed)
 
             if var.target and var.target.startswith('#'):
                 raise NotImplementedError('Variable targets to data descriptions are not supported.')
@@ -1525,6 +1557,67 @@ class SedmlSimulationReader(object):
                 node.children.append(self._decode_obj_from_xml(child_xml))
 
         return node
+
+    def _get_namespaces_for_sed_object_targets(self, obj_sed):
+        """ Get the namespaces for the target of a SED object
+
+        Args:
+            obj_sed (:obj:`libsedml.SedBase`): SED object
+
+        Returns:
+            :obj:`dict`: dictionary that maps the prefixes of namespaces to their URIs
+        """
+        target = obj_sed.getTarget() or None
+        if target and target.startswith('/'):
+            prefixes = set()
+            for part in target[1:].split('/'):
+                if ':' in part:
+                    prefixes.add(part.partition(':')[0])
+
+            namespaces = get_namespaces_for_sed_object(obj_sed)
+            target_namespaces = {}
+            for prefix in prefixes:
+                if prefix in namespaces:
+                    target_namespaces[prefix] = namespaces[prefix]
+
+            return target_namespaces
+        else:
+            return {}
+
+    def _get_parent_namespaces_prefixes_used_in_xml_node(self, node):
+        """ Get the namespace prefixes that are in the node which aren't defined in the node
+
+        Args:
+            node (:obj:`libsedml.XMLNode`): XML node
+
+        Returns:
+            :obj:`set` of :obj:`str`: namespace prefixes used in the node which aren't defined in the node
+        """
+        undefined_prefixes = set()
+
+        nodes = [(node, set())]
+        while nodes:
+            node, parent_namespace_prefixes = nodes.pop()
+            node_namespace_prefixes = set(parent_namespace_prefixes)
+
+            namespace_objs = node.getNamespaces()
+            for i_namespace_obj in range(namespace_objs.getLength()):
+                node_namespace_prefixes.add(namespace_objs.getPrefix(i_namespace_obj))
+
+            prefix = node.getPrefix()
+            if prefix and prefix not in node_namespace_prefixes:
+                undefined_prefixes.add(prefix)
+
+            attrs = node.getAttributes()
+            for i_attr in range(attrs.getLength()):
+                prefix = attrs.getPrefix(i_attr)
+                if prefix and prefix not in node_namespace_prefixes:
+                    undefined_prefixes.add(prefix)
+
+            for i_child in range(node.getNumChildren()):
+                nodes.append((node.getChild(i_child), node_namespace_prefixes))
+
+        return undefined_prefixes
 
 
 class RdfDataType(str, enum.Enum):
