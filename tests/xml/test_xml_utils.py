@@ -139,7 +139,7 @@ class XmlUtilsTestCase(unittest.TestCase):
             "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']",
             "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']",
             "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='M_13dpg_c']",
-        ], namespaces, {'namespace': 'fbc', 'name': 'id'})
+        ], namespaces, {'namespace': {'prefix': 'fbc', 'uri': namespaces['fbc']}, 'name': 'id'})
         expected_ids = {
             "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='obj']": ['obj'],
             "/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='inactive_obj']": [],

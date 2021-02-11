@@ -92,7 +92,7 @@ def get_attributes_of_xpaths(filename, x_paths, namespaces, attr='id'):
 
     # get namespaces
     if isinstance(attr, dict):
-        attr = '{{{}}}{}'.format(namespaces[attr['namespace']], attr['name'])
+        attr = '{{{}}}{}'.format(attr['namespace']['uri'], attr['name'])
 
     # determine the values of the attributes of the objects that match each XPATH
     x_path_attrs = {}
