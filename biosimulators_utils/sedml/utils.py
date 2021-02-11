@@ -54,6 +54,7 @@ __all__ = [
     'get_range_len',
     'resolve_range',
     'get_namespaces_for_sed_object',
+    'get_xml_node_namespace_tag_target',
 ]
 
 
@@ -1033,3 +1034,47 @@ def get_namespaces_for_sed_object(obj):
         uri = namespaces_obj.getURI(i_namespace)
         namespaces_dict[prefix] = uri
     return namespaces_dict
+
+
+def get_xml_node_namespace_tag_target(etree, target_namespaces=None):
+    """ Get the namespace, tag, and target of an XML node
+
+    Args:
+        etree (:obj:`etree._Element`): element tree
+        target_namespaces (:obj:`dict`, optional): dictionary that maps the prefixes of namespaces to their URIs
+
+    Returns:
+        :obj:`tuple`:
+
+            * :obj:`str`: namespace URI
+            * :obj:`str`: namespace prefix
+            * :obj:`str`: tag
+            * :obj:`str`: target for use with SED target XPATHs
+            * :obj:`dict`: dictionary that maps the prefixes of namespaces to their URIs
+            * :obj:`str`, optional: default namespace prefix
+    """
+    target_namespaces = dict(target_namespaces or {})
+    uri, _, tag = etree.tag.rpartition('}')
+    if uri:
+        uri = uri[1:]
+    if uri:
+        nsmap_rev = {uri: prefix for prefix, uri in etree.nsmap.items()}
+        prefix = nsmap_rev[uri]
+        if not prefix:
+            target_namespaces_rev = {uri: prefix for prefix, uri in target_namespaces.items()}
+            prefix = target_namespaces_rev.get(uri, tag)
+
+        if prefix in target_namespaces:
+            if target_namespaces.get(prefix, None) != uri:
+                prefix += '2'
+                target_namespaces[prefix] = uri
+        else:
+            target_namespaces[prefix] = uri
+
+        target = prefix + ':' + tag
+    else:
+        uri = None
+        prefix = None
+        target = tag
+
+    return (uri, prefix, tag, target, target_namespaces)

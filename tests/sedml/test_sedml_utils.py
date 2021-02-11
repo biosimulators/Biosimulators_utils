@@ -1379,3 +1379,61 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
             utils.get_first_last_models_executed_by_task(None)
+
+    def test_get_xml_node_namespace_tag_target(self):
+        model_etree = etree.parse(self.FIXTURE_FILENAME).getroot()
+        namespaces = {}
+        uri, prefix, tag, target, target_namespaces = utils.get_xml_node_namespace_tag_target(model_etree, namespaces)
+        self.assertEqual(uri, 'http://www.sbml.org/sbml/level2/version4')
+        self.assertEqual(prefix, 'sbml')
+        self.assertEqual(tag, 'sbml')
+        self.assertEqual(target, 'sbml:sbml')
+        self.assertFalse(target_namespaces is namespaces)
+        self.assertEqual(target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
+
+        uri, prefix, tag, target, target_namespaces = utils.get_xml_node_namespace_tag_target(
+            model_etree.getchildren()[0], target_namespaces)
+        self.assertEqual(uri, 'http://www.sbml.org/sbml/level2/version4')
+        self.assertEqual(prefix, 'sbml')
+        self.assertEqual(tag, 'model')
+        self.assertEqual(target, 'sbml:model')
+        self.assertFalse(target_namespaces is namespaces)
+        self.assertEqual(target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
+
+        filename = os.path.join(self.tmp_dir, 'model.xml')
+        with open(filename, 'w') as file:
+            file.write('<sbml>')
+            file.write('  <model xmlns="http://www.sbml.org/sbml/level2/version4" />')
+            file.write('</sbml>')
+        model_etree = etree.parse(filename).getroot()
+        uri, prefix, tag, target, target_namespaces = utils.get_xml_node_namespace_tag_target(model_etree, {})
+        self.assertEqual(uri, None)
+        self.assertEqual(prefix, None)
+        self.assertEqual(tag, 'sbml')
+        self.assertEqual(target, 'sbml')
+        self.assertEqual(target_namespaces, {})
+
+        filename = os.path.join(self.tmp_dir, 'model.xml')
+        with open(filename, 'w') as file:
+            file.write('<sbml:sbml xmlns:sbml="http://www.sbml.org/sbml/level2/version4">')
+            file.write('  <sbml:model xmlns:sbml="http://www.sbml.org/sbml/level3/version1" />')
+            file.write('</sbml:sbml>')
+        model_etree = etree.parse(filename).getroot()
+
+        uri, prefix, tag, target, target_namespaces = utils.get_xml_node_namespace_tag_target(model_etree, {})
+        self.assertEqual(uri, 'http://www.sbml.org/sbml/level2/version4')
+        self.assertEqual(prefix, 'sbml')
+        self.assertEqual(tag, 'sbml')
+        self.assertEqual(target, 'sbml:sbml')
+        self.assertEqual(target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
+
+        uri, prefix, tag, target, target_namespaces = utils.get_xml_node_namespace_tag_target(
+            model_etree.getchildren()[0], target_namespaces)
+        self.assertEqual(uri, 'http://www.sbml.org/sbml/level3/version1')
+        self.assertEqual(prefix, 'sbml2')
+        self.assertEqual(tag, 'model')
+        self.assertEqual(target, 'sbml2:model')
+        self.assertEqual(target_namespaces, {
+            'sbml': 'http://www.sbml.org/sbml/level2/version4',
+            'sbml2': 'http://www.sbml.org/sbml/level3/version1',
+        })
