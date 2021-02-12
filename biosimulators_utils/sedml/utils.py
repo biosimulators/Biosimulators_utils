@@ -10,6 +10,7 @@ from ..log.data_model import Status
 from ..report.data_model import VariableResults, DataGeneratorResults  # noqa: F401
 from ..utils.core import pad_arrays_to_consistent_shapes
 from ..warnings import warn
+from ..xml.utils import eval_xpath
 from .data_model import (SedDocument, Model, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange, SetValueComputeModelChange,
                          Task, RepeatedTask, Report, Plot2D, Plot3D,
@@ -350,7 +351,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if sep != '/@':
                 raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
-            objs = model_etree.xpath(obj_xpath, namespaces=change.target_namespaces)
+            objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
             if validate_unique_xml_targets and len(objs) != 1:
                 raise ValueError('xpath {} must match a single object'.format(obj_xpath))
 
@@ -359,7 +360,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
                 obj.set(attr, change.new_value)
 
         elif isinstance(change, AddElementModelChange):
-            parents = model_etree.xpath(change.target, namespaces=change.target_namespaces)
+            parents = eval_xpath(model_etree, change.target, change.target_namespaces)
 
             if validate_unique_xml_targets and len(parents) != 1:
                 raise ValueError('xpath {} must match a single object'.format(change.target))
@@ -374,7 +375,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
                     parent.append(new_element)
 
         elif isinstance(change, ReplaceElementModelChange):
-            old_elements = model_etree.xpath(change.target, namespaces=change.target_namespaces)
+            old_elements = eval_xpath(model_etree, change.target, change.target_namespaces)
 
             if validate_unique_xml_targets and len(old_elements) != 1:
                 raise ValueError('xpath {} must match a single object'.format(change.target))
@@ -393,7 +394,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
                     parent.append(new_element)
 
         elif isinstance(change, RemoveElementModelChange):
-            elements = model_etree.xpath(change.target, namespaces=change.target_namespaces)
+            elements = eval_xpath(model_etree, change.target, change.target_namespaces)
 
             if validate_unique_xml_targets and len(elements) != 1:
                 raise ValueError('xpath {} must match a single object'.format(change.target))
@@ -417,7 +418,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if sep != '/@':
                 raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
-            objs = model_etree.xpath(obj_xpath, namespaces=change.target_namespaces)
+            objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
             if validate_unique_xml_targets and len(objs) != 1:
                 raise ValueError('xpath {} must match a single object'.format(obj_xpath))
 
@@ -482,7 +483,7 @@ def get_value_of_variable_model_xml_targets(variable, model_etrees):
         raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(variable.target))
 
     et = model_etrees[variable.model.id]
-    obj = et.xpath(obj_xpath, namespaces=variable.target_namespaces)
+    obj = eval_xpath(et, obj_xpath, variable.target_namespaces)
     if len(obj) != 1:
         raise ValueError('xpath {} must match a single object in model {}'.format(obj_xpath, variable.model.id))
 

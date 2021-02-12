@@ -15,6 +15,7 @@ __all__ = [
     'get_namespaces_for_xml_element',
     'get_attributes_of_xpaths',
     'validate_xpaths_ref_to_unique_objects',
+    'eval_xpath',
 ]
 
 
@@ -142,3 +143,26 @@ def validate_xpaths_ref_to_unique_objects(filename, x_paths, namespaces, attr='i
         raise ValueError('\n\n'.join(errors))
 
     return {key: vals[0] for key, vals in x_path_attr_vals.items()}
+
+
+def eval_xpath(element, xpath, namespaces):
+    """ Get the object(s) at an XPATH
+
+    Args:
+        element (:obj:`etree._ElementTree`): element tree
+        xpath (:obj:`str`): XPATH
+        namespaces (:obj:`dict`): dictionary that maps the prefixes of namespaces to their URIs
+
+    Returns:
+        :obj:`list` of :obj:`etree._ElementTree`: object(s) at the XPATH
+    """
+    try:
+        return element.xpath(xpath, namespaces=namespaces)
+    except lxml.etree.XPathEvalError as exception:
+        exception.args = (
+            'XPATH `{}` is invalid with these namespaces:\n  {}\n\n  {}'.format(
+                xpath,
+                '\n  '.join(' - {}: {}'.format(prefix, uri) for prefix, uri in namespaces.items()),
+                exception.args[0].replace('\n', '\n  ')),
+        )
+        raise
