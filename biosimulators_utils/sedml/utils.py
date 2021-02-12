@@ -413,6 +413,10 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
 
             # calculate new value
             new_value = calc_compute_model_change_new_value(change, variable_values=iter_variable_values, range_values=range_values)
+            if new_value == int(new_value):
+                new_value = str(int(new_value))
+            else:                
+                new_value = str(new_value)
 
             # get object to change
             obj_xpath, sep, attr = change.target.rpartition('/@')
@@ -424,7 +428,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
 
             # change value
             for obj in objs:
-                obj.set(attr, str(new_value))
+                obj.set(attr, new_value)
 
         else:
             raise NotImplementedError('Change{} of type {} is not supported'.format(

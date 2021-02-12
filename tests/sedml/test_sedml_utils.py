@@ -714,6 +714,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             parameters=[
                 data_model.Parameter(id='a', value=1.5),
                 data_model.Parameter(id='b', value=2.25),
+                data_model.Parameter(id='c', value=2.), 
             ],
             variables=[
                 data_model.Variable(id='x', model=data_model.Model(id='model_1'), target="/model/parameter[@id='x']/@value"),
@@ -799,6 +800,12 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         obj = et.xpath("/model/parameter[@id='p1']")[0]
         self.assertEqual(float(obj.get('value')), expected_value)
+
+        change.math = 'c'
+        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None, variable_values=variable_values)
+        obj = et.xpath("/model/parameter[@id='p1']")[0]
+        self.assertEqual(float(obj.get('value')), 2)
+        change.math = 'a * x + b * y'
 
         change.target = "/model/parameter[@type='parameter']/@value"
         et = etree.parse(in_file)
