@@ -460,7 +460,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
             if change.symbol:
                 raise NotImplementedError('Set value changes of symbols is not supported.')
 
-            attr_change = ModelAttributeChange(target=change.target, new_value=str(new_value))
+            attr_change = ModelAttributeChange(target=change.target, target_namespaces=change.target_namespaces, new_value=str(new_value))
 
             if apply_xml_model_changes:
                 model = Model(changes=[attr_change])
