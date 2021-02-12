@@ -456,11 +456,15 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                 variable_values[variable.id] = get_value_of_variable_model_xml_targets(variable, model_etrees)
 
             new_value = calc_compute_model_change_new_value(change, variable_values=variable_values, range_values=current_range_values)
+            if new_value == int(new_value):                
+                new_value = str(int(new_value))
+            else:
+                new_value = str(new_value)
 
             if change.symbol:
                 raise NotImplementedError('Set value changes of symbols is not supported.')
 
-            attr_change = ModelAttributeChange(target=change.target, target_namespaces=change.target_namespaces, new_value=str(new_value))
+            attr_change = ModelAttributeChange(target=change.target, target_namespaces=change.target_namespaces, new_value=new_value)
 
             if apply_xml_model_changes:
                 model = Model(changes=[attr_change])
