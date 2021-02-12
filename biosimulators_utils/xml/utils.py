@@ -159,10 +159,14 @@ def eval_xpath(element, xpath, namespaces):
     try:
         return element.xpath(xpath, namespaces=namespaces)
     except lxml.etree.XPathEvalError as exception:
-        exception.args = (
-            'XPATH `{}` is invalid with these namespaces:\n  {}\n\n  {}'.format(
+        if namespaces:
+            msg = 'XPATH `{}` is invalid with these namespaces:\n  {}\n\n  {}'.format(
                 xpath,
                 '\n  '.join(' - {}: {}'.format(prefix, uri) for prefix, uri in namespaces.items()),
                 exception.args[0].replace('\n', '\n  ')),
-        )
+        else:
+            msg = 'XPATH `{}` is invalid without namespaces:\n\n  {}'.format(
+                xpath, exception.args[0].replace('\n', '\n  ')),
+
+        exception.args = (msg)
         raise

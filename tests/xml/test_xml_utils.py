@@ -173,7 +173,7 @@ class XmlUtilsTestCase(unittest.TestCase):
                 '/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species'
             ], namespaces, 'id')
 
-    def test_eval_xpath(self):        
+    def test_eval_xpath(self):
         root = etree.parse(self.XML_FILENAME).getroot()
 
         utils.eval_xpath(root, '/sbml:sbml/sbml:model', {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
@@ -181,3 +181,6 @@ class XmlUtilsTestCase(unittest.TestCase):
 
         with self.assertRaisesRegex(etree.XPathEvalError, 'Undefined namespace prefix'):
             utils.eval_xpath(root, '/sbml2:sbml/sbml2:model', {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
+
+        with self.assertRaisesRegex(etree.XPathEvalError, 'without namespaces'):
+            utils.eval_xpath(root, '/sbml2:sbml/sbml2:model', {})
