@@ -220,6 +220,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             with StandardOutputErrorCapturer(relay=verbose) as captured:
                 try:
                     if log.outputs[output.id].status == Status.SUCCEEDED:
+                        output_status = log.outputs[output.id].status
+                        print(' ' + termcolor.colored(output_status.value.lower(), Colors[output_status.value.lower()].value))
                         continue
 
                     if isinstance(output, Report):
