@@ -415,7 +415,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             new_value = calc_compute_model_change_new_value(change, variable_values=iter_variable_values, range_values=range_values)
             if new_value == int(new_value):
                 new_value = str(int(new_value))
-            else:                
+            else:
                 new_value = str(new_value)
 
             # get object to change

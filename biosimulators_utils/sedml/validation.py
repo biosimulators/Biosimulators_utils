@@ -214,7 +214,7 @@ def validate_doc(doc, validate_semantics=True):
         functional_range_graph = networkx.DiGraph()
         for task in doc.tasks:
             if isinstance(task, RepeatedTask):
-                for i_range, range in enumerate(task.ranges):
+                for range in task.ranges:
                     if isinstance(range, FunctionalRange):
                         if not range.range:
                             msg = ('Functional ranges must reference another range. '
@@ -240,7 +240,8 @@ def validate_doc(doc, validate_semantics=True):
                                 raise ValueError('Variables of functional ranges should define a symbol or target, not both')
 
                         if not range.math:
-                            raise ValueError('Functional ranges must have math. Functional range `{}` does not have math.')
+                            msg = 'Functional ranges must have math. Functional range `{}` does not have math.'.format(range.id)
+                            raise ValueError(msg)
 
                         functional_range_graph.add_node(range.id)
                         functional_range_graph.add_edge(range.id, range.range.id)
@@ -261,7 +262,7 @@ def validate_doc(doc, validate_semantics=True):
                     raise ValueError('Repeated tasks must have main ranges. Repeated task `{}` does not have a main range.'.format(task.id))
                 main_range_len = get_range_len(task.range)
 
-                for i_range, range in enumerate(task.ranges):
+                for range in task.ranges:
                     range_len = get_range_len(range)
                     if range_len < main_range_len:
                         msg = (
