@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.13. biosimulators_utils.xml package &#8212; BioSimulators utils 0.1.37 documentation</title>
+    <title>2.1.13. biosimulators_utils.xml package &#8212; BioSimulators utils 0.1.38 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -149,14 +149,36 @@
 </dd>
 </dl>
 <dl class="py function">
+<dt id="biosimulators_utils.xml.utils.eval_xpath">
+<code class="sig-prename descclassname">biosimulators_utils.xml.utils.</code><code class="sig-name descname">eval_xpath</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">element</span></em>, <em class="sig-param"><span class="n">xpath</span></em>, <em class="sig-param"><span class="n">namespaces</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/xml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.xml.utils.eval_xpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the object(s) at an XPATH</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">etree._ElementTree</span></code>) – element tree</p></li>
+<li><p><strong>xpath</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – XPATH</p></li>
+<li><p><strong>namespaces</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>) – dictionary that maps the prefixes of namespaces to their URIs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>object(s) at the XPATH</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">etree._ElementTree</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="biosimulators_utils.xml.utils.get_attributes_of_xpaths">
-<code class="sig-prename descclassname">biosimulators_utils.xml.utils.</code><code class="sig-name descname">get_attributes_of_xpaths</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">x_paths</span></em>, <em class="sig-param"><span class="n">attr</span><span class="o">=</span><span class="default_value">'id'</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/xml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.xml.utils.get_attributes_of_xpaths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the number of objects that match each XPath in an XML file.</p>
+<code class="sig-prename descclassname">biosimulators_utils.xml.utils.</code><code class="sig-name descname">get_attributes_of_xpaths</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">x_paths</span></em>, <em class="sig-param"><span class="n">namespaces</span></em>, <em class="sig-param"><span class="n">attr</span><span class="o">=</span><span class="default_value">'id'</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/xml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.xml.utils.get_attributes_of_xpaths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the values of the attributes of the objects that match each XPATH</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to XML file</p></li>
 <li><p><strong>x_paths</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <cite>str</cite>) – XPaths</p></li>
+<li><p><strong>namespaces</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>) – dictionary that maps the prefixes of namespaces to their URIs</p></li>
 <li><p><strong>attr</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – attribute to get values of</p></li>
 </ul>
 </dd>
@@ -209,13 +231,14 @@
 
 <dl class="py function">
 <dt id="biosimulators_utils.xml.utils.validate_xpaths_ref_to_unique_objects">
-<code class="sig-prename descclassname">biosimulators_utils.xml.utils.</code><code class="sig-name descname">validate_xpaths_ref_to_unique_objects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">x_paths</span></em>, <em class="sig-param"><span class="n">attr</span><span class="o">=</span><span class="default_value">'id'</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/xml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.xml.utils.validate_xpaths_ref_to_unique_objects" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">biosimulators_utils.xml.utils.</code><code class="sig-name descname">validate_xpaths_ref_to_unique_objects</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">x_paths</span></em>, <em class="sig-param"><span class="n">namespaces</span></em>, <em class="sig-param"><span class="n">attr</span><span class="o">=</span><span class="default_value">'id'</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/xml/utils.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.xml.utils.validate_xpaths_ref_to_unique_objects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate that each of a list of XPaths matches a single object in an XML file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to XML file</p></li>
-<li><p><strong>x_paths</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <cite>str</cite>) – XPaths</p></li>
+<li><p><strong>x_paths</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <cite>str</cite>) – XPATHs</p></li>
+<li><p><strong>namespaces</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>) – dictionary that maps the prefixes of namespaces to their URIs</p></li>
 <li><p><strong>attr</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – attribute to get values of</p></li>
 </ul>
 </dd>
