@@ -477,7 +477,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
         sub_tasks = sorted(task.sub_tasks, key=lambda sub_task: sub_task.order)
 
         # execute the sub-tasks and record their results
-        for sub_task in sub_tasks:
+        for i_sub_task, sub_task in enumerate(sub_tasks):
             if isinstance(sub_task.task, Task):
                 if apply_xml_model_changes:
                     model = sub_task.task.model
@@ -507,7 +507,6 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                 raise NotImplementedError('Tasks of type {} are not supported.'.format(sub_task.task.__class__.__name__))
 
             for var in task_vars:
-                i_sub_task = task.sub_tasks.index(sub_task)
                 variable_results[var.id][i_main_range][i_sub_task] = sub_task_var_results.get(var.id, None)
 
     # shape results to consistent size
