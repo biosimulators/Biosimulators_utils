@@ -326,7 +326,7 @@ def get_summary_combine_archive_log(log):
     n_tasks = 0
     n_outputs = 0
 
-    archive_status_count = {
+    sed_doc_status_count = {
         Status.SUCCEEDED: 0,
         Status.SKIPPED: 0,
         Status.FAILED: 0,
@@ -346,7 +346,7 @@ def get_summary_combine_archive_log(log):
     }
     for doc_log in log.sed_documents.values():
         n_archives += 1
-        archive_status_count[doc_log.status] += 1
+        sed_doc_status_count[doc_log.status] += 1
         if doc_log.tasks is not None:
             tasks_logged = True
             for task_log in doc_log.tasks.values():
@@ -359,11 +359,11 @@ def get_summary_combine_archive_log(log):
                 output_status_count[output_log.status if output_log else None] += 1
 
     msg = ''
-    msg += 'Executed {} COMBINE/OMEX archives:\n'.format(n_archives)
-    msg += '  Archives ({}):\n'.format(n_archives)
-    msg += '    Succeeded: {}\n'.format(archive_status_count[Status.SUCCEEDED])
-    msg += '    Skipped: {}\n'.format(archive_status_count[Status.SKIPPED])
-    msg += '    Failed: {}\n'.format(archive_status_count[Status.FAILED])
+    msg += 'Executed {} SED documents:\n'.format(n_archives)
+    msg += '  SED documents ({}):\n'.format(n_archives)
+    msg += '    Succeeded: {}\n'.format(sed_doc_status_count[Status.SUCCEEDED])
+    msg += '    Skipped: {}\n'.format(sed_doc_status_count[Status.SKIPPED])
+    msg += '    Failed: {}\n'.format(sed_doc_status_count[Status.FAILED])
 
     if tasks_logged:
         msg += '  Tasks ({}):\n'.format(n_tasks)
