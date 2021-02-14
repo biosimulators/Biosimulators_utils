@@ -25,10 +25,10 @@ def validate_biosimulations_api_response(response, failure_introductory_message)
         error_messages = []
         for error in response.json()['error']:
             pointer = error.get('source', {}).get('pointer', None)
-            error_messages.append('{} ({}):{}\n{}'.format(
+            error_messages.append('{} ({}):{}{}'.format(
                 error['title'], error['status'],
                 ' `{}` is not valid'.format(pointer) if pointer else '',
-                error['detail'],
+                '\n\n  ' + error['detail'].replace('\n', '\n  ') if error.get('detail', None) else '',
             ))
 
         error_message = '{}\n\n  - {}'.format(
