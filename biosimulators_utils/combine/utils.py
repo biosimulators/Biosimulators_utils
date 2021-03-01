@@ -35,7 +35,7 @@ def get_sedml_contents(archive, include_non_executing_docs=False):
 
     sedml_contents = []
     for content in potential_content:
-        if re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format):
+        if content.format and re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format):
             sedml_contents.append(content)
     sedml_contents.sort(key=lambda content: content.location)
 
