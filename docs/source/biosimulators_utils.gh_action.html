@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.4. biosimulators_utils.gh_action package &#8212; BioSimulators utils 0.1.39 documentation</title>
+    <title>2.1.4. biosimulators_utils.gh_action package &#8212; BioSimulators utils 0.1.40 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -150,12 +150,12 @@
 </dl>
 <dl class="py class">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.gh_action.core.</code><code class="sig-name descname">GitHubAction</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">biosimulators_utils.gh_action.core.</span></code><code class="sig-name descname"><span class="pre">GitHubAction</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>A GitHub continuous integration action</p>
 <dl class="py attribute">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.gh_auth">
-<code class="sig-name descname">gh_auth</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.gh_auth" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">gh_auth</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.gh_auth" title="Permalink to this definition">¶</a></dt>
 <dd><p>authorization for GitHub (user and access token</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -166,7 +166,7 @@
 
 <dl class="py attribute">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.gh_repo">
-<code class="sig-name descname">gh_repo</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.gh_repo" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">gh_repo</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.gh_repo" title="Permalink to this definition">¶</a></dt>
 <dd><p>owner and name of the repository which triggered the action</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -177,32 +177,32 @@
 
 <dl class="py attribute">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.GH_ACTION_RUN_URL">
-<code class="sig-name descname">GH_ACTION_RUN_URL</code><em class="property"> = 'https://github.com/{}/actions/runs/{}'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.GH_ACTION_RUN_URL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">GH_ACTION_RUN_URL</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'https://github.com/{}/actions/runs/{}'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.GH_ACTION_RUN_URL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.ISSUE_ASIGNEES_ENDPOINT">
-<code class="sig-name descname">ISSUE_ASIGNEES_ENDPOINT</code><em class="property"> = 'https://api.github.com/repos/{}/issues/{}/assignees'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_ASIGNEES_ENDPOINT" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ISSUE_ASIGNEES_ENDPOINT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'https://api.github.com/repos/{}/issues/{}/assignees'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_ASIGNEES_ENDPOINT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.ISSUE_COMMENTS_ENDPOINT">
-<code class="sig-name descname">ISSUE_COMMENTS_ENDPOINT</code><em class="property"> = 'https://api.github.com/repos/{}/issues/{}/comments'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_COMMENTS_ENDPOINT" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ISSUE_COMMENTS_ENDPOINT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'https://api.github.com/repos/{}/issues/{}/comments'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_COMMENTS_ENDPOINT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.ISSUE_ENDPOINT">
-<code class="sig-name descname">ISSUE_ENDPOINT</code><em class="property"> = 'https://api.github.com/repos/{}/issues/{}'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_ENDPOINT" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ISSUE_ENDPOINT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'https://api.github.com/repos/{}/issues/{}'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_ENDPOINT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.ISSUE_LABELS_ENDPOINT">
-<code class="sig-name descname">ISSUE_LABELS_ENDPOINT</code><em class="property"> = 'https://api.github.com/repos/{}/issues/{}/labels'</em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_LABELS_ENDPOINT" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ISSUE_LABELS_ENDPOINT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'https://api.github.com/repos/{}/issues/{}/labels'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_LABELS_ENDPOINT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.add_comment_to_issue">
-<em class="property">classmethod </em><code class="sig-name descname">add_comment_to_issue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em>, <em class="sig-param"><span class="n">comment</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.add_comment_to_issue" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">add_comment_to_issue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.add_comment_to_issue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Post a comment to the GitHub issue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -216,7 +216,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.add_error_comment_to_issue">
-<em class="property">classmethod </em><code class="sig-name descname">add_error_comment_to_issue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em>, <em class="sig-param"><span class="n">comments</span></em>, <em class="sig-param"><span class="n">raise_error</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.add_error_comment_to_issue" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">add_error_comment_to_issue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.add_error_comment_to_issue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Post an error to the GitHub issue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -234,7 +234,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.add_labels_to_issue">
-<em class="property">classmethod </em><code class="sig-name descname">add_labels_to_issue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em>, <em class="sig-param"><span class="n">labels</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.add_labels_to_issue" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">add_labels_to_issue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.add_labels_to_issue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add one or more labels to an issue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -248,7 +248,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.assign_issue">
-<em class="property">classmethod </em><code class="sig-name descname">assign_issue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em>, <em class="sig-param"><span class="n">users</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.assign_issue" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">assign_issue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">users</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.assign_issue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assign an issue to a list of users</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -262,7 +262,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.close_issue">
-<em class="property">classmethod </em><code class="sig-name descname">close_issue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.close_issue" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">close_issue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.close_issue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close a GitHub issue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -273,7 +273,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.format_error_comment">
-<em class="property">classmethod </em><code class="sig-name descname">format_error_comment</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">comment</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.format_error_comment" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">format_error_comment</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comment</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.format_error_comment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format comment to display as error</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -290,7 +290,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.get_data_in_issue">
-<em class="property">static </em><code class="sig-name descname">get_data_in_issue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_data_in_issue" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_data_in_issue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_data_in_issue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the YAML-structured data in an issue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -307,7 +307,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_id">
-<em class="property">static </em><code class="sig-name descname">get_gh_action_run_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_id" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_gh_action_run_id</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the id for the current GitHub action run</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -321,7 +321,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_url">
-<em class="property">classmethod </em><code class="sig-name descname">get_gh_action_run_url</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_url" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">get_gh_action_run_url</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the URL for a GitHub action run</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -335,7 +335,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.get_gh_auth">
-<em class="property">static </em><code class="sig-name descname">get_gh_auth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_auth" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_gh_auth</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_auth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get authorization for GitHub</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -349,7 +349,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.get_gh_repo">
-<em class="property">static </em><code class="sig-name descname">get_gh_repo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_repo" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_gh_repo</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_repo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the owner and name of the repository which triggered the action</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -363,7 +363,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.get_issue">
-<em class="property">classmethod </em><code class="sig-name descname">get_issue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_issue" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">get_issue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_issue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the properties of the GitHub issue for the submission</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -380,7 +380,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.get_issue_number">
-<em class="property">static </em><code class="sig-name descname">get_issue_number</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_issue_number" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_issue_number</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_issue_number" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the number of the issue which triggered the action</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -394,7 +394,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.get_labels_for_issue">
-<em class="property">classmethod </em><code class="sig-name descname">get_labels_for_issue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_labels_for_issue" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">get_labels_for_issue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_labels_for_issue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the labels for an issue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -411,7 +411,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.remove_label_from_issue">
-<em class="property">classmethod </em><code class="sig-name descname">remove_label_from_issue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em>, <em class="sig-param"><span class="n">label</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.remove_label_from_issue" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">remove_label_from_issue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.remove_label_from_issue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a label from an issue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -425,7 +425,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.reset_issue_labels">
-<em class="property">classmethod </em><code class="sig-name descname">reset_issue_labels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">issue_number</span></em>, <em class="sig-param"><span class="n">labels_to_remove</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.reset_issue_labels" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">reset_issue_labels</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels_to_remove</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.reset_issue_labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset the labels for an issue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -439,19 +439,19 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubAction.run">
-<em class="property">abstract </em><code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.run" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.run" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt id="biosimulators_utils.gh_action.core.GitHubActionErrorHandling">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.gh_action.core.</code><code class="sig-name descname">GitHubActionErrorHandling</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">biosimulators_utils.gh_action.core.</span></code><code class="sig-name descname"><span class="pre">GitHubActionErrorHandling</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Methods for handing errors in the execution of GitHu actions</p>
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubActionErrorHandling.catch_errors">
-<em class="property">classmethod </em><code class="sig-name descname">catch_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uncaught_exception_msg_func</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">caught_error_labels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">uncaught_error_labels</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling.catch_errors" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">catch_errors</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uncaught_exception_msg_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caught_error_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncaught_error_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling.catch_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generator for a decorator for CI actions that catches errors and reports them as comments to an issue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -466,7 +466,7 @@
 
 <dl class="py method">
 <dt id="biosimulators_utils.gh_action.core.GitHubActionErrorHandling.get_uncaught_exception_msg">
-<code class="sig-name descname">get_uncaught_exception_msg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling.get_uncaught_exception_msg" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_uncaught_exception_msg</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling.get_uncaught_exception_msg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an error message to display to users for all exceptions not caught during the
 exception of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code> method for a GitHub action workflow (exceptions of all types
 except <code class="xref py py-obj docutils literal notranslate"><span class="pre">GitHubActionCaughtError</span></code>)</p>
@@ -506,12 +506,12 @@ method for the workflow</p>
 </dl>
 <dl class="py class">
 <dt id="biosimulators_utils.gh_action.data_model.Comment">
-<em class="property">class </em><code class="sig-prename descclassname">biosimulators_utils.gh_action.data_model.</code><code class="sig-name descname">Comment</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">error</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.data_model.Comment" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">biosimulators_utils.gh_action.data_model.</span></code><code class="sig-name descname"><span class="pre">Comment</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.data_model.Comment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A comment on an issue</p>
 <dl class="py attribute">
 <dt id="biosimulators_utils.gh_action.data_model.Comment.text">
-<code class="sig-name descname">text</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.data_model.Comment.text" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">text</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.data_model.Comment.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>text</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -522,7 +522,7 @@ method for the workflow</p>
 
 <dl class="py attribute">
 <dt id="biosimulators_utils.gh_action.data_model.Comment.error">
-<code class="sig-name descname">error</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.data_model.Comment.error" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">error</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.data_model.Comment.error" title="Permalink to this definition">¶</a></dt>
 <dd><p>if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, format as error</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -535,7 +535,7 @@ method for the workflow</p>
 
 <dl class="py exception">
 <dt id="biosimulators_utils.gh_action.data_model.GitHubActionCaughtError">
-<em class="property">exception </em><code class="sig-prename descclassname">biosimulators_utils.gh_action.data_model.</code><code class="sig-name descname">GitHubActionCaughtError</code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/data_model.py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosimulators_utils.gh_action.data_model.GitHubActionCaughtError" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">biosimulators_utils.gh_action.data_model.</span></code><code class="sig-name descname"><span class="pre">GitHubActionCaughtError</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.data_model.GitHubActionCaughtError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.exceptions.BioSimulatorsException" title="biosimulators_utils.exceptions.BioSimulatorsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.exceptions.BioSimulatorsException</span></code></a></p>
 <p>An error caught during the execution of a GitHub action</p>
 </dd></dl>
