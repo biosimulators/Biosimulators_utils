@@ -16,11 +16,9 @@ from ..report.data_model import VariableResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import (SedDocument, Task, Output, Report, DataSet, Plot2D, Curve,  # noqa: F401
                                 Plot3D, Surface, Variable)
 from ..sedml.io import SedmlSimulationReader  # noqa: F401
-from ..warnings import warn
-from .exceptions import CombineArchiveExecutionError
+from .exceptions import CombineArchiveExecutionError, NoSedmlError
 from .io import CombineArchiveReader
 from .utils import get_sedml_contents, get_summary_sedml_contents
-from .warnings import NoSedmlWarning
 import datetime
 import glob
 import os
@@ -116,7 +114,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
     # determine files to execute
     sedml_contents = get_sedml_contents(archive)
     if not sedml_contents:
-        warn("COMBINE/OMEX archive '{}' does not contain any executing SED-ML files".format(archive_filename), NoSedmlWarning)
+        msg = "COMBINE/OMEX archive '{}' does not contain any executing SED-ML files".format(archive_filename)
+        raise NoSedmlError(msg)
 
     # print summary of SED documents
     print(get_summary_sedml_contents(archive, archive_tmp_dir))

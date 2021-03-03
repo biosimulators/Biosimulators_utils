@@ -10,9 +10,15 @@ from ..exceptions import BioSimulatorsException
 
 __all__ = [
     'CombineArchiveExecutionError',
+    'NoSedmlError',
 ]
 
 
 class CombineArchiveExecutionError(BioSimulatorsException):
     """ Error that a SED document could not be executed """
+    pass  # pragma: no cover
+
+
+class NoSedmlError(BioSimulatorsException):
+    """ Error that a COMBINE/OMEX archive does not contain any SED-ML files """
     pass  # pragma: no cover

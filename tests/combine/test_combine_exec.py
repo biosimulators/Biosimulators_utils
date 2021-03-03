@@ -1,9 +1,8 @@
 from biosimulators_utils.archive.io import ArchiveReader
 from biosimulators_utils.combine import exec
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent
-from biosimulators_utils.combine.exceptions import CombineArchiveExecutionError
+from biosimulators_utils.combine.exceptions import CombineArchiveExecutionError, NoSedmlError
 from biosimulators_utils.combine.io import CombineArchiveWriter
-from biosimulators_utils.combine.warnings import NoSedmlWarning
 from biosimulators_utils.log import utils as log_utils
 from biosimulators_utils.log.warnings import StandardOutputNotLoggedWarning
 from biosimulators_utils.plot.data_model import PlotFormat
@@ -87,7 +86,7 @@ class ExecCombineTestCase(unittest.TestCase):
 
         archive.contents[0].format = 'unknown'
         CombineArchiveWriter().run(archive, in_dir, archive_filename)
-        with self.assertWarnsRegex(NoSedmlWarning, 'does not contain any executing SED-ML files'):
+        with self.assertRaisesRegex(NoSedmlError, 'does not contain any executing SED-ML files'):
             with mock.patch('biosimulators_utils.sedml.exec.exec_sed_doc', side_effect=exec_sed_doc):
                 sed_doc_executer = functools.partial(exec_sed_doc, sed_task_executer)
                 exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,

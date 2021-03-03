@@ -6,12 +6,4 @@
 :License: MIT
 """
 
-from ..warnings import BioSimulatorsWarning
-
-
-__all__ = ['NoSedmlWarning']
-
-
-class NoSedmlWarning(BioSimulatorsWarning):
-    """ Warning that a COMBINE/OMEX archive does not contain any SED-ML files """
-    pass  # pragma: no cover
+__all__ = []
