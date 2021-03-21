@@ -121,8 +121,6 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         if plot_formats is None:
             plot_formats = [PlotFormat(format_value) for format_value in config.PLOT_FORMATS]
 
-        archive = CombineArchive()
-        archive_tmp_dir = None
         try:
             # create temporary directory to unpack archive
             archive_tmp_dir = tempfile.mkdtemp()
@@ -140,9 +138,15 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             print(get_summary_sedml_contents(archive, archive_tmp_dir))
 
         except Exception as exception:
+            print('Simulation experiments could not be read from the COMBINE archive')
+
+            archive = CombineArchive()
+            archive_tmp_dir = None
+
             log = init_combine_archive_log(archive, archive_tmp_dir,
                                            supported_features=supported_features,
                                            logged_features=logged_features)
+
             log.status = Status.FAILED
             log.out_dir = out_dir
             log.exception = exception
