@@ -727,7 +727,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         model_filename = os.path.join(self.tmp_dir, 'model_1.xml')
         with open(model_filename, 'w') as file:
             file.write('<model>')
-            file.write('<parameter id="x" value="2.0" strValue="a value" />')
+            file.write('<parameter id="x" value="2.0" strValue="a value" qual:attrA="2.3" xmlns:qual="https://qual.sbml.org" />')
             file.write('<parameter id="y" value="3.0" />')
             file.write('</model>')
         models = {
@@ -760,6 +760,11 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         change.variables[0].symbol = None
         self.assertEqual(utils.get_value_of_variable_model_xml_targets(change.variables[0], models), 2.0)
         self.assertEqual(utils.get_value_of_variable_model_xml_targets(change.variables[1], models), 3.0)
+
+        var = data_model.Variable(id='var', model=data_model.Model(id='model_1'), 
+            target="/model/parameter[@id='x']/@qual:attrA", 
+            target_namespaces={'qual': 'https://qual.sbml.org'})
+        self.assertEqual(utils.get_value_of_variable_model_xml_targets(var, models), 2.3)
 
         doc = data_model.SedDocument(models=[change.variables[0].model, change.variables[1].model])
 

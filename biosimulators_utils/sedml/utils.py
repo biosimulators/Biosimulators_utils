@@ -505,6 +505,10 @@ def get_value_of_variable_model_xml_targets(variable, model_etrees):
     if len(obj) != 1:
         raise ValueError('xpath {} must match a single object in model {}'.format(obj_xpath, variable.model.id))
 
+    ns, _, attr = attr.rpartition(':')
+    if ns:
+        attr = '{{{}}}{}'.format(variable.target_namespaces[ns], attr)
+
     value = obj[0].get(attr)
     if value is None:
         raise ValueError('Target `{}` is not defined in model `{}`.'.format(variable.target, variable.model.id))
@@ -1070,7 +1074,6 @@ def get_xml_node_namespace_tag_target(etree, target_namespaces=None):
             * :obj:`str`: tag
             * :obj:`str`: target for use with SED target XPATHs
             * :obj:`dict`: dictionary that maps the prefixes of namespaces to their URIs
-            * :obj:`str`, optional: default namespace prefix
     """
     target_namespaces = dict(target_namespaces or {})
     uri, _, tag = etree.tag.rpartition('}')
