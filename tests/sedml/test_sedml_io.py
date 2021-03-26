@@ -522,7 +522,6 @@ class IoTestCase(unittest.TestCase):
 
         filename = os.path.join(self.tmp_dir, 'test.xml')
         io.SedmlSimulationWriter().run(document, filename)
-        self._replace_uniform_range_number_points_with_number_of_steps(filename)
 
         document2 = io.SedmlSimulationReader().run(filename)
         self.assertTrue(document.is_equal(document2))
@@ -530,13 +529,11 @@ class IoTestCase(unittest.TestCase):
         document2.metadata.license.namespace = None
         document2.metadata.license.url = None
         io.SedmlSimulationWriter().run(document2, filename)
-        self._replace_uniform_range_number_points_with_number_of_steps(filename)
         document3 = io.SedmlSimulationReader().run(filename)
         self.assertTrue(document2.is_equal(document3))
 
         document3.metadata = None
         io.SedmlSimulationWriter().run(document3, filename)
-        self._replace_uniform_range_number_points_with_number_of_steps(filename)
         document4 = io.SedmlSimulationReader().run(filename)
         self.assertTrue(document4.is_equal(document3))
 
@@ -549,14 +546,6 @@ class IoTestCase(unittest.TestCase):
         document.models[0].changes[4].new_elements = '<parameter id="new_parameter" value="1.0/>'
         with self.assertRaisesRegex(ValueError, 'not valid XML'):
             io.SedmlSimulationWriter().run(document, filename)
-
-    def _replace_uniform_range_number_points_with_number_of_steps(self, filename):
-        # TODO: remove once numberOfPoints issue is fixed with libSED-ML
-        with open(filename, 'r') as file:
-            document = file.read()
-        document = re.sub(r'<uniformRange ([^>]*)numberOfPoints=', r'<uniformRange \1numberOfSteps=', document)
-        with open(filename, 'w') as file:
-            file.write(document)
 
     def _set_target_namespaces(self, document):
         for model in document.models:
@@ -713,7 +702,6 @@ class IoTestCase(unittest.TestCase):
 
         filename = os.path.join(self.tmp_dir, 'test.xml')
         io.SedmlSimulationWriter().run(document, filename)
-        self._replace_uniform_range_number_points_with_number_of_steps(filename)
 
         with self.assertRaisesRegex(NotImplementedError, 'is not supported'):
             io.SedmlSimulationReader().run(filename)
