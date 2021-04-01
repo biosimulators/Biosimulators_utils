@@ -7,15 +7,6 @@
 # BioSimulators utils
 Utilities for building standardized command-line interfaces for biosimulation tools that support the [Simulation Experiment Description Markup Language](https://sed-ml.org/) (SED-ML) and the [COMBINE/OMEX format](https://combinearchive.org/).
 
-## Contents
-* [Installation](#installation)
-* [API documentation](#api-documentation)
-* [License](#license)
-* [Development team](#development-team)
-* [Contributing to BioSimulators utils](#contributing-to-biosimulators-utils)
-* [Acknowledgements](#acknowledgements)
-* [Questions and comments](#questions-and-comments)
-
 ## Installation
 
 ### Requirements
