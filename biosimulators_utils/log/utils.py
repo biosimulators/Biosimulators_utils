@@ -270,7 +270,7 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
 
     Attributes:
         disabled (:obj:`bool`): whether to capture standard output and error
-        _captured (:obj:`capturer.CaptureOutput`)        
+        _captured (:obj:`capturer.CaptureOutput`)
     """
 
     def __init__(self, relay=False, disabled=False):
