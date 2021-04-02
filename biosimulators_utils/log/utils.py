@@ -269,16 +269,19 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
     standard output/error).
 
     Attributes:
-        _captured (:obj:`capturer.CaptureOutput`)
+        disabled (:obj:`bool`): whether to capture standard output and error
+        _captured (:obj:`capturer.CaptureOutput`)        
     """
 
-    def __init__(self, relay=False):
+    def __init__(self, relay=False, disabled=False):
         """
         Args:
             relay (:obj:`bool`): if :obj:`True`, collect the standard output/error streams and continue to pass
                 them along. if :obj:`False`, collect the stream, squash them, and do not pass them along.
+            disabled (:obj:`bool`, optional): whether to capture standard output and error
         """
-        if capturer:
+        self.disabled = disabled
+        if not self.disabled and capturer:
             self._captured = capturer.CaptureOutput(merged=True, relay=relay)
         else:
             msg = (
@@ -290,13 +293,13 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
 
     def __enter__(self):
         """ Enter a context """
-        if capturer:
+        if not self.disabled and capturer:
             self._captured.start_capture()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         """ Exit a context """
-        if capturer:
+        if not self.disabled and capturer:
             self._captured.finish_capture()
 
     def get_text(self):
@@ -305,7 +308,7 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
         Returns:
             :obj:`str`: captured standard output/error
         """
-        if capturer:
+        if not self.disabled and capturer:
             return self._captured.get_bytes().decode()
         else:
             return None
