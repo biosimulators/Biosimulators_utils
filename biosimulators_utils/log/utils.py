@@ -29,6 +29,7 @@ __all__ = [
     'init_report_log',
     'init_plot2d_log',
     'init_plot3d_log',
+    'StandardOutputErrorCapturer',
     'get_summary_combine_archive_log',
 ]
 
