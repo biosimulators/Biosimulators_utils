@@ -116,6 +116,8 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(
                 args.extend(['--user', str(os.getuid())])
             else:
                 raise NotImplementedError('The current user id can only be retrieved for POSIX OSes')
+        elif user_to_exec_within_container == '_SUDO_':
+            args.insert(0, 'sudo')
         else:
             args.extend(['--user', user_to_exec_within_container])
 
