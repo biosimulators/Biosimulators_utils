@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.6. biosimulators_utils.log package &#8212; BioSimulators utils 0.1.44 documentation</title>
+    <title>2.1.6. biosimulators_utils.log package &#8212; BioSimulators utils 0.1.45 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -1173,6 +1173,65 @@ output</p>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
+<dl class="py class">
+<dt id="biosimulators_utils.log.utils.StandardOutputErrorCapturer">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">biosimulators_utils.log.utils.</span></code><code class="sig-name descname"><span class="pre">StandardOutputErrorCapturer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.log.utils.StandardOutputErrorCapturer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">contextlib.AbstractContextManager</span></code></p>
+<p>Context manager for capturing standard output/error. When <code class="xref py py-obj docutils literal notranslate"><span class="pre">capturer</span></code> is available (i.e.,
+Linux, MacOS, Unix), <code class="xref py py-obj docutils literal notranslate"><span class="pre">capturer</span></code> is used to capture standard output/error. When <code class="xref py py-obj docutils literal notranslate"><span class="pre">capturer</span></code> is not
+available (i.e. Windows), this context manager issues a warn and collects no output. The purpose of this
+context manager is to encapsulate the handling of whether <code class="xref py py-obj docutils literal notranslate"><span class="pre">capturer</span></code> is or isn’t available so
+that the other modules can work seamless in Linux, as well as Windows (except without the ability to log
+standard output/error).</p>
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.utils.StandardOutputErrorCapturer.disabled">
+<code class="sig-name descname"><span class="pre">disabled</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.log.utils.StandardOutputErrorCapturer.disabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>whether to capture standard output and error</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="biosimulators_utils.log.utils.StandardOutputErrorCapturer._captured">
+<code class="sig-name descname"><span class="pre">_captured</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.log.utils.StandardOutputErrorCapturer._captured" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">capturer.CaptureOutput</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.log.utils.StandardOutputErrorCapturer.__enter__">
+<code class="sig-name descname"><span class="pre">__enter__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.log.utils.StandardOutputErrorCapturer.__enter__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enter a context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.log.utils.StandardOutputErrorCapturer.__exit__">
+<code class="sig-name descname"><span class="pre">__exit__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traceback</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.log.utils.StandardOutputErrorCapturer.__exit__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exit a context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="biosimulators_utils.log.utils.StandardOutputErrorCapturer.get_text">
+<code class="sig-name descname"><span class="pre">get_text</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.log.utils.StandardOutputErrorCapturer.get_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the captured standard output/error</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>captured standard output/error</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt id="biosimulators_utils.log.utils.get_summary_combine_archive_log">
 <code class="sig-prename descclassname"><span class="pre">biosimulators_utils.log.utils.</span></code><code class="sig-name descname"><span class="pre">get_summary_combine_archive_log</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/log/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.log.utils.get_summary_combine_archive_log" title="Permalink to this definition">¶</a></dt>
