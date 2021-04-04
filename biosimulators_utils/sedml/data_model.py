@@ -17,6 +17,7 @@ import numpy  # noqa: F401
 
 __all__ = [
     'ModelLanguage',
+    'ModelLanguagePattern',
     'Symbol',
     'SedDocument',
     'Simulation',
@@ -63,6 +64,15 @@ class ModelLanguage(str, enum.Enum):
     CellML = 'urn:sedml:language:cellml'
     NeuroML = 'urn:sedml:language:neuroml'
     SBML = 'urn:sedml:language:sbml'
+    VCML = 'urn:sedml:language:vcml'
+
+
+class ModelLanguagePattern(str, enum.Enum):
+    """ Model language """
+    BNGL = 'urn:sedml:language:bngl'
+    CellML = r'^urn:sedml:language:cellml(\.\d+_\d+)?$'
+    NeuroML = r'urn:sedml:language:neuroml(\.version-\d+_\d+_\d+\.level\-\d+)?$'
+    SBML = r'^urn:sedml:language:sbml(\.level\-\d+\.version\-\d+)$'
     VCML = 'urn:sedml:language:vcml'
 
 
