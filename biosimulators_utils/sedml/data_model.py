@@ -72,7 +72,7 @@ class ModelLanguagePattern(str, enum.Enum):
     BNGL = 'urn:sedml:language:bngl'
     CellML = r'^urn:sedml:language:cellml(\.\d+_\d+)?$'
     NeuroML = r'urn:sedml:language:neuroml(\.version-\d+_\d+_\d+\.level\-\d+)?$'
-    SBML = r'^urn:sedml:language:sbml(\.level\-\d+\.version\-\d+)$'
+    SBML = r'^urn:sedml:language:sbml(\.level\-\d+\.version\-\d+)?$'
     VCML = 'urn:sedml:language:vcml'
 
 
