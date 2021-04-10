@@ -6,17 +6,18 @@
 :License: MIT
 """
 
-from .data_model import ModelLanguagePattern, Simulation  # noqa: F401
+from .data_model import ModelLanguagePattern, ModelAttributeChange, Variable, Simulation  # noqa: F401
 import re
+import types  # noqa: F401
 
 
-__all__ = ['get_variables_for_simulation']
+__all__ = ['get_parameters_variables_for_simulation']
 
 
-def get_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id):
+def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm):
     """ Get the possible observables for a simulation of a model
 
-    This method supports the following formts
+    This method supports the following formats
 
     * SBML
     * SBML-fbc
@@ -26,10 +27,11 @@ def get_variables_for_simulation(model_filename, model_language, simulation_type
         model_filename (:obj:`str`): path to model file
         model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:sbml``)
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
-        algorithm_kisao_id (:obj:`str`): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
+        algorithm (:obj:`str`): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
 
     Returns:
+        :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
 
     Raises:
@@ -37,7 +39,8 @@ def get_variables_for_simulation(model_filename, model_language, simulation_type
     """
     if re.match(ModelLanguagePattern.SBML.value, model_language):
         import biosimulators_utils.sbml.utils  # imported here to only import libraries for required model languages
-        return biosimulators_utils.sbml.utils.get_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id)
+        return biosimulators_utils.sbml.utils.get_parameters_variables_for_simulation(
+            model_filename, model_language, simulation_type, algorithm)
 
     else:
         raise NotImplementedError(
