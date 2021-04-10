@@ -462,16 +462,22 @@ class ModelChange(abc.ABC):
     """ A change to a model
 
     Attributes:
+        id (:obj:`str`): id
+        name (:obj:`str`): name
         target (:obj:`str`): path to the model element that should be changed
         target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
     """
 
-    def __init__(self, target=None, target_namespaces=None):
+    def __init__(self, id=None, name=None, target=None, target_namespaces=None):
         """
         Args:
+            id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the model element that should be changed
             target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
         """
+        self.id = id
+        self.name = name
         self.target = target
         self.target_namespaces = target_namespaces or {}
 
@@ -494,6 +500,8 @@ class ModelChange(abc.ABC):
             :obj:`bool`: :obj:`True`, if two model changes are equal
         """
         return self.__class__ == other.__class__ \
+            and self.id == other.id \
+            and self.name == other.name \
             and self.target == other.target \
             and self.target_namespaces == other.target_namespaces
 
@@ -502,19 +510,23 @@ class ModelAttributeChange(ModelChange):
     """ A change of an attribute of a model
 
     Attributes:
+        id (:obj:`str`): id
+        name (:obj:`str`): name
         target (:obj:`str`): path to the model element that should be changed
         target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
         new_value (:obj:`str`): new value
     """
 
-    def __init__(self, target=None, target_namespaces=None, new_value=None):
+    def __init__(self, id=None, name=None, target=None, target_namespaces=None, new_value=None):
         """
         Args:
+            id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the model element that should be changed
             target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
             new_value (:obj:`str`, optional): new value
         """
-        super(ModelAttributeChange, self).__init__(target=target, target_namespaces=target_namespaces)
+        super(ModelAttributeChange, self).__init__(id=id, name=name, target=target, target_namespaces=target_namespaces)
         self.new_value = new_value
 
     def to_tuple(self):
@@ -523,7 +535,7 @@ class ModelAttributeChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target, self.target_namespaces, self.new_value)
+        return (self.id, self.name, self.target, self.target_namespaces, self.new_value)
 
     def is_equal(self, other):
         """ Determine if model attribute changes are equal
@@ -542,19 +554,23 @@ class AddElementModelChange(ModelChange):
     """ An addition of an element to a model
 
     Attributes:
+        id (:obj:`str`): id
+        name (:obj:`str`): name
         target (:obj:`str`): path to the parent of the new element(s)
         target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
         new_elements (:obj:`str`): new element(s)
     """
 
-    def __init__(self, target=None, target_namespaces=None, new_elements=None):
+    def __init__(self, id=None, name=None, target=None, target_namespaces=None, new_elements=None):
         """
         Args:
+            id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the parent of the new element(s)
             target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
             new_elements (:obj:`str`): new element(s)
         """
-        super(AddElementModelChange, self).__init__(target=target, target_namespaces=target_namespaces)
+        super(AddElementModelChange, self).__init__(id=id, name=name, target=target, target_namespaces=target_namespaces)
         self.new_elements = new_elements
 
     def to_tuple(self):
@@ -563,7 +579,7 @@ class AddElementModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target, self.target_namespaces, self.new_elements)
+        return (self.id, self.name, self.target, self.target_namespaces, self.new_elements)
 
     def is_equal(self, other):
         """ Determine if model changes are equal
@@ -582,19 +598,23 @@ class ReplaceElementModelChange(ModelChange):
     """ A replacement of an element of a model
 
     Attributes:
+        id (:obj:`str`): id
+        name (:obj:`str`): name
         target (:obj:`str`): path to the element to replace
         target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
         new_elements (:obj:`str`): new element(s)
     """
 
-    def __init__(self, target=None, target_namespaces=None, new_elements=None):
+    def __init__(self, id=None, name=None, target=None, target_namespaces=None, new_elements=None):
         """
         Args:
+            id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the element to replace
             target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
             new_elements (:obj:`str`): new element(s)
         """
-        super(ReplaceElementModelChange, self).__init__(target=target, target_namespaces=target_namespaces)
+        super(ReplaceElementModelChange, self).__init__(id=id, name=name, target=target, target_namespaces=target_namespaces)
         self.new_elements = new_elements
 
     def to_tuple(self):
@@ -603,7 +623,7 @@ class ReplaceElementModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target, self.target_namespaces, self.new_elements)
+        return (self.id, self.name, self.target, self.target_namespaces, self.new_elements)
 
     def is_equal(self, other):
         """ Determine if model changes are equal
@@ -622,6 +642,8 @@ class RemoveElementModelChange(ModelChange):
     """ A removal of an element from a model
 
     Attributes:
+        id (:obj:`str`): id
+        name (:obj:`str`): name
         target (:obj:`str`): path to the element to remove
     """
 
@@ -638,6 +660,8 @@ class ComputeModelChange(ModelChange):
     """ A replacement of an element of a model
 
     Attributes:
+        id (:obj:`str`): id
+        name (:obj:`str`): name
         target (:obj:`str`): path to the element to replace
         target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
         variables (:obj:`list` of :obj:`Variable`): variables
@@ -645,16 +669,18 @@ class ComputeModelChange(ModelChange):
         math (:obj:`str`): mathematical expression
     """
 
-    def __init__(self, target=None, target_namespaces=None, variables=None, parameters=None, math=None):
+    def __init__(self, id=None, name=None, target=None, target_namespaces=None, variables=None, parameters=None, math=None):
         """
         Args:
+            id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the element to replace
             target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
             variables (:obj:`list` of :obj:`Variable`, optional): variables
             parameters (:obj:`list` of :obj:`Parameter`, optional): parameters
             math (:obj:`str`, optional): mathematical expression
         """
-        super(ComputeModelChange, self).__init__(target=target, target_namespaces=target_namespaces)
+        super(ComputeModelChange, self).__init__(id=id, name=name, target=target, target_namespaces=target_namespaces)
         self.variables = variables or []
         self.parameters = parameters or []
         self.math = math
@@ -665,7 +691,7 @@ class ComputeModelChange(ModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target, self.target_namespaces,
+        return (self.id, self.name, self.target, self.target_namespaces,
                 tuple(none_sorted(variable.to_tuple() for variable in self.variables)),
                 tuple(none_sorted(parameter.to_tuple() for parameter in self.parameters)),
                 self.math)
@@ -689,6 +715,8 @@ class SetValueComputeModelChange(ComputeModelChange):
     """ A change that sets the value of an attribute of a model within an iteration of a repeated task
 
     Attributes:
+        id (:obj:`str`): id
+        name (:obj:`str`): name
         target (:obj:`str`): path to the element to replace
         target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
         variables (:obj:`list` of :obj:`Variable`): variables
@@ -699,10 +727,12 @@ class SetValueComputeModelChange(ComputeModelChange):
         symbol (:obj:`str`): symbol
     """
 
-    def __init__(self, target=None, target_namespaces=None, variables=None, parameters=None,
+    def __init__(self, id=None, name=None, target=None, target_namespaces=None, variables=None, parameters=None,
                  math=None, model=None, range=None, symbol=None):
         """
         Args:
+            id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
             target (:obj:`str`, optional): path to the element to replace
             target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
             variables (:obj:`list` of :obj:`Variable`, optional): variables
@@ -712,7 +742,7 @@ class SetValueComputeModelChange(ComputeModelChange):
             range (:obj:`Range`, optional): range
             symbol (:obj:`str`, optional): symbol
         """
-        super(ComputeModelChange, self).__init__(target=target, target_namespaces=target_namespaces)
+        super(ComputeModelChange, self).__init__(id=id, name=name, target=target, target_namespaces=target_namespaces)
         self.variables = variables or []
         self.parameters = parameters or []
         self.math = math
@@ -726,7 +756,7 @@ class SetValueComputeModelChange(ComputeModelChange):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.target, self.target_namespaces,
+        return (self.id, self.name, self.target, self.target_namespaces,
                 tuple(none_sorted(variable.to_tuple() for variable in self.variables)),
                 tuple(none_sorted(parameter.to_tuple() for parameter in self.parameters)),
                 self.math,
