@@ -118,7 +118,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 name=parameter.getName() or None,
                 target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='{}']/@value".format(param_id),
                 target_namespaces=namespaces,
-                new_value=str(parameter.getValue()),
+                new_value=format_float(parameter.getValue()),
             ))
 
         if has_flux:
@@ -184,7 +184,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
             if species.isSetInitialLevel():
                 params.append(ModelAttributeChange(
-                    id='initial_level_{}'.format(species_id),
+                    id='init_{}'.format(species_id),
                     name='initial level of {}'.format(species.getName() or species_id),
                     target=(
                         "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies"
@@ -211,11 +211,11 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
             if comp.isSetSize():
                 params.append(ModelAttributeChange(
-                    id='initial_size_{}'.format(comp.getId()),
+                    id='init_{}'.format(comp.getId()),
                     name='initial size of {}'.format(comp.getName() or comp.getId()),
                     target="/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='{}']/@size".format(comp_id),
                     target_namespaces=namespaces,
-                    new_value=str(comp.getSize()),
+                    new_value=format_float(comp.getSize()),
                 ))
 
             if (
@@ -241,19 +241,19 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
             if species.isSetInitialAmount():
                 params.append(ModelAttributeChange(
-                    id='initial_amount_{}'.format(species_id),
+                    id='init_{}'.format(species_id),
                     name='initial amount of {}'.format(species.getName() or species_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']/@initialAmount".format(species_id),
                     target_namespaces=namespaces,
-                    new_value=str(species.getInitialAmount()),
+                    new_value=format_float(species.getInitialAmount()),
                 ))
             elif species.isSetInitialConcentration():
                 params.append(ModelAttributeChange(
-                    id='initial_concentration_{}'.format(species_id),
+                    id='init_{}'.format(species_id),
                     name='initial concentration of {}'.format(species.getName() or species_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']/@initialConcentration".format(species_id),
                     target_namespaces=namespaces,
-                    new_value=str(species.getInitialConcentration()),
+                    new_value=format_float(species.getInitialConcentration()),
                 ))
 
             if not species.isSetConstant() or not species.getConstant():
@@ -273,11 +273,11 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 and not model.getInitialAssignmentBySymbol(comp_id)
             ):
                 params.append(ModelAttributeChange(
-                    id='initial_size_{}'.format(comp.getId()),
+                    id='init_{}'.format(comp.getId()),
                     name='initial size of {}'.format(comp.getName() or comp.getId()),
                     target="/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='{}']/@size".format(comp_id),
                     target_namespaces=namespaces,
-                    new_value=str(comp.getSize()),
+                    new_value=format_float(comp.getSize()),
                 ))
 
             if (
@@ -303,7 +303,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                     name=parameter.getName() or None,
                     target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='{}']/@value".format(param_id),
                     target_namespaces=namespaces,
-                    new_value=str(parameter.getValue()),
+                    new_value=format_float(parameter.getValue()),
                 ))
 
             if (
@@ -344,7 +344,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                             name=parameter.getName() or None,
                             target=target,
                             target_namespaces=namespaces,
-                            new_value=str(parameter.getValue()),
+                            new_value=format_float(parameter.getValue()),
                         ))
 
                     if (
@@ -362,3 +362,28 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                         vars.append(var)
 
     return (params, vars)
+
+
+def format_float(val):
+    """ Format a float in scientific notation
+
+    Args:
+        val (:obj:`float`): value
+
+    Returns:
+        :obj:`str`: value formatted as a string
+    """
+    if val == int(val):
+        return str(int(val))
+
+    elif abs(val) < 1e3 and abs(val) > 1e-3:
+        return str(val)
+
+    else:
+        return (
+            '{:e}'
+            .format(val)
+            .replace('e-0', 'e-')
+            .replace('e+0', 'e')
+            .replace('e+', 'e')
+        )
