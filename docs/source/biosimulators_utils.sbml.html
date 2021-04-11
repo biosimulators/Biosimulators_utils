@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.9. biosimulators_utils.sbml package &#8212; BioSimulators utils 0.1.49 documentation</title>
+    <title>2.1.9. biosimulators_utils.sbml package &#8212; BioSimulators utils 0.1.50 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -150,8 +150,8 @@
 </dd>
 </dl>
 <dl class="py function">
-<dt id="biosimulators_utils.sbml.utils.get_variables_for_simulation">
-<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.sbml.utils.</span></code><code class="sig-name descname"><span class="pre">get_variables_for_simulation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_kisao_id</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sbml/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sbml.utils.get_variables_for_simulation" title="Permalink to this definition">¶</a></dt>
+<dt id="biosimulators_utils.sbml.utils.get_parameters_variables_for_simulation">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.sbml.utils.</span></code><code class="sig-name descname"><span class="pre">get_parameters_variables_for_simulation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_compartment_sizes_in_simulation_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_model_parameters_in_simulation_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sbml/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sbml.utils.get_parameters_variables_for_simulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the possible observables for a simulation of a model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -159,15 +159,20 @@
 <li><p><strong>model_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to model file</p></li>
 <li><p><strong>model_language</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – model language (e.g., <code class="docutils literal notranslate"><span class="pre">urn:sedml:language:sbml</span></code>)</p></li>
 <li><p><strong>simulation_type</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.Type</span></code>) – subclass of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Simulation</span></code></p></li>
-<li><p><strong>algorithm_kisao_id</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – KiSAO id of the algorithm for simulating the model (e.g., <code class="docutils literal notranslate"><span class="pre">KISAO_0000019</span></code>
+<li><p><strong>algorithm</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – KiSAO id of the algorithm for simulating the model (e.g., <code class="docutils literal notranslate"><span class="pre">KISAO_0000019</span></code>
 for CVODE)</p></li>
+<li><p><strong>include_compartment_sizes_in_simulation_variables</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – whether to include the sizes of
+non-constant SBML compartments with assignment rules among the returned SED variables</p></li>
+<li><p><strong>include_model_parameters_in_simulation_variables</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – whether to include the values of
+non-constant SBML parameters with assignment rules among the returned SED variables</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>possible observables for a simulation of the model</p>
+<dd class="field-even"><p>possible attributes of a model that can be changed and their default values
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code>: possible observables for a simulation of the model</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelAttributeChange</span></code></p>
 </dd>
 </dl>
 </dd></dl>
