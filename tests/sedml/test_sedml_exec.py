@@ -15,6 +15,7 @@ from biosimulators_utils.sedml import utils
 from biosimulators_utils.sedml.exceptions import SedmlExecutionError
 from biosimulators_utils.sedml.warnings import (NoTasksWarning, NoOutputsWarning,
                                                 InconsistentVariableShapesWarning, SedmlFeatureNotSupportedWarning)
+from biosimulators_utils.xml.utils import get_namespaces_with_prefixes
 from lxml import etree
 from unittest import mock
 import builtins
@@ -536,7 +537,7 @@ class ExecTaskCase(unittest.TestCase):
             results = VariableResults()
             for variable in variables:
                 obj_xpath, _, attr = variable.target.rpartition('/@')
-                obj = et.xpath(obj_xpath, namespaces=variable.target_namespaces)[0]
+                obj = et.xpath(obj_xpath, namespaces=get_namespaces_with_prefixes(variable.target_namespaces))[0]
                 results[variable.id] = numpy.array((float(obj.get(attr)),))
 
             return results, log

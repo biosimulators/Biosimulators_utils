@@ -548,31 +548,29 @@ class IoTestCase(unittest.TestCase):
             io.SedmlSimulationWriter().run(document, filename)
 
     def _set_target_namespaces(self, document):
+        namespaces = {
+            None: 'http://sed-ml.org/sed-ml/level1/version3',
+            'sbml': 'http://www.sbml.org/sbml/level2/version4',
+        }
         for model in document.models:
             for change in model.changes:
-                if change.target and change.target.startswith('/'):
-                    change.target_namespaces['sbml'] = 'http://www.sbml.org/sbml/level2/version4'
+                change.target_namespaces = namespaces
                 if isinstance(change, data_model.ComputeModelChange):
                     for variable in change.variables:
-                        if variable.target and variable.target.startswith('/'):
-                            variable.target_namespaces['sbml'] = 'http://www.sbml.org/sbml/level2/version4'
+                        variable.target_namespaces = namespaces
         for task in document.tasks:
             if isinstance(task, data_model.RepeatedTask):
                 for change in task.changes:
-                    if change.target and change.target.startswith('/'):
-                        change.target_namespaces['sbml'] = 'http://www.sbml.org/sbml/level2/version4'
+                    change.target_namespaces = namespaces
                     for variable in change.variables:
-                        if variable.target and variable.target.startswith('/'):
-                            variable.target_namespaces['sbml'] = 'http://www.sbml.org/sbml/level2/version4'
+                        variable.target_namespaces = namespaces
                 for range in task.ranges:
                     if isinstance(range, data_model.FunctionalRange):
                         for variable in range.variables:
-                            if variable.target and variable.target.startswith('/'):
-                                variable.target_namespaces['sbml'] = 'http://www.sbml.org/sbml/level2/version4'
+                            variable.target_namespaces = namespaces
         for data_generator in document.data_generators:
             for variable in data_generator.variables:
-                if variable.target and variable.target.startswith('/'):
-                    variable.target_namespaces['sbml'] = 'http://www.sbml.org/sbml/level2/version4'
+                variable.target_namespaces = namespaces
 
     def test_write_read_without_semantic_validation(self):
         document = data_model.SedDocument(
@@ -588,6 +586,7 @@ class IoTestCase(unittest.TestCase):
                         data_model.SetValueComputeModelChange(
                             model=None,
                             symbol='x',
+                            target_namespaces={None: 'http://sed-ml.org/sed-ml/level1/version3'},
                             math='x'
                         )
                     ],

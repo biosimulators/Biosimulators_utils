@@ -16,6 +16,7 @@ __all__ = [
     'get_attributes_of_xpaths',
     'validate_xpaths_ref_to_unique_objects',
     'eval_xpath',
+    'get_namespaces_with_prefixes',
 ]
 
 
@@ -99,7 +100,7 @@ def get_attributes_of_xpaths(filename, x_paths, namespaces, attr='id'):
     x_path_attrs = {}
     for x_path in x_paths:
         try:
-            objects = etree.xpath(x_path, namespaces=namespaces)
+            objects = etree.xpath(x_path, namespaces=get_namespaces_with_prefixes(namespaces))
 
             x_path_attrs[x_path] = [obj.attrib.get(attr, None) for obj in objects]
         except Exception:
@@ -157,7 +158,7 @@ def eval_xpath(element, xpath, namespaces):
         :obj:`list` of :obj:`etree._ElementTree`: object(s) at the XPATH
     """
     try:
-        return element.xpath(xpath, namespaces=namespaces)
+        return element.xpath(xpath, namespaces=get_namespaces_with_prefixes(namespaces))
     except lxml.etree.XPathEvalError as exception:
         if namespaces:
             msg = 'XPATH `{}` is invalid with these namespaces:\n  {}\n\n  {}'.format(
@@ -170,3 +171,18 @@ def eval_xpath(element, xpath, namespaces):
 
         exception.args = (msg)
         raise
+
+
+def get_namespaces_with_prefixes(namespaces):
+    """ Get a dictionary of namespaces less namespaces that have no prefix
+
+    Args:
+        namespaces (:obj:`dict`): dictionary that maps prefixes of namespaces their URIs
+
+    Returns:
+        :obj:`dict`: dictionary that maps prefixes of namespaces their URIs
+    """
+    if None in namespaces:
+        namespaces = dict(namespaces)
+        namespaces.pop(None)
+    return namespaces

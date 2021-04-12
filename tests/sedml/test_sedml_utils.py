@@ -2,7 +2,7 @@ from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import io
 from biosimulators_utils.sedml import utils
 from biosimulators_utils.utils.core import are_lists_equal
-from biosimulators_utils.xml.utils import get_namespaces_for_xml_doc
+from biosimulators_utils.xml.utils import get_namespaces_for_xml_doc, get_namespaces_with_prefixes
 from lxml import etree
 from unittest import mock
 import copy
@@ -266,29 +266,29 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         ]
         save_changes = copy.copy(changes)
         et = etree.parse(self.FIXTURE_FILENAME)
-        self.assertEqual(len(et.xpath(changes[2].target, namespaces=namespaces)[0].getchildren()), 4)
+        self.assertEqual(len(et.xpath(changes[2].target, namespaces=get_namespaces_with_prefixes(namespaces))[0].getchildren()), 4)
         self.assertEqual(len(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='NewSpecies']",
-                                      namespaces=namespaces)), 0)
+                                      namespaces=get_namespaces_with_prefixes(namespaces))), 0)
         self.assertEqual(len(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='DifferentSpecies']",
-                                      namespaces=namespaces)), 0)
-        self.assertEqual(len(et.xpath(changes[4].target, namespaces=namespaces)), 1)
+                                      namespaces=get_namespaces_with_prefixes(namespaces))), 0)
+        self.assertEqual(len(et.xpath(changes[4].target, namespaces=get_namespaces_with_prefixes(namespaces))), 1)
 
         # apply changes
         utils.apply_changes_to_xml_model(data_model.Model(changes=changes), et, None, None)
 
         # check changes applied
         self.assertEqual(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
-                                  namespaces=namespaces)[0].get('initialConcentration'),
+                                  namespaces=get_namespaces_with_prefixes(namespaces))[0].get('initialConcentration'),
                          save_changes[0].new_value)
         self.assertEqual(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@name='Clb2']",
-                                  namespaces=namespaces)[0].get('sboTerm'),
+                                  namespaces=get_namespaces_with_prefixes(namespaces))[0].get('sboTerm'),
                          save_changes[1].new_value)
-        self.assertEqual(len(et.xpath(save_changes[2].target, namespaces=namespaces)[0].getchildren()), 4)
+        self.assertEqual(len(et.xpath(save_changes[2].target, namespaces=get_namespaces_with_prefixes(namespaces))[0].getchildren()), 4)
         self.assertEqual(len(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='NewSpecies']",
-                                      namespaces=namespaces)), 1)
+                                      namespaces=get_namespaces_with_prefixes(namespaces))), 1)
         self.assertEqual(len(et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='DifferentSpecies']",
-                                      namespaces=namespaces)), 1)
-        self.assertEqual(len(et.xpath(save_changes[4].target, namespaces=namespaces)), 0)
+                                      namespaces=get_namespaces_with_prefixes(namespaces))), 1)
+        self.assertEqual(len(et.xpath(save_changes[4].target, namespaces=get_namespaces_with_prefixes(namespaces))), 0)
 
         self.assertNotEqual(changes, [])
 
@@ -337,15 +337,15 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         et = etree.parse(self.FIXTURE_FILENAME)
         utils.apply_changes_to_xml_model(data_model.Model(changes=changes[0:1]), et, None, None, validate_unique_xml_targets=True)
         namespaces = get_namespaces_for_xml_doc(et)
-        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators:insertedNode', namespaces=namespaces)), 1)
+        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators:insertedNode', namespaces=get_namespaces_with_prefixes(namespaces))), 1)
 
         et = etree.parse(self.FIXTURE_FILENAME)
         utils.apply_changes_to_xml_model(data_model.Model(changes=changes[0:2]), et, None, None, validate_unique_xml_targets=True)
         namespaces = get_namespaces_for_xml_doc(et)
         self.assertNotIn('biosimulators', namespaces)
         namespaces['biosimulators'] = 'https://biosimulators.org'
-        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators:insertedNode', namespaces=namespaces)), 0)
-        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators2:insertedNode', namespaces=namespaces)), 1)
+        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators:insertedNode', namespaces=get_namespaces_with_prefixes(namespaces))), 0)
+        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators2:insertedNode', namespaces=get_namespaces_with_prefixes(namespaces))), 1)
 
         et = etree.parse(self.FIXTURE_FILENAME)
         utils.apply_changes_to_xml_model(data_model.Model(changes=changes), et, None, None, validate_unique_xml_targets=True)
@@ -354,8 +354,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         self.assertNotIn('biosimulators2', namespaces)
         namespaces['biosimulators'] = 'https://biosimulators.org'
         namespaces['biosimulators2'] = 'https://biosimulators2.org'
-        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators:insertedNode', namespaces=namespaces)), 0)
-        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators2:insertedNode', namespaces=namespaces)), 0)
+        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators:insertedNode', namespaces=get_namespaces_with_prefixes(namespaces))), 0)
+        self.assertEqual(len(et.xpath('/sbml:sbml/biosimulators2:insertedNode', namespaces=get_namespaces_with_prefixes(namespaces))), 0)
 
     def test_change_attributes_multiple_targets(self):
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
@@ -368,7 +368,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             new_value='0.2')
         et = etree.parse(self.FIXTURE_FILENAME)
 
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@initialConcentration='0.1']", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@initialConcentration='0.1']",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         self.assertEqual(len(species), 3)
 
         # apply changes
@@ -380,13 +381,18 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None, validate_unique_xml_targets=False)
 
         # check changes applied
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@initialConcentration='0.1']", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@initialConcentration='0.1']",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         self.assertEqual(len(species), 0)
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@initialConcentration='0.2']", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@initialConcentration='0.2']",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         self.assertEqual(len(species), 3)
 
     def test_add_multiple_elements_to_single_target(self):
-        namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
+        namespaces = {
+            None: 'http://sed-ml.org/sed-ml/level1/version3',
+            'sbml': 'http://www.sbml.org/sbml/level2/version4',
+        }
 
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies",
@@ -398,7 +404,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         )
         et = etree.parse(self.FIXTURE_FILENAME)
 
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         num_species = len(species)
         species_ids = set([s.get('id') for s in species])
 
@@ -406,7 +413,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
         # check changes applied
-        xpath_evaluator = etree.XPathEvaluator(et, namespaces=namespaces)
+        xpath_evaluator = etree.XPathEvaluator(et, namespaces=get_namespaces_with_prefixes(namespaces))
         species = xpath_evaluator("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species")
         self.assertEqual(len(species), num_species + 2)
         self.assertEqual(set([s.get('id') for s in species]), species_ids | set(['NewSpecies1', 'NewSpecies2']))
@@ -432,15 +439,14 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         ####################
         # Correct namespace
         namespaces = {
+            None: 'http://sed-ml.org/sed-ml/level1/version3',
             'sbml': 'http://www.sbml.org/sbml/level2/version4',
             'newXml': 'http://www.sbml.org/sbml/level2/version4',
         }
 
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies",
-            target_namespaces={
-                'sbml': namespaces['sbml'],
-            },
+            target_namespaces=namespaces,
             new_elements=''.join([
                 '<newXml:species xmlns:newXml="{}" id="NewSpecies1"/>'.format(namespaces['newXml']),
                 '<newXml:species xmlns:newXml="{}" id="NewSpecies2"/>'.format(namespaces['newXml']),
@@ -448,7 +454,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         )
         et = etree.parse(self.FIXTURE_FILENAME)
 
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         num_species = len(species)
         species_ids = set([s.get('id') for s in species])
 
@@ -456,7 +463,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
         # check changes applied
-        xpath_evaluator = etree.XPathEvaluator(et, namespaces=namespaces)
+        xpath_evaluator = etree.XPathEvaluator(et, namespaces=get_namespaces_with_prefixes(namespaces))
         species = xpath_evaluator("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species")
         self.assertEqual(len(species), num_species + 2)
         self.assertEqual(set([s.get('id') for s in species]), species_ids | set(['NewSpecies1', 'NewSpecies2']))
@@ -481,15 +488,14 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         ####################
         # Incorrect namespace
         namespaces = {
+            None: 'http://sed-ml.org/sed-ml/level1/version3',
             'sbml': 'http://www.sbml.org/sbml/level2/version4',
             'newXml': 'http://www.sbml.org/sbml/level3/version1',
         }
 
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies",
-            target_namespaces={
-                'sbml': namespaces['sbml'],
-            },
+            target_namespaces=namespaces,
             new_elements=''.join([
                 '<newXml:species xmlns:newXml="{}" id="NewSpecies1"/>'.format(namespaces['newXml']),
                 '<newXml:species xmlns:newXml="{}" id="NewSpecies2"/>'.format(namespaces['newXml']),
@@ -497,7 +503,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         )
         et = etree.parse(self.FIXTURE_FILENAME)
 
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         num_species = len(species)
         species_ids = set([s.get('id') for s in species])
 
@@ -505,7 +512,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
         # check changes applied
-        xpath_evaluator = etree.XPathEvaluator(et, namespaces=namespaces)
+        xpath_evaluator = etree.XPathEvaluator(et, namespaces=get_namespaces_with_prefixes(namespaces))
         species = xpath_evaluator("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species")
         self.assertEqual(len(species), num_species)
         self.assertEqual(set([s.get('id') for s in species]), species_ids)
@@ -539,8 +546,10 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             ]))
         et = etree.parse(self.FIXTURE_FILENAME)
 
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
-        parameters = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species/sbml:parameter", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
+        parameters = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species/sbml:parameter",
+                              namespaces=get_namespaces_with_prefixes(namespaces))
         species_ids = [s.get('id') for s in species]
 
         # apply changes
@@ -552,14 +561,19 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None, validate_unique_xml_targets=False)
 
         # check changes applied
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         self.assertEqual([s.get('id') for s in species], species_ids)
 
-        parameters = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species/sbml:parameter", namespaces=namespaces)
+        parameters = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species/sbml:parameter",
+                              namespaces=get_namespaces_with_prefixes(namespaces))
         self.assertEqual([p.get('id') for p in parameters], ['p1', 'p2'] * len(species))
 
     def test_replace_multiple_elements_to_single_target(self):
-        namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
+        namespaces = {
+            None: 'http://sed-ml.org/sed-ml/level1/version3',
+            'sbml': 'http://www.sbml.org/sbml/level2/version4',
+        }
 
         change = data_model.ReplaceElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='SpeciesToReplace']",
@@ -570,7 +584,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             ]))
         et = etree.parse(self.FIXTURE_FILENAME)
 
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         num_species = len(species)
         species_ids = set([s.get('id') for s in species])
 
@@ -578,7 +593,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
         # check changes applied
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         self.assertEqual(len(species), num_species + 1)
         self.assertEqual(set([s.get('id') for s in species]),
                          (species_ids | set(['NewSpecies1', 'NewSpecies2'])) - set(['SpeciesToReplace']))
@@ -612,7 +628,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             ]))
         et = etree.parse(self.FIXTURE_FILENAME)
 
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         num_species = len(species)
 
         # apply changes
@@ -624,7 +641,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None,  validate_unique_xml_targets=False)
 
         # check changes applied
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         self.assertEqual([s.get('id') for s in species], ['NewSpecies1', 'NewSpecies2'] * num_species)
 
     def test_remove_multiple_targets(self):
@@ -636,7 +654,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         )
         et = etree.parse(self.FIXTURE_FILENAME)
 
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
 
         # apply changes
         et = etree.parse(self.FIXTURE_FILENAME)
@@ -647,7 +666,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None,  validate_unique_xml_targets=False)
 
         # check changes applied
-        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species", namespaces=namespaces)
+        species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
+                           namespaces=get_namespaces_with_prefixes(namespaces))
         self.assertEqual([s.get('id') for s in species], ['SpeciesToReplace'])
 
     def test_errors(self):
@@ -714,7 +734,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             parameters=[
                 data_model.Parameter(id='a', value=1.5),
                 data_model.Parameter(id='b', value=2.25),
-                data_model.Parameter(id='c', value=2.), 
+                data_model.Parameter(id='c', value=2.),
             ],
             variables=[
                 data_model.Variable(id='x', model=data_model.Model(id='model_1'), target="/model/parameter[@id='x']/@value"),
@@ -761,9 +781,9 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         self.assertEqual(utils.get_value_of_variable_model_xml_targets(change.variables[0], models), 2.0)
         self.assertEqual(utils.get_value_of_variable_model_xml_targets(change.variables[1], models), 3.0)
 
-        var = data_model.Variable(id='var', model=data_model.Model(id='model_1'), 
-            target="/model/parameter[@id='x']/@qual:attrA", 
-            target_namespaces={'qual': 'https://qual.sbml.org'})
+        var = data_model.Variable(id='var', model=data_model.Model(id='model_1'),
+                                  target="/model/parameter[@id='x']/@qual:attrA",
+                                  target_namespaces={'qual': 'https://qual.sbml.org'})
         self.assertEqual(utils.get_value_of_variable_model_xml_targets(var, models), 2.3)
 
         doc = data_model.SedDocument(models=[change.variables[0].model, change.variables[1].model])

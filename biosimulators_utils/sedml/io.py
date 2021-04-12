@@ -1567,22 +1567,7 @@ class SedmlSimulationReader(object):
         Returns:
             :obj:`dict`: dictionary that maps the prefixes of namespaces to their URIs
         """
-        target = obj_sed.getTarget() or None
-        if target and target.startswith('/'):
-            prefixes = set()
-            for part in target[1:].split('/'):
-                if ':' in part:
-                    prefixes.add(part.partition(':')[0])
-
-            namespaces = get_namespaces_for_sed_object(obj_sed)
-            target_namespaces = {}
-            for prefix in prefixes:
-                if prefix in namespaces:
-                    target_namespaces[prefix] = namespaces[prefix]
-
-            return target_namespaces
-        else:
-            return {}
+        return get_namespaces_for_sed_object(obj_sed)
 
     def _get_parent_namespaces_prefixes_used_in_xml_node(self, node):
         """ Get the namespace prefixes that are in the node which aren't defined in the node
