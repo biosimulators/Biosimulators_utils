@@ -567,6 +567,42 @@ class ValidationTestCase(unittest.TestCase):
         validation.validate_uniform_time_course_simulation(task.simulation)
         validation.validate_data_generator_variables(variables)
 
+    def test_validate_uniform_time_course_simulation(self):
+        sim = data_model.UniformTimeCourseSimulation(
+            initial_time=0.,
+            output_start_time=0.,
+            output_end_time=1.,
+            number_of_steps=10)
+        validation.validate_uniform_time_course_simulation(sim)
+
+        sim.number_of_steps = 10.5
+        with self.assertRaisesRegex(ValueError, 'must be an integer'):
+            validation.validate_uniform_time_course_simulation(sim)
+
+        sim.number_of_steps = 0
+        with self.assertRaisesRegex(ValueError, 'must be at least 1'):
+            validation.validate_uniform_time_course_simulation(sim)
+
+        sim.output_end_time = -1
+        with self.assertRaisesRegex(ValueError, 'must be at least the output start time'):
+            validation.validate_uniform_time_course_simulation(sim)
+
+        sim.output_start_time = -2
+        with self.assertRaisesRegex(ValueError, 'must be at least the initial time'):
+            validation.validate_uniform_time_course_simulation(sim)
+
+    def test_validate_uniform_range(self):
+        range = data_model.UniformRange(
+            start=0.,
+            end=10.,
+            number_of_steps=10,
+        )
+        validation.validate_uniform_range(range)
+
+        range.number_of_steps = 0
+        with self.assertRaisesRegex(ValueError, 'must have at least one step'):
+            validation.validate_uniform_range(range)
+
     def test(self):
         task = None
         variables = []

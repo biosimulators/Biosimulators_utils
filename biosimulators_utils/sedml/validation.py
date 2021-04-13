@@ -10,7 +10,7 @@ from ..warnings import warn
 from ..xml.utils import validate_xpaths_ref_to_unique_objects
 from .data_model import (AbstractTask, Task, RepeatedTask, ModelLanguage, ModelChange, ComputeModelChange,  # noqa: F401
                          Simulation, UniformTimeCourseSimulation, Variable,
-                         Range, FunctionalRange,
+                         Range, FunctionalRange, UniformRange,
                          Report, Plot2D, Plot3D)
 from .utils import append_all_nested_children_to_doc, get_range_len
 from .warnings import IllogicalSedmlWarning
@@ -30,6 +30,7 @@ __all__ = [
     'validate_model_changes',
     'validate_simulation_type',
     'validate_uniform_time_course_simulation',
+    'validate_uniform_range',
     'validate_data_generator_variables',
 ]
 
@@ -200,6 +201,12 @@ def validate_doc(doc, validate_semantics=True):
             msg = ('Ranges must have unique ids. The following range ids are repeated:\n  - {}').format(
                 '\n  - '.join(sorted(duplicate_range_ids)))
             raise ValueError(msg)
+
+        for task in doc.tasks:
+            if isinstance(task, RepeatedTask):
+                for range in task.ranges:
+                    if isinstance(range, UniformRange):
+                        validate_uniform_range(range)
 
         # Functional ranges of repeated tasks
         # - Functional ranges reference other ranges
@@ -556,8 +563,25 @@ def validate_uniform_time_course_simulation(simulation):
             raise ValueError('Output end time {} must be at least the output start time {}.'.format(
                 simulation.output_end_time, simulation.output_start_time))
 
+        if simulation.output_end_time != simulation.output_start_time and simulation.number_of_steps < 1:
+            raise ValueError('Number of points must be at least 1.')
+
         if math.floor(simulation.number_of_steps) != simulation.number_of_steps:
             raise ValueError('Number of points must be an integer.')
+
+
+def validate_uniform_range(range):
+    """ Validate a uniform range
+
+    Args:
+        range (:obj:`data_model.UniformRange`): range
+
+    Raises:
+        :obj:`ValueError`: if a range is invalid
+    """
+    if range.start != range.end and range.number_of_steps < 1:
+        raise ValueError('UniformRange range `{}` must have at least one step.'.format(
+            range.id))
 
 
 def validate_data_generator_variables(variables):
