@@ -28,6 +28,7 @@ __all__ = [
     'validate_model_language',
     'validate_model_change_types',
     'validate_model_changes',
+    'validate_model',
     'validate_simulation_type',
     'validate_uniform_time_course_simulation',
     'validate_uniform_range',
@@ -463,7 +464,7 @@ def validate_model_language(language, valid_language):
     """ Check that model is encoded in a specific language
 
     Args:
-        language (:obj:`ModelLanguage`): model language
+        language (:obj:`str`): model language
         valid_language (:obj:`ModelLanguage`): valid model language
 
     Raises:
@@ -527,6 +528,26 @@ def validate_model_changes(changes):
                     raise ValueError('Compute model change variables must define a target')
                 if variable.symbol:
                     raise ValueError('Compute model change variables must define a target, not a symbol')
+
+
+def validate_model(source, language, name=None):
+    """ Check that a model is valid
+
+    Args:
+        source (:obj:`str`): path to model
+        language (:obj:`ModelLanguage`): language
+        name (:obj:`str`, optional): name of model for use in error messages
+
+    Raises:
+        :obj:`NotImplementedError`: if no validation if available for the model language
+        :obj:`ValueError`: if the model is not valid
+    """
+    if language == ModelLanguage.SBML:
+        from ..sbml.validation import validate_model
+    else:
+        raise NotImplementedError('No validation is available for models encoded in `{}`'.format(getattr(language, 'name', language)))
+
+    validate_model(source, name=name)
 
 
 def validate_simulation_type(simulation, types):

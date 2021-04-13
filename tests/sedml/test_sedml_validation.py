@@ -567,6 +567,13 @@ class ValidationTestCase(unittest.TestCase):
         validation.validate_uniform_time_course_simulation(task.simulation)
         validation.validate_data_generator_variables(variables)
 
+    def test_validate_model(self):
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-list-of-species.xml')
+        validation.validate_model(filename, data_model.ModelLanguage.SBML)
+
+        with self.assertRaisesRegex(NotImplementedError, 'No validation is available for'):
+            validation.validate_model(filename, '--not-supported--')
+
     def test_validate_uniform_time_course_simulation(self):
         sim = data_model.UniformTimeCourseSimulation(
             initial_time=0.,
