@@ -563,7 +563,7 @@ def validate_uniform_time_course_simulation(simulation):
             raise ValueError('Output end time {} must be at least the output start time {}.'.format(
                 simulation.output_end_time, simulation.output_start_time))
 
-        if simulation.output_end_time != simulation.output_start_time and simulation.number_of_steps < 1:
+        if simulation.number_of_steps < 1:
             raise ValueError('Number of points must be at least 1.')
 
         if math.floor(simulation.number_of_steps) != simulation.number_of_steps:
@@ -579,7 +579,7 @@ def validate_uniform_range(range):
     Raises:
         :obj:`ValueError`: if a range is invalid
     """
-    if range.start != range.end and range.number_of_steps < 1:
+    if range.number_of_steps < 1:
         raise ValueError('UniformRange range `{}` must have at least one step.'.format(
             range.id))
 
