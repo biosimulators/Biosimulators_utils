@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.10. biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.50 documentation</title>
+    <title>2.1.10. biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.51 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -4100,6 +4100,27 @@ trees of their sources; required to resolve variables of functional ranges</p></
 </dd></dl>
 
 <dl class="py function">
+<dt id="biosimulators_utils.sedml.validation.validate_model">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.validation.</span></code><code class="sig-name descname"><span class="pre">validate_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.validation.validate_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that a model is valid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to model</p></li>
+<li><p><strong>language</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelLanguage</span></code>) – language</p></li>
+<li><p><strong>name</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – name of model for use in error messages</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>NotImplementedError</strong> – if no validation if available for the model language</p></li>
+<li><p><strong>ValueError</strong> – if the model is not valid</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="biosimulators_utils.sedml.validation.validate_model_change_types">
 <code class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.validation.</span></code><code class="sig-name descname"><span class="pre">validate_model_change_types</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">changes</span></em>, <em class="sig-param"><span class="pre">types=(&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.ModelChange'&gt;</span></em>, <em class="sig-param"><span class="pre">)</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.validation.validate_model_change_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that model changes are valid</p>
@@ -4140,7 +4161,7 @@ trees of their sources; required to resolve variables of functional ranges</p></
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>language</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelLanguage</span></code>) – model language</p></li>
+<li><p><strong>language</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – model language</p></li>
 <li><p><strong>valid_language</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelLanguage</span></code>) – valid model language</p></li>
 </ul>
 </dd>
@@ -4185,6 +4206,20 @@ trees of their sources; required to resolve variables of functional ranges</p></
 <li><p><strong>ValueError</strong> – if task is invalid</p></li>
 <li><p><strong>FileNotFoundError</strong> – if model file doesn’t exist</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.sedml.validation.validate_uniform_range">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.validation.</span></code><code class="sig-name descname"><span class="pre">validate_uniform_range</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">range</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.validation.validate_uniform_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a uniform range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>range</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">data_model.UniformRange</span></code>) – range</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if a range is invalid</p>
 </dd>
 </dl>
 </dd></dl>
