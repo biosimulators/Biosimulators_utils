@@ -15,7 +15,7 @@ from ..report.data_model import VariableResults, DataSetResults, ReportResults, 
 from ..report.io import ReportWriter
 from ..utils.core import pad_arrays_to_consistent_shapes
 from ..warnings import warn
-from .data_model import SedDocument, Model, Task, RepeatedTask, Report, Plot2D, Plot3D, ModelAttributeChange
+from .data_model import SedDocument, Model, Task, RepeatedTask, Output, Report, Plot2D, Plot3D, ModelAttributeChange, DataSet  # noqa: F401
 from .exceptions import SedmlExecutionError
 from .io import SedmlSimulationReader
 from .utils import (resolve_model_and_apply_xml_changes, get_variables_for_task,
@@ -229,7 +229,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                             output, variable_results,
                             base_out_path, rel_out_path, report_formats,
                             task,
-                            log.outputs[output.id])
+                            log=log.outputs[output.id],
+                            type=Report)
                         task_contributes_to_output = task_contributes_to_output or task_contributes_to_report
 
                     elif isinstance(output, Plot2D):
@@ -240,6 +241,16 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                             log.outputs[output.id])
                         task_contributes_to_output = task_contributes_to_output or task_contributes_to_plot
 
+                        # save data as report
+                        if config.SAVE_PLOT_DATA:
+                            report = get_report_for_plot2d(output)
+                            report_results[output.id], _, _, _ = exec_report(
+                                report, variable_results,
+                                base_out_path, rel_out_path, report_formats,
+                                task,
+                                log=None,
+                                type=output.__class__)
+
                     elif isinstance(output, Plot3D):
                         output_status, output_exception, task_contributes_to_plot = exec_plot_3d(
                             output, variable_results,
@@ -247,6 +258,16 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                             task,
                             log.outputs[output.id])
                         task_contributes_to_output = task_contributes_to_output or task_contributes_to_plot
+
+                        # save as report
+                        if config.SAVE_PLOT_DATA:
+                            report = get_report_for_plot3d(output)
+                            report_results[output.id], _, _, _ = exec_report(
+                                report, variable_results,
+                                base_out_path, rel_out_path, report_formats,
+                                task,
+                                log=None,
+                                type=output.__class__)
 
                     else:
                         # unreachable because the above cases cover all types of outputs
@@ -531,7 +552,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
     return variable_results
 
 
-def exec_report(report, variable_results, base_out_path, rel_out_path, formats, task, log):
+def exec_report(report, variable_results, base_out_path, rel_out_path, formats, task, log=None, type=Report):
     """ Execute a report, generating the data sets which are available
 
     Args:
@@ -548,6 +569,7 @@ def exec_report(report, variable_results, base_out_path, rel_out_path, formats, 
         formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
         task (:obj:`Task`): task
         log (:obj:`ReportLog`, optional): log of report
+        type (:obj:`types.Type`): type of output (e.g., subclass of :obj:`Output` such as :obj:`Report`, :obj:`Plot2D`)
 
     Returns:
         :obj:`tuple`:
@@ -577,7 +599,8 @@ def exec_report(report, variable_results, base_out_path, rel_out_path, formats, 
         data_set_results[data_set.id] = data_gen_res
 
         data_gen_status = data_gen_statuses[data_set.data_generator.id]
-        log.data_sets[data_set.id] = data_gen_status
+        if log:
+            log.data_sets[data_set.id] = data_gen_status
         if data_gen_status == Status.FAILED:
             failed = True
         if data_gen_status == Status.SUCCEEDED:
@@ -590,7 +613,8 @@ def exec_report(report, variable_results, base_out_path, rel_out_path, formats, 
                            data_set_results,
                            base_out_path,
                            os.path.join(rel_out_path, report.id) if rel_out_path else report.id,
-                           format=format)
+                           format=format,
+                           type=type)
 
     if failed:
         status = Status.FAILED
@@ -767,3 +791,67 @@ def exec_plot_3d(plot, variable_results, base_out_path, rel_out_path, formats, t
 
     # return
     return status, data_gen_exceptions, task_contributes_to_plot
+
+
+def get_report_for_plot2d(plot):
+    """ Get a report for a 2D plot with a dataset for each data generator of the curves
+
+    Args:
+        plot (:obj:`Plot2D`): plot
+
+    Returns:
+        :obj:`Report`: report with a dataset for each data generator of the curves
+    """
+    data_sets = {}
+    for curve in plot.curves:
+        data_sets[curve.x_data_generator.id] = DataSet(
+            id=curve.x_data_generator.id,
+            name=curve.x_data_generator.name,
+            label=curve.x_data_generator.id,
+            data_generator=curve.x_data_generator,
+        )
+        data_sets[curve.y_data_generator.id] = DataSet(
+            id=curve.y_data_generator.id,
+            name=curve.y_data_generator.name,
+            label=curve.y_data_generator.id,
+            data_generator=curve.y_data_generator,
+        )
+    return Report(
+        id=plot.id,
+        name=plot.name,
+        data_sets=sorted(data_sets.values(), key=lambda data_set: data_set.id))
+
+
+def get_report_for_plot3d(plot):
+    """ Get a report for a 3D plot with a dataset for each data generator of the surfaces
+
+    Args:
+        plot (:obj:`Plot3D`): plot
+
+    Returns:
+        :obj:`Report`: report with a dataset for each data generator of the surfaces
+    """
+    data_sets = {}
+    for surface in plot.surfaces:
+        data_sets[surface.x_data_generator.id] = DataSet(
+            id=surface.x_data_generator.id,
+            name=surface.x_data_generator.name,
+            label=surface.x_data_generator.id,
+            data_generator=surface.x_data_generator,
+        )
+        data_sets[surface.y_data_generator.id] = DataSet(
+            id=surface.y_data_generator.id,
+            name=surface.y_data_generator.name,
+            label=surface.y_data_generator.id,
+            data_generator=surface.y_data_generator,
+        )
+        data_sets[surface.z_data_generator.id] = DataSet(
+            id=surface.z_data_generator.id,
+            name=surface.z_data_generator.name,
+            label=surface.z_data_generator.id,
+            data_generator=surface.z_data_generator,
+        )
+    return Report(
+        id=plot.id,
+        name=plot.name,
+        data_sets=sorted(data_sets.values(), key=lambda data_set: data_set.id))

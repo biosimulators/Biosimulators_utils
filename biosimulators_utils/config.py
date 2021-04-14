@@ -17,6 +17,7 @@ class Config(object):
 
     Attributes:
         ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
+        SAVE_PLOT_DATA (:obj:`bool`): whether to save data for plots alongside data for reports in CSV/HDF5 files
         REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
         PLOT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate plots in
         H5_REPORTS_PATH (:obj:`str`): path to save reports in HDF5 format relative to base output directory
@@ -29,12 +30,13 @@ class Config(object):
         VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
     """
 
-    def __init__(self, ALGORITHM_SUBSTITUTION_POLICY, REPORT_FORMATS, PLOT_FORMATS,
+    def __init__(self, ALGORITHM_SUBSTITUTION_POLICY, SAVE_PLOT_DATA, REPORT_FORMATS, PLOT_FORMATS,
                  H5_REPORTS_PATH, REPORTS_PATH, PLOTS_PATH, BUNDLE_OUTPUTS, KEEP_INDIVIDUAL_OUTPUTS,
                  LOG_PATH, BIOSIMULATORS_API_ENDPOINT, VERBOSE):
         """
         Args:
             ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
+            SAVE_PLOT_DATA (:obj:`bool`): whether to save data for plots alongside data for reports in CSV/HDF5 files
             REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
             PLOT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate plots in
             H5_REPORTS_PATH (:obj:`str`): path to save reports in HDF5 format relative to base output directory
@@ -47,6 +49,7 @@ class Config(object):
             VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
         """
         self.ALGORITHM_SUBSTITUTION_POLICY = ALGORITHM_SUBSTITUTION_POLICY
+        self.SAVE_PLOT_DATA = SAVE_PLOT_DATA
         self.REPORT_FORMATS = REPORT_FORMATS
         self.PLOT_FORMATS = PLOT_FORMATS
         self.H5_REPORTS_PATH = H5_REPORTS_PATH
@@ -79,6 +82,7 @@ def get_config():
 
     return Config(
         ALGORITHM_SUBSTITUTION_POLICY=os.environ.get('ALGORITHM_SUBSTITUTION_POLICY', 'SIMILAR_VARIABLES'),
+        SAVE_PLOT_DATA=os.environ.get('SAVE_PLOT_DATA', '1').lower() in ['1', 'true'],
         REPORT_FORMATS=report_formats,
         PLOT_FORMATS=plot_formats,
         H5_REPORTS_PATH=os.environ.get('H5_REPORTS_PATH', 'reports.h5'),

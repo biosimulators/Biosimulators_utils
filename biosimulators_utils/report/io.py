@@ -7,12 +7,13 @@
 """
 
 from ..config import get_config
-from ..sedml.data_model import Report  # noqa: F401
+from ..sedml.data_model import Output, Report, Plot2D, Plot3D  # noqa: F401
 from ..utils.core import pad_arrays_to_consistent_shapes
 from ..warnings import warn
 from .data_model import DataSetResults, ReportFormat
 from .warnings import (RepeatDataSetLabelsWarning, MissingReportMetadataWarning, MissingDataWarning,
                        ExtraDataWarning, CannotExportMultidimensionalTableWarning)
+import enum
 import glob
 import h5py
 import numpy
@@ -26,10 +27,17 @@ __all__ = [
 ]
 
 
+class Hdf5DataSetType(enum.Enum):
+    """ Type of data encoded in an HDF5 data set """
+    SedReport = Report
+    SedPlot2D = Plot2D
+    SedPlot3D = Plot3D
+
+
 class ReportWriter(object):
     """ Class for writing reports of simulation results """
 
-    def run(self, report, results, base_path, rel_path, format=ReportFormat.h5):
+    def run(self, report, results, base_path, rel_path, format=ReportFormat.h5, type=Report):
         """ Save a report
 
         Args:
@@ -46,10 +54,12 @@ class ReportWriter(object):
                 * HDF5: key within HDF5 file
 
             format (:obj:`ReportFormat`, optional): report format
+            type (:obj:`type`): type of output (e.g., subclass of :obj:`Output` such as :obj:`Report`, :obj:`Plot2D`)
         """
         results_array = []
         data_set_ids = []
         data_set_labels = []
+        data_set_names = []
         data_set_data_types = []
         data_set_shapes = []
         for data_set in report.data_sets:
@@ -58,6 +68,7 @@ class ReportWriter(object):
                 results_array.append(data_set_result)
                 data_set_ids.append(data_set.id)
                 data_set_labels.append(data_set.label)
+                data_set_names.append(data_set.name or '')
                 if data_set_result is None:
                     data_set_data_types.append('__None__')
                     data_set_shapes.append('')
@@ -114,7 +125,13 @@ class ReportWriter(object):
 
                 data_set = file.create_dataset(rel_path, data=results_array,
                                                chunks=True, compression="gzip", compression_opts=9)
+                data_set.attrs['_type'] = Hdf5DataSetType(type).name
+                if report.id:
+                    data_set.attrs['id'] = report.id
+                if report.name:
+                    data_set.attrs['name'] = report.name
                 data_set.attrs['dataSetIds'] = data_set_ids
+                data_set.attrs['dataSetNames'] = data_set_names
                 data_set.attrs['dataSetLabels'] = data_set_labels
                 data_set.attrs['dataSetDataTypes'] = data_set_data_types
                 data_set.attrs['dataSetShapes'] = data_set_shapes
@@ -254,7 +271,7 @@ class ReportReader(object):
 
         return results
 
-    def get_ids(self, base_path, format=ReportFormat.h5):
+    def get_ids(self, base_path, format=ReportFormat.h5, type=Output):
         """ Get the ids of the reports in a file
 
         Args:
@@ -264,6 +281,7 @@ class ReportReader(object):
                 * HDF5: file to save results
 
             format (:obj:`ReportFormat`, optional): report format
+            type (:obj:`type`): type of report to get
 
         Returns:
             :obj:`list` of :obj:`str`: ids of reports
@@ -287,9 +305,11 @@ class ReportReader(object):
             with h5py.File(filename, 'r') as file:
                 report_ids = []
 
-                def append_report_id(name, object):
+                def append_report_id(name, object, type=type):
                     if isinstance(object, h5py.Dataset):
-                        report_ids.append(name)
+                        data_set_type = object.attrs.get('_type', None)
+                        if data_set_type and (Hdf5DataSetType[data_set_type].value == type or issubclass(Hdf5DataSetType[data_set_type].value, type)):
+                            report_ids.append(name)
 
                 file.visititems(append_report_id)
 

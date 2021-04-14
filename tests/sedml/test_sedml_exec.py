@@ -247,6 +247,12 @@ class ExecTaskCase(unittest.TestCase):
         shutil.rmtree(out_dir)
         exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[])
 
+        report_ids = ReportReader().get_ids(out_dir, format=ReportFormat.h5, type=data_model.Report)
+        self.assertEqual(set(report_ids), set([doc.outputs[0].id, doc.outputs[1].id, doc.outputs[2].id, doc.outputs[3].id]))
+
+        report_ids = ReportReader().get_ids(out_dir, format=ReportFormat.h5, type=data_model.Plot2D)
+        self.assertEqual(set(report_ids), set([]))
+
         data_set_results = ReportReader().run(doc.outputs[0], out_dir, doc.outputs[0].id, format=ReportFormat.h5)
         for data_set in doc.outputs[0].data_sets:
             numpy.testing.assert_allclose(
@@ -1139,6 +1145,10 @@ class ExecTaskCase(unittest.TestCase):
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_2.pdf')))
+
+        self.assertTrue(os.path.isfile(os.path.join(out_dir, 'reports.h5')))
+        report_ids = ReportReader().get_ids(out_dir, format=ReportFormat.h5, type=data_model.Plot2D)
+        self.assertEqual(set(report_ids), set(['plot_2d_1', 'plot_2d_2']))
 
         self.assertEqual(
             log.to_json()['outputs'],
