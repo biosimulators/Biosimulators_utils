@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2.1.8. biosimulators_utils.report package &#8212; BioSimulators utils 0.1.51 documentation</title>
+    <title>2.1.8. biosimulators_utils.report package &#8212; BioSimulators utils 0.1.52 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -279,7 +279,7 @@
 <p>Class for reading reports of simulation results</p>
 <dl class="py method">
 <dt id="biosimulators_utils.report.io.ReportReader.get_ids">
-<code class="sig-name descname"><span class="pre">get_ids</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">base_path</span></em>, <em class="sig-param"><span class="pre">format=&lt;ReportFormat.h5:</span> <span class="pre">'h5'&gt;</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/report/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.report.io.ReportReader.get_ids" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_ids</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">base_path</span></em>, <em class="sig-param"><span class="pre">format=&lt;ReportFormat.h5:</span> <span class="pre">'h5'&gt;</span></em>, <em class="sig-param"><span class="pre">type=&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Output'&gt;</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/report/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.report.io.ReportReader.get_ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the ids of the reports in a file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -291,6 +291,7 @@
 </ul>
 </p></li>
 <li><p><strong>format</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ReportFormat</span></code>, optional) – report format</p></li>
+<li><p><strong>type</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code>) – type of report to get</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -343,7 +344,7 @@
 <p>Class for writing reports of simulation results</p>
 <dl class="py method">
 <dt id="biosimulators_utils.report.io.ReportWriter.run">
-<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">report</span></em>, <em class="sig-param"><span class="pre">results</span></em>, <em class="sig-param"><span class="pre">base_path</span></em>, <em class="sig-param"><span class="pre">rel_path</span></em>, <em class="sig-param"><span class="pre">format=&lt;ReportFormat.h5:</span> <span class="pre">'h5'&gt;</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/report/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.report.io.ReportWriter.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">report</span></em>, <em class="sig-param"><span class="pre">results</span></em>, <em class="sig-param"><span class="pre">base_path</span></em>, <em class="sig-param"><span class="pre">rel_path</span></em>, <em class="sig-param"><span class="pre">format=&lt;ReportFormat.h5:</span> <span class="pre">'h5'&gt;</span></em>, <em class="sig-param"><span class="pre">type=&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Report'&gt;</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/report/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.report.io.ReportWriter.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save a report</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -363,6 +364,7 @@
 </ul>
 </p></li>
 <li><p><strong>format</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ReportFormat</span></code>, optional) – report format</p></li>
+<li><p><strong>type</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code>) – type of output (e.g., subclass of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Output</span></code> such as <code class="xref py py-obj docutils literal notranslate"><span class="pre">Report</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot2D</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
