@@ -15,46 +15,62 @@ import re
 __all__ = ['get_sedml_contents', 'get_summary_sedml_contents']
 
 
-def get_sedml_contents(archive, include_non_executing_docs=False):
+def get_sedml_contents(archive,
+                       include_all_sed_docs_when_no_sed_doc_is_master=True,
+                       always_include_all_sed_docs=False):
     """ Get the SED-ML files in an archive
 
     Args:
         archive (:obj:`CombineArchive`): COMBINE/OMEX archive
-        include_non_executing_docs (:obj:`bool`, optional): if :obj:`False`, only
-            return the documents which should be executed
+        include_all_sed_docs_when_no_sed_doc_is_master (:obj:`bool`, optional): if :obj:`true` 
+            and no SED document has ``master="true"``, return all SED documents.
+        always_include_all_sed_docs (:obj:`bool`, optional): if :obj:`true`, 
+            return all SED documents, regardless of whether they have ``master="true"`` or not.
 
     Returns:
         :obj:`list` of :obj:`CombineArchiveContent`: SED-ML files in a COMBINE/OMEX archive
     """
 
     master_content = archive.get_master_content()
-    if master_content and not include_non_executing_docs:
-        potential_content = master_content
-    else:
-        potential_content = archive.contents
-
     sedml_contents = []
-    for content in potential_content:
+    master_sedml_contents = []
+    for content in archive.contents:
         if content.format and re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format):
             sedml_contents.append(content)
-    sedml_contents.sort(key=lambda content: content.location)
+            if content.master:
+                master_sedml_contents.append(content)
 
-    return sedml_contents
+    if always_include_all_sed_docs:
+        return sedml_contents
+    else:
+        if master_sedml_contents:
+            return master_sedml_contents
+        else:
+            if include_all_sed_docs_when_no_sed_doc_is_master:
+                return sedml_contents
+            else:
+                return []
 
 
-def get_summary_sedml_contents(archive, archive_dir, include_non_executing_docs=False):
+def get_summary_sedml_contents(archive, archive_dir,
+                               include_all_sed_docs_when_no_sed_doc_is_master=True,
+                               always_include_all_sed_docs=False):
     """ Get a summary of the SED-ML content in a COMBINE/OMEX archive
 
     Args:
         archive (:obj:`CombineArchive`): COMBINE/OMEX archive
         archive_dir (:obj:`str`): path where the content of the archive is located
-        include_non_executing_docs (:obj:`bool`, optional): if :obj:`False`, only
-            return the documents which should be executed
+        include_all_sed_docs_when_no_sed_doc_is_master (:obj:`bool`, optional): if :obj:`true` 
+            and no SED document has ``master="true"``, return all SED documents.
+        always_include_all_sed_docs (:obj:`bool`, optional): if :obj:`true`, 
+            return all SED documents, regardless of whether they have ``master="true"`` or not.
 
     Returns:
         :obj:`str`: summary of the SED-ML content in a COMBINE/OMEX archive
     """
-    contents = get_sedml_contents(archive, include_non_executing_docs=include_non_executing_docs)
+    contents = get_sedml_contents(archive,
+                                  include_all_sed_docs_when_no_sed_doc_is_master=include_all_sed_docs_when_no_sed_doc_is_master,
+                                  always_include_all_sed_docs=always_include_all_sed_docs)
 
     n_docs = 0
     n_models = 0

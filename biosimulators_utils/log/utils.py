@@ -52,7 +52,7 @@ def init_combine_archive_log(archive, archive_dir,
     Returns:
         :obj:`CombineArchiveLog`: initialized log of a COMBINE/OMEX archive
     """
-    contents = get_sedml_contents(archive, include_non_executing_docs=False)
+    contents = get_sedml_contents(archive)
 
     log = CombineArchiveLog(status=Status.QUEUED)
 

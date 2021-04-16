@@ -23,11 +23,15 @@ class CombineUtilsTestCase(unittest.TestCase):
             data_model.CombineArchiveContent(location='file_4', format=data_model.CombineArchiveContentFormat.BNGL, master=False),
         ])
         self.assertEqual(utils.get_sedml_contents(archive), archive.contents[0:1])
-        self.assertEqual(utils.get_sedml_contents(archive, include_non_executing_docs=True), archive.contents[0:2])
+        self.assertEqual(utils.get_sedml_contents(archive, always_include_all_sed_docs=True), archive.contents[0:2])
 
         archive.contents[0].master = False
         self.assertEqual(utils.get_sedml_contents(archive), archive.contents[0:2])
-        self.assertEqual(utils.get_sedml_contents(archive, include_non_executing_docs=True), archive.contents[0:2])
+        self.assertEqual(utils.get_sedml_contents(archive, always_include_all_sed_docs=True), archive.contents[0:2])
+
+        archive.contents[2].master = True
+        self.assertEqual(utils.get_sedml_contents(archive), archive.contents[0:2])
+        self.assertEqual(utils.get_sedml_contents(archive, include_all_sed_docs_when_no_sed_doc_is_master=False), [])
 
     def test_get_summary_sedml_contents(self):
         archive = data_model.CombineArchive(contents=[
@@ -61,6 +65,7 @@ class CombineUtilsTestCase(unittest.TestCase):
         SedmlSimulationWriter().run(exp_2, os.path.join(self.dirname, 'exp_2.sedml'))
 
         summary = utils.get_summary_sedml_contents(archive, self.dirname)
-        self.assertTrue(summary.startswith('Archive contains 2 SED-ML documents with 2 models, 2 simulations, 3 tasks, 2 reports, and 3 plots:\n'))
+        self.assertTrue(summary.startswith(
+            'Archive contains 2 SED-ML documents with 2 models, 2 simulations, 3 tasks, 2 reports, and 3 plots:\n'))
         self.assertGreater(summary.index('exp_2.sedml'), summary.index('exp_1.sedml'))
         self.assertGreater(summary.index('plot_5'), summary.index('plot_4'))
