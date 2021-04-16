@@ -94,7 +94,6 @@ class DataModelTestCase(unittest.TestCase):
         self.assertFalse(archive.is_equal(archive3))
 
         archive4 = data_model.CombineArchive([content2, content2], description=description, authors=authors, created=now, updated=now)
-        self.assertEqual(archive.get_master_content(), content2)
-        self.assertEqual(archive3.get_master_content(), None)
-        with self.assertRaisesRegex(ValueError, 'Multiple content items are marked as master'):
-            archive4.get_master_content()
+        self.assertEqual(archive.get_master_content(), [content2])
+        self.assertEqual(archive3.get_master_content(), [])
+        self.assertEqual(archive4.get_master_content(), [content2, content2])

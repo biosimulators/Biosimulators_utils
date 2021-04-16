@@ -70,7 +70,7 @@ class ReadWriteTestCase(unittest.TestCase):
         with open(os.path.join(out_dir2, content1.location), 'r') as file:
             self.assertEqual('a', file.read())
 
-        with self.assertRaisesRegex(ValueError, 'not a valid COMBINE/OMEX archive'):
+        with self.assertRaisesRegex(ValueError, 'does not exist'):
             io.CombineArchiveReader.run(os.path.join(self.temp_dir, 'test2.omex'), out_dir)
 
     @unittest.expectedFailure

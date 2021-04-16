@@ -63,20 +63,13 @@ class CombineArchive(CombineArchiveBase):
         """ Get the master content of an archive
 
         Returns:
-            :obj:`CombineArchiveContent` or :obj:`None`: master content
-
-        Raises:
-            :obj:`ValueError`: if more than one content item is marked as master
+            :obj:`list` of :obj:`CombineArchiveContent`: master content
         """
         master_content = []
         for content in self.contents:
             if content.master:
                 master_content.append(content)
-        if not master_content:
-            return None
-        if len(master_content) == 1:
-            return master_content[0]
-        raise ValueError('Multiple content items are marked as master')
+        return master_content
 
     def to_tuple(self):
         """ Tuple representation of a COMBINE/OMEX archive

@@ -114,6 +114,9 @@ class CombineArchiveReader(object):
         Raises:
             :obj:`ValueError`: archive is invalid
         """
+        if not os.path.isfile(in_file):
+            raise ValueError("`{}` does not exist.".format(in_file))
+
         archive_comb = libcombine.CombineArchive()
         if not archive_comb.initializeFromArchive(in_file):
             if try_reading_as_plain_zip_archive:
@@ -145,16 +148,10 @@ class CombineArchiveReader(object):
             content = CombineArchiveContent(
                 location=location,
                 format=format,
+                master=file_comb.isSetMaster() and file_comb.getMaster(),
             )
             cls._read_metadata(archive_comb, location, content)
             archive.contents.append(content)
-
-        file_comb = archive_comb.getMasterFile()
-        if file_comb:
-            location = file_comb.getLocation()
-            master_content = next((content for content in archive.contents if content.location == location), None)
-            if master_content:
-                master_content.master = True
 
         # extract files
         archive_comb.extractTo(out_dir)

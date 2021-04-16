@@ -29,7 +29,7 @@ def get_sedml_contents(archive, include_non_executing_docs=False):
 
     master_content = archive.get_master_content()
     if master_content and not include_non_executing_docs:
-        potential_content = [master_content]
+        potential_content = master_content
     else:
         potential_content = archive.contents
 
@@ -76,7 +76,7 @@ def get_summary_sedml_contents(archive, archive_dir, include_non_executing_docs=
                 n_reports += 1
             else:
                 n_plots += 1
-    summary = 'Found {} SED-ML documents with {} models, {} simulations, {} tasks, {} reports, and {} plots:\n'.format(
+    summary = 'Archive contains {} SED-ML documents with {} models, {} simulations, {} tasks, {} reports, and {} plots:\n'.format(
         n_docs, n_models, n_simulations, n_tasks, n_reports, n_plots)
 
     for i_content, content in enumerate(sorted(contents, key=lambda content: content.location)):
