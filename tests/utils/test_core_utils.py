@@ -307,3 +307,66 @@ class TestCase(unittest.TestCase):
         utils.patch_dict(dictionary, patch)
 
         self.assertEqual(dictionary, expected_dictionary)
+
+    def test_flatten_nested_list_of_strings(self):
+        self.assertEqual(
+            utils.flatten_nested_list_of_strings([['A'], ['B'], ['C']], prefix='- ', indent='  '),
+            '\n'.join([
+                '- A',
+                '- B',
+                '- C',
+            ])
+        )
+
+        self.assertEqual(
+            utils.flatten_nested_list_of_strings([
+                ['A'],
+                ['B',
+                    [
+                        ['1'],
+                        ['2'],
+                        ['3'],
+                    ],
+                 ],
+                ['C']
+            ], prefix='- ', indent='  '),
+            '\n'.join([
+                '- A',
+                '- B',
+                '  - 1',
+                '  - 2',
+                '  - 3',
+                '- C',
+            ])
+        )
+
+        self.assertEqual(
+            utils.flatten_nested_list_of_strings([
+                ['A'],
+                ['B',
+                    [
+                        ['1'],
+                        ['2\n3',
+                            [
+                                ['i'],
+                                ['ii\niii'],
+                            ],
+                         ],
+                        ['4'],
+                    ],
+                 ],
+                ['C']
+            ], prefix='- ', indent='  '),
+            '\n'.join([
+                '- A',
+                '- B',
+                '  - 1',
+                '  - 2',
+                '    3',
+                '    - i',
+                '    - ii',
+                '      iii',
+                '  - 4',
+                '- C',
+            ])
+        )

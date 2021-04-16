@@ -16,6 +16,7 @@ __all__ = [
     'are_lists_equal', 'none_sorted', 'assert_exception',
     'validate_value', 'validate_str_value', 'format_value', 'parse_value',
     'patch_dict', 'pad_arrays_to_consistent_shapes',
+    'flatten_nested_list_of_strings',
 ]
 
 
@@ -326,3 +327,26 @@ def pad_arrays_to_consistent_shapes(arrays):
         padded_arrays.append(array)
 
     return padded_arrays
+
+
+def flatten_nested_list_of_strings(nested_list, prefix='- ', indent=' ' * 2):
+    """ Flatten a nested list of strings
+
+    Args:
+        nested_list (nested :obj:`list` of :obj:`str`): nested list of string
+        prefix (:obj:`str`, optional): prefix
+        indentation (:obj:`str`, optional): indentation
+
+    Returns:
+        :obj:`str`: flattened string
+    """
+    flattened = []
+    for item in nested_list:
+        flattened.append(prefix + item[0].replace('\n', '\n' + ' ' * len(prefix)))
+        if len(item) > 1:
+            flattened.append(
+                indent
+                + flatten_nested_list_of_strings(item[1], prefix=prefix, indent=indent).replace('\n', '\n' + indent)
+            )
+
+    return '\n'.join(flattened)
