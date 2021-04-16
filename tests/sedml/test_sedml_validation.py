@@ -651,7 +651,7 @@ class ValidationTestCase(unittest.TestCase):
             self._validate_task(task, variables)
         task.simulation.algorithm.changes[0].kisao_id = 'KISAO_0000001'
 
-        with self.assertRaisesRegex(NotImplementedError, 'is not supported. Model language must be'):
+        with self.assertRaisesRegex(NotImplementedError, 'is not supported. Models must be in'):
             self._validate_task(task, variables)
         task.model.language = data_model.ModelLanguage.SBML
         task.model.changes = [mock.Mock()]

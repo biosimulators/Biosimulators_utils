@@ -8,7 +8,9 @@
 
 from ..warnings import warn
 from ..xml.utils import validate_xpaths_ref_to_unique_objects
-from .data_model import (AbstractTask, Task, RepeatedTask, ModelLanguage, ModelChange, ComputeModelChange,  # noqa: F401
+from .data_model import (AbstractTask, Task, RepeatedTask,  # noqa: F401
+                         ModelLanguage, ModelLanguagePattern,
+                         ModelChange, ComputeModelChange,
                          Simulation, UniformTimeCourseSimulation, Variable,
                          Range, FunctionalRange, UniformRange,
                          Report, Plot2D, Plot3D)
@@ -465,14 +467,17 @@ def validate_model_language(language, valid_language):
 
     Args:
         language (:obj:`str`): model language
-        valid_language (:obj:`ModelLanguage`): valid model language
+        valid_language (:obj:`ModelLanguage`): regular expression pattern for valid model language
 
     Raises:
         :obj:`NotImplementedError`: if the model uses a different language
     """
-    if not language or not re.match('^{}($|:)'.format(valid_language.value), language):
-        raise NotImplementedError("Model language {} is not supported. Model language must be '{}'.".format(
-            language, valid_language.value))
+    valid_language_pattern = ModelLanguagePattern[valid_language.name]
+
+    if not language or not re.match(valid_language_pattern.value, language):
+        msg = "Model language `{}` is not supported. Models must be in {} format (`sed:model/@language` must match `{}` such as `{}`).".format(
+            language or '', valid_language.name, valid_language_pattern.value, valid_language.value)
+        raise NotImplementedError(msg)
 
 
 def validate_model_change_types(changes, types=(ModelChange, )):
