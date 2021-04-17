@@ -768,7 +768,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         }
 
         change.variables[0].target = "/model/parameter[@id='x']"
-        with self.assertRaisesRegex(ValueError, 'not a valid XPATH'):
+        with self.assertRaisesRegex(ValueError, 'not a valid XPath'):
             utils.get_value_of_variable_model_xml_targets(change.variables[0], models)
 
         change.variables[0].target = "/model/parameter/@value"
@@ -858,7 +858,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change.target = "/model/parameter[@type='parameter']"
         et = etree.parse(in_file)
-        with self.assertRaisesRegex(ValueError, 'not a valid XPATH to an attribute'):
+        with self.assertRaisesRegex(ValueError, 'not a valid XPath to an attribute'):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None, variable_values=variable_values)
 
         with open(in_file, 'w') as file:

@@ -77,7 +77,7 @@ def get_namespaces_for_xml_element(element_tree):
 
 
 def get_attributes_of_xpaths(filename, x_paths, namespaces, attr='id'):
-    """ Determine the values of the attributes of the objects that match each XPATH
+    """ Determine the values of the attributes of the objects that match each XPath
 
     Args:
         filename (:obj:`str`): path to XML file
@@ -96,7 +96,7 @@ def get_attributes_of_xpaths(filename, x_paths, namespaces, attr='id'):
     if isinstance(attr, dict):
         attr = '{{{}}}{}'.format(attr['namespace']['uri'], attr['name'])
 
-    # determine the values of the attributes of the objects that match each XPATH
+    # determine the values of the attributes of the objects that match each XPath
     x_path_attrs = {}
     for x_path in x_paths:
         try:
@@ -106,7 +106,7 @@ def get_attributes_of_xpaths(filename, x_paths, namespaces, attr='id'):
         except Exception:
             x_path_attrs[x_path] = []
 
-    # return the values of the attributes of the objects that match each XPATH
+    # return the values of the attributes of the objects that match each XPath
     return x_path_attrs
 
 
@@ -115,7 +115,7 @@ def validate_xpaths_ref_to_unique_objects(filename, x_paths, namespaces, attr='i
 
     Args:
         filename (:obj:`str`): path to XML file
-        x_paths (:obj:`list` of `str`): XPATHs
+        x_paths (:obj:`list` of `str`): XPaths
         namespaces (:obj:`dict`): dictionary that maps the prefixes of namespaces to their URIs
         attr (:obj:`str` or :obj:`dict`, optional): attribute to get values of
 
@@ -147,26 +147,26 @@ def validate_xpaths_ref_to_unique_objects(filename, x_paths, namespaces, attr='i
 
 
 def eval_xpath(element, xpath, namespaces):
-    """ Get the object(s) at an XPATH
+    """ Get the object(s) at an XPath
 
     Args:
         element (:obj:`etree._ElementTree`): element tree
-        xpath (:obj:`str`): XPATH
+        xpath (:obj:`str`): XPath
         namespaces (:obj:`dict`): dictionary that maps the prefixes of namespaces to their URIs
 
     Returns:
-        :obj:`list` of :obj:`etree._ElementTree`: object(s) at the XPATH
+        :obj:`list` of :obj:`etree._ElementTree`: object(s) at the XPath
     """
     try:
         return element.xpath(xpath, namespaces=get_namespaces_with_prefixes(namespaces))
     except lxml.etree.XPathEvalError as exception:
         if namespaces:
-            msg = 'XPATH `{}` is invalid with these namespaces:\n  {}\n\n  {}'.format(
+            msg = 'XPath `{}` is invalid with these namespaces:\n  {}\n\n  {}'.format(
                 xpath,
                 '\n  '.join(' - {}: {}'.format(prefix, uri) for prefix, uri in namespaces.items()),
                 exception.args[0].replace('\n', '\n  ')),
         else:
-            msg = 'XPATH `{}` is invalid without namespaces:\n\n  {}'.format(
+            msg = 'XPath `{}` is invalid without namespaces:\n\n  {}'.format(
                 xpath, exception.args[0].replace('\n', '\n  ')),
 
         exception.args = (msg)

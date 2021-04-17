@@ -351,7 +351,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             # get object to change
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if sep != '/@':
-                raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
+                raise ValueError('target {} is not a valid XPath to an attribute of a model element'.format(change.target))
             objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
             if validate_unique_xml_targets and len(objs) != 1:
                 raise ValueError('xpath {} must match a single object'.format(obj_xpath))
@@ -429,7 +429,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             # get object to change
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if sep != '/@':
-                raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(change.target))
+                raise ValueError('target {} is not a valid XPath to an attribute of a model element'.format(change.target))
             objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
             if validate_unique_xml_targets and len(objs) != 1:
                 raise ValueError('xpath {} must match a single object'.format(obj_xpath))
@@ -499,7 +499,7 @@ def get_value_of_variable_model_xml_targets(variable, model_etrees):
 
     obj_xpath, sep, attr = variable.target.rpartition('/@')
     if sep != '/@':
-        raise ValueError('target {} is not a valid XPATH to an attribute of a model element'.format(variable.target))
+        raise ValueError('target {} is not a valid XPath to an attribute of a model element'.format(variable.target))
 
     et = model_etrees[variable.model.id]
     obj = eval_xpath(et, obj_xpath, variable.target_namespaces)
@@ -1073,7 +1073,7 @@ def get_xml_node_namespace_tag_target(etree, target_namespaces=None):
             * :obj:`str`: namespace URI
             * :obj:`str`: namespace prefix
             * :obj:`str`: tag
-            * :obj:`str`: target for use with SED target XPATHs
+            * :obj:`str`: target for use with SED target XPaths
             * :obj:`dict`: dictionary that maps the prefixes of namespaces to their URIs
     """
     target_namespaces = dict(target_namespaces or {})
