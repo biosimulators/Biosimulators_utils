@@ -14,9 +14,10 @@ from .data_model import (AbstractTask, Task, RepeatedTask,  # noqa: F401
                          UniformTimeCourseSimulation, Variable,
                          Range, FunctionalRange, UniformRange, VectorRange,
                          Report, Plot2D, Plot3D)
-from .utils import append_all_nested_children_to_doc, get_range_len
+from .utils import append_all_nested_children_to_doc, get_range_len, is_model_language_encoded_in_xml
 import collections
 import copy
+import lxml.etree
 import math
 import networkx
 import os
@@ -37,6 +38,8 @@ __all__ = [
     'validate_uniform_range',
     'validate_output',
     'validate_data_generator_variables',
+    'validate_target',
+    'validate_variable_xpaths',
 ]
 
 
@@ -901,6 +904,46 @@ def validate_output(output):
             if surface_errors:
                 surface_id = '`' + surface.id + '`' if surface and surface.id else str(i_surface + 1)
                 errors.append(['Surface {} is invalid.'.format(surface_id), surface_errors])
+
+    return errors
+
+
+def validate_target(target, namespaces, language):
+    """ Validate that a target is a valid XPath and that the namespaces needed to resolve a target are defined
+
+    Args:
+        target (:obj:`string`): XPath to a model element or attribute
+        namespaces (:obj:`dict`): dictionary that maps prefixes of namespaces to their URIs
+        language (:obj:`str`): model language
+
+    Returns:
+        nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+    """
+    errors = []
+
+    if is_model_language_encoded_in_xml(language):
+
+        if None in namespaces:
+            namespaces = dict(namespaces)
+            namespaces.pop(None, None)
+
+        try:
+            xpath = lxml.etree.XPath(target, namespaces=namespaces)
+            root = lxml.etree.Element("root")
+            try:
+                xpath.evaluate(root)
+            except lxml.etree.XPathEvalError as exception:
+                if 'Undefined namespace prefix' in str(exception):
+                    if namespaces:
+                        ns_message = 'Only the following namespaces are defined for the target: {}.'.format(
+                            ', '.join('`' + prefix + '`' for prefix in sorted(namespaces.keys())))
+                    else:
+                        ns_message = 'No namespaces are defined for the target.'
+
+                    errors.append(['One or more namespaces required for target `{}` are not defined. {}'.format(target, ns_message)])
+
+        except lxml.etree.XPathSyntaxError:
+            errors.append(['Target `{}` is not a valid XML XPath.'.format(target)])
 
     return errors
 
