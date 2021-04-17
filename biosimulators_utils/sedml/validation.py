@@ -251,6 +251,10 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                             if variable.symbol and variable.target:
                                 variable_errors.append(['Variable should define a symbol or target, not both.'])
 
+                            if variable.target and variable.model and variable.model.language:
+                                variable_errors.extend(validate_target(
+                                    variable.target, variable.target_namespaces, variable.model.language))
+
                             if variable_errors:
                                 variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
                                 range_errors.append(['Variable {} is invalid.'.format(variable_id), variable_errors])
@@ -374,7 +378,11 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                                'Change does not reference a model.')
                         change_errors.append([msg])
 
-                    if not change.target:
+                    if change.target:
+                        if change.model and change.model.language:
+                            change_errors.extend(validate_target(change.target, change.target_namespaces, change.model.language))
+
+                    else:
                         msg = ('Set value changes must define a target. '
                                'Change does not define a target.')
                         change_errors.append([msg])
@@ -403,6 +411,9 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                             variable_errors.append(['Set value variable must define a target or a symbol.'])
                         if variable.target and variable.symbol:
                             variable_errors.append(['Set value variable must define a target or a symbol, not both.'])
+
+                        if variable.target and variable.model and variable.model.language:
+                            variable_errors.extend(validate_target(variable.target, variable.target_namespaces, variable.model.language))
 
                         if variable_errors:
                             variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
@@ -534,7 +545,7 @@ def validate_model(model, model_ids, working_dir, validate_models_with_languages
     warnings.extend(tmp_warnings)
 
     # validate that model changes have targets
-    model_change_errors = validate_model_changes(model.changes)
+    model_change_errors = validate_model_changes(model)
     if model_change_errors:
         errors.append(['The changes of the model are not valid.', model_change_errors])
 
@@ -656,23 +667,27 @@ def validate_model_change_types(changes, types=(ModelChange, )):
     return errors
 
 
-def validate_model_changes(changes):
+def validate_model_changes(model):
     """ Check that model changes are semantically valid
 
     * Check that the variables of compute model changes are valid
 
     Args:
-        changes (:obj:`list` of :obj:`ModelChange`): model changes
+        model (:obj:`Model`): model
 
     Returns:
         nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
     """
     errors = []
 
-    for i_change, change in enumerate(changes):
+    for i_change, change in enumerate(model.changes):
         change_errors = []
 
-        if not change.target:
+        if change.target:
+            if model.language:
+                change_errors.extend(validate_target(change.target, change.target_namespaces, model.language))
+
+        else:
             change_errors.append(['Model attribute change must define a target.'])
 
         if isinstance(change, ComputeModelChange):
@@ -695,6 +710,9 @@ def validate_model_changes(changes):
                     variable_errors.append(['Variable must define a target.'])
                 if variable.symbol:
                     variable_errors.append(['Variable must define a target, not a symbol.'])
+
+                if variable.target and variable.model and variable.model.language:
+                    variable_errors.extend(validate_target(variable.target, variable.target_namespaces, variable.model.language))
 
                 if variable_errors:
                     var_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
@@ -843,6 +861,9 @@ def validate_data_generator_variables(variables):
 
         if (variable.symbol and variable.target) or (not variable.symbol and not variable.target):
             variable_errors.append(['Variable must define a symbol or target.'])
+
+        if variable.target and variable.task and variable.task.model and variable.task.model.language:
+            variable_errors.extend(validate_target(variable.target, variable.target_namespaces, variable.task.model.language))
 
         if variable_errors:
             variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)

@@ -650,7 +650,7 @@ class ValidationTestCase(unittest.TestCase):
                 errors.extend(tmp_errors)
                 warnings.extend(tmp_warnings)
                 errors.extend(validation.validate_model_change_types(task.model.changes))
-                errors.extend(validation.validate_model_changes(task.model.changes))
+                errors.extend(validation.validate_model_changes(task.model))
             if task.simulation:
                 errors.extend(validation.validate_simulation_type(task.simulation, (data_model.UniformTimeCourseSimulation, )))
                 errors.extend(validation.validate_simulation(task.simulation))
@@ -762,7 +762,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn('has an invalid KiSAO id', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
         task.simulation.algorithm.changes[0].kisao_id = 'KISAO_0000001'
-        task.model.changes = [mock.Mock()]
+        task.model.changes = [mock.Mock(id='', target='', target_namespaces={})]
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('is not supported', flatten_nested_list_of_strings(errors))

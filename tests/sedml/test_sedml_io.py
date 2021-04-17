@@ -175,7 +175,7 @@ class IoTestCase(unittest.TestCase):
         task3.changes.append(
             data_model.SetValueComputeModelChange(
                 model=model1,
-                target=data_model.Symbol.time.value,
+                target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='p1']",
                 range=task3.ranges[0],
                 parameters=[],
                 variables=[],
@@ -620,7 +620,7 @@ class IoTestCase(unittest.TestCase):
                     source='model.xml',
                     language=data_model.ModelLanguage.SBML.value,
                     changes=[
-                        mock.Mock(id=None)
+                        mock.Mock(id=None, target='/sbml:sbml', target_namespaces={'sbml': 'sbml'})
                     ],
                 ),
             ],
