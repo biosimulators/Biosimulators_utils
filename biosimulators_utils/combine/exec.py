@@ -126,7 +126,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             archive_tmp_dir = tempfile.mkdtemp()
 
             # unpack archive and read metadata
-            archive = CombineArchiveReader.run(archive_filename, archive_tmp_dir)
+            archive = CombineArchiveReader().run(archive_filename, archive_tmp_dir)
 
             # determine files to execute
             sedml_contents = get_sedml_contents(archive)

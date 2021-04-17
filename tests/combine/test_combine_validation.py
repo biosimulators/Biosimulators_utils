@@ -20,7 +20,7 @@ class ValidationTestCase(unittest.TestCase):
         shutil.rmtree(self.tmp_dir)
 
     def test_validate(self):
-        archive = CombineArchiveReader.run(self.FIXTURE, self.tmp_dir)
+        archive = CombineArchiveReader().run(self.FIXTURE, self.tmp_dir)
         errors, warnings = validate(archive, self.tmp_dir)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])

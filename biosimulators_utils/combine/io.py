@@ -9,7 +9,8 @@
 from .data_model import CombineArchiveBase, CombineArchive, CombineArchiveContent, CombineArchiveContentFormat  # noqa: F401
 from ..archive.io import ArchiveReader
 from ..data_model import Person
-from ..warnings import warn
+from ..utils.core import flatten_nested_list_of_strings
+from ..warnings import warn, BioSimulatorsWarning
 import dateutil.parser
 import libcombine
 import os
@@ -23,10 +24,18 @@ __all__ = [
 
 
 class CombineArchiveWriter(object):
-    """ Writer for COMBINE/OMEX archives """
+    """ Writer for COMBINE/OMEX archives
 
-    @classmethod
-    def run(cls, archive, in_dir, out_file):
+    Attributes:
+        errors (nested :obj:`list` of :obj:`str`): errors
+        warnings (nested :obj:`list` of :obj:`str`): warnings
+    """
+
+    def __init__(self):
+        self.errors = None
+        self.warnings = None
+
+    def run(self, archive, in_dir, out_file):
         """ Write an archive to a file
 
         Args:
@@ -38,27 +47,46 @@ class CombineArchiveWriter(object):
             :obj:`AssertionError`: if files could not be added to the archive or the archive could not be
                 saved
         """
+        self.errors = []
+        self.warnings = []
+
         # instantiate archive
         archive_comb = libcombine.CombineArchive()
 
         # set metadata about archive
-        cls._write_metadata(archive, archive_comb, '.')
+        self._write_metadata(archive, archive_comb, '.')
 
         # add files to archive
-        for content in archive.contents:
-            assert archive_comb.addFile(
+        for i_content, content in enumerate(archive.contents):
+            if not archive_comb.addFile(
                 os.path.join(in_dir, content.location),
                 content.location,
                 content.format if content.format else '',
                 content.master
-            )
-            cls._write_metadata(content, archive_comb, content.location)
+            ):
+                content_id = '`' + content.location + '`' if content.location else str(i_content + 1)
+                msg = 'Content element {} could not be added to the archive.'.format(content_id)
+                self.errors.append([msg])
+                raise Exception(msg)
+            self._write_metadata(content, archive_comb, content.location)
 
         # save archive to a file
-        assert archive_comb.writeToFile(out_file)
+        if not archive_comb.writeToFile(out_file):
+            msg = 'Archive could not be saved.'
+            self.errors.append([msg])
+            raise Exception(msg)
 
-    @classmethod
-    def _write_metadata(cls, obj, archive_comb, filename):
+        errors, warnings = get_combine_errors_warnings(archive_comb)
+        self.errors.extend(errors)
+        self.warnings.extend(warnings)
+
+        if self.warnings:
+            warn('COMBINE/OMEX archive may be invalid.\n' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
+                 BioSimulatorsWarning)
+        if self.errors:
+            raise ValueError('COMBINE/OMEX archive is invalid.\n' + flatten_nested_list_of_strings(self.errors).replace('\n', '\n  '))
+
+    def _write_metadata(self, obj, archive_comb, filename):
         """ Write metadata about an archive or a file in an archive
 
         Args:
@@ -89,17 +117,27 @@ class CombineArchiveWriter(object):
             date_comb.setDateAsString(obj.updated.strftime('%Y-%m-%dT%H:%M:%SZ'))
             desc_comb.getModified().append(date_comb)
         else:
-            raise NotImplementedError('libcombine does not support undefined updated dates')
+            msg = 'libcombine does not support undefined updated dates'
+            self.errors.append([msg])
+            raise NotImplementedError(msg)
         archive_comb.addMetadata(filename, desc_comb)
 
 
 class CombineArchiveReader(object):
-    """ Reader for COMBINE/OMEX archives """
+    """ Reader for COMBINE/OMEX archives
+
+    Attributes:
+        errors (nested :obj:`list` of :obj:`str`): errors
+        warnings (nested :obj:`list` of :obj:`str`): warnings
+    """
 
     NONE_DATETIME = '2000-01-01T00:00:00Z'
 
-    @classmethod
-    def run(cls, in_file, out_dir, try_reading_as_plain_zip_archive=True):
+    def __init__(self):
+        self.errors = None
+        self.warnings = None
+
+    def run(self, in_file, out_dir, try_reading_as_plain_zip_archive=True):
         """ Read an archive from a file
 
         Args:
@@ -114,26 +152,41 @@ class CombineArchiveReader(object):
         Raises:
             :obj:`ValueError`: archive is invalid
         """
+        self.errors = []
+        self.warnings = []
+
         if not os.path.isfile(in_file):
-            raise ValueError("`{}` is not a file.".format(in_file))
+            msg = "`{}` is not a file.".format(in_file)
+            self.errors.append([msg])
+            raise ValueError(msg)
 
         archive_comb = libcombine.CombineArchive()
-        if not archive_comb.initializeFromArchive(in_file):
+        if archive_comb.initializeFromArchive(in_file):
+            errors, warnings = get_combine_errors_warnings(archive_comb)
+            self.errors.extend(errors)
+            self.warnings.extend(warnings)
+
+        else:
             if try_reading_as_plain_zip_archive:
                 try:
                     archive = CombineArchiveZipReader().run(in_file, out_dir)
-                    warn('`{}` is a plain zip archive, not a COMBINE/OMEX archive.'.format(in_file), UserWarning)
+                    msg = '`{}` is a plain zip archive, not a COMBINE/OMEX archive.'.format(in_file)
+                    warn(msg, UserWarning)
                     return archive
                 except ValueError:
-                    raise ValueError("`{}` is not a valid COMBINE/OMEX archive.".format(in_file))
+                    msg = "`{}` is not a valid COMBINE/OMEX archive.".format(in_file)
+                    self.errors.append([msg])
+                    raise ValueError(msg)
             else:
-                raise ValueError("`{}` is not a valid COMBINE/OMEX archive.".format(in_file))
+                msg = "`{}` is not a valid COMBINE/OMEX archive.".format(in_file)
+                self.errors.append([msg])
+                raise ValueError(msg)
 
         # instantiate archive
         archive = CombineArchive()
 
         # read metadata
-        cls._read_metadata(archive_comb, '.', archive)
+        self._read_metadata(archive_comb, '.', archive)
 
         # read files
         for location in archive_comb.getAllLocations():
@@ -150,17 +203,23 @@ class CombineArchiveReader(object):
                 format=format,
                 master=file_comb.isSetMaster() and file_comb.getMaster(),
             )
-            cls._read_metadata(archive_comb, location, content)
+            self._read_metadata(archive_comb, location, content)
             archive.contents.append(content)
 
         # extract files
         archive_comb.extractTo(out_dir)
 
+        # raise warnings and errors
+        if self.warnings:
+            warn('COMBINE/OMEX archive may be invalid.\n' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
+                 BioSimulatorsWarning)
+        if self.errors:
+            raise ValueError('COMBINE/OMEX archive is invalid.\n' + flatten_nested_list_of_strings(self.errors).replace('\n', '\n  '))
+
         # return information about archive
         return archive
 
-    @classmethod
-    def _read_metadata(cls, archive_comb, filename, obj):
+    def _read_metadata(self, archive_comb, filename, obj):
         """ Read metadata about an archive or a file in an archive
 
         Args:
@@ -179,7 +238,7 @@ class CombineArchiveReader(object):
                 ))
 
             created_comb = desc_comb.getCreated().getDateAsString()
-            if created_comb == cls.NONE_DATETIME:
+            if created_comb == self.NONE_DATETIME:
                 obj.created = None
             else:
                 obj.created = dateutil.parser.parse(created_comb)
@@ -214,7 +273,8 @@ class CombineArchiveZipReader(object):
         try:
             zip_archive = ArchiveReader().run(in_file, out_dir)
         except (FileNotFoundError, zipfile.BadZipFile):
-            raise ValueError('`{}` is not a valid zip archive.'.format(in_file))
+            msg = '`{}` is not a valid zip archive.'.format(in_file)
+            raise ValueError(msg)
 
         combine_archive = CombineArchive()
         for file in zip_archive.files:
@@ -227,3 +287,30 @@ class CombineArchiveZipReader(object):
             )
 
         return combine_archive
+
+
+def get_combine_errors_warnings(archive):
+    """ Get the errors and warnings of a COMBINE/OMEX archive
+
+    Args:
+        archive (:obj:`libcombine.CombineArchive`): archive
+
+    Returns:
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: errors
+            * nested :obj:`list` of :obj:`str`: warnings
+    """
+    errors = []
+    warnings = []
+
+    manifest = archive.getManifest()
+    log = manifest.getErrorLog()
+    for i_error in range(log.getNumErrors()):
+        error = log.getError(i_error)
+        if error.isError() or error.isFatal():
+            errors.append([error.getMessage()])
+        else:
+            warnings.append([error.getMessage()])
+
+    return (errors, warnings)

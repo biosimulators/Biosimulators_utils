@@ -62,8 +62,9 @@ class ValidateModelingProjectController(cement.Controller):
 
         archive_dirname = tempfile.mkdtemp()
 
+        reader = biosimulators_utils.combine.io.CombineArchiveReader()
         try:
-            archive = biosimulators_utils.combine.io.CombineArchiveReader.run(args.filename, archive_dirname)
+            archive = reader.run(args.filename, archive_dirname)
         except Exception as exception:
             shutil.rmtree(archive_dirname)
             raise SystemExit(str(exception))
