@@ -115,7 +115,7 @@ class CombineArchiveReader(object):
             :obj:`ValueError`: archive is invalid
         """
         if not os.path.isfile(in_file):
-            raise ValueError("`{}` does not exist.".format(in_file))
+            raise ValueError("`{}` is not a file.".format(in_file))
 
         archive_comb = libcombine.CombineArchive()
         if not archive_comb.initializeFromArchive(in_file):

@@ -13,11 +13,13 @@ from .warnings import SedmlFeatureNotSupportedWarning
 from ..biosimulations.data_model import Metadata, ExternalReferences, Citation
 from ..data_model import Person, Identifier, OntologyTerm
 from ..kisao.utils import normalize_kisao_id
-from ..warnings import warn
+from ..warnings import warn, BioSimulatorsWarning
+from ..utils.core import flatten_nested_list_of_strings
 from xml.sax import saxutils
 import dateutil.parser
 import enum
 import libsedml
+import os
 
 __all__ = [
     'SedmlSimulationReader',
@@ -39,18 +41,26 @@ class SedmlSimulationWriter(object):
         self._doc_sed = None
         self._obj_to_sed_obj_map = None
 
-    def run(self, doc, filename, validate_semantics=True):
+    def run(self, doc, filename, validate_semantics=True, validate_models_with_languages=True):
         """ Save a SED document to an SED-ML XML file
 
         Args:
             doc (:obj:`data_model.SedDocument`): SED document
             filename (:obj:`str`): Path to save simulation experiment in SED-ML format
             validate_semantics (:obj:`bool`, optional): if :obj:`True`, check that SED-ML is semantically valid
+            validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
 
         Raises:
             :obj:`NotImplementedError`: document uses an supported type of task or output
         """
-        validate_doc(doc, validate_semantics=validate_semantics)
+        errors, warnings = validate_doc(doc, working_dir=os.path.dirname(
+            filename), validate_semantics=validate_semantics, validate_models_with_languages=validate_models_with_languages)
+        if warnings:
+            msg = 'The SED document is potentially incorrect.\n  {}'.format(flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
+            warn(msg, BioSimulatorsWarning)
+        if errors:
+            msg = 'The SED document is not valid.\n  {}'.format(flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
+            raise ValueError(msg)
 
         self._num_meta_id = 0
         self._obj_to_sed_obj_map = {}
@@ -72,7 +82,7 @@ class SedmlSimulationWriter(object):
                 self._add_repeated_task_to_doc(task)
 
             else:
-                raise NotImplementedError('Task type {} is not supported'.format(task.__class__.__name__))
+                raise NotImplementedError('Task type {} is not supported.'.format(task.__class__.__name__))
 
         for data_gen in doc.data_generators:
             self._add_data_gen_to_doc(data_gen)
@@ -85,7 +95,7 @@ class SedmlSimulationWriter(object):
             elif isinstance(output, data_model.Plot3D):
                 self._add_plot3d_to_doc(output)
             else:
-                raise NotImplementedError('Output type {} is not supported'.format(output.__class__.__name__))
+                raise NotImplementedError('Output type {} is not supported.'.format(output.__class__.__name__))
 
         self._export_doc(filename)
 
@@ -136,7 +146,7 @@ class SedmlSimulationWriter(object):
                 self._add_compute_change_to_model(model, change)
 
             else:
-                raise NotImplementedError('Model change type {} is not supported'.format(change.__class__.__name__))
+                raise NotImplementedError('Model change type {} is not supported.'.format(change.__class__.__name__))
 
     def _add_attribute_change_to_model(self, model, change):
         """ Add an attribute change change to a SED model
@@ -281,8 +291,8 @@ class SedmlSimulationWriter(object):
                 self._call_libsedml_method(sim_sed, 'setOutputEndTime', sim.output_end_time)
             if sim.number_of_steps is not None:
                 self._call_libsedml_method(sim_sed, 'setNumberOfSteps', sim.number_of_steps)
-        else:
-            raise NotImplementedError('Simulation type {} is not supported'.format(sim.__class__.__name__))
+        else:  # pragma: no cover # unreachable due to earlier validation
+            raise NotImplementedError('Simulation type {} is not supported.'.format(sim.__class__.__name__))
 
         self._obj_to_sed_obj_map[sim] = sim_sed
 
@@ -397,8 +407,8 @@ class SedmlSimulationWriter(object):
         for sub_task in task.sub_tasks:
             self._add_sub_task_to_repeated_task(task, sub_task)
 
-        for range in task.ranges:
-            self._add_range_to_repeated_task(task, range)
+        for range_obj in task.ranges:
+            self._add_range_to_repeated_task(task, range_obj)
 
     def _add_set_value_model_change_to_repeated_task(self, task, change):
         """ Add a set value change to a repeated task
@@ -464,7 +474,7 @@ class SedmlSimulationWriter(object):
         if sub_task.order is not None:
             self._call_libsedml_method(sub_task_sed, 'setOrder', sub_task.order)
 
-    def _add_range_to_repeated_task(self, task, range):
+    def _add_range_to_repeated_task(self, task, range_obj):
         """ Add a range to a repeated task
 
         Args:
@@ -476,52 +486,52 @@ class SedmlSimulationWriter(object):
         """
         task_sed = self._obj_to_sed_obj_map[task]
 
-        if isinstance(range, data_model.UniformRange):
+        if isinstance(range_obj, data_model.UniformRange):
             range_sed = task_sed.createUniformRange()
-            self._obj_to_sed_obj_map[range] = range_sed
+            self._obj_to_sed_obj_map[range_obj] = range_sed
 
-            if range.start is not None:
-                self._call_libsedml_method(range_sed, 'setStart', range.start)
+            if range_obj.start is not None:
+                self._call_libsedml_method(range_sed, 'setStart', range_obj.start)
 
-            if range.end is not None:
-                self._call_libsedml_method(range_sed, 'setEnd', range.end)
+            if range_obj.end is not None:
+                self._call_libsedml_method(range_sed, 'setEnd', range_obj.end)
 
-            if range.number_of_steps is not None:
-                self._call_libsedml_method(range_sed, 'setNumberOfSteps', range.number_of_steps)
+            if range_obj.number_of_steps is not None:
+                self._call_libsedml_method(range_sed, 'setNumberOfSteps', range_obj.number_of_steps)
 
-            if range.type is not None:
-                self._call_libsedml_method(range_sed, 'setType', range.type.value)
+            if range_obj.type is not None:
+                self._call_libsedml_method(range_sed, 'setType', range_obj.type.value)
 
-        elif isinstance(range, data_model.VectorRange):
+        elif isinstance(range_obj, data_model.VectorRange):
             range_sed = task_sed.createVectorRange()
-            self._obj_to_sed_obj_map[range] = range_sed
+            self._obj_to_sed_obj_map[range_obj] = range_sed
 
-            for value in range.values:
-                self._call_libsedml_method(range_sed, 'setValues', tuple(range.values))
+            for value in range_obj.values:
+                self._call_libsedml_method(range_sed, 'setValues', tuple(range_obj.values))
 
-        elif isinstance(range, data_model.FunctionalRange):
+        elif isinstance(range_obj, data_model.FunctionalRange):
             range_sed = task_sed.createFunctionalRange()
-            self._obj_to_sed_obj_map[range] = range_sed
+            self._obj_to_sed_obj_map[range_obj] = range_sed
 
-            if range.range is not None:
-                if not range.range.id:  # pragma: no cover: already validated
+            if range_obj.range is not None:
+                if not range_obj.range.id:  # pragma: no cover: already validated
                     raise ValueError('Range must have an id to be referenced')
-                self._call_libsedml_method(range_sed, 'setRange', range.range.id)
+                self._call_libsedml_method(range_sed, 'setRange', range_obj.range.id)
 
-            for param in range.parameters:
-                self._add_param_to_obj(range, param)
+            for param in range_obj.parameters:
+                self._add_param_to_obj(range_obj, param)
 
-            for var in range.variables:
-                self._add_var_to_obj(range, var)
+            for var in range_obj.variables:
+                self._add_var_to_obj(range_obj, var)
 
-            if range.math is not None:
-                self._call_libsedml_method(range_sed, 'setMath', libsedml.parseFormula(range.math))
+            if range_obj.math is not None:
+                self._call_libsedml_method(range_sed, 'setMath', libsedml.parseFormula(range_obj.math))
 
         else:
-            raise NotImplementedError('Range type {} is not supported'.format(range.__class__.__name__))
+            raise NotImplementedError('Range type {} is not supported.'.format(range_obj.__class__.__name__))
 
-        if range.id is not None:
-            self._call_libsedml_method(range_sed, 'setId', range.id)
+        if range_obj.id is not None:
+            self._call_libsedml_method(range_sed, 'setId', range_obj.id)
 
     def _add_data_gen_to_doc(self, data_gen):
         """ Add a data generator to a SED document
@@ -730,7 +740,7 @@ class SedmlSimulationWriter(object):
             self._call_libsedml_method(obj_sed, 'setLog' + axis.upper(), True)
         else:
             # this is an error rather than a warning because SED doesn't define any other types of scales
-            raise NotImplementedError('Axis scale type {} is not supported'.format(axis_scale))
+            raise NotImplementedError('Axis scale type {} is not supported.'.format(axis_scale))
 
     def _export_doc(self, filename):
         """ Export a SED document to an XML file
@@ -956,14 +966,24 @@ class SedmlSimulationWriter(object):
 
 
 class SedmlSimulationReader(object):
-    """ SED-ML reader """
+    """ SED-ML reader
 
-    def run(self, filename, validate_semantics=True):
+    Attributes:
+        errors (nested :obj:`list` of :obj:`str`): errors
+        warnings (nested :obj:`list` of :obj:`str`): warnings
+    """
+
+    def __init__(self):
+        self.errors = None
+        self.warnings = None
+
+    def run(self, filename, validate_semantics=True, validate_models_with_languages=True):
         """ Base class for reading a SED document
 
         Args:
             filename (:obj:`str`): path to SED-ML document
             validate_semantics (:obj:`bool`, optional): if :obj:`True`, check that SED-ML is semantically valid
+            validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
 
         Returns:
             :obj:`data_model.SedDocument`: SED document
@@ -975,15 +995,31 @@ class SedmlSimulationReader(object):
                 * The models or simulations don't have unique ids
                 * A model or simulation references cannot be resolved
         """
+        self.errors = []
+        self.warnings = []
+
+        if not os.path.isfile(filename):
+            msg = '`{}` is not a file.'.format(filename)
+            self.errors.append([msg])
+            raise FileNotFoundError(msg)
+
         doc_sed = libsedml.readSedMLFromFile(filename)
         if doc_sed.getErrorLog().getNumFailsWithSeverity(libsedml.LIBSEDML_SEV_ERROR):
-            raise ValueError('libSED-ML error: {}'.format(doc_sed.getErrorLog().toString()))
+            error_log = doc_sed.getErrorLog()
+            for i_error in range(error_log.getNumErrors()):
+                error = error_log.getError(i_error)
+                self.errors.append([error.getMessage()])
+
+            msg = '`{}` is not a valid SED-ML file:\n  {}'.format(filename, doc_sed.getErrorLog().toString().replace('\n', '\n  '))
+            raise ValueError(msg)
 
         for child_type in ('Models', 'Simulations', 'DataGenerators', 'Tasks', 'Outputs'):
             get_children = getattr(doc_sed, 'getListOf' + child_type)
 
-            if next((True for child in get_children() if not child.getId()), False):
-                raise ValueError('{} must have ids'.format(child_type))  # pragma no cover: validated by libSED-ML
+            if next((True for child in get_children() if not child.getId()), False):  # pragma no cover: validated by libSED-ML
+                msg = '{} must have ids'.format(child_type)
+                self.errors.append([msg])
+                raise ValueError(msg)
 
         doc = data_model.SedDocument(
             level=doc_sed.getLevel(),
@@ -996,6 +1032,9 @@ class SedmlSimulationReader(object):
                   ).format(filename, doc.level, doc.version), SedmlFeatureNotSupportedWarning)
 
         doc.metadata = self._read_metadata(doc_sed)
+
+        # initialize data structure to keep track of errors in references
+        self._reference_errors = []
 
         # data descriptions
         if doc_sed.getListOfDataDescriptions():
@@ -1037,15 +1076,10 @@ class SedmlSimulationReader(object):
                 if sim_sed.isSetNumberOfSteps():
                     sim.number_of_steps = int(sim_sed.getNumberOfSteps())
 
-                if sim.output_start_time < sim.initial_time:
-                    raise ValueError('Output start time must be at least the initial time')
-
-                if sim.output_end_time < sim.output_start_time:
-                    raise ValueError('Output end time must be at least the output start time')
-
             else:  # pragma: no cover: already validated by libSED-ML
                 # this is an error rather than a warning because SED doesn't define any other types of simulations
-                raise NotImplementedError('Simulation type {} is not supported'.format(sim_sed.__class__.__name__))
+                msg = 'Simulation type {} is not supported.'.format(sim_sed.__class__.__name__)
+                raise NotImplementedError(msg)
 
             doc.simulations.append(sim)
 
@@ -1104,44 +1138,47 @@ class SedmlSimulationReader(object):
 
                 for range_sed in task_sed.getListOfRanges():
                     if isinstance(range_sed, libsedml.SedUniformRange):
-                        range = data_model.UniformRange()
+                        range_obj = data_model.UniformRange()
 
                         if range_sed.isSetStart():
-                            range.start = range_sed.getStart()
+                            range_obj.start = range_sed.getStart()
                         if range_sed.isSetEnd():
-                            range.end = range_sed.getEnd()
+                            range_obj.end = range_sed.getEnd()
                         if range_sed.isSetNumberOfSteps():
-                            range.number_of_steps = range_sed.getNumberOfSteps()
+                            range_obj.number_of_steps = range_sed.getNumberOfSteps()
                         if range_sed.isSetType():
                             range_type = range_sed.getType()
                             if range_type in data_model.UniformRangeType.__members__:
-                                range.type = data_model.UniformRangeType[range_type]
+                                range_obj.type = data_model.UniformRangeType[range_type]
                             else:
-                                raise NotImplementedError('Range type {} is not supported'.format(range_type))
+                                msg = 'Range type {} is not supported.'.format(range_type)
+                                raise NotImplementedError(msg)
 
                     elif isinstance(range_sed, libsedml.SedVectorRange):
-                        range = data_model.VectorRange()
+                        range_obj = data_model.VectorRange()
 
-                        range.values = list(range_sed.getValues())
+                        range_obj.values = list(range_sed.getValues())
 
                     elif isinstance(range_sed, libsedml.SedFunctionalRange):
-                        range = data_model.FunctionalRange()
+                        range_obj = data_model.FunctionalRange()
 
-                        range.parameters = self._read_parameters(range_sed)
-                        range.math = self._read_math(range_sed)
+                        range_obj.parameters = self._read_parameters(range_sed)
+                        range_obj.math = self._read_math(range_sed)
 
                     else:  # pragma: no cover: already validated by libSED-ML
                         # this is an error rather than a warning because SED doesn't define any other types of ranges
-                        raise NotImplementedError('Range type {} is not supported'.format(range_sed.__class__.__name__))
+                        msg = 'Range type {} is not supported.'.format(range_sed.__class__.__name__)
+                        raise NotImplementedError(msg)
 
-                    range.id = range_sed.getId() or None
+                    range_obj.id = range_sed.getId() or None
 
-                    task.ranges.append(range)
-                    self._add_obj_to_id_to_obj_map(range_sed, range, id_to_range_map)
+                    task.ranges.append(range_obj)
+                    self._add_obj_to_id_to_obj_map(range_sed, range_obj, id_to_range_map)
 
             else:  # pragma: no cover: already validated by libSED-ML
                 # this is an error rather than a warning because SED doesn't define any other types of tasks
-                raise NotImplementedError('Task type {} is not supported'.format(task_sed.__class__.__name__))
+                msg = 'Task type {} is not supported.'.format(task_sed.__class__.__name__)
+                raise NotImplementedError(msg)
 
             task.id = task_sed.getId() or None
             task.name = task_sed.getName() or None
@@ -1162,10 +1199,10 @@ class SedmlSimulationReader(object):
                 for sub_task_sed, sub_task in zip(task_sed.getListOfSubTasks(), task.sub_tasks):
                     self._deserialize_reference(sub_task_sed, sub_task, 'task', 'Task', 'task', id_to_task_map)
 
-                for range_sed, range in zip(task_sed.getListOfRanges(), task.ranges):
+                for range_sed, range_obj in zip(task_sed.getListOfRanges(), task.ranges):
                     if isinstance(range_sed, libsedml.SedFunctionalRange):
-                        self._deserialize_reference(range_sed, range, 'range', 'Range', 'range', id_to_range_map)
-                        range.variables = self._read_variables(range_sed, id_to_model_map, id_to_task_map)
+                        self._deserialize_reference(range_sed, range_obj, 'range', 'Range', 'range', id_to_range_map)
+                        range_obj.variables = self._read_variables(range_sed, id_to_model_map, id_to_task_map)
 
         # model changes
         for model_sed, model in zip(doc_sed.getListOfModels(), doc.models):
@@ -1203,7 +1240,8 @@ class SedmlSimulationReader(object):
 
                 else:  # pragma: no cover: already validated by libSED-ML
                     # this is an error rather than a warning because SED doesn't define any other types of changes
-                    raise NotImplementedError('Change type {} is not supported'.format(change_sed.__class__.__name__))
+                    msg = 'Change type {} is not supported.'.format(change_sed.__class__.__name__)
+                    raise NotImplementedError(msg)
 
                 change.target = change_sed.getTarget() or None
                 change.target_namespaces = self._get_namespaces_for_sed_object_targets(change_sed)
@@ -1281,7 +1319,8 @@ class SedmlSimulationReader(object):
 
             else:  # pragma: no cover: already validated by libSED-ML
                 # this is an error rather than a warning because SED doesn't define any other types of outputs
-                raise NotImplementedError('Output type {} is not supported'.format(output_sed.__class__.__name__))
+                msg = 'Output type {} is not supported.'.format(output_sed.__class__.__name__)
+                raise NotImplementedError(msg)
 
             doc.outputs.append(output)
 
@@ -1299,8 +1338,23 @@ class SedmlSimulationReader(object):
                     if change.kisao_id:
                         change.kisao_id = normalize_kisao_id(change.kisao_id)
 
+        if self._reference_errors:
+            self.errors.append([
+                'The elements of the document have references that could not be resolved.',
+                [[e] for e in self._reference_errors],
+            ])
+            raise ValueError('The elements of the document have references that could not be resolved:\n  {}'.format(
+                '\n  '.join(self._reference_errors)))
+
         # validate
-        validate_doc(doc, validate_semantics=validate_semantics)
+        errors, warnings = validate_doc(doc, working_dir=os.path.dirname(
+            filename), validate_semantics=validate_semantics, validate_models_with_languages=validate_models_with_languages)
+        if warnings:
+            msg = 'The SED document is potentially incorrect.\n  {}'.format(flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
+            warn(msg, BioSimulatorsWarning)
+        if errors:
+            msg = 'The SED document is not valid.\n  {}'.format(flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
+            raise ValueError(msg)
 
         # return SED document
         return doc
@@ -1347,7 +1401,8 @@ class SedmlSimulationReader(object):
             var.target_namespaces = self._get_namespaces_for_sed_object_targets(var_sed)
 
             if var.target and var.target.startswith('#'):
-                raise NotImplementedError('Variable targets to data descriptions are not supported.')
+                msg = 'Variable targets to data descriptions are not supported.'
+                raise NotImplementedError(msg)
 
             self._deserialize_reference(var_sed, var, 'task', 'TaskReference', 'task', id_to_task_map)
             self._deserialize_reference(var_sed, var, 'model', 'ModelReference', 'model', id_to_model_map)
@@ -1394,14 +1449,21 @@ class SedmlSimulationReader(object):
             obj_attr (:obj:`str`): object attribute (e.g., `x_data_generator`)
             id_to_obj_map (:obj:`dict` of :obj:`str` to :obj:`object`): map from the ids of objects to objects
         """
-        obj_id = getattr(obj_sed, 'get' + sed_ref_getter)() or None
-        if obj_id:
-            if obj_id in id_to_obj_map:
-                setattr(obj, obj_attr, id_to_obj_map.get(obj_id, None))
+        to_obj_id = getattr(obj_sed, 'get' + sed_ref_getter)() or None
+        if to_obj_id:
+            from_obj_id = obj_sed.__class__.__name__.replace('Sed', '') + (' `' + obj_sed.getId() + '`' if obj_sed.getId() else '')
+
+            if to_obj_id in id_to_obj_map:
+                setattr(obj, obj_attr, id_to_obj_map.get(to_obj_id, None))
                 if not getattr(obj, obj_attr):
-                    raise ValueError('Document has multiple {}s with id "{}"'.format(ref_type, obj_id))
+                    msg = '{} from {} cannot be resolved to a {} with id `{}` because multiple {}s have this id.'.format(
+                        sed_ref_getter, from_obj_id, ref_type, to_obj_id, ref_type)
+                    if msg not in self._reference_errors:
+                        self._reference_errors.append(msg)
             else:
-                raise ValueError('Document does not contain a {} with id "{}"'.format(ref_type, obj_id))
+                msg = '{} from {} cannot be resolved to a {} with id `{}`.'.format(sed_ref_getter, from_obj_id, ref_type, to_obj_id)
+                if msg not in self._reference_errors:
+                    self._reference_errors.append(msg)
 
     def _read_metadata(self, obj_sed):
         """ Read metadata from a SED object

@@ -7,6 +7,7 @@
 """
 
 import libsbml
+import os
 
 
 def validate_model(filename, name=None):
@@ -16,19 +17,30 @@ def validate_model(filename, name=None):
         filename (:obj:`str`): path to model
         name (:obj:`str`, optional): name of model for use in error messages
 
-    Raises:
-        :obj:`ValueError`: if the model is not valid
+    Returns:
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
     """
-    doc = libsbml.readSBMLFromFile(filename)
-
     errors = []
-    for i_error in range(doc.getNumErrors()):
-        sbml_error = doc.getError(i_error)
-        if not (sbml_error.isInfo() or sbml_error.isWarning()):
-            errors.append(sbml_error.getMessage())
+    warnings = []
 
-    if errors:
-        msg = 'Model `{}` could not be executed because it is not valid:\n\n  {}'.format(
-            name or filename,
-            '\n\n  '.join(error.replace('\n', '\n  ') for error in errors))
-        raise ValueError(msg)
+    if filename:
+        if os.path.isfile(filename):
+            doc = libsbml.readSBMLFromFile(filename)
+
+            for i_error in range(doc.getNumErrors()):
+                sbml_error = doc.getError(i_error)
+                if sbml_error.isInfo() or sbml_error.isWarning():
+                    warnings.append([sbml_error.getMessage()])
+                else:
+                    errors.append([sbml_error.getMessage()])
+
+        else:
+            errors.append(['`{}` is not a file.'.format(filename or '')])
+
+    else:
+        errors.append(['`filename` must be a path to a file, not `{}`.'.format(filename or '')])
+
+    return (errors, warnings)

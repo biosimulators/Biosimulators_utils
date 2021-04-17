@@ -696,6 +696,18 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
+        namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
+        change = data_model.ModelAttributeChange(
+            target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']/@sbml2:initialConcentration",
+            target_namespaces=namespaces,
+            new_value='1.9')
+        et = etree.parse(self.FIXTURE_FILENAME)
+        with self.assertRaises(ValueError):
+            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+
+        namespaces['sbml2'] = 'http://www.sbml.org/sbml/level2/version4'
+        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
@@ -848,6 +860,19 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         et = etree.parse(in_file)
         with self.assertRaisesRegex(ValueError, 'not a valid XPATH to an attribute'):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None, variable_values=variable_values)
+
+        with open(in_file, 'w') as file:
+            file.write('<model>')
+            file.write('<parameter id="p1" qual:value="1.0" type="parameter" xmlns:qual="https://qual.sbml.org"/>')
+            file.write('<parameter id="p2" qual:value="1.0" type="parameter" xmlns:qual="https://qual.sbml.org"/>')
+            file.write('</model>')
+        change.target = "/model/parameter[@id='p1']/@qual:value"
+        et = etree.parse(in_file)
+        with self.assertRaisesRegex(ValueError, 'No namespace is defined with prefix'):
+            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None, variable_values=variable_values)
+
+        change.target_namespaces['qual'] = "https://qual.sbml.org"
+        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None, variable_values=variable_values)
 
     def test_set_value_calc_compute_model_change_new_value(self):
         change = data_model.SetValueComputeModelChange(

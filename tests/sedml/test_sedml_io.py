@@ -3,6 +3,7 @@ from biosimulators_utils.biosimulations.data_model import Metadata, ExternalRefe
 from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import io
 from biosimulators_utils.sedml import utils
+from biosimulators_utils.sedml import validation
 from biosimulators_utils.sedml.warnings import SedmlFeatureNotSupportedWarning
 from unittest import mock
 import datetime
@@ -23,6 +24,9 @@ class IoTestCase(unittest.TestCase):
         shutil.rmtree(self.tmp_dir)
 
     def test_write_read(self):
+        shutil.copy(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000075.xml'),
+                    os.path.join(self.tmp_dir, 'model.sbml'))
+
         model1 = data_model.Model(
             id='model1',
             name='Model1',
@@ -602,40 +606,27 @@ class IoTestCase(unittest.TestCase):
 
     def test_write_error_unsupported_classes(self):
         document = data_model.SedDocument(tasks=[mock.Mock(id='task')])
-        with self.assertRaises(NotImplementedError):
-            io.SedmlSimulationWriter().run(document, None)
+        with self.assertRaisesRegex(NotImplementedError, 'is not supported.'):
+            io.SedmlSimulationWriter().run(document, '')
 
         document = data_model.SedDocument(outputs=[mock.Mock(id='output')])
-        with self.assertRaises(NotImplementedError):
-            io.SedmlSimulationWriter().run(document, None)
+        with self.assertRaisesRegex(NotImplementedError, 'is not supported.'):
+            io.SedmlSimulationWriter().run(document, '')
 
         document = data_model.SedDocument(
             models=[
                 data_model.Model(
                     id='model',
                     source='model.xml',
+                    language=data_model.ModelLanguage.SBML.value,
                     changes=[
-                        mock.Mock()
+                        mock.Mock(id=None)
                     ],
                 ),
             ],
         )
-        with self.assertRaises(NotImplementedError):
-            io.SedmlSimulationWriter().run(document, None)
-
-        document = data_model.SedDocument(
-            simulations=[
-                mock.Mock(
-                    id='sim',
-                    algorithm=mock.Mock(
-                        kisao_id='KISAO_0000001',
-                        changes=[],
-                    ),
-                ),
-            ],
-        )
-        with self.assertRaises(NotImplementedError):
-            io.SedmlSimulationWriter().run(document, None)
+        with self.assertRaisesRegex(NotImplementedError, 'is not supported.'):
+            io.SedmlSimulationWriter().run(document, '', validate_models_with_languages=False)
 
         document = data_model.SedDocument(
             outputs=[
@@ -653,15 +644,15 @@ class IoTestCase(unittest.TestCase):
             ],
         )
         utils.append_all_nested_children_to_doc(document)
-        with self.assertRaises(NotImplementedError):
-            io.SedmlSimulationWriter().run(document, None)
+        with self.assertRaisesRegex(NotImplementedError, 'is not supported.'):
+            io.SedmlSimulationWriter().run(document, '')
 
         document = data_model.SedDocument(
             tasks=[
                 data_model.RepeatedTask(
                     id='task',
                     ranges=[
-                        None,
+                        mock.Mock(id=None),
                     ],
                     sub_tasks=[
                         data_model.SubTask(order=1, task=data_model.Task())
@@ -669,19 +660,19 @@ class IoTestCase(unittest.TestCase):
                 ),
             ],
         )
-        with self.assertRaises(NotImplementedError):
-            io.SedmlSimulationWriter().run(document, None)
+        with self.assertRaisesRegex(ValueError, 'not an instance of'):
+            io.SedmlSimulationWriter().run(document, '', validate_models_with_languages=False)
 
         task = document.tasks[0]
         writer = io.SedmlSimulationWriter()
         writer._obj_to_sed_obj_map = {task: None}
-        with self.assertRaises(NotImplementedError):
-            writer._add_range_to_repeated_task(range=task.ranges[0], task=task)
+        with self.assertRaisesRegex(NotImplementedError, 'is not supported.'):
+            writer._add_range_to_repeated_task(task=task, range_obj=task.ranges[0])
 
     def test_unsupported_uniform_range_type(self):
         document = data_model.SedDocument(
-            models=[data_model.Model(id='model', source='model.xml')],
-            simulations=[data_model.SteadyStateSimulation(id='sim')],
+            models=[data_model.Model(id='model', language=data_model.ModelLanguage.SBML.value, source='model.xml')],
+            simulations=[data_model.SteadyStateSimulation(id='sim', algorithm=data_model.Algorithm(kisao_id='KISAO_0000001'))],
             tasks=[
                 data_model.RepeatedTask(
                     id='task',
@@ -700,14 +691,14 @@ class IoTestCase(unittest.TestCase):
         document.tasks.append(document.tasks[0].sub_tasks[0].task)
 
         filename = os.path.join(self.tmp_dir, 'test.xml')
-        io.SedmlSimulationWriter().run(document, filename)
+        io.SedmlSimulationWriter().run(document, filename, validate_models_with_languages=False)
 
         with self.assertRaisesRegex(NotImplementedError, 'is not supported'):
             io.SedmlSimulationReader().run(filename)
 
     def test_read_add_xml(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'add-xml.sedml')
-        doc = io.SedmlSimulationReader().run(filename)
+        doc = io.SedmlSimulationReader().run(filename, validate_models_with_languages=False)
         self.assertEqual(len(doc.models), 1)
         self.assertEqual(len(doc.tasks), 1)
         self.assertEqual(len(doc.data_generators), 1)
@@ -715,25 +706,29 @@ class IoTestCase(unittest.TestCase):
 
     def test_read_new_xml_with_top_level_namespace(self):
         filename = os.path.join(os.path.dirname(__file__), '../fixtures/sedml/new-xml-with-top-level-namespace.sedml')
-        doc = io.SedmlSimulationReader().run(filename)
+        doc = io.SedmlSimulationReader().run(filename, validate_models_with_languages=False)
         self.assertEqual(doc.models[0].changes[0].new_elements,
                          '<sbml:parameter xmlns:{}="{}" id="V_mT" value="0.7"/>'.format(
             'sbml', 'http://www.sbml.org/sbml/level2/version3'))
 
-    @unittest.skip('Not yet implemented')
     def test_read_repeated_task(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'repeated-task.sedml')
-        doc = io.SedmlSimulationReader().run(filename)
-        self.assertEqual(doc.tasks, [])
+        with self.assertRaisesRegex(ValueError, 'must have at least one sub-task'):
+            doc = io.SedmlSimulationReader().run(filename)
 
     def test_write_error_invalid_ids(self):
-        document = data_model.SedDocument(models=[mock.Mock(id=None)])
-        with self.assertRaises(ValueError):
-            io.SedmlSimulationWriter().run(document, None)
+        document = data_model.SedDocument(models=[
+            mock.Mock(id=None, source=None, changes=[]),
+        ])
+        with self.assertRaisesRegex(ValueError, 'missing ids'):
+            io.SedmlSimulationWriter().run(document, '')
 
-        document = data_model.SedDocument(models=[mock.Mock(id='model'), mock.Mock(id='model')])
-        with self.assertRaises(ValueError):
-            io.SedmlSimulationWriter().run(document, None)
+        document = data_model.SedDocument(models=[
+            mock.Mock(id='model', source=None, changes=[]),
+            mock.Mock(id='model', source=None, changes=[]),
+        ])
+        with self.assertRaisesRegex(ValueError, 'ids are repeated'):
+            io.SedmlSimulationWriter().run(document, '')
 
     def test_write_error_libsedmls(self):
         document = data_model.SedDocument()
@@ -745,19 +740,25 @@ class IoTestCase(unittest.TestCase):
             writer._call_libsedml_method(doc_sed, 'setAnnotation', '<rdf')
 
     def test_read_error_libsedmls(self):
-        with self.assertRaisesRegex(ValueError, r'libSED-ML error:'):
-            io.SedmlSimulationReader().run(None)
+        with self.assertRaises(FileNotFoundError):
+            io.SedmlSimulationReader().run('')
+
+        filename = os.path.join(self.tmp_dir, 'sim.sedml')
+        with open(filename, 'w') as file:
+            pass
+        with self.assertRaisesRegex(ValueError, 'XML content is not well-formed'):
+            io.SedmlSimulationReader().run(filename)
 
     def test_write_error_invalid_refs(self):
         document = data_model.SedDocument(tasks=[data_model.Task(id='task', simulation=data_model.UniformTimeCourseSimulation(id='sim'))])
         utils.append_all_nested_children_to_doc(document)
         with self.assertRaisesRegex(ValueError, 'must have a model'):
-            io.SedmlSimulationWriter().run(document, None)
+            io.SedmlSimulationWriter().run(document, '')
 
         document = data_model.SedDocument(tasks=[data_model.Task(id='task', model=data_model.Model(id='model', source='model.xml'))])
         utils.append_all_nested_children_to_doc(document)
         with self.assertRaisesRegex(ValueError, 'must have a simulation'):
-            io.SedmlSimulationWriter().run(document, None)
+            io.SedmlSimulationWriter().run(document, '')
 
         document = data_model.SedDocument(
             tasks=[
@@ -769,7 +770,7 @@ class IoTestCase(unittest.TestCase):
             ],
         )
         with self.assertRaisesRegex(ValueError, 'must be direct children'):
-            io.SedmlSimulationWriter().run(document, None)
+            io.SedmlSimulationWriter().run(document, '')
 
     def test_read_error_invalid_refs(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'no-id.sedml')
@@ -777,15 +778,15 @@ class IoTestCase(unittest.TestCase):
             io.SedmlSimulationReader().run(filename)
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'duplicate-model-ids.sedml')
-        with self.assertRaisesRegex(ValueError, 'Document has multiple models with id'):
+        with self.assertRaisesRegex(ValueError, 'multiple models have this id'):
             io.SedmlSimulationReader().run(filename)
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'duplicate-simulation-ids.sedml')
-        with self.assertRaisesRegex(ValueError, 'Document has multiple simulations with id'):
+        with self.assertRaisesRegex(ValueError, 'multiple simulations have this id'):
             io.SedmlSimulationReader().run(filename)
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'duplicate-data-generator-task-ids.sedml')
-        with self.assertRaisesRegex(ValueError, 'Document has multiple tasks with id'):
+        with self.assertRaisesRegex(ValueError, 'multiple tasks have this id'):
             io.SedmlSimulationReader().run(filename)
 
     def test_read_warning_unsupported_classes(self):
@@ -799,29 +800,34 @@ class IoTestCase(unittest.TestCase):
 
     def test_read_error_simulation_times(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'initialTime-more-than-outputStartTime.sedml')
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, 'must be at least the initial'):
             io.SedmlSimulationReader().run(filename)
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'outputStartTime-more-than-outputEndTime.sedml')
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, 'must be at least the output'):
             io.SedmlSimulationReader().run(filename)
 
     def test_read_error_invalid_references(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'invalid-task-model-reference.sedml')
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, 'cannot be resolved to a model'):
             io.SedmlSimulationReader().run(filename)
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'invalid-task-simulation-reference.sedml')
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, 'cannot be resolved to a simulation'):
             io.SedmlSimulationReader().run(filename)
 
     def test_write_read_sedml_from_biomodels(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'BIOMD0000000673_sim.sedml')
-        doc = io.SedmlSimulationReader().run(filename)
+        temp_filename = os.path.join(self.tmp_dir, os.path.basename(filename))
+        shutil.copy(filename, temp_filename)
+        with open(os.path.join(self.tmp_dir, 'BIOMD0000000673_url.xml'), 'w') as file:
+            pass
+
+        doc = io.SedmlSimulationReader().run(temp_filename, validate_models_with_languages=False)
 
         filename_2 = os.path.join(self.tmp_dir, 'test.sedml')
-        io.SedmlSimulationWriter().run(doc, filename_2)
-        doc_2 = io.SedmlSimulationReader().run(filename_2)
+        io.SedmlSimulationWriter().run(doc, filename_2, validate_models_with_languages=False)
+        doc_2 = io.SedmlSimulationReader().run(filename_2, validate_models_with_languages=False)
 
         self.assertTrue(doc_2.is_equal(doc))
 

@@ -70,7 +70,7 @@ class ReadWriteTestCase(unittest.TestCase):
         with open(os.path.join(out_dir2, content1.location), 'r') as file:
             self.assertEqual('a', file.read())
 
-        with self.assertRaisesRegex(ValueError, 'does not exist'):
+        with self.assertRaisesRegex(ValueError, 'is not a file'):
             io.CombineArchiveReader.run(os.path.join(self.temp_dir, 'test2.omex'), out_dir)
 
     @unittest.expectedFailure
@@ -107,6 +107,11 @@ class ReadWriteTestCase(unittest.TestCase):
         ]))
         with open(os.path.join(out_dir, content.location), 'r') as file:
             self.assertEqual('a', file.read())
+
+    def test_multiple_updated_dates(self):
+        archive_file = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'multiple-updated-dates.omex')
+        archive = io.CombineArchiveReader.run(archive_file, self.temp_dir)
+        self.assertEqual(archive.updated, datetime.datetime(2020, 1, 1, 1, 1, 1, tzinfo=dateutil.tz.tzutc()))
 
     def test_read_from_plain_zip_archive(self):
         in_dir = os.path.join(self.temp_dir, 'in')

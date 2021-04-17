@@ -20,6 +20,7 @@ class ReportIoTestCase(unittest.TestCase):
     def test_read_write(self):
         report_1 = Report(
             id='report_1',
+            name='report 1',
             data_sets=[
                 DataSet(id='w', label='W'),
                 DataSet(id='x', label='X'),
@@ -29,6 +30,7 @@ class ReportIoTestCase(unittest.TestCase):
         )
         report_2 = Report(
             id='report_2',
+            name='report 2',
             data_sets=[
                 DataSet(id='a', label='A'),
                 DataSet(id='b', label='B'),

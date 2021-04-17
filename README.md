@@ -5,7 +5,7 @@
 
 
 # BioSimulators utils
-Utilities for building standardized command-line interfaces for biosimulation tools that support the [Simulation Experiment Description Markup Language](https://sed-ml.org/) (SED-ML) and the [COMBINE/OMEX format](https://combinearchive.org/).
+Command-line application and high-level utilities for reading, writing, validating, and executing [COMBINE/OMEX format](https://combinearchive.org/) files that contain descriptions of simulations in [Simulation Experiment Description Markup Language](https://sed-ml.org/) (SED-ML) format with models in formats such as the [BioNetGen Language](https://bionetgen.org) (BNGL) and the [Systems Biology Markup Language](http://sbml.org) (SBML).
 
 ## Installation
 
@@ -27,6 +27,11 @@ pip install git+https://github.com/biosimulators/Biosimulators_utils.git#biosimu
 ```
 
 ### Installation optional features
+
+To use BioSimulators utils to validate SBML models, install BioSimulators utils with the `sbml` option:
+```
+pip install biosimulators-utils[sbml]
+```
 
 To use BioSimulators utils to execute containerized simulation tools, install BioSimulators utils with the `containers` option:
 ```

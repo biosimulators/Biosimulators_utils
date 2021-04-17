@@ -1,3 +1,5 @@
+from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent
+from biosimulators_utils.warnings import BioSimulatorsWarning
 from unittest import mock
 import biosimulators_utils
 import biosimulators_utils.__main__
@@ -47,6 +49,64 @@ class CliTestCase(unittest.TestCase):
             with self.assertRaises(SystemExit) as context:
                 biosimulators_utils.__main__.main()
                 self.assertRegex(context.Exception, 'usage: biosimulators-utils')
+
+    def test_validate_modeling_project(self):
+        with biosimulators_utils.__main__.App(argv=[
+            'validate',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'mock-file'),
+        ]) as app:
+            archive = CombineArchive(contents=[])
+            with mock.patch('biosimulators_utils.combine.io.CombineArchiveReader.run', return_value=archive):
+                with mock.patch('biosimulators_utils.combine.validation.validate', return_value=([], [])):
+                    app.run()
+
+        with biosimulators_utils.__main__.App(argv=[
+            'validate',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex'),
+        ]) as app:
+            with capturer.CaptureOutput(merged=False, relay=False) as captured:
+                app.run()
+                stdout = captured.stdout.get_text()
+        self.assertRegex(stdout, 'Archive contains 1 SED-ML documents with 1 models')
+
+        # warnings
+        with biosimulators_utils.__main__.App(argv=[
+            'validate',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'mock-file'),
+        ]) as app:
+            archive = CombineArchive(contents=[CombineArchiveContent(), CombineArchiveContent()])
+            with mock.patch('biosimulators_utils.combine.io.CombineArchiveReader.run', return_value=archive):
+                with mock.patch('biosimulators_utils.combine.validation.validate', return_value=([['Bigger error']], [['Big warning']])):
+                    with self.assertWarnsRegex(BioSimulatorsWarning, '- Big warning'):
+                        with self.assertRaisesRegex(SystemExit, '- Bigger error'):
+                            app.run()
+
+        with biosimulators_utils.__main__.App(argv=[
+            'validate',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'mock-file'),
+        ]) as app:
+            archive = CombineArchive(contents=[])
+            with mock.patch('biosimulators_utils.combine.io.CombineArchiveReader.run', return_value=archive):
+                with self.assertRaisesRegex(SystemExit, 'must have at least one content element'):
+                    with self.assertWarnsRegex(BioSimulatorsWarning, 'does not contain any SED-ML files'):
+                        app.run()
+
+        # error
+        with biosimulators_utils.__main__.App(argv=[
+            'validate',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'not-a-file'),
+        ]) as app:
+            with self.assertRaisesRegex(SystemExit, 'is not a file'):
+                app.run()
+
+        with biosimulators_utils.__main__.App(argv=[
+            'validate',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'mock-file'),
+        ]) as app:
+            archive = CombineArchive(contents=[CombineArchiveContent(), CombineArchiveContent()])
+            with mock.patch('biosimulators_utils.combine.io.CombineArchiveReader.run', return_value=archive):
+                with self.assertRaisesRegex(SystemExit, '- Content element must'):
+                    app.run()
 
     def test_exec_modeling_project(self):
         with biosimulators_utils.__main__.App(argv=[

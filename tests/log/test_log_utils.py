@@ -29,9 +29,9 @@ class ExecStatusDataModel(unittest.TestCase):
         ])
 
         exp_1 = sedml_data_model.SedDocument()
-        model_1 = sedml_data_model.Model(id='model_1', source='./model.xml')
+        model_1 = sedml_data_model.Model(id='model_1', language=sedml_data_model.ModelLanguage.SBML.value, source='./model.xml')
         exp_1.models.append(model_1)
-        sim_1 = sedml_data_model.SteadyStateSimulation(id='sim_1')
+        sim_1 = sedml_data_model.SteadyStateSimulation(id='sim_1', algorithm=sedml_data_model.Algorithm(kisao_id='KISAO_0000019'))
         exp_1.simulations.append(sim_1)
         task_1 = sedml_data_model.Task(id='task_1', model=model_1, simulation=sim_1)
         task_2 = sedml_data_model.Task(id='task_2', model=model_1, simulation=sim_1)
@@ -61,12 +61,12 @@ class ExecStatusDataModel(unittest.TestCase):
                                    x_scale=sedml_data_model.AxisScale.log,
                                    y_scale=sedml_data_model.AxisScale.log),
         ]))
-        SedmlSimulationWriter().run(exp_1, os.path.join(self.dirname, 'exp_1.sedml'))
+        SedmlSimulationWriter().run(exp_1, os.path.join(self.dirname, 'exp_1.sedml'), validate_models_with_languages=False)
 
         exp_2 = sedml_data_model.SedDocument()
-        model_2 = sedml_data_model.Model(id='model_2', source='./model.xml')
+        model_2 = sedml_data_model.Model(id='model_2', language=sedml_data_model.ModelLanguage.SBML.value, source='./model.xml')
         exp_2.models.append(model_2)
-        sim_2 = sedml_data_model.SteadyStateSimulation(id='sim_2')
+        sim_2 = sedml_data_model.SteadyStateSimulation(id='sim_2', algorithm=sedml_data_model.Algorithm(kisao_id='KISAO_0000019'))
         exp_2.simulations.append(sim_2)
         task_3 = sedml_data_model.Task(id='task_3', model=model_2, simulation=sim_2)
         exp_2.tasks.append(task_3)
@@ -89,7 +89,7 @@ class ExecStatusDataModel(unittest.TestCase):
                                      y_scale=sedml_data_model.AxisScale.log,
                                      z_scale=sedml_data_model.AxisScale.log),
         ]))
-        SedmlSimulationWriter().run(exp_2, os.path.join(self.dirname, 'exp_2.sedml'))
+        SedmlSimulationWriter().run(exp_2, os.path.join(self.dirname, 'exp_2.sedml'), validate_models_with_languages=False)
 
         status = utils.init_combine_archive_log(
             archive, self.dirname,
@@ -118,6 +118,28 @@ class ExecStatusDataModel(unittest.TestCase):
             'duration': None,
             'sedDocuments': [
                 {
+                    'location': 'exp_2.sedml',
+                    'status': 'QUEUED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': None,
+                    'duration': None,
+                    'tasks': [
+                        {'id': 'task_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None, },
+                    ],
+                    'outputs': [
+                        {'id': 'report_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': []},
+                        {'id': 'plot_4', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': []},
+                        {'id': 'plot_5', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'surfaces': [
+                             {'id': 'surface_1', 'status': 'SKIPPED'},
+                         ]},
+                    ],
+                },
+                {
                     'location': 'exp_1.sedml',
                     'status': 'QUEUED',
                     'exception': None,
@@ -140,28 +162,6 @@ class ExecStatusDataModel(unittest.TestCase):
                          'curves': [
                              {'id': 'curve_1', 'status': 'SKIPPED'},
                              {'id': 'curve_2', 'status': 'SKIPPED'},
-                         ]},
-                    ],
-                },
-                {
-                    'location': 'exp_2.sedml',
-                    'status': 'QUEUED',
-                    'exception': None,
-                    'skipReason': None,
-                    'output': None,
-                    'duration': None,
-                    'tasks': [
-                        {'id': 'task_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'algorithm': None, 'simulatorDetails': None, },
-                    ],
-                    'outputs': [
-                        {'id': 'report_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'dataSets': []},
-                        {'id': 'plot_4', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'curves': []},
-                        {'id': 'plot_5', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'surfaces': [
-                             {'id': 'surface_1', 'status': 'SKIPPED'},
                          ]},
                     ],
                 },
@@ -198,6 +198,28 @@ class ExecStatusDataModel(unittest.TestCase):
             'duration': None,
             'sedDocuments': [
                 {
+                    'location': 'exp_2.sedml',
+                    'status': 'SKIPPED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': None,
+                    'duration': None,
+                    'tasks': [
+                        {'id': 'task_3', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                    ],
+                    'outputs': [
+                        {'id': 'report_3', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': []},
+                        {'id': 'plot_4', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': []},
+                        {'id': 'plot_5', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'surfaces': [
+                             {'id': 'surface_1', 'status': 'SKIPPED'},
+                         ]},
+                    ],
+                },
+                {
                     'location': 'exp_1.sedml',
                     'status': 'SKIPPED',
                     'exception': None,
@@ -220,28 +242,6 @@ class ExecStatusDataModel(unittest.TestCase):
                          'curves': [
                              {'id': 'curve_1', 'status': 'SKIPPED'},
                              {'id': 'curve_2', 'status': 'SKIPPED'},
-                         ]},
-                    ],
-                },
-                {
-                    'location': 'exp_2.sedml',
-                    'status': 'SKIPPED',
-                    'exception': None,
-                    'skipReason': None,
-                    'output': None,
-                    'duration': None,
-                    'tasks': [
-                        {'id': 'task_3', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'algorithm': None, 'simulatorDetails': None},
-                    ],
-                    'outputs': [
-                        {'id': 'report_3', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'dataSets': []},
-                        {'id': 'plot_4', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'curves': []},
-                        {'id': 'plot_5', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'surfaces': [
-                             {'id': 'surface_1', 'status': 'SKIPPED'},
                          ]},
                     ],
                 },
@@ -275,6 +275,28 @@ class ExecStatusDataModel(unittest.TestCase):
             'duration': None,
             'sedDocuments': [
                 {
+                    'location': 'exp_2.sedml',
+                    'status': 'FAILED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': None,
+                    'duration': None,
+                    'tasks': [
+                        {'id': 'task_3', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                    ],
+                    'outputs': [
+                        {'id': 'report_3', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': []},
+                        {'id': 'plot_4', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': []},
+                        {'id': 'plot_5', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'surfaces': [
+                             {'id': 'surface_1', 'status': 'FAILED'},
+                         ]},
+                    ],
+                },
+                {
                     'location': 'exp_1.sedml',
                     'status': 'FAILED',
                     'exception': None,
@@ -297,28 +319,6 @@ class ExecStatusDataModel(unittest.TestCase):
                          'curves': [
                              {'id': 'curve_1', 'status': 'FAILED'},
                              {'id': 'curve_2', 'status': 'FAILED'},
-                         ]},
-                    ],
-                },
-                {
-                    'location': 'exp_2.sedml',
-                    'status': 'FAILED',
-                    'exception': None,
-                    'skipReason': None,
-                    'output': None,
-                    'duration': None,
-                    'tasks': [
-                        {'id': 'task_3', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'algorithm': None, 'simulatorDetails': None},
-                    ],
-                    'outputs': [
-                        {'id': 'report_3', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'dataSets': []},
-                        {'id': 'plot_4', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'curves': []},
-                        {'id': 'plot_5', 'status': 'FAILED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'surfaces': [
-                             {'id': 'surface_1', 'status': 'FAILED'},
                          ]},
                     ],
                 },
@@ -350,26 +350,6 @@ class ExecStatusDataModel(unittest.TestCase):
             'duration': None,
             'sedDocuments': [
                 {
-                    'location': 'exp_1.sedml',
-                    'status': 'QUEUED',
-                    'exception': None,
-                    'skipReason': None,
-                    'output': None,
-                    'duration': None,
-                    'tasks': [
-                        {'id': 'task_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'algorithm': None, 'simulatorDetails': None},
-                        {'id': 'task_2', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'algorithm': None, 'simulatorDetails': None},
-                    ],
-                    'outputs': [
-                        {'id': 'report_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'dataSets': None},
-                        {'id': 'plot_2', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'curves': None},
-                    ],
-                },
-                {
                     'location': 'exp_2.sedml',
                     'status': 'QUEUED',
                     'exception': None,
@@ -387,6 +367,26 @@ class ExecStatusDataModel(unittest.TestCase):
                          'curves': None},
                         {'id': 'plot_5', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
                          'surfaces': None},
+                    ],
+                },
+                {
+                    'location': 'exp_1.sedml',
+                    'status': 'QUEUED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': None,
+                    'duration': None,
+                    'tasks': [
+                        {'id': 'task_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                        {'id': 'task_2', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None},
+                    ],
+                    'outputs': [
+                        {'id': 'report_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': None},
+                        {'id': 'plot_2', 'status': 'SKIPPED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'curves': None},
                     ],
                 },
             ],
@@ -415,6 +415,22 @@ class ExecStatusDataModel(unittest.TestCase):
             'duration': None,
             'sedDocuments': [
                 {
+                    'location': 'exp_2.sedml',
+                    'status': 'QUEUED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': None,
+                    'duration': None,
+                    'tasks': [
+                        {'id': 'task_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None, },
+                    ],
+                    'outputs': [
+                        {'id': 'report_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'dataSets': None},
+                    ],
+                },
+                {
                     'location': 'exp_1.sedml',
                     'status': 'QUEUED',
                     'exception': None,
@@ -429,22 +445,6 @@ class ExecStatusDataModel(unittest.TestCase):
                     ],
                     'outputs': [
                         {'id': 'report_1', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'dataSets': None},
-                    ],
-                },
-                {
-                    'location': 'exp_2.sedml',
-                    'status': 'QUEUED',
-                    'exception': None,
-                    'skipReason': None,
-                    'output': None,
-                    'duration': None,
-                    'tasks': [
-                        {'id': 'task_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'algorithm': None, 'simulatorDetails': None, },
-                    ],
-                    'outputs': [
-                        {'id': 'report_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
                          'dataSets': None},
                     ],
                 },
@@ -473,6 +473,19 @@ class ExecStatusDataModel(unittest.TestCase):
             'duration': None,
             'sedDocuments': [
                 {
+                    'location': 'exp_2.sedml',
+                    'status': 'QUEUED',
+                    'exception': None,
+                    'skipReason': None,
+                    'output': None,
+                    'duration': None,
+                    'tasks': [
+                        {'id': 'task_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
+                         'algorithm': None, 'simulatorDetails': None, },
+                    ],
+                    'outputs': None,
+                },
+                {
                     'location': 'exp_1.sedml',
                     'status': 'QUEUED',
                     'exception': None,
@@ -484,19 +497,6 @@ class ExecStatusDataModel(unittest.TestCase):
                          'algorithm': None, 'simulatorDetails': None},
                         {'id': 'task_2', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
                          'algorithm': None, 'simulatorDetails': None},
-                    ],
-                    'outputs': None,
-                },
-                {
-                    'location': 'exp_2.sedml',
-                    'status': 'QUEUED',
-                    'exception': None,
-                    'skipReason': None,
-                    'output': None,
-                    'duration': None,
-                    'tasks': [
-                        {'id': 'task_3', 'status': 'QUEUED', 'exception': None, 'skipReason': None, 'output': None, 'duration': None,
-                         'algorithm': None, 'simulatorDetails': None, },
                     ],
                     'outputs': None,
                 },
@@ -524,7 +524,7 @@ class ExecStatusDataModel(unittest.TestCase):
             'duration': None,
             'sedDocuments': [
                 {
-                    'location': 'exp_1.sedml',
+                    'location': 'exp_2.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,
@@ -534,7 +534,7 @@ class ExecStatusDataModel(unittest.TestCase):
                     'outputs': None,
                 },
                 {
-                    'location': 'exp_2.sedml',
+                    'location': 'exp_1.sedml',
                     'status': 'QUEUED',
                     'exception': None,
                     'skipReason': None,

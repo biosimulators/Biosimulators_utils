@@ -6,9 +6,12 @@
 :License: MIT
 """
 
+from .utils.core import flatten_nested_list_of_strings
+from .warnings import warn, BioSimulatorsWarning
 import biosimulators_utils
-import biosimulators_utils.simulator.exec
 import cement
+import shutil
+import tempfile
 
 
 class BaseController(cement.Controller):
@@ -30,6 +33,59 @@ class BaseController(cement.Controller):
         self._parser.print_help()
 
 
+class ValidateModelingProjectController(cement.Controller):
+    """ Controller for validating modeling projects (COMBINE/OMEX archives) """
+
+    class Meta:
+        label = 'validate'
+        stacked_on = 'base'
+        stacked_type = 'nested'
+        help = "Validate a model project (COMBINE/OMEX archive)"
+        description = "Validate a modeling project (COMBINE/OMEX archive and its contents)"
+        arguments = [
+            (
+                ['filename'],
+                dict(
+                    type=str,
+                    help='Path to a COMBINE/OMEX archive',
+                ),
+            ),
+        ]
+
+    @cement.ex(hide=True)
+    def _default(self):
+        import biosimulators_utils.combine.io
+        import biosimulators_utils.combine.utils
+        import biosimulators_utils.combine.validation
+
+        args = self.app.pargs
+
+        archive_dirname = tempfile.mkdtemp()
+
+        try:
+            archive = biosimulators_utils.combine.io.CombineArchiveReader.run(args.filename, archive_dirname)
+        except Exception as exception:
+            shutil.rmtree(archive_dirname)
+            raise SystemExit(str(exception))
+
+        errors, warnings = biosimulators_utils.combine.validation.validate(archive, archive_dirname)
+        if warnings:
+            msg = 'The COMBINE/OMEX archive may be invalid.\n  {}'.format(
+                flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
+            warn(msg, BioSimulatorsWarning)
+
+        if errors:
+            msg = 'The COMBINE/OMEX archive is not valid.\n  {}'.format(
+                flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
+            raise SystemExit(msg)
+
+        # print summary
+        print(biosimulators_utils.combine.utils.get_summary_sedml_contents(archive, archive_dirname))
+
+        # clean up
+        shutil.rmtree(archive_dirname)
+
+
 class ExecuteModelingProjectController(cement.Controller):
     """ Controller for using containerized simulation tools to execute modeling projects (COMBINE/OMEX archives) """
 
@@ -37,6 +93,7 @@ class ExecuteModelingProjectController(cement.Controller):
         label = 'exec'
         stacked_on = 'base'
         stacked_type = 'nested'
+        help = "Execute a model project (COMBINE/OMEX archive)"
         description = "Use a containerized simulation tool to execute a modeling project (COMBINE/OMEX archive)"
         arguments = [
             (
@@ -120,7 +177,10 @@ class ExecuteModelingProjectController(cement.Controller):
 
     @cement.ex(hide=True)
     def _default(self):
+        import biosimulators_utils.simulator.exec
+
         args = self.app.pargs
+
         try:
             env = {}
             for key_value in args.env:
@@ -146,6 +206,7 @@ class App(cement.App):
         base_controller = 'base'
         handlers = [
             BaseController,
+            ValidateModelingProjectController,
             ExecuteModelingProjectController,
         ]
 

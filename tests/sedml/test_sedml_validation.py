@@ -2,6 +2,7 @@ from biosimulators_utils.sedml import data_model
 from biosimulators_utils.sedml import utils
 from biosimulators_utils.sedml import validation
 from biosimulators_utils.sedml.warnings import IllogicalSedmlWarning
+from biosimulators_utils.utils.core import flatten_nested_list_of_strings
 from unittest import mock
 import copy
 import os
@@ -29,8 +30,9 @@ class ValidationTestCase(unittest.TestCase):
                 ),
             ],
         )
-        with self.assertRaisesRegex(ValueError, 'must define a target'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument(
             simulations=[
@@ -43,8 +45,9 @@ class ValidationTestCase(unittest.TestCase):
             ],
         )
         utils.append_all_nested_children_to_doc(doc)
-        with self.assertRaisesRegex(ValueError, 'invalid KiSAO id'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('invalid KiSAO id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument(
             simulations=[
@@ -62,8 +65,9 @@ class ValidationTestCase(unittest.TestCase):
             ],
         )
         utils.append_all_nested_children_to_doc(doc)
-        with self.assertRaisesRegex(ValueError, 'invalid KiSAO id'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('invalid KiSAO id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument(
             data_generators=[
@@ -78,8 +82,9 @@ class ValidationTestCase(unittest.TestCase):
             ],
         )
         utils.append_all_nested_children_to_doc(doc)
-        with self.assertRaisesRegex(ValueError, 'must define a target or symbol'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must define a symbol or target', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument(
             data_generators=[
@@ -96,8 +101,9 @@ class ValidationTestCase(unittest.TestCase):
             ],
         )
         utils.append_all_nested_children_to_doc(doc)
-        with self.assertRaisesRegex(ValueError, 'must define a target or symbol'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must define a symbol or target', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument(
             outputs=[
@@ -110,8 +116,9 @@ class ValidationTestCase(unittest.TestCase):
                 ),
             ],
         )
-        with self.assertRaisesRegex(ValueError, 'must have ids'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument(
             outputs=[
@@ -125,8 +132,9 @@ class ValidationTestCase(unittest.TestCase):
                 ),
             ],
         )
-        with self.assertRaisesRegex(ValueError, 'must have labels'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have a label', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument(
             data_generators=[
@@ -139,8 +147,9 @@ class ValidationTestCase(unittest.TestCase):
                 ),
             ],
         )
-        with self.assertRaisesRegex(ValueError, 'must have ids'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument(
             data_generators=[
@@ -153,13 +162,14 @@ class ValidationTestCase(unittest.TestCase):
                 ),
             ],
         )
-        with self.assertRaisesRegex(ValueError, 'must have ids'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument()
-        doc.models.append(data_model.Model(id='model1', source=''))
-        doc.models.append(data_model.Model(id='model2', source=''))
-        doc.simulations.append(data_model.SteadyStateSimulation(id='sim'))
+        doc.models.append(data_model.Model(id='model1'))
+        doc.models.append(data_model.Model(id='model2'))
+        doc.simulations.append(data_model.SteadyStateSimulation(id='sim', algorithm=data_model.Algorithm(kisao_id='KISAO_0000029')))
         doc.tasks.append(data_model.Task(id='task', model=doc.models[0], simulation=doc.simulations[0]))
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen',
@@ -173,7 +183,21 @@ class ValidationTestCase(unittest.TestCase):
             ],
             math='var',
         ))
-        validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have a source', flatten_nested_list_of_strings(errors), flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+        doc.models[0].source = 'model1.xml'
+        doc.models[1].source = 'model2.xml'
+
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have a language', flatten_nested_list_of_strings(errors), flatten_nested_list_of_strings(errors))
+        self.assertIn('No validation is available', flatten_nested_list_of_strings(warnings), flatten_nested_list_of_strings(warnings))
+        doc.models[0].language = data_model.ModelLanguage.SBML.value
+        doc.models[1].language = data_model.ModelLanguage.SBML.value
+
+        errors, warnings = validation.validate_doc(doc, self.dirname, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument()
         doc.models.append(data_model.Model(id='model1', source=''))
@@ -191,8 +215,9 @@ class ValidationTestCase(unittest.TestCase):
                 )
             ],
         ))
-        with self.assertRaisesRegex(ValueError, 'should be null'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('should not reference a model', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument()
         doc.models.append(data_model.Model(id='model1', source=''))
@@ -209,8 +234,9 @@ class ValidationTestCase(unittest.TestCase):
                 )
             ],
         ))
-        with self.assertRaisesRegex(ValueError, 'must have math'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have math', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument(
             outputs=[
@@ -223,8 +249,9 @@ class ValidationTestCase(unittest.TestCase):
                 ),
             ],
         )
-        with self.assertRaisesRegex(ValueError, 'must have ids'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument(
             outputs=[
@@ -237,11 +264,12 @@ class ValidationTestCase(unittest.TestCase):
                 ),
             ],
         )
-        with self.assertRaisesRegex(ValueError, 'must have ids'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument()
-        doc.models.append(data_model.Model(id='model1', source=''))
+        doc.models.append(data_model.Model(id='model1', language=data_model.ModelLanguage.SBML.value, source='model1.xml'))
         doc.models[0].changes.append(data_model.ComputeModelChange(
             target='x',
             parameters=[data_model.Parameter(id='a', value=1.25)],
@@ -249,31 +277,38 @@ class ValidationTestCase(unittest.TestCase):
             math='a * y'
         ),
         )
-        validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
 
         doc.models[0].changes[0].parameters[0].id = None
-        with self.assertRaisesRegex(ValueError, 'must have ids'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc.models[0].changes[0].parameters[0].id = 'a'
         doc.models[0].changes[0].variables[0].id = None
-        with self.assertRaisesRegex(ValueError, 'must have ids'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc.models[0].changes[0].variables[0].id = 'y'
         doc.models[0].changes[0].variables[0].target = None
-        with self.assertRaisesRegex(ValueError, 'must define a target'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc.models[0].changes[0].variables[0].target = 'y'
         doc.models[0].changes[0].variables[0].symbol = 'y'
-        with self.assertRaisesRegex(ValueError, 'must define a target, not a symbol'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must define a target, not a symbol', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc.models[0].changes[0].variables[0].symbol = None
         doc.models[0].changes[0].variables[0].model = None
-        with self.assertRaisesRegex(ValueError, 'must have a'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must reference a model', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc.models[0].changes[0].variables[0].model = doc.models[0]
         doc.models[0].changes[0].variables[0].task = data_model.Task(
@@ -284,41 +319,49 @@ class ValidationTestCase(unittest.TestCase):
         doc.models.append(doc.models[0].changes[0].variables[0].task.model)
         doc.simulations.append(doc.models[0].changes[0].variables[0].task.simulation)
         doc.tasks.append(doc.models[0].changes[0].variables[0].task)
-        with self.assertRaisesRegex(ValueError, 'should be null'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('should not reference a task', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc.models[0].changes[0].variables[0].task = None
         doc.models[0].changes[0].math = None
-        with self.assertRaisesRegex(ValueError, 'must have math'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have math', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         # internal model sources are defined
         doc = data_model.SedDocument(models=[
-            data_model.Model(id='model_1', source='model.xml'),
-            data_model.Model(id='model_2', source='#model_1'),
+            data_model.Model(id='model_1', language=data_model.ModelLanguage.SBML.value, source='model.xml'),
+            data_model.Model(id='model_2', language=data_model.ModelLanguage.SBML.value, source='#model_1'),
         ])
-        validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
 
         doc.models[1].source = '#model_3'
-        with self.assertRaisesRegex(ValueError, ' is not defined'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('is not defined', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         # cycles of model sources
         doc = data_model.SedDocument(models=[
-            data_model.Model(id='model_1', source='model.xml'),
-            data_model.Model(id='model_2', source='#model_1'),
-            data_model.Model(id='model_3', source='#model_2'),
+            data_model.Model(id='model_1', language=data_model.ModelLanguage.SBML.value, source='model.xml'),
+            data_model.Model(id='model_2', language=data_model.ModelLanguage.SBML.value, source='#model_1'),
+            data_model.Model(id='model_3', language=data_model.ModelLanguage.SBML.value, source='#model_2'),
         ])
-        validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
 
         doc.models[0].source = '#model_3'
-        with self.assertRaisesRegex(ValueError, 'must be acyclic'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must be acyclic', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         # cycles of model compute changes
         doc = data_model.SedDocument()
-        model_1 = data_model.Model(id='model_1', source='model1.xml')
-        model_2 = data_model.Model(id='model_2', source='model2.xml')
+        model_1 = data_model.Model(id='model_1', language=data_model.ModelLanguage.SBML.value, source='model1.xml')
+        model_2 = data_model.Model(id='model_2', language=data_model.ModelLanguage.SBML.value, source='model2.xml')
         doc.models.append(model_1)
         doc.models.append(model_2)
         model_1.changes.append(
@@ -339,11 +382,14 @@ class ValidationTestCase(unittest.TestCase):
                 math='x',
             )
         )
-        validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
 
         doc.models[0].changes[0].variables[0].model = model_2
-        with self.assertRaisesRegex(ValueError, 'must be acyclic'):
-            validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must be acyclic', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
     def test_validate_doc_with_repeated_tasks(self):
         doc = data_model.SedDocument()
@@ -382,66 +428,80 @@ class ValidationTestCase(unittest.TestCase):
             ),
         )
         doc.tasks[1].range = doc.tasks[1].ranges[0]
-        validation.validate_doc(doc)
+        errors, warnings = validation.validate_doc(doc, self.dirname, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].sub_tasks = []
-        with self.assertRaisesRegex(ValueError, 'must have at least one sub-task'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must have at least one sub-task', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].sub_tasks[0].task = None
-        with self.assertRaisesRegex(ValueError, 'Sub-tasks must reference tasks'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('Sub-task 1 must reference a task', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].sub_tasks[1].order = 1
-        with self.assertRaisesRegex(ValueError, 'The `order` of each sub-task should be distinct'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('The `order` of each sub-task should be distinct', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].sub_tasks[1].task = doc2.tasks[1]
-        with self.assertRaisesRegex(ValueError, 'must be acyclic'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must be acyclic', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].range = None
-        with self.assertRaisesRegex(ValueError, 'Repeated tasks must have main ranges'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname, validate_models_with_languages=False)
+        self.assertIn('Repeated task must have a main range', flatten_nested_list_of_strings(errors))
+        self.assertIn('tail elements of the range will be ignored', flatten_nested_list_of_strings(warnings))
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].ranges[0].id = None
-        with self.assertRaisesRegex(ValueError, 'Ranges must have ids'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].ranges[1].id = 'range1'
-        with self.assertRaisesRegex(ValueError, 'Ranges must have unique ids'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('Ranges must have unique ids', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].ranges[1].values.append(7.)
-        with self.assertWarnsRegex(IllogicalSedmlWarning, 'will be ignored'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertIn('will be ignored', flatten_nested_list_of_strings(warnings))
 
         doc2.tasks[1].ranges[0].values.append(8.)
         doc2.tasks[1].ranges[0].values.append(9.)
-        with self.assertRaisesRegex(ValueError, 'must be at least as long'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must be at least as long', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].range = data_model.VectorRange(id='change_range', values=range(0, 100))
-        with self.assertWarnsRegex(IllogicalSedmlWarning, 'will be ignored'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertIn('will be ignored', flatten_nested_list_of_strings(warnings))
 
         doc2.tasks[1].changes[0].range = data_model.VectorRange(id='change_range', values=range(0, 2))
-        with self.assertRaisesRegex(ValueError, 'must be at least as long'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must be at least as long', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].ranges.append(None)
-        with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('not an instance of', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].ranges.append(
@@ -463,140 +523,179 @@ class ValidationTestCase(unittest.TestCase):
         )
 
         doc2.tasks[1].ranges[2].range = None
-        with self.assertRaisesRegex(ValueError, 'must reference another range'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must reference another range', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].range = doc.tasks[1].ranges[0]
         doc2.tasks[1].ranges[2].parameters[0].id = None
-        with self.assertRaisesRegex(ValueError, 'Parameters must have ids'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].parameters[0].id = 'p_2'
         doc2.tasks[1].ranges[2].variables[0].id = None
-        with self.assertRaisesRegex(ValueError, 'Variables must have ids'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('Variable must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].variables[0].id = 'var1'
         doc2.tasks[1].ranges[2].variables[0].model = None
-        with self.assertRaisesRegex(ValueError, 'must reference models'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must reference a model', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].variables[0].model = doc.models[0]
         doc2.tasks[1].ranges[2].variables[0].task = doc.tasks[0]
-        with self.assertRaisesRegex(ValueError, 'should not reference tasks'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('should not reference a task', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].variables[0].task = None
         doc2.tasks[1].ranges[2].variables[0].target = None
-        with self.assertRaisesRegex(ValueError, 'should define a symbol or target'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('should define a symbol or target', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].variables[0].target = 'x'
         doc2.tasks[1].ranges[2].variables[0].symbol = 'y'
-        with self.assertRaisesRegex(ValueError, 'should define a symbol or target, not both'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('should define a symbol or target, not both', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].variables[0].target = None
-        validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].math = None
-        with self.assertRaisesRegex(ValueError, 'must have math'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must have math', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].math = 'var1'
         doc2.tasks[1].ranges[2].range = doc2.tasks[1].ranges[2]
-        with self.assertRaisesRegex(ValueError, 'must be acyclic'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must be acyclic', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].model = None
-        with self.assertRaisesRegex(ValueError, 'must reference models'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must reference a model', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].target = None
-        with self.assertRaisesRegex(ValueError, 'must define a target'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].symbol = 'x'
-        with self.assertRaisesRegex(ValueError, 'should not define a symbol'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('should not define a symbol', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].parameters[0].id = None
-        with self.assertRaisesRegex(ValueError, 'Parameters must have ids'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('Parameter 1 must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].id = None
-        with self.assertRaisesRegex(ValueError, 'Variables must have ids'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('Variable must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].model = None
-        with self.assertRaisesRegex(ValueError, 'variables must reference a model'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('variable must reference a model', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].task = doc2.tasks[0]
-        with self.assertRaisesRegex(ValueError, 'should not reference a task'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('should not reference a task', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].target = None
-        with self.assertRaisesRegex(ValueError, 'must define a target or a symbol'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must define a target or a symbol', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].symbol = 'x'
-        with self.assertRaisesRegex(ValueError, 'must define a target or a symbol, not both'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must define a target or a symbol, not both', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].math = None
-        with self.assertRaisesRegex(ValueError, 'must have math'):
-            validation.validate_doc(doc2)
+        errors, warnings = validation.validate_doc(doc2, self.dirname)
+        self.assertIn('must have math', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
     def _validate_task(self, task, variables):
-        validation.validate_task(task)
-        validation.validate_model_language(task.model.language, data_model.ModelLanguage.SBML)
-        validation.validate_model_change_types(task.model.changes)
-        validation.validate_model_changes(task.model.changes)
-        validation.validate_simulation_type(task.simulation, (data_model.UniformTimeCourseSimulation, ))
-        validation.validate_uniform_time_course_simulation(task.simulation)
-        validation.validate_data_generator_variables(variables)
+        errors = []
+        warnings = []
+        errors.extend(validation.validate_task(task))
+        if task:
+            if task.model:
+                errors.extend(validation.validate_model_language(task.model.language, data_model.ModelLanguage.SBML))
+                tmp_errors, tmp_warnings = validation.validate_model_with_language(task.model.source, task.model.language)
+                errors.extend(tmp_errors)
+                warnings.extend(tmp_warnings)
+                errors.extend(validation.validate_model_change_types(task.model.changes))
+                errors.extend(validation.validate_model_changes(task.model.changes))
+            if task.simulation:
+                errors.extend(validation.validate_simulation_type(task.simulation, (data_model.UniformTimeCourseSimulation, )))
+                errors.extend(validation.validate_simulation(task.simulation))
+        if variables:
+            errors.extend(validation.validate_data_generator_variables(variables))
+        return (errors, warnings)
 
-    def test_validate_model(self):
+    def test_validate_model_source_with_abs_path(self):
+        filename = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-list-of-species.xml'))
+        errors, warnings = validation.validate_model_source(data_model.Model(
+            source=filename, language=data_model.ModelLanguage.SBML), [], None, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+    def test_validate_model_with_language(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-list-of-species.xml')
-        validation.validate_model(filename, data_model.ModelLanguage.SBML)
+        validation.validate_model_with_language(filename, data_model.ModelLanguage.SBML)
 
-        with self.assertRaisesRegex(NotImplementedError, 'No validation is available for'):
-            validation.validate_model(filename, '--not-supported--')
+        errors, warnings = validation.validate_model_with_language(filename, '--not-supported--')
+        self.assertEqual(errors, [])
+        self.assertIn('No validation is available for', flatten_nested_list_of_strings(warnings))
 
-    def test_validate_uniform_time_course_simulation(self):
+    def test_validate_simulation(self):
         sim = data_model.UniformTimeCourseSimulation(
             initial_time=0.,
             output_start_time=0.,
             output_end_time=1.,
             number_of_steps=10)
-        validation.validate_uniform_time_course_simulation(sim)
+        validation.validate_simulation(sim)
 
         sim.number_of_steps = 10.5
-        with self.assertRaisesRegex(ValueError, 'must be an integer'):
-            validation.validate_uniform_time_course_simulation(sim)
+        errors = validation.validate_simulation(sim)
+        self.assertIn('must be an integer', flatten_nested_list_of_strings(errors))
 
         sim.number_of_steps = 0
-        with self.assertRaisesRegex(ValueError, 'must be at least 1'):
-            validation.validate_uniform_time_course_simulation(sim)
+        errors = validation.validate_simulation(sim)
+        self.assertIn('must be at least 1', flatten_nested_list_of_strings(errors))
 
         sim.output_end_time = -1
-        with self.assertRaisesRegex(ValueError, 'must be at least the output start time'):
-            validation.validate_uniform_time_course_simulation(sim)
+        errors = validation.validate_simulation(sim)
+        self.assertIn('must be at least the output start time', flatten_nested_list_of_strings(errors))
 
         sim.output_start_time = -2
-        with self.assertRaisesRegex(ValueError, 'must be at least the initial time'):
-            validation.validate_uniform_time_course_simulation(sim)
+        errors = validation.validate_simulation(sim)
+        self.assertIn('must be at least the initial time', flatten_nested_list_of_strings(errors))
 
     def test_validate_uniform_range(self):
         range = data_model.UniformRange(
@@ -607,61 +706,72 @@ class ValidationTestCase(unittest.TestCase):
         validation.validate_uniform_range(range)
 
         range.number_of_steps = 0
-        with self.assertRaisesRegex(ValueError, 'must have at least one step'):
-            validation.validate_uniform_range(range)
+        errors = validation.validate_uniform_range(range)
+        self.assertIn('must have at least one step', flatten_nested_list_of_strings(errors))
 
-    def test(self):
+    def test_validate_task(self):
         task = None
         variables = []
 
-        with self.assertRaisesRegex(ValueError, 'is not supported'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must be an instance of', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task = data_model.Task()
 
-        with self.assertRaisesRegex(ValueError, 'must have a model'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must have a model', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.model = data_model.Model()
 
-        with self.assertRaisesRegex(FileNotFoundError, 'must be a file'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('is not supported', flatten_nested_list_of_strings(errors))
+        self.assertIn('No validation is available', flatten_nested_list_of_strings(warnings))
+        task.model.language = data_model.ModelLanguage.SBML.value
+
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must be a path', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.model.source = os.path.join(self.dirname, 'invalid-model.xml')
 
-        with self.assertRaisesRegex(FileNotFoundError, 'must be a file'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('is not a file', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.model.source = os.path.join(self.dirname, 'valid-model.xml')
         with open(task.model.source, 'w') as file:
             file.write('!')
 
-        with self.assertRaisesRegex(ValueError, 'must have a simulation'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must have a simulation', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.simulation = mock.Mock(algorithm=None)
 
-        with self.assertRaisesRegex(ValueError, 'must have an algorithm'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must have an algorithm', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.simulation.algorithm = data_model.Algorithm()
 
-        with self.assertRaisesRegex(ValueError, 'must have a valid KiSAO id'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('Algorithm has an invalid KiSAO id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.simulation.algorithm.kisao_id = 'KISAO_0000001'
         task.simulation.algorithm.changes = [
             data_model.AlgorithmParameterChange()
         ]
 
-        with self.assertRaisesRegex(ValueError, 'must have a valid KiSAO id'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('has an invalid KiSAO id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.simulation.algorithm.changes[0].kisao_id = 'KISAO_0000001'
-
-        with self.assertRaisesRegex(NotImplementedError, 'is not supported. Models must be in'):
-            self._validate_task(task, variables)
-        task.model.language = data_model.ModelLanguage.SBML
         task.model.changes = [mock.Mock()]
 
-        with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('is not supported', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.model.changes = [data_model.ModelAttributeChange()]
 
-        with self.assertRaisesRegex(ValueError, 'must define a target'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -670,8 +780,9 @@ class ValidationTestCase(unittest.TestCase):
             ),
         ]
 
-        with self.assertRaisesRegex(ValueError, 'must define a target, not a symbol'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must define a target, not a symbol', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -680,8 +791,9 @@ class ValidationTestCase(unittest.TestCase):
             ),
         ]
 
-        with self.assertRaisesRegex(ValueError, 'must define a target'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -690,8 +802,9 @@ class ValidationTestCase(unittest.TestCase):
             ),
         ]
 
-        with self.assertRaisesRegex(ValueError, 'must reference a model'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must reference a model', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -700,8 +813,9 @@ class ValidationTestCase(unittest.TestCase):
             ),
         ]
 
-        with self.assertRaisesRegex(ValueError, 'should not reference a task'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('should not reference a task', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -710,8 +824,9 @@ class ValidationTestCase(unittest.TestCase):
             ),
         ]
 
-        with self.assertRaisesRegex(ValueError, 'must have ids'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -720,12 +835,14 @@ class ValidationTestCase(unittest.TestCase):
             ),
         ]
 
-        with self.assertRaisesRegex(ValueError, 'must have ids'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.model.changes = []
 
-        with self.assertRaisesRegex(NotImplementedError, 'is not supported. Simulation must be'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('is not supported. Simulation must be', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.simulation = data_model.UniformTimeCourseSimulation(
             algorithm=data_model.Algorithm(kisao_id='KISAO_0000001'),
             initial_time=10.,
@@ -734,41 +851,48 @@ class ValidationTestCase(unittest.TestCase):
             number_of_steps=10.1,
         )
 
-        with self.assertRaisesRegex(ValueError, 'must be at least'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must be at least', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.simulation.output_start_time = 10.
 
-        with self.assertRaisesRegex(ValueError, 'must be at least'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must be at least', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.simulation.output_end_time = 20.
 
-        with self.assertRaisesRegex(ValueError, 'must be an integer'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must be an integer', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
         task.simulation.number_of_steps = 10.
 
         variables = [
             data_model.Variable()
         ]
-        with self.assertRaisesRegex(ValueError, 'must reference a task'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must reference a task', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         variables = [
             data_model.Variable(task=data_model.Task(), model=data_model.Model())
         ]
-        with self.assertRaisesRegex(ValueError, 'should not reference a model'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('should not reference a model', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         variables = [
             data_model.Variable(task=data_model.Task())
         ]
-        with self.assertRaisesRegex(ValueError, 'must define a symbol or target'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must define a symbol or target', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         variables = [
             data_model.Variable(task=data_model.Task(), symbol='x', target='y')
         ]
-        with self.assertRaisesRegex(ValueError, 'must define a symbol or target'):
-            self._validate_task(task, variables)
+        errors, warnings = self._validate_task(task, variables)
+        self.assertIn('must define a symbol or target', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
     def test_validate_variable_xpaths(self):
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}

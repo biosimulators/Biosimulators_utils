@@ -22,20 +22,23 @@ def get_sedml_contents(archive,
 
     Args:
         archive (:obj:`CombineArchive`): COMBINE/OMEX archive
-        include_all_sed_docs_when_no_sed_doc_is_master (:obj:`bool`, optional): if :obj:`true` 
+        include_all_sed_docs_when_no_sed_doc_is_master (:obj:`bool`, optional): if :obj:`true`
             and no SED document has ``master="true"``, return all SED documents.
-        always_include_all_sed_docs (:obj:`bool`, optional): if :obj:`true`, 
+        always_include_all_sed_docs (:obj:`bool`, optional): if :obj:`true`,
             return all SED documents, regardless of whether they have ``master="true"`` or not.
 
     Returns:
         :obj:`list` of :obj:`CombineArchiveContent`: SED-ML files in a COMBINE/OMEX archive
     """
 
-    master_content = archive.get_master_content()
     sedml_contents = []
     master_sedml_contents = []
     for content in archive.contents:
-        if content.format and re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format):
+        if (
+            isinstance(content, CombineArchiveContent)
+            and content.format
+            and re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format)
+        ):
             sedml_contents.append(content)
             if content.master:
                 master_sedml_contents.append(content)
@@ -60,9 +63,9 @@ def get_summary_sedml_contents(archive, archive_dir,
     Args:
         archive (:obj:`CombineArchive`): COMBINE/OMEX archive
         archive_dir (:obj:`str`): path where the content of the archive is located
-        include_all_sed_docs_when_no_sed_doc_is_master (:obj:`bool`, optional): if :obj:`true` 
+        include_all_sed_docs_when_no_sed_doc_is_master (:obj:`bool`, optional): if :obj:`true`
             and no SED document has ``master="true"``, return all SED documents.
-        always_include_all_sed_docs (:obj:`bool`, optional): if :obj:`true`, 
+        always_include_all_sed_docs (:obj:`bool`, optional): if :obj:`true`,
             return all SED documents, regardless of whether they have ``master="true"`` or not.
 
     Returns:
@@ -82,7 +85,7 @@ def get_summary_sedml_contents(archive, archive_dir,
         n_docs += 1
 
         content_filename = os.path.join(archive_dir, content.location)
-        doc = SedmlSimulationReader().run(content_filename)
+        doc = SedmlSimulationReader().run(content_filename, validate_models_with_languages=False)
 
         n_models += len(doc.models)
         n_simulations += len(doc.simulations)
@@ -97,7 +100,7 @@ def get_summary_sedml_contents(archive, archive_dir,
 
     for i_content, content in enumerate(sorted(contents, key=lambda content: content.location)):
         content_filename = os.path.join(archive_dir, content.location)
-        doc = SedmlSimulationReader().run(content_filename)
+        doc = SedmlSimulationReader().run(content_filename, validate_models_with_languages=False)
         content_id = os.path.relpath(content_filename, archive_dir)
         summary += '  {}:\n'.format(content_id)
 

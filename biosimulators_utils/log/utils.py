@@ -60,7 +60,7 @@ def init_combine_archive_log(archive, archive_dir,
         log.sed_documents = {}
         for content in contents:
             content_filename = os.path.join(archive_dir, content.location)
-            doc = SedmlSimulationReader().run(content_filename)
+            doc = SedmlSimulationReader().run(content_filename, validate_semantics=False, validate_models_with_languages=False)
 
             doc_log = init_sed_document_log(doc, supported_features=supported_features, logged_features=logged_features)
             doc_log.location = os.path.relpath(content.location, '.')

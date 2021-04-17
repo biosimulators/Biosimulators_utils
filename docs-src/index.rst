@@ -1,7 +1,7 @@
 BioSimulators utils documentation
 ===========================================
 
-Utilities for building standardized command-line interfaces for biosimulation software packages that support the `Simulation Experiment Description Markup Language <https://sed-ml.org/>`_ (SED-ML) and the `COMBINE/OMEX format <https://combinearchive.org/>`_.
+Command-line application and high-level utilities for reading, writing, validating, and executing `COMBINE/OMEX format <https://combinearchive.org/>`_ files that contain descriptions of simulations in `Simulation Experiment Description Markup Language <https://sed-ml.org/>`_ (SED-ML) format with models in formats such as the `BioNetGen Language <https://bionetgen.org>`_ (BNGL) and the `Systems Biology Markup Language <http://sbml.org>`_ (SBML).
 
 Contents
 --------
@@ -11,6 +11,7 @@ Contents
    :numbered:
 
    installation.rst
+   tutorial_cli.rst
    API documentation <source/biosimulators_utils.rst>
    about.rst
    genindex.rst

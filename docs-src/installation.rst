@@ -37,14 +37,20 @@ After installing `Python <https://www.python.org/downloads/>`_ (>= 3.7) and `pip
 Installing the optional features
 --------------------------------
 
-To use BioSimulators utils to execute containerized simulation tools, install BioSimulators utils with the `containers` option:
+To use BioSimulators utils to validate models encoded in SBML, install BioSimulators utils with the ``sbml`` option:
+
+.. code-block:: text
+
+    pip install biosimulators-utils[sbml]
+
+To use BioSimulators utils to execute containerized simulation tools, install BioSimulators utils with the ``containers`` option:
 
 .. code-block:: text
 
     pip install biosimulators-utils[containers]
 
 
-To use BioSimulators utils to log the standard output and error produced by simulation tools, install BioSimulators utils with the `logging` option:
+To use BioSimulators utils to log the standard output and error produced by simulation tools, install BioSimulators utils with the ``logging`` option:
 
 .. code-block:: text
 

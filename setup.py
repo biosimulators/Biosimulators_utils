@@ -28,7 +28,10 @@ md = pkg_utils.get_package_metadata(dirname, name, package_data_filename_pattern
 setuptools.setup(
     name=name,
     version=md.version,
-    description=("Utilities for building standardized command-line interfaces for biosimulation tools"),
+    description=(
+        "Command-line program and library for reading, writing, validating "
+        "and executing modeling projects (COMBINE/OMEX archives with SED-ML files)."
+    ),
     long_description=md.long_description,
     url="https://github.com/biosimulators/Biosimulators_utils",
     download_url='https://github.com/biosimulators/Biosimulators_utils',
