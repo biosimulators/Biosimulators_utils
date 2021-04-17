@@ -1494,3 +1494,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             'sbml': 'http://www.sbml.org/sbml/level2/version4',
             'sbml2': 'http://www.sbml.org/sbml/level3/version1',
         })
+
+    def test_is_model_language_encoded_in_xml(self):
+        self.assertTrue(utils.is_model_language_encoded_in_xml(data_model.ModelLanguage.SBML.value))
+        self.assertFalse(utils.is_model_language_encoded_in_xml(data_model.ModelLanguage.BNGL.value))

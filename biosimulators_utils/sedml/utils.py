@@ -11,7 +11,7 @@ from ..report.data_model import VariableResults, DataGeneratorResults  # noqa: F
 from ..utils.core import pad_arrays_to_consistent_shapes
 from ..warnings import warn
 from ..xml.utils import eval_xpath
-from .data_model import (SedDocument, Model, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
+from .data_model import (SedDocument, Model, ModelLanguagePattern, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange, SetValueComputeModelChange,
                          Task, RepeatedTask, Report, Plot2D, Plot3D,
                          DataGenerator, Variable, MATHEMATICAL_FUNCTIONS, RESERVED_MATHEMATICAL_SYMBOLS,
@@ -56,6 +56,7 @@ __all__ = [
     'resolve_range',
     'get_namespaces_for_sed_object',
     'get_xml_node_namespace_tag_target',
+    'is_model_language_encoded_in_xml',
 ]
 
 
@@ -1100,3 +1101,20 @@ def get_xml_node_namespace_tag_target(etree, target_namespaces=None):
         target = tag
 
     return (uri, prefix, tag, target, target_namespaces)
+
+
+def is_model_language_encoded_in_xml(language):
+    """ Determine if the model language is encoded in XML
+
+    Args:
+        language (:obj:`str`): language
+
+    Returns:
+        :obj:`bool`: :obj:`True`, if the model language is encoded in XML
+    """
+    return (
+        re.match(ModelLanguagePattern.CellML, language)
+        or re.match(ModelLanguagePattern.NeuroML, language)
+        or re.match(ModelLanguagePattern.SBML, language)
+        or re.match(ModelLanguagePattern.VCML, language)
+    )
