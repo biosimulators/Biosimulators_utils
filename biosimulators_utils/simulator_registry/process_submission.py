@@ -63,7 +63,7 @@ def get_simulator_submission_from_gh_issue_body_data(body_data):
     if extra_keys:
         errors.append(('Simulator submissions should only use the keys '
                        '"id", "version", "specificationsUrl", "specificationsPatch", validateImage", and "commitSimulator". '
-                       'The following keys are not valid:\n  - {}'.format('\n  - '.join(sorted(extra_keys)))))
+                       'The following keys are invalid:\n  - {}'.format('\n  - '.join(sorted(extra_keys)))))
 
     if errors:
         raise ValueError("\n\n".join(errors))

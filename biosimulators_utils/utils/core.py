@@ -353,18 +353,26 @@ def flatten_nested_list_of_strings(nested_list, prefix='- ', indent=' ' * 2):
     return '\n'.join(flattened)
 
 
-def raise_errors_warnings(errors, warnings=None):
+def raise_errors_warnings(errors, warnings=None, error_summary=None, warning_summary=None):
     """ Raises errors and warnings
 
     Args:
         errors (nested :obj:`list` of :obj:`str`): errors
         warnings (nested :obj:`list` of :obj:`str`): warnings
+        error_summary (:obj:`str`, optional): summary of errors
+        warning_summary (:obj:`str`, optional): summary of warnings
 
     Raises:
         :obj:`ValueError`: if errors
     """
     if warnings:
-        warn(flatten_nested_list_of_strings(warnings), BioSimulatorsWarning)
+        msg = flatten_nested_list_of_strings(warnings)
+        if warning_summary:
+            msg = warning_summary + '\n  ' + msg.replace('\n', '\n  ')
+        warn(msg, BioSimulatorsWarning)
 
     if errors:
-        raise ValueError(flatten_nested_list_of_strings(errors))
+        msg = flatten_nested_list_of_strings(errors)
+        if error_summary:
+            msg = error_summary + '\n  ' + msg.replace('\n', '\n  ')
+        raise ValueError(msg)

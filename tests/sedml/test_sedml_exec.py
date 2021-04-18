@@ -41,12 +41,12 @@ class ExecTaskCase(unittest.TestCase):
         doc.models.append(data_model.Model(
             id='model1',
             source='model1.xml',
-            language='urn:sedml:language:sbml',
+            language=data_model.ModelLanguage.SBML.value,
         ))
         doc.models.append(data_model.Model(
             id='model2',
             source='https://models.edu/model1.xml',
-            language='urn:sedml:language:cellml',
+            language=data_model.ModelLanguage.CellML.value,
         ))
 
         doc.simulations.append(data_model.SteadyStateSimulation(
@@ -398,14 +398,14 @@ class ExecTaskCase(unittest.TestCase):
         model1 = data_model.Model(
             id='model1',
             source='model1.xml',
-            language='urn:sedml:language:sbml',
+            language=data_model.ModelLanguage.SBML.value,
         )
         doc.models.append(model1)
 
         model2 = data_model.Model(
             id='model2',
             source='model1.xml',
-            language='urn:sedml:language:sbml',
+            language=data_model.ModelLanguage.SBML.value,
             changes=[
                 data_model.ModelAttributeChange(
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z']/@id",
@@ -419,7 +419,7 @@ class ExecTaskCase(unittest.TestCase):
         model3 = data_model.Model(
             id='model3',
             source='#model2',
-            language='urn:sedml:language:sbml',
+            language=data_model.ModelLanguage.SBML.value,
             changes=[
                 data_model.ModelAttributeChange(
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Z2']/@initialConcentration",
@@ -587,7 +587,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.models.append(data_model.Model(
             id='model1',
             source='model1.xml',
-            language='urn:sedml:language:sbml',
+            language=data_model.ModelLanguage.SBML.value,
             changes=[
                 data_model.ModelAttributeChange(
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='X']/@initialConcentration",
@@ -662,7 +662,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.models.append(data_model.Model(
             id='model1',
             source='model1.xml',
-            language='urn:sedml:language:sbml',
+            language=data_model.ModelLanguage.SBML.value,
         ))
 
         doc.simulations.append(data_model.SteadyStateSimulation(
@@ -726,7 +726,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.models.append(data_model.Model(
             id='model1',
             source='model1.xml',
-            language='urn:sedml:language:sbml',
+            language=data_model.ModelLanguage.SBML.value,
         ))
 
         doc.simulations.append(data_model.SteadyStateSimulation(
@@ -1057,7 +1057,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.models.append(data_model.Model(
             id='model',
             source='model1.xml',
-            language='urn:sedml:language:sbml',
+            language=data_model.ModelLanguage.SBML.value,
         ))
 
         doc.simulations.append(data_model.UniformTimeCourseSimulation(
@@ -1290,7 +1290,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.models.append(data_model.Model(
             id='model',
             source='model1.xml',
-            language='urn:sedml:language:sbml',
+            language=data_model.ModelLanguage.SBML.value,
         ))
 
         doc.simulations.append(data_model.UniformTimeCourseSimulation(
@@ -1484,8 +1484,8 @@ class ExecTaskCase(unittest.TestCase):
 
         doc = data_model.SedDocument()
 
-        model1 = data_model.Model(id='model1', source='model1.xml', language='sbml')
-        model2 = data_model.Model(id='model2', source='model2.xml', language='sbml')
+        model1 = data_model.Model(id='model1', source='model1.xml', language=data_model.ModelLanguage.SBML.value)
+        model2 = data_model.Model(id='model2', source='model2.xml', language=data_model.ModelLanguage.SBML.value)
         doc.models.append(model1)
         doc.models.append(model2)
 
@@ -1690,7 +1690,7 @@ class ExecTaskCase(unittest.TestCase):
 
     def test_exec_sed_doc_with_repeated_task(self):
         doc = data_model.SedDocument()
-        doc.models.append(data_model.Model(id='model', source='model.xml', language='sbml'))
+        doc.models.append(data_model.Model(id='model', source='model.xml', language=data_model.ModelLanguage.SBML.value))
         doc.simulations.append(data_model.UniformTimeCourseSimulation(id='sim',
                                                                       initial_time=0., output_start_time=0.,
                                                                       output_end_time=5., number_of_steps=5))
@@ -1748,7 +1748,7 @@ class ExecTaskCase(unittest.TestCase):
 
     def test_capturer_not_available(self):
         doc = data_model.SedDocument()
-        doc.models.append(data_model.Model(id='model', source='model.xml', language='sbml'))
+        doc.models.append(data_model.Model(id='model', source='model.xml', language=data_model.ModelLanguage.SBML.value))
         doc.simulations.append(data_model.UniformTimeCourseSimulation(id='sim',
                                                                       initial_time=0., output_start_time=0.,
                                                                       output_end_time=5., number_of_steps=5))

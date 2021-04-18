@@ -21,7 +21,8 @@ from .io import SedmlSimulationReader
 from .utils import (resolve_model_and_apply_xml_changes, get_variables_for_task,
                     calc_data_generators_results, resolve_range, get_models_referenced_by_task,
                     get_value_of_variable_model_xml_targets, calc_compute_model_change_new_value,
-                    apply_changes_to_xml_model, get_first_last_models_executed_by_task)
+                    apply_changes_to_xml_model, get_first_last_models_executed_by_task,
+                    is_model_language_encoded_in_xml)
 from .warnings import NoTasksWarning, NoOutputsWarning, SedmlFeatureNotSupportedWarning
 from lxml import etree  # noqa: F401
 import copy
@@ -487,7 +488,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
 
             attr_change = ModelAttributeChange(target=change.target, target_namespaces=change.target_namespaces, new_value=new_value)
 
-            if apply_xml_model_changes:
+            if apply_xml_model_changes and is_model_language_encoded_in_xml(change.model.language):
                 model = Model(changes=[attr_change])
                 apply_changes_to_xml_model(model, model_etrees[change.model.id], None, None)
 
@@ -500,8 +501,8 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
         # execute the sub-tasks and record their results
         for i_sub_task, sub_task in enumerate(sub_tasks):
             if isinstance(sub_task.task, Task):
-                if apply_xml_model_changes:
-                    model = sub_task.task.model
+                model = sub_task.task.model
+                if apply_xml_model_changes and is_model_language_encoded_in_xml(model.language):
                     original_model_source = model.source
                     fid, model.source = tempfile.mkstemp(suffix='.xml')
                     os.close(fid)
@@ -514,7 +515,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
 
                 sub_task_var_results = exec_task(sub_task.task, task_executer, task_vars, doc)
 
-                if apply_xml_model_changes:
+                if apply_xml_model_changes and is_model_language_encoded_in_xml(model.language):
                     os.remove(model.source)
                     model.source = original_model_source
 

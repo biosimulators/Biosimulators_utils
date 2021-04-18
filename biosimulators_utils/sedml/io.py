@@ -59,7 +59,7 @@ class SedmlSimulationWriter(object):
             msg = 'The SED document is potentially incorrect.\n  {}'.format(flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
             warn(msg, BioSimulatorsWarning)
         if errors:
-            msg = 'The SED document is not valid.\n  {}'.format(flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
+            msg = 'The SED document is invalid.\n  {}'.format(flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
             raise ValueError(msg)
 
         self._num_meta_id = 0
@@ -190,7 +190,7 @@ class SedmlSimulationWriter(object):
         if change.new_elements is not None:
             new_xml = libsedml.XMLNode_convertStringToXMLNode(change.new_elements)
             if new_xml is None:
-                raise ValueError('`{}` is not valid XML.'.format(change.new_elements))
+                raise ValueError('`{}` is invalid XML.'.format(change.new_elements))
             self._call_libsedml_method(change_sed, 'setNewXML', new_xml)
 
         return change_sed
@@ -215,7 +215,7 @@ class SedmlSimulationWriter(object):
         if change.new_elements is not None:
             new_xml = libsedml.XMLNode_convertStringToXMLNode(change.new_elements)
             if new_xml is None:
-                raise ValueError('`{}` is not valid XML.'.format(change.new_elements))
+                raise ValueError('`{}` is invalid XML.'.format(change.new_elements))
             self._call_libsedml_method(change_sed, 'setNewXML', new_xml)
 
         return change_sed
@@ -1016,8 +1016,10 @@ class SedmlSimulationReader(object):
         for child_type in ('Models', 'Simulations', 'DataGenerators', 'Tasks', 'Outputs'):
             get_children = getattr(doc_sed, 'getListOf' + child_type)
 
-            if next((True for child in get_children() if not child.getId()), False):  # pragma no cover: validated by libSED-ML
-                msg = '{} must have ids'.format(child_type)
+            missing_ids = [str(i_child + 1) for i_child, child in enumerate(get_children()) if not child.getId()]
+
+            if missing_ids:  # pragma no cover: validated by libSED-ML
+                msg = '{} must have ids. The following {} are missing ids: {}.'.format(child_type, child_type, ', '.join(missing_ids))
                 self.errors.append([msg])
                 raise ValueError(msg)
 
@@ -1349,11 +1351,14 @@ class SedmlSimulationReader(object):
         # validate
         errors, warnings = validate_doc(doc, working_dir=os.path.dirname(
             filename), validate_semantics=validate_semantics, validate_models_with_languages=validate_models_with_languages)
-        if warnings:
-            msg = 'The SED document is potentially incorrect.\n  {}'.format(flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
+        self.errors.extend(errors)
+        self.warnings.extend(warnings)
+        if self.warnings:
+            msg = 'The SED document is potentially incorrect.\n  {}'.format(
+                flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '))
             warn(msg, BioSimulatorsWarning)
-        if errors:
-            msg = 'The SED document is not valid.\n  {}'.format(flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
+        if self.errors:
+            msg = 'The SED document is invalid.\n  {}'.format(flatten_nested_list_of_strings(self.errors).replace('\n', '\n  '))
             raise ValueError(msg)
 
         # return SED document

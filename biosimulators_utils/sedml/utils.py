@@ -226,9 +226,12 @@ def resolve_model_and_apply_xml_changes(model, sed_doc, working_dir,
     temp_model_source = resolve_model(model, sed_doc, working_dir)
 
     # apply changes to model
-    if apply_xml_model_changes:
+    if apply_xml_model_changes and model.language and is_model_language_encoded_in_xml(model.language):
         # read model from file
-        model_etree = etree.parse(model.source)
+        try:
+            model_etree = etree.parse(model.source)
+        except Exception as exception:
+            raise ValueError('The model could not be parsed because the model is not a valid XML document: {}'.format(str(exception)))
 
         if model.changes:
             # apply changes
@@ -376,7 +379,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             try:
                 new_elements = etree.fromstring('<root>' + change.new_elements + '</root>').getchildren()
             except etree.XMLSyntaxError as exception:
-                raise ValueError('`{}` is not valid XML. {}'.format(change.new_elements, str(exception)))
+                raise ValueError('`{}` is invalid XML. {}'.format(change.new_elements, str(exception)))
 
             for parent in parents:
                 for new_element in copy.deepcopy(new_elements):
@@ -391,7 +394,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
             try:
                 new_elements = etree.parse(io.StringIO('<root>' + change.new_elements + '</root>')).getroot().getchildren()
             except etree.XMLSyntaxError as exception:
-                raise ValueError('`{}` is not valid XML. {}'.format(change.new_elements, str(exception)))
+                raise ValueError('`{}` is invalid XML. {}'.format(change.new_elements, str(exception)))
 
             for old_element in old_elements:
                 parent = old_element.getparent()

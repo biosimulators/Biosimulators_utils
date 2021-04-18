@@ -81,10 +81,10 @@ class CombineArchiveWriter(object):
         self.warnings.extend(warnings)
 
         if self.warnings:
-            warn('COMBINE/OMEX archive may be invalid.\n' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
+            warn('COMBINE/OMEX archive may be invalid.\n  ' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
                  BioSimulatorsWarning)
         if self.errors:
-            raise ValueError('COMBINE/OMEX archive is invalid.\n' + flatten_nested_list_of_strings(self.errors).replace('\n', '\n  '))
+            raise ValueError('COMBINE/OMEX archive is invalid.\n  ' + flatten_nested_list_of_strings(self.errors).replace('\n', '\n  '))
 
     def _write_metadata(self, obj, archive_comb, filename):
         """ Write metadata about an archive or a file in an archive
@@ -211,10 +211,10 @@ class CombineArchiveReader(object):
 
         # raise warnings and errors
         if self.warnings:
-            warn('COMBINE/OMEX archive may be invalid.\n' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
+            warn('COMBINE/OMEX archive may be invalid.\n  ' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
                  BioSimulatorsWarning)
         if self.errors:
-            raise ValueError('COMBINE/OMEX archive is invalid.\n' + flatten_nested_list_of_strings(self.errors).replace('\n', '\n  '))
+            raise ValueError('COMBINE/OMEX archive is invalid.\n  ' + flatten_nested_list_of_strings(self.errors).replace('\n', '\n  '))
 
         # return information about archive
         return archive

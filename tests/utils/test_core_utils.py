@@ -2,6 +2,7 @@ from biosimulators_utils.data_model import ValueType, OntologyTerm
 from biosimulators_utils.utils import core as utils
 from biosimulators_utils.warnings import BioSimulatorsWarning
 import copy
+import re
 import unittest
 
 
@@ -376,6 +377,6 @@ class TestCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Big error'):
             utils.raise_errors_warnings([['Big error']])
 
-        with self.assertRaisesRegex(ValueError, 'Big error'):
-            with self.assertWarnsRegex(BioSimulatorsWarning, 'Big warning'):
-                utils.raise_errors_warnings([['Big error']], [['Big warning']])
+        with self.assertRaisesRegex(ValueError, re.compile('Massive\n  - Big error', re.MULTILINE)):
+            with self.assertWarnsRegex(BioSimulatorsWarning, re.compile('Problem\n  - Big warning', re.MULTILINE)):
+                utils.raise_errors_warnings([['Big error']], [['Big warning']], error_summary='Massive', warning_summary='Problem')

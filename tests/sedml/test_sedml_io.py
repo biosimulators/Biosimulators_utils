@@ -543,12 +543,12 @@ class IoTestCase(unittest.TestCase):
 
         document.models[0].changes[2].new_elements = '<parameter id="new_parameter" value="1.0/>'
         document.models[0].changes[4].new_elements = '<parameter id="new_parameter" value="1.0"/>'
-        with self.assertRaisesRegex(ValueError, 'not valid XML'):
+        with self.assertRaisesRegex(ValueError, 'invalid XML'):
             io.SedmlSimulationWriter().run(document, filename)
 
         document.models[0].changes[2].new_elements = '<parameter id="new_parameter" value="1.0"/>'
         document.models[0].changes[4].new_elements = '<parameter id="new_parameter" value="1.0/>'
-        with self.assertRaisesRegex(ValueError, 'not valid XML'):
+        with self.assertRaisesRegex(ValueError, 'invalid XML'):
             io.SedmlSimulationWriter().run(document, filename)
 
     def _set_target_namespaces(self, document):

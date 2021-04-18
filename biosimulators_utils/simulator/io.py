@@ -66,7 +66,7 @@ def read_simulator_specs(path_or_url, patch=None):
     api_endpoint = get_config().BIOSIMULATORS_API_ENDPOINT
     response = requests.post('{}simulators/validate'.format(api_endpoint), json=specs)
     intro_failure_msg = ''.join([
-        "The simulator specifications from `{}` are not valid. ".format(path_or_url),
+        "The simulator specifications from `{}` are invalid. ".format(path_or_url),
         "The specifications of simulation tools must adhere to BioSimulators' schema. ",
         "BioSimulators' schema is available in both JSON Schema and Open API Specifications formats. ",
         "Documentation is available at {}.".format(api_endpoint)

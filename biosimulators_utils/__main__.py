@@ -76,7 +76,7 @@ class ValidateModelingProjectController(cement.Controller):
             warn(msg, BioSimulatorsWarning)
 
         if errors:
-            msg = 'The COMBINE/OMEX archive is not valid.\n  {}'.format(
+            msg = 'The COMBINE/OMEX archive is invalid.\n  {}'.format(
                 flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
             raise SystemExit(msg)
 

@@ -116,7 +116,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
             model_id = '`' + model.id + '`' if model and model.id else str(i_model + 1)
 
             if model_errors:
-                errors.append(['Model {} is not valid.'.format(model_id), model_errors])
+                errors.append(['Model {} is invalid.'.format(model_id), model_errors])
 
             if model_warnings:
                 warnings.append(['Model {} may be invalid.'.format(model_id), model_warnings])
@@ -161,7 +161,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
             sim_errors = validate_simulation(sim)
             if sim_errors:
                 sim_id = '`' + sim.id + '`' if sim and sim.id else str(i_sim + 1)
-                errors.append(['Simulation {} is not valid.'.format(sim_id), sim_errors])
+                errors.append(['Simulation {} is invalid.'.format(sim_id), sim_errors])
 
         # basic tasks reference a model and a simulation
         task_errors = {}
@@ -437,7 +437,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
             task_warnings[task]['other'] += task_warnings[task]['ranges']
 
             if task_errors[task]['other']:
-                errors.append(['Task {} is not valid.'.format(task_id), task_errors[task]['other']])
+                errors.append(['Task {} is invalid.'.format(task_id), task_errors[task]['other']])
             if task_warnings[task]['other']:
                 warnings.append(['Task {} may be invalid.'.format(task_id), task_warnings[task]['other']])
 
@@ -460,7 +460,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
             if data_gen_errors:
                 data_gen_id = '`' + data_gen.id + '`' if data_gen and data_gen.id else str(i_data_gen + 1)
-                errors.append(['Data generator {} is not valid.'.format(data_gen_id), data_gen_errors])
+                errors.append(['Data generator {} is invalid.'.format(data_gen_id), data_gen_errors])
 
         # validate outputs
         # - reports
@@ -474,7 +474,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
             if output_errors:
                 output_id = '`' + output.id + '`' if output and output.id else str(i_output + 1)
-                errors.append(['Output `{}` is not valid.'.format(output_id), output_errors])
+                errors.append(['Output {} is invalid.'.format(output_id), output_errors])
 
     return (errors, warnings)
 
@@ -547,7 +547,7 @@ def validate_model(model, model_ids, working_dir, validate_models_with_languages
     # validate that model changes have targets
     model_change_errors = validate_model_changes(model)
     if model_change_errors:
-        errors.append(['The changes of the model are not valid.', model_change_errors])
+        errors.append(['The changes of the model are invalid.', model_change_errors])
 
     return (errors, warnings)
 
@@ -610,7 +610,7 @@ def validate_model_source(model, model_ids, working_dir, validate_models_with_la
         if validate_models_with_languages:
             model_source_errors, model_source_warnings = validate_model_with_language(model_source, model.language, name=model.id)
             if model_source_errors:
-                errors.append(['The model file `{}` is not valid.'.format(model.source), model_source_errors])
+                errors.append(['The model file `{}` is invalid.'.format(model.source), model_source_errors])
             if model_source_warnings:
                 warnings.append(['The model file `{}` may be invalid.'.format(model.source), model_source_warnings])
 

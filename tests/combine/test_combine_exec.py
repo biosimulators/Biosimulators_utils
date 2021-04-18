@@ -16,6 +16,7 @@ import dateutil.tz
 import os
 import functools
 import importlib
+import re
 import shutil
 import tempfile
 import unittest
@@ -278,3 +279,33 @@ class ExecCombineTestCase(unittest.TestCase):
             self.assertEqual(doc_log.output, None)
 
         importlib.reload(log_utils)
+
+    def test_exec_sedml_docs_in_archive_error_handling(self):
+        def exec_sed_doc(task_executer, filename, working_dir, base_out_dir,
+                         rel_path, apply_xml_model_changes=False, report_formats=None, plot_formats=None,
+                         indent=0, log=None):
+            pass
+
+        def sed_task_executer(task, variables):
+            pass
+
+        sed_doc_executer = functools.partial(exec_sed_doc, sed_task_executer)
+
+        # valid archive
+        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures',
+                                        'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex')
+        exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
+
+        # invalid archive
+        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'invalid.omex')
+        with self.assertRaisesRegex(ValueError, re.compile('archive is invalid.\n  - ', re.MULTILINE)):
+            exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
+        with self.assertRaisesRegex(ValueError, 'must have the required attributes'):
+            exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
+
+        # invalid SED-ML file in archive
+        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'invalid-SED-ML.omex')
+        with self.assertRaisesRegex(ValueError, re.compile('archive is invalid.\n  - ', re.MULTILINE)):
+            exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
+        with self.assertRaisesRegex(ValueError, 'must have the required attributes'):
+            exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)

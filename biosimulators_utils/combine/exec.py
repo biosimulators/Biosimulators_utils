@@ -15,10 +15,13 @@ from ..plot.data_model import PlotFormat  # noqa: F401
 from ..report.data_model import VariableResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import (SedDocument, Task, Output, Report, DataSet, Plot2D, Curve,  # noqa: F401
                                 Plot3D, Surface, Variable)
+from ..utils.core import flatten_nested_list_of_strings
+from ..warnings import warn, BioSimulatorsWarning
 from .exceptions import CombineArchiveExecutionError, NoSedmlError
 from .data_model import CombineArchive
 from .io import CombineArchiveReader
 from .utils import get_sedml_contents, get_summary_sedml_contents
+from .validation import validate
 import datetime
 import glob
 import os
@@ -128,6 +131,18 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             # unpack archive and read metadata
             archive = CombineArchiveReader().run(archive_filename, archive_tmp_dir)
 
+            # validate archive
+            errors, warnings = validate(archive, archive_tmp_dir)
+            if warnings:
+                msg = 'The COMBINE/OMEX archive may be invalid.\n  {}'.format(
+                    flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
+                warn(msg, BioSimulatorsWarning)
+
+            if errors:
+                msg = 'The COMBINE/OMEX archive is invalid.\n  {}'.format(
+                    flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
+                raise ValueError(msg)
+
             # determine files to execute
             sedml_contents = get_sedml_contents(archive)
             if not sedml_contents:
@@ -138,8 +153,6 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             print(get_summary_sedml_contents(archive, archive_tmp_dir))
 
         except Exception as exception:
-            print('Simulation experiments could not be read from the COMBINE archive')
-
             archive = CombineArchive()
             archive_tmp_dir = None
 
@@ -154,6 +167,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             log.duration = (datetime.datetime.now() - start_time).total_seconds()
             log.finalize()
             log.export()
+
             raise
 
         log = init_combine_archive_log(archive, archive_tmp_dir,

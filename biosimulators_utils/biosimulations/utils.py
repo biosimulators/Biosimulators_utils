@@ -27,7 +27,7 @@ def validate_biosimulations_api_response(response, failure_introductory_message)
             pointer = error.get('source', {}).get('pointer', None)
             error_messages.append('{} ({}):{}{}'.format(
                 error['title'], error['status'],
-                ' `{}` is not valid'.format(pointer) if pointer else '',
+                ' `{}` is invalid'.format(pointer) if pointer else '',
                 '\n\n  ' + error['detail'].replace('\n', '\n  ') if error.get('detail', None) else '',
             ))
 

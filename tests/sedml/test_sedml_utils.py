@@ -713,7 +713,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_elements='<')
         et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaisesRegex(ValueError, 'not valid XML'):
+        with self.assertRaisesRegex(ValueError, 'invalid XML'):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
         change = data_model.AddElementModelChange(
@@ -729,7 +729,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_elements='<')
         et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaisesRegex(ValueError, 'not valid XML'):
+        with self.assertRaisesRegex(ValueError, 'invalid XML'):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
         change = data_model.ReplaceElementModelChange(
@@ -802,6 +802,8 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change.variables[0].model.source = 'https://models.com/model_1.xml'
         change.variables[1].model.source = 'model_1.xml'
+        change.variables[0].model.language = data_model.ModelLanguage.SBML.value
+        change.variables[1].model.language = data_model.ModelLanguage.SBML.value
         working_dir = self.tmp_dir
         with open(model_filename, 'rb') as file:
             model_1_xml = file.read()
@@ -1498,3 +1500,41 @@ class ApplyModelChangesTestCase(unittest.TestCase):
     def test_is_model_language_encoded_in_xml(self):
         self.assertTrue(utils.is_model_language_encoded_in_xml(data_model.ModelLanguage.SBML.value))
         self.assertFalse(utils.is_model_language_encoded_in_xml(data_model.ModelLanguage.BNGL.value))
+
+    def test_resolve_model_and_apply_xml_changes_error_handling(self):
+        model = data_model.Model(
+            source='model.xml',
+            language=data_model.ModelLanguage.SBML.value,
+        )
+        sed_doc = data_model.SedDocument()
+
+        model_filename = os.path.join(self.tmp_dir, model.source)
+        with open(model_filename, 'w') as file:
+            file.write('<sbml>')
+            file.write('</sbml>')
+
+        temp_model, temp_model_source, temp_model_etree = utils.resolve_model_and_apply_xml_changes(
+            model, sed_doc, self.tmp_dir, save_to_file=False)
+
+        self.assertEqual(temp_model.source, model_filename)
+        self.assertEqual(temp_model_source, None)
+        self.assertIsInstance(temp_model_etree, (etree._ElementTree))
+
+        # invalid XML file
+        with open(model_filename, 'w') as file:
+            file.write('sbml>')
+            file.write('</sbml>')
+        with self.assertRaisesRegex(ValueError, 'could not be parsed'):
+            utils.resolve_model_and_apply_xml_changes(
+                model, sed_doc, self.tmp_dir, save_to_file=False)
+
+        # not an XML file
+        model.language = data_model.ModelLanguage.BNGL.value
+        with open(model_filename, 'w') as file:
+            file.write('sbml')
+        temp_model, temp_model_source, temp_model_etree = utils.resolve_model_and_apply_xml_changes(
+            model, sed_doc, self.tmp_dir, save_to_file=False)
+
+        self.assertEqual(temp_model.source, model_filename)
+        self.assertEqual(temp_model_source, None)
+        self.assertEqual(temp_model_etree, None)
