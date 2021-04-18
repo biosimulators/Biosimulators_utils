@@ -7,7 +7,7 @@
 """
 
 from ..data_model import ValueType, OntologyTerm
-from ..warnings import warn
+from ..warnings import warn, BioSimulatorsWarning
 import json
 import numpy
 import re
@@ -17,6 +17,7 @@ __all__ = [
     'validate_value', 'validate_str_value', 'format_value', 'parse_value',
     'patch_dict', 'pad_arrays_to_consistent_shapes',
     'flatten_nested_list_of_strings',
+    'raise_errors_warnings',
 ]
 
 
@@ -350,3 +351,20 @@ def flatten_nested_list_of_strings(nested_list, prefix='- ', indent=' ' * 2):
             )
 
     return '\n'.join(flattened)
+
+
+def raise_errors_warnings(errors, warnings=None):
+    """ Raises errors and warnings
+
+    Args:
+        errors (nested :obj:`list` of :obj:`str`): errors
+        warnings (nested :obj:`list` of :obj:`str`): warnings
+
+    Raises:
+        :obj:`ValueError`: if errors
+    """
+    if warnings:
+        warn(flatten_nested_list_of_strings(warnings), BioSimulatorsWarning)
+
+    if errors:
+        raise ValueError(flatten_nested_list_of_strings(errors))
