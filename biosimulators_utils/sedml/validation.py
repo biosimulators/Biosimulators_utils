@@ -14,7 +14,8 @@ from .data_model import (AbstractTask, Task, RepeatedTask,  # noqa: F401
                          UniformTimeCourseSimulation, Variable,
                          Range, FunctionalRange, UniformRange, VectorRange,
                          Report, Plot2D, Plot3D)
-from .utils import append_all_nested_children_to_doc, get_range_len, is_model_language_encoded_in_xml
+from .utils import (append_all_nested_children_to_doc, get_range_len,
+                    is_model_language_encoded_in_xml, get_models_referenced_by_task)
 import collections
 import copy
 import lxml.etree
@@ -862,8 +863,11 @@ def validate_data_generator_variables(variables):
         if (variable.symbol and variable.target) or (not variable.symbol and not variable.target):
             variable_errors.append(['Variable must define a symbol or target.'])
 
-        if variable.target and variable.task and variable.task.model and variable.task.model.language:
-            variable_errors.extend(validate_target(variable.target, variable.target_namespaces, variable.task.model.language))
+        if variable.target and variable.task:
+            models = get_models_referenced_by_task(variable.task)
+            for model in models:
+                if model and model.language:
+                    variable_errors.extend(validate_target(variable.target, variable.target_namespaces, model.language))
 
         if variable_errors:
             variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
