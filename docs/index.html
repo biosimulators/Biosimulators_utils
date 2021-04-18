@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BioSimulators utils documentation &#8212; BioSimulators utils 0.1.52 documentation</title>
+    <title>BioSimulators utils documentation &#8212; BioSimulators utils 0.1.53 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -48,9 +48,10 @@
 <h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/biosimulators_utils.html">2. API documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="about.html">3. About BioSimulators utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="genindex.html">4. Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_cli.html">2. Tutorial for the command-line application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/biosimulators_utils.html">3. API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">4. About BioSimulators utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">5. Index</a></li>
 </ul>
 
 
@@ -100,7 +101,7 @@
             
   <div class="section" id="biosimulators-utils-documentation">
 <h1>BioSimulators utils documentation<a class="headerlink" href="#biosimulators-utils-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Utilities for building standardized command-line interfaces for biosimulation software packages that support the <a class="reference external" href="https://sed-ml.org/">Simulation Experiment Description Markup Language</a> (SED-ML) and the <a class="reference external" href="https://combinearchive.org/">COMBINE/OMEX format</a>.</p>
+<p>Command-line application and high-level utilities for reading, writing, validating, and executing <a class="reference external" href="https://combinearchive.org/">COMBINE/OMEX format</a> files that contain descriptions of simulations in <a class="reference external" href="https://sed-ml.org/">Simulation Experiment Description Markup Language</a> (SED-ML) format with models in formats such as the <a class="reference external" href="https://bionetgen.org">BioNetGen Language</a> (BNGL) and the <a class="reference external" href="http://sbml.org">Systems Biology Markup Language</a> (SBML).</p>
 <div class="section" id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
@@ -113,41 +114,47 @@
 <li class="toctree-l2"><a class="reference internal" href="installation.html#installing-the-optional-features">1.5. Installing the optional features</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="source/biosimulators_utils.html">2. API documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#subpackages">2.1. Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.archive.html">2.1.1. biosimulators_utils.archive package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.biosimulations.html">2.1.2. biosimulators_utils.biosimulations package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.combine.html">2.1.3. biosimulators_utils.combine package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.gh_action.html">2.1.4. biosimulators_utils.gh_action package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.kisao.html">2.1.5. biosimulators_utils.kisao package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.log.html">2.1.6. biosimulators_utils.log package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.plot.html">2.1.7. biosimulators_utils.plot package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.report.html">2.1.8. biosimulators_utils.report package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.sbml.html">2.1.9. biosimulators_utils.sbml package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.sedml.html">2.1.10. biosimulators_utils.sedml package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.simulator.html">2.1.11. biosimulators_utils.simulator package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.simulator_registry.html">2.1.12. biosimulators_utils.simulator_registry package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.utils.html">2.1.13. biosimulators_utils.utils package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.xml.html">2.1.14. biosimulators_utils.xml package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_cli.html">2. Tutorial for the command-line application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_cli.html#validate-a-modeling-project">2.1. Validate a modeling project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_cli.html#execute-a-modeling-project-with-a-standardized-simulation-tool-from-the-biosimulators-registry">2.2. Execute a modeling project with a standardized simulation tool from the BioSimulators registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_cli.html#additional-documentation">2.3. Additional documentation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#submodules">2.2. Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#module-biosimulators_utils.config">2.3. biosimulators_utils.config module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#module-biosimulators_utils.data_model">2.4. biosimulators_utils.data_model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#module-biosimulators_utils.exceptions">2.5. biosimulators_utils.exceptions module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#module-biosimulators_utils.image">2.6. biosimulators_utils.image module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#module-biosimulators_utils.warnings">2.7. biosimulators_utils.warnings module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/biosimulators_utils.html">3. API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#subpackages">3.1. Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.archive.html">3.1.1. biosimulators_utils.archive package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.biosimulations.html">3.1.2. biosimulators_utils.biosimulations package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.combine.html">3.1.3. biosimulators_utils.combine package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.gh_action.html">3.1.4. biosimulators_utils.gh_action package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.kisao.html">3.1.5. biosimulators_utils.kisao package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.log.html">3.1.6. biosimulators_utils.log package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.plot.html">3.1.7. biosimulators_utils.plot package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.report.html">3.1.8. biosimulators_utils.report package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.sbml.html">3.1.9. biosimulators_utils.sbml package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.sedml.html">3.1.10. biosimulators_utils.sedml package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.simulator.html">3.1.11. biosimulators_utils.simulator package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.simulator_registry.html">3.1.12. biosimulators_utils.simulator_registry package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.utils.html">3.1.13. biosimulators_utils.utils package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="source/biosimulators_utils.xml.html">3.1.14. biosimulators_utils.xml package</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="about.html">3. About BioSimulators utils</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="about.html#license">3.1. License</a></li>
-<li class="toctree-l2"><a class="reference internal" href="about.html#development-team">3.2. Development team</a></li>
-<li class="toctree-l2"><a class="reference internal" href="about.html#contributing-to-biosimulators-utils">3.3. Contributing to BioSimulators utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="about.html#acknowledgements">3.4. Acknowledgements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="about.html#questions-and-comments">3.5. Questions and comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#submodules">3.2. Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#module-biosimulators_utils.config">3.3. biosimulators_utils.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#module-biosimulators_utils.data_model">3.4. biosimulators_utils.data_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#module-biosimulators_utils.exceptions">3.5. biosimulators_utils.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#module-biosimulators_utils.image">3.6. biosimulators_utils.image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/biosimulators_utils.html#module-biosimulators_utils.warnings">3.7. biosimulators_utils.warnings module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="genindex.html">4. Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">4. About BioSimulators utils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="about.html#license">4.1. License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#development-team">4.2. Development team</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#contributing-to-biosimulators-utils">4.3. Contributing to BioSimulators utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#acknowledgements">4.4. Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#questions-and-comments">4.5. Questions and comments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">5. Index</a></li>
 </ul>
 </div>
 </div>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>1. Installation instructions &#8212; BioSimulators utils 0.1.52 documentation</title>
+    <title>1. Installation instructions &#8212; BioSimulators utils 0.1.53 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -15,7 +15,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="2. biosimulators_utils package" href="source/biosimulators_utils.html" />
+    <link rel="next" title="2. Tutorial for the command-line application" href="tutorial_cli.html" />
     <link rel="prev" title="BioSimulators utils documentation" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -56,9 +56,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#installing-the-optional-features">1.5. Installing the optional features</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="source/biosimulators_utils.html">2. API documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="about.html">3. About BioSimulators utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="genindex.html">4. Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_cli.html">2. Tutorial for the command-line application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/biosimulators_utils.html">3. API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">4. About BioSimulators utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">5. Index</a></li>
 </ul>
 
 
@@ -77,7 +78,7 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">BioSimulators utils documentation</a></li>
-      <li>Next: <a href="source/biosimulators_utils.html" title="next chapter"><span class="section-number">2. </span>biosimulators_utils package</a></li>
+      <li>Next: <a href="tutorial_cli.html" title="next chapter"><span class="section-number">2. </span>Tutorial for the command-line application</a></li>
   </ul></li>
 </ul>
 </div>
@@ -138,11 +139,15 @@
 </div>
 <div class="section" id="installing-the-optional-features">
 <h2><span class="section-number">1.5. </span>Installing the optional features<a class="headerlink" href="#installing-the-optional-features" title="Permalink to this headline">¶</a></h2>
-<p>To use BioSimulators utils to execute containerized simulation tools, install BioSimulators utils with the <cite>containers</cite> option:</p>
+<p>To use BioSimulators utils to validate models encoded in SBML, install BioSimulators utils with the <code class="docutils literal notranslate"><span class="pre">sbml</span></code> option:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pip install biosimulators-utils[sbml]
+</pre></div>
+</div>
+<p>To use BioSimulators utils to execute containerized simulation tools, install BioSimulators utils with the <code class="docutils literal notranslate"><span class="pre">containers</span></code> option:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pip install biosimulators-utils[containers]
 </pre></div>
 </div>
-<p>To use BioSimulators utils to log the standard output and error produced by simulation tools, install BioSimulators utils with the <cite>logging</cite> option:</p>
+<p>To use BioSimulators utils to log the standard output and error produced by simulation tools, install BioSimulators utils with the <code class="docutils literal notranslate"><span class="pre">logging</span></code> option:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pip install biosimulators-utils[logging]
 </pre></div>
 </div>
