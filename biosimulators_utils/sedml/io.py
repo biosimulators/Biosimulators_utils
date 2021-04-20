@@ -1405,10 +1405,6 @@ class SedmlSimulationReader(object):
             var.target = var_sed.getTarget() or None
             var.target_namespaces = self._get_namespaces_for_sed_object_targets(var_sed)
 
-            if var.target and var.target.startswith('#'):
-                msg = 'Variable targets to data descriptions are not supported.'
-                raise NotImplementedError(msg)
-
             self._deserialize_reference(var_sed, var, 'task', 'TaskReference', 'task', id_to_task_map)
             self._deserialize_reference(var_sed, var, 'model', 'ModelReference', 'model', id_to_model_map)
 

@@ -13,7 +13,7 @@ from .data_model import (AbstractTask, Task, RepeatedTask,  # noqa: F401
                          Simulation, OneStepSimulation, SteadyStateSimulation,
                          UniformTimeCourseSimulation, Variable,
                          Range, FunctionalRange, UniformRange, VectorRange,
-                         Report, Plot2D, Plot3D)
+                         Report, Plot2D, Plot3D, DataGenerator)
 from .utils import (append_all_nested_children_to_doc, get_range_len,
                     is_model_language_encoded_in_xml, get_models_referenced_by_task)
 import collections
@@ -224,6 +224,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
                 for i_range, range in enumerate(task.ranges):
                     range_errors = []
+                    range_warnings = []
 
                     if not range or not range.id:
                         range_errors.append(['Range must have an id.'])
@@ -238,6 +239,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
                         for i_variable, variable in enumerate(range.variables):
                             variable_errors = []
+                            variable_warnings = []
 
                             if not variable.id:
                                 variable_errors.append(['Variable must have an id.'])
@@ -253,12 +255,18 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                                 variable_errors.append(['Variable should define a symbol or target, not both.'])
 
                             if variable.target and variable.model and variable.model.language:
-                                variable_errors.extend(validate_target(
-                                    variable.target, variable.target_namespaces, variable.model.language))
+                                temp_errors, temp_warnings = validate_target(
+                                    variable.target, variable.target_namespaces, Model, variable.model.language)
+                                variable_errors.extend(temp_errors)
+                                variable_warnings.extend(temp_warnings)
 
                             if variable_errors:
                                 variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
                                 range_errors.append(['Variable {} is invalid.'.format(variable_id), variable_errors])
+
+                            if variable_warnings:
+                                variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
+                                range_warnings.append(['Variable {} may be invalid.'.format(variable_id), variable_warnings])
 
                         if not range.math:
                             range_errors.append(['Functional range must have math.'])
@@ -276,6 +284,11 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                     if range_errors:
                         range_id = '`' + range.id + '`' if range and range.id else str(i_range + 1)
                         task_errors[task]['ranges'].append(['{} {} is invalid.'.format(range.__class__.__name__, range_id), range_errors])
+
+                    if range_warnings:
+                        range_id = '`' + range.id + '`' if range and range.id else str(i_range + 1)
+                        task_warnings[task]['ranges'].append(
+                            ['{} {} may be invalid.'.format(range.__class__.__name__, range_id), range_warnings])
 
         # ranges of repeated tasks have unique ids
         ranges_have_ids = True
@@ -371,8 +384,10 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
         for task in doc.tasks:
             if isinstance(task, RepeatedTask):
                 all_change_errors = []
+                all_change_warnings = []
                 for i_change, change in enumerate(task.changes):
                     change_errors = []
+                    change_warnings = []
 
                     if not change.model:
                         msg = ('Set value change must reference a model. '
@@ -381,7 +396,10 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
                     if change.target:
                         if change.model and change.model.language:
-                            change_errors.extend(validate_target(change.target, change.target_namespaces, change.model.language))
+                            temp_errors, temp_warnings = validate_target(
+                                change.target, change.target_namespaces, Model, change.model.language)
+                            change_errors.extend(temp_errors)
+                            change_warnings.extend(temp_warnings)
 
                     else:
                         msg = ('Set value changes must define a target. '
@@ -399,6 +417,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
                     for i_variable, variable in enumerate(change.variables):
                         variable_errors = []
+                        variable_warnings = []
 
                         if not variable.id:
                             variable_errors.append(['Variable must have an id.'])
@@ -414,11 +433,18 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                             variable_errors.append(['Set value variable must define a target or a symbol, not both.'])
 
                         if variable.target and variable.model and variable.model.language:
-                            variable_errors.extend(validate_target(variable.target, variable.target_namespaces, variable.model.language))
+                            temp_errors, temp_warnings = validate_target(
+                                variable.target, variable.target_namespaces, Model, variable.model.language)
+                            variable_errors.extend(temp_errors)
+                            variable_warnings.extend(temp_warnings)
 
                         if variable_errors:
                             variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
                             change_errors.append(['Variable {} is invalid.'.format(variable_id), variable_errors])
+
+                        if variable_warnings:
+                            variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
+                            change_warnings.append(['Variable {} may be invalid.'.format(variable_id), variable_warnings])
 
                     if not change.math:
                         msg = 'Set value change must have math.'
@@ -428,8 +454,15 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                         change_id = '`' + change.id + '`' if change and change.id else str(i_change + 1)
                         all_change_errors.append(['Change {} is invalid.'.format(change_id), change_errors])
 
+                    if change_warnings:
+                        change_id = '`' + change.id + '`' if change and change.id else str(i_change + 1)
+                        all_change_warnings.append(['Change {} may be invalid.'.format(change_id), change_warnings])
+
                 if all_change_errors:
                     task_errors[task]['other'].append(['Changes are invalid.', all_change_errors])
+
+                if all_change_warnings:
+                    task_warnings[task]['other'].append(['Changes may be invalid.', all_change_warnings])
 
         for i_task, task in enumerate(doc.tasks):
             task_id = '`' + task.id + '`' if task and task.id else str(i_task + 1)
@@ -449,12 +482,15 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
         # - have math
         for i_data_gen, data_gen in enumerate(doc.data_generators):
             data_gen_errors = []
+            data_gen_warnings = []
 
             for i_parameter, param in enumerate(data_gen.parameters):
                 if not param.id:
                     data_gen_errors.append(['Parameter {} must have an id.'.format(i_parameter + 1)])
 
-            data_gen_errors.extend(validate_data_generator_variables(data_gen.variables))
+            temp_errors, temp_warnings = validate_data_generator_variables(data_gen.variables)
+            data_gen_errors.extend(temp_errors)
+            data_gen_warnings.extend(temp_warnings)
 
             if not data_gen.math:
                 data_gen_errors.append(['Data generator must have math.'])
@@ -462,6 +498,10 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
             if data_gen_errors:
                 data_gen_id = '`' + data_gen.id + '`' if data_gen and data_gen.id else str(i_data_gen + 1)
                 errors.append(['Data generator {} is invalid.'.format(data_gen_id), data_gen_errors])
+
+            if data_gen_warnings:
+                data_gen_id = '`' + data_gen.id + '`' if data_gen and data_gen.id else str(i_data_gen + 1)
+                warnings.append(['Data generator {} may be invalid.'.format(data_gen_id), data_gen_warnings])
 
         # validate outputs
         # - reports
@@ -546,9 +586,11 @@ def validate_model(model, model_ids, working_dir, validate_models_with_languages
     warnings.extend(tmp_warnings)
 
     # validate that model changes have targets
-    model_change_errors = validate_model_changes(model)
+    model_change_errors, model_change_warnings = validate_model_changes(model)
     if model_change_errors:
         errors.append(['The changes of the model are invalid.', model_change_errors])
+    if model_change_warnings:
+        warnings.append(['The changes of the model may be invalid.', model_change_warnings])
 
     return (errors, warnings)
 
@@ -680,13 +722,17 @@ def validate_model_changes(model):
         nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
     """
     errors = []
+    warnings = []
 
     for i_change, change in enumerate(model.changes):
         change_errors = []
+        change_warnings = []
 
         if change.target:
             if model.language:
-                change_errors.extend(validate_target(change.target, change.target_namespaces, model.language))
+                temp_errors, temp_warnings = validate_target(change.target, change.target_namespaces, Model, model.language)
+                change_errors.extend(temp_errors)
+                change_warnings.extend(temp_warnings)
 
         else:
             change_errors.append(['Model attribute change must define a target.'])
@@ -698,6 +744,7 @@ def validate_model_changes(model):
 
             for i_variable, variable in enumerate(change.variables):
                 variable_errors = []
+                variable_warnings = []
 
                 if not variable.id:
                     variable_errors.append(['Variable must have an id.'])
@@ -713,11 +760,18 @@ def validate_model_changes(model):
                     variable_errors.append(['Variable must define a target, not a symbol.'])
 
                 if variable.target and variable.model and variable.model.language:
-                    variable_errors.extend(validate_target(variable.target, variable.target_namespaces, variable.model.language))
+                    temp_errors, temp_warnings = validate_target(
+                        variable.target, variable.target_namespaces, Model, variable.model.language)
+                    variable_errors.extend(temp_errors)
+                    variable_warnings.extend(temp_warnings)
 
                 if variable_errors:
                     var_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
                     change_errors.append(['Variable {} is invalid.'.format(var_id), variable_errors])
+
+                if variable_warnings:
+                    var_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
+                    change_warnings.append(['Variable {} is invalid.'.format(var_id), variable_warnings])
 
             if not change.math:
                 change_errors.append(['Compute model change must have math.'])
@@ -726,7 +780,11 @@ def validate_model_changes(model):
             change_id = '`' + change.id + '`' if change and change.id else str(i_change + 1)
             errors.append(['Change {} is invalid.'.format(change_id), change_errors])
 
-    return errors
+        if change_warnings:
+            change_id = '`' + change.id + '`' if change and change.id else str(i_change + 1)
+            warnings.append(['Change {} may be invalid.'.format(change_id), change_warnings])
+
+    return errors, warnings
 
 
 def validate_simulation_type(simulation, types):
@@ -847,9 +905,11 @@ def validate_data_generator_variables(variables):
         nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
     """
     errors = []
+    warnings = []
 
     for i_variable, variable in enumerate(variables):
         variable_errors = []
+        variable_warnings = []
 
         if not variable.id:
             variable_errors.append(['Variable must have an id.'])
@@ -857,7 +917,7 @@ def validate_data_generator_variables(variables):
         if variable.model:
             variable_errors.append(['Variable should not reference a model.'])
 
-        if not variable.task:
+        if not variable.task and not (variable.target and variable.target.startswith('#')):
             variable_errors.append(['Variable must reference a task.'])
 
         if (variable.symbol and variable.target) or (not variable.symbol and not variable.target):
@@ -867,13 +927,19 @@ def validate_data_generator_variables(variables):
             models = get_models_referenced_by_task(variable.task)
             for model in models:
                 if model and model.language:
-                    variable_errors.extend(validate_target(variable.target, variable.target_namespaces, model.language))
+                    temp_errors, temp_warnings = validate_target(variable.target, variable.target_namespaces, DataGenerator, model.language)
+                    variable_errors.extend(temp_errors)
+                    variable_warnings.extend(temp_warnings)
 
         if variable_errors:
             variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
             errors.append(['Variable {} is invalid.'.format(variable_id), variable_errors])
 
-    return errors
+        if variable_warnings:
+            variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
+            warnings.append(['Variable {} is invalid.'.format(variable_id), variable_warnings])
+
+    return errors, warnings
 
 
 def validate_output(output):
@@ -933,20 +999,39 @@ def validate_output(output):
     return errors
 
 
-def validate_target(target, namespaces, language):
+def validate_target(target, namespaces, context, language, doc=None):
     """ Validate that a target is a valid XPath and that the namespaces needed to resolve a target are defined
 
     Args:
         target (:obj:`string`): XPath to a model element or attribute
         namespaces (:obj:`dict`): dictionary that maps prefixes of namespaces to their URIs
+        context (:obj:`type`)
         language (:obj:`str`): model language
+        doc (:obj:`SedDocument`): SED document
 
     Returns:
         nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
     """
     errors = []
+    warnings = []
 
-    if is_model_language_encoded_in_xml(language):
+    if target.startswith('#'):
+        if context == DataGenerator:
+            warnings.append(['Reference `{}` to a data descriptor could not be validated.'.format(target)])
+
+            # TODO
+            # valid_reference = False
+            # for data_description in doc.data_descriptions:
+            #     if data_description.id == target[1:]:
+            #         valid_reference = True
+            #         break
+            # if not valid_reference:
+            #     errors.append(['No data descriptor has an id which matches the URI fragment `{}`.'.format(target)])
+
+        else:
+            errors.append(['URI fragment targets are not supported in the context of {}.'.format(context.__name__)])
+
+    elif is_model_language_encoded_in_xml(language):
 
         if None in namespaces:
             namespaces = dict(namespaces)
@@ -970,7 +1055,7 @@ def validate_target(target, namespaces, language):
         except lxml.etree.XPathSyntaxError:
             errors.append(['Target `{}` is not a valid XML XPath.'.format(target)])
 
-    return errors
+    return errors, warnings
 
 
 def validate_variable_xpaths(variables, model_source, attr='id'):

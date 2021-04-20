@@ -500,6 +500,9 @@ def get_value_of_variable_model_xml_targets(variable, model_etrees):
     if not variable.target:
         raise NotImplementedError('Compute model change variable `{}` must have a target'.format(variable.id))
 
+    if variable.target.startswith('#'):
+        raise NotImplementedError('Variable references to data generators are not supported.')
+
     obj_xpath, sep, attr = variable.target.rpartition('/@')
     if sep != '/@':
         raise ValueError('target {} is not a valid XPath to an attribute of a model element'.format(variable.target))

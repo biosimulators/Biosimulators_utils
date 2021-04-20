@@ -650,12 +650,16 @@ class ValidationTestCase(unittest.TestCase):
                 errors.extend(tmp_errors)
                 warnings.extend(tmp_warnings)
                 errors.extend(validation.validate_model_change_types(task.model.changes))
-                errors.extend(validation.validate_model_changes(task.model))
+                temp_errors, temp_warnings = validation.validate_model_changes(task.model)
+                errors.extend(temp_errors)
+                warnings.extend(temp_warnings)
             if task.simulation:
                 errors.extend(validation.validate_simulation_type(task.simulation, (data_model.UniformTimeCourseSimulation, )))
                 errors.extend(validation.validate_simulation(task.simulation))
         if variables:
-            errors.extend(validation.validate_data_generator_variables(variables))
+            temp_errors, temp_warnings = validation.validate_data_generator_variables(variables)
+            errors.extend(temp_errors)
+            warnings.extend(temp_warnings)
         return (errors, warnings)
 
     def test_validate_model_source_with_abs_path(self):
@@ -936,10 +940,12 @@ class ValidationTestCase(unittest.TestCase):
     def test_validate_target(self):
         self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model',
                                                     {None: 'sed-ml', 'sbml': 'sbml'},
-                                                    data_model.ModelLanguage.SBML.value), [])
+                                                    data_model.Model,
+                                                    data_model.ModelLanguage.SBML.value), ([], []))
         self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model/@sbml:value',
                                                     {None: 'sed-ml', 'sbml': 'sbml'},
-                                                    data_model.ModelLanguage.SBML.value), [])
+                                                    data_model.Model,
+                                                    data_model.ModelLanguage.SBML.value), ([], []))
         self.assertEqual(validation.validate_target(
             "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='A']/@qual:level",
             {
@@ -947,8 +953,9 @@ class ValidationTestCase(unittest.TestCase):
                 'sbml': 'sbml',
                 'qual': 'qual',
             },
+            data_model.Model,
             data_model.ModelLanguage.SBML.value,
-        ), [])
+        ), ([], []))
         self.assertEqual(validation.validate_target(
             "/sbml/model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='A']/@qual:level",
             {
@@ -956,21 +963,25 @@ class ValidationTestCase(unittest.TestCase):
                 'sbml': 'sbml',
                 'qual': 'qual',
             },
+            data_model.Model,
             data_model.ModelLanguage.SBML.value,
-        ), [])
+        ), ([], []))
 
         self.assertIn('not a valid XML XPath',
                       flatten_nested_list_of_strings(validation.validate_target('/sbml:sbml@sbml:model',
                                                                                 {None: 'sed-ml', 'sbml': 'sbml'},
-                                                                                data_model.ModelLanguage.SBML.value)))
+                                                                                data_model.Model,
+                                                                                data_model.ModelLanguage.SBML.value)[0]))
         self.assertIn('No namespaces are defined',
                       flatten_nested_list_of_strings(validation.validate_target('/sbml:sbml/sbml:model',
                                                                                 {},
-                                                                                data_model.ModelLanguage.SBML.value)))
+                                                                                data_model.Model,
+                                                                                data_model.ModelLanguage.SBML.value)[0]))
         self.assertIn('Only the following namespaces are defined',
                       flatten_nested_list_of_strings(validation.validate_target('/sbml:sbml/sbml:model',
                                                                                 {'sbml2': 'sbml'},
-                                                                                data_model.ModelLanguage.SBML.value)))
+                                                                                data_model.Model,
+                                                                                data_model.ModelLanguage.SBML.value)[0]))
 
         # no validation for non-XML languages
-        self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model', {}, data_model.ModelLanguage.BNGL.value), [])
+        self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model', {}, data_model.Model, data_model.ModelLanguage.BNGL.value), ([], []))

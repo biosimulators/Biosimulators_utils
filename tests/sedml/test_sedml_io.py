@@ -795,8 +795,7 @@ class IoTestCase(unittest.TestCase):
             io.SedmlSimulationReader().run(filename)
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'data-description-with-variable.sedml')
-        with self.assertRaisesRegex(NotImplementedError, 'Variable targets to data descriptions are not supported'):
-            io.SedmlSimulationReader().run(filename)
+        io.SedmlSimulationReader().run(filename)
 
     def test_read_error_simulation_times(self):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml', 'initialTime-more-than-outputStartTime.sedml')
