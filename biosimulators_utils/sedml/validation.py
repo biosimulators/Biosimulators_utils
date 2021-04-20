@@ -677,7 +677,7 @@ def validate_model_with_language(source, language, name=None):
     errors = []
     warnings = []
 
-    if language == ModelLanguage.SBML:
+    if re.match(ModelLanguagePattern.SBML, language):
         from ..sbml.validation import validate_model
     else:
         warnings.append(['No validation is available for models encoded in `{}`'.format(getattr(language, 'name', language) or '')])
