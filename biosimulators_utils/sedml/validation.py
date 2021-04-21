@@ -7,7 +7,7 @@
 """
 
 from ..xml.utils import validate_xpaths_ref_to_unique_objects
-from .data_model import (AbstractTask, Task, RepeatedTask,  # noqa: F401
+from .data_model import (SedIdGroupMixin, AbstractTask, Task, RepeatedTask,  # noqa: F401
                          Model, ModelLanguage, ModelLanguagePattern,
                          ModelChange, ComputeModelChange,
                          Simulation, OneStepSimulation, SteadyStateSimulation,
@@ -18,7 +18,7 @@ from .data_model import (AbstractTask, Task, RepeatedTask,  # noqa: F401
                          Calculation)
 from .utils import (append_all_nested_children_to_doc, get_range_len,
                     is_model_language_encoded_in_xml, get_models_referenced_by_task,
-                    compile_math, eval_math)
+                    compile_math, eval_math, get_all_sed_objects)
 import collections
 import copy
 import lxml.etree
@@ -97,6 +97,8 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                 ])
 
     if validate_semantics:
+        errors.extend(validate_unique_ids(doc))
+
         # validate the models, simulations, tasks, data generators are children of the SED document
         doc_copy = copy.deepcopy(doc)
         append_all_nested_children_to_doc(doc_copy)
@@ -531,6 +533,34 @@ def validate_reference(obj, obj_label, attr_name, attr_label):
 
     if not getattr(obj, attr_name):
         errors.append(['{} `{}` must have a {}.'.format(obj_label, obj.id, attr_label)])
+
+    return errors
+
+
+def validate_unique_ids(doc):
+    """ Validate that the element of a SED document have unique ids
+
+    Args:
+        doc (:obj:`SedDocument`): SED document
+
+    Returns:
+        nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+    """
+    errors = []
+    objs = get_all_sed_objects(doc, SedIdGroupMixin)
+
+    ids = set()
+    duplicate_ids = set()
+    for obj in objs:
+        id = obj.id
+        if id:
+            if id in ids:
+                duplicate_ids.add(id)
+            ids.add(id)
+
+    if duplicate_ids:
+        errors.append(['Each identified SED object must have a unique id. Multiple objects have the following ids:',
+                       [[id] for id in sorted(duplicate_ids)]])
 
     return errors
 

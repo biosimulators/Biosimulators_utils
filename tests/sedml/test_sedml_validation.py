@@ -508,14 +508,14 @@ class ValidationTestCase(unittest.TestCase):
         doc2.tasks[1].ranges.append(
             data_model.FunctionalRange(
                 id='range3',
-                range=doc.tasks[1].ranges[0],
+                range=doc2.tasks[1].ranges[0],
                 parameters=[
                     data_model.Parameter(id='p_2', value=3.7),
                 ],
                 variables=[
                     data_model.Variable(
                         id='var1',
-                        model=doc.models[0],
+                        model=doc2.models[0],
                         target='x',
                     ),
                 ],
@@ -528,7 +528,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn('must reference another range', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        doc2.tasks[1].ranges[2].range = doc.tasks[1].ranges[0]
+        doc2.tasks[1].ranges[2].range = doc2.tasks[1].ranges[0]
         doc2.tasks[1].ranges[2].parameters[0].id = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
@@ -546,8 +546,8 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn('must reference a model', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        doc2.tasks[1].ranges[2].variables[0].model = doc.models[0]
-        doc2.tasks[1].ranges[2].variables[0].task = doc.tasks[0]
+        doc2.tasks[1].ranges[2].variables[0].model = doc2.models[0]
+        doc2.tasks[1].ranges[2].variables[0].task = doc2.tasks[0]
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('should not reference a task', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
@@ -1019,3 +1019,34 @@ class ValidationTestCase(unittest.TestCase):
         calculation_2 = copy.copy(calculation)
         calculation_2.math = 'a * x + y'
         self.assertIn('cannot be evaluated', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
+
+    def test_validate_unique_ids(self):
+        doc = data_model.SedDocument(
+            tasks=[
+                data_model.Task(
+                    id='task',
+                    model=data_model.Model(
+                        id='model',
+                        changes=[
+                            data_model.ModelAttributeChange(id='modelChange'),
+                        ]
+                    ),
+                    simulation=data_model.UniformTimeCourseSimulation(
+                        id='simulation',
+                        algorithm=data_model.Algorithm(
+                            changes=[
+                                data_model.AlgorithmParameterChange(),
+                            ]
+                        )
+                    )
+                )
+            ]
+        )
+
+        errors = validation.validate_unique_ids(doc)
+        self.assertEqual(validation.validate_unique_ids(doc), [])
+
+        doc.tasks[0].id = 'model'
+        errors = validation.validate_unique_ids(doc)
+        self.assertIn('must have a unique id', flatten_nested_list_of_strings(errors))
+        self.assertIn('model', flatten_nested_list_of_strings(errors))

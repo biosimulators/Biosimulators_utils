@@ -63,157 +63,157 @@
     </uniformTimeCourse>
   </listOfSimulations>
   <listOfTasks>
-    <task id="BIOMD0000000673_sim" name="MODEL1006230054_edited" modelReference="BIOMD0000000673" simulationReference="BIOMD0000000673_sim"/>
+    <task id="BIOMD0000000673_task" name="MODEL1006230054_edited" modelReference="BIOMD0000000673" simulationReference="BIOMD0000000673_sim"/>
   </listOfTasks>
   <listOfDataGenerators>
-    <dataGenerator id="time" name="time">
+    <dataGenerator id="data_generator_time" name="time">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> time </ci>
+        <ci> var_time </ci>
       </math>
       <listOfVariables>
-        <variable id="time" name="time" symbol="urn:sedml:symbol:time" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_time" name="time" symbol="urn:sedml:symbol:time" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="Keq_P" name="Keq_P">
+    <dataGenerator id="data_generator_Keq_P" name="Keq_P">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> Keq_P </ci>
+        <ci> var_Keq_P </ci>
       </math>
       <listOfVariables>
-        <variable id="Keq_P" name="Keq_P" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Keq_P&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_Keq_P" name="Keq_P" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Keq_P&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="Kel_P" name="Kel_P">
+    <dataGenerator id="data_generator_Kel_P" name="Kel_P">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> Kel_P </ci>
+        <ci> var_Kel_P </ci>
       </math>
       <listOfVariables>
-        <variable id="Kel_P" name="Kel_P" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Kel_P&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_Kel_P" name="Kel_P" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Kel_P&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="Emax" name="Emax">
+    <dataGenerator id="data_generator_Emax" name="Emax">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> Emax </ci>
+        <ci> var_Emax </ci>
       </math>
       <listOfVariables>
-        <variable id="Emax" name="Emax" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Emax&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_Emax" name="Emax" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Emax&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="n" name="n">
+    <dataGenerator id="data_generator_n" name="n">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> n </ci>
+        <ci> var_n </ci>
       </math>
       <listOfVariables>
-        <variable id="n" name="n" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;n&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_n" name="n" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;n&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="CeA_U" name="CeA_U">
+    <dataGenerator id="data_generator_CeA_U" name="CeA_U">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> CeA_U </ci>
+        <ci> var_CeA_U </ci>
       </math>
       <listOfVariables>
-        <variable id="CeA_U" name="CeA_U" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;CeA_U&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_CeA_U" name="CeA_U" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;CeA_U&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="ICea_U" name="ICea_U">
+    <dataGenerator id="data_generator_ICea_U" name="ICea_U">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> ICea_U </ci>
+        <ci> var_ICea_U </ci>
       </math>
       <listOfVariables>
-        <variable id="ICea_U" name="ICea_U" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;ICea_U&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_ICea_U" name="ICea_U" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;ICea_U&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="Model_Inactive" name="Model_Inactive">
+    <dataGenerator id="data_generator_Model_Inactive" name="Model_Inactive">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> Model_Inactive </ci>
+        <ci> var_Model_Inactive </ci>
       </math>
       <listOfVariables>
-        <variable id="Model_Inactive" name="Model_Inactive" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Model_Inactive&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_Model_Inactive" name="Model_Inactive" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Model_Inactive&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="Model_active_Linear" name="Model_active_Linear">
+    <dataGenerator id="data_generator_Model_active_Linear" name="Model_active_Linear">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> Model_active_Linear </ci>
+        <ci> var_Model_active_Linear </ci>
       </math>
       <listOfVariables>
-        <variable id="Model_active_Linear" name="Model_active_Linear" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Model_active_Linear&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_Model_active_Linear" name="Model_active_Linear" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Model_active_Linear&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="Model_active_Hyperbolic" name="Model_active_Hyperbolic">
+    <dataGenerator id="data_generator_Model_active_Hyperbolic" name="Model_active_Hyperbolic">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> Model_active_Hyperbolic </ci>
+        <ci> var_Model_active_Hyperbolic </ci>
       </math>
       <listOfVariables>
-        <variable id="Model_active_Hyperbolic" name="Model_active_Hyperbolic" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Model_active_Hyperbolic&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_Model_active_Hyperbolic" name="Model_active_Hyperbolic" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Model_active_Hyperbolic&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="Model_active_Sigmoidal" name="Model_active_Sigmoidal">
+    <dataGenerator id="data_generator_Model_active_Sigmoidal" name="Model_active_Sigmoidal">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> Model_active_Sigmoidal </ci>
+        <ci> var_Model_active_Sigmoidal </ci>
       </math>
       <listOfVariables>
-        <variable id="Model_active_Sigmoidal" name="Model_active_Sigmoidal" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Model_active_Sigmoidal&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_Model_active_Sigmoidal" name="Model_active_Sigmoidal" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Model_active_Sigmoidal&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="Model_active_U_Shaped" name="Model_active_U_Shaped">
+    <dataGenerator id="data_generator_Model_active_U_Shaped" name="Model_active_U_Shaped">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> Model_active_U_Shaped </ci>
+        <ci> var_Model_active_U_Shaped </ci>
       </math>
       <listOfVariables>
-        <variable id="Model_active_U_Shaped" name="Model_active_U_Shaped" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Model_active_U_Shaped&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_Model_active_U_Shaped" name="Model_active_U_Shaped" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;Model_active_U_Shaped&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="PD_CeA" name="PD_CeA">
+    <dataGenerator id="data_generator_PD_CeA" name="PD_CeA">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> PD_CeA </ci>
+        <ci> var_PD_CeA </ci>
       </math>
       <listOfVariables>
-        <variable id="PD_CeA" name="PD_CeA" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;PD_CeA&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_PD_CeA" name="PD_CeA" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;PD_CeA&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="ADAS_COG_P" name="ADAS_COG_P">
+    <dataGenerator id="data_generator_ADAS_COG_P" name="ADAS_COG_P">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> ADAS_COG_P </ci>
+        <ci> var_ADAS_COG_P </ci>
       </math>
       <listOfVariables>
-        <variable id="ADAS_COG_P" name="ADAS_COG_P" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;ADAS_COG_P&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_ADAS_COG_P" name="ADAS_COG_P" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;ADAS_COG_P&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="PD_CeP" name="PD_CeP">
+    <dataGenerator id="data_generator_PD_CeP" name="PD_CeP">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> PD_CeP </ci>
+        <ci> var_PD_CeP </ci>
       </math>
       <listOfVariables>
-        <variable id="PD_CeP" name="PD_CeP" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;PD_CeP&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_PD_CeP" name="PD_CeP" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;PD_CeP&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
-    <dataGenerator id="S" name="S">
+    <dataGenerator id="data_generator_S" name="S">
       <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <ci> S </ci>
+        <ci> var_S </ci>
       </math>
       <listOfVariables>
-        <variable id="S" name="S" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;S&apos;]" taskReference="BIOMD0000000673_sim"/>
+        <variable id="var_S" name="S" target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id=&apos;S&apos;]" taskReference="BIOMD0000000673_task"/>
       </listOfVariables>
     </dataGenerator>
   </listOfDataGenerators>
   <listOfOutputs>
-    <report id="BIOMD0000000673_sim" name="MODEL1006230054_edited">
+    <report id="BIOMD0000000673_report" name="MODEL1006230054_edited">
       <listOfDataSets>
-        <dataSet id="time" label="time" dataReference="time"/>
-        <dataSet id="Keq_P" label="Keq_P" dataReference="Keq_P"/>
-        <dataSet id="Kel_P" label="Kel_P" dataReference="Kel_P"/>
-        <dataSet id="Emax" label="Emax" dataReference="Emax"/>
-        <dataSet id="n" label="n" dataReference="n"/>
-        <dataSet id="CeA_U" label="CeA_U" dataReference="CeA_U"/>
-        <dataSet id="ICea_U" label="ICea_U" dataReference="ICea_U"/>
-        <dataSet id="Model_Inactive" label="Model_Inactive" dataReference="Model_Inactive"/>
-        <dataSet id="Model_active_Linear" label="Model_active_Linear" dataReference="Model_active_Linear"/>
-        <dataSet id="Model_active_Hyperbolic" label="Model_active_Hyperbolic" dataReference="Model_active_Hyperbolic"/>
-        <dataSet id="Model_active_Sigmoidal" label="Model_active_Sigmoidal" dataReference="Model_active_Sigmoidal"/>
-        <dataSet id="Model_active_U_Shaped" label="Model_active_U_Shaped" dataReference="Model_active_U_Shaped"/>
-        <dataSet id="PD_CeA" label="PD_CeA" dataReference="PD_CeA"/>
-        <dataSet id="ADAS_COG_P" label="ADAS_COG_P" dataReference="ADAS_COG_P"/>
-        <dataSet id="PD_CeP" label="PD_CeP" dataReference="PD_CeP"/>
-        <dataSet id="S" label="S" dataReference="S"/>
+        <dataSet id="time" label="time" dataReference="data_generator_time"/>
+        <dataSet id="Keq_P" label="Keq_P" dataReference="data_generator_Keq_P"/>
+        <dataSet id="Kel_P" label="Kel_P" dataReference="data_generator_Kel_P"/>
+        <dataSet id="Emax" label="Emax" dataReference="data_generator_Emax"/>
+        <dataSet id="n" label="n" dataReference="data_generator_n"/>
+        <dataSet id="CeA_U" label="CeA_U" dataReference="data_generator_CeA_U"/>
+        <dataSet id="ICea_U" label="ICea_U" dataReference="data_generator_ICea_U"/>
+        <dataSet id="Model_Inactive" label="Model_Inactive" dataReference="data_generator_Model_Inactive"/>
+        <dataSet id="Model_active_Linear" label="Model_active_Linear" dataReference="data_generator_Model_active_Linear"/>
+        <dataSet id="Model_active_Hyperbolic" label="Model_active_Hyperbolic" dataReference="data_generator_Model_active_Hyperbolic"/>
+        <dataSet id="Model_active_Sigmoidal" label="Model_active_Sigmoidal" dataReference="data_generator_Model_active_Sigmoidal"/>
+        <dataSet id="Model_active_U_Shaped" label="Model_active_U_Shaped" dataReference="data_generator_Model_active_U_Shaped"/>
+        <dataSet id="PD_CeA" label="PD_CeA" dataReference="data_generator_PD_CeA"/>
+        <dataSet id="ADAS_COG_P" label="ADAS_COG_P" dataReference="data_generator_ADAS_COG_P"/>
+        <dataSet id="PD_CeP" label="PD_CeP" dataReference="data_generator_PD_CeP"/>
+        <dataSet id="S" label="S" dataReference="data_generator_S"/>
       </listOfDataSets>
     </report>
   </listOfOutputs>
