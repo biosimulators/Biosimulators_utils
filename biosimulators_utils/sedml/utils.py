@@ -746,7 +746,7 @@ def compile_math(math):
                                         'Sub', 'Mult', 'Div', 'Pow',
                                         'And', 'Or', 'Not',
                                         'BitAnd', 'BitOr', 'BitXor',
-                                        'Call',
+                                        'Call', 'Constant',
                                     ],
                                     funcs=MATHEMATICAL_FUNCTIONS.keys())
     compiled_math = compile(math_node, '<math>', 'eval')
