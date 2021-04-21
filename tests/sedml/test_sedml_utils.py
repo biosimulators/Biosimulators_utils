@@ -915,6 +915,27 @@ class ApplyModelChangesTestCase(unittest.TestCase):
                 },
             )
 
+    def test_compile_eval_math(self):
+        math = '1 + 2'
+        workspace = {}
+        compiled_math = utils.compile_math(math)
+        self.assertEqual(utils.eval_math(math, compiled_math, workspace), 3)
+
+        math = 'x + 2'
+        workspace = {'x': 1}
+        compiled_math = utils.compile_math(math)
+        self.assertEqual(utils.eval_math(math, compiled_math, workspace), 3)
+
+        math = 'x * 2'
+        workspace = {'x': 1}
+        compiled_math = utils.compile_math(math)
+        self.assertEqual(utils.eval_math(math, compiled_math, workspace), 2.0)
+
+        math = 'x / 2'
+        workspace = {'x': 1}
+        compiled_math = utils.compile_math(math)
+        self.assertEqual(utils.eval_math(math, compiled_math, workspace), 0.5)
+
     def test_eval_math_error_handling(self):
         with self.assertRaisesRegex(ValueError, 'cannot have ids equal to the following reserved symbols'):
             utils.eval_math('pi', 'pi', {'pi': 3.14})

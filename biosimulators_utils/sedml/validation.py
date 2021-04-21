@@ -272,7 +272,9 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                                 variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
                                 range_warnings.append(['Variable {} may be invalid.'.format(variable_id), variable_warnings])
 
-                        range_errors.extend(validate_calculation(range))
+                        temp_errors, temp_warnings = validate_calculation(range)
+                        range_errors.extend(temp_errors)
+                        range_warnings.extend(temp_warnings)
 
                     elif isinstance(range, UniformRange):
                         range_errors.extend(validate_uniform_range(range))
@@ -449,7 +451,9 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                             variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
                             change_warnings.append(['Variable {} may be invalid.'.format(variable_id), variable_warnings])
 
-                    change_errors.extend(validate_calculation(change))
+                    temp_errors, temp_warnings = validate_calculation(change)
+                    change_errors.extend(temp_errors)
+                    change_warnings.extend(temp_warnings)
 
                     if change_errors:
                         change_id = '`' + change.id + '`' if change and change.id else str(i_change + 1)
@@ -493,7 +497,9 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
             data_gen_errors.extend(temp_errors)
             data_gen_warnings.extend(temp_warnings)
 
-            data_gen_errors.extend(validate_calculation(data_gen))
+            temp_errors, temp_warnings = validate_calculation(data_gen)
+            data_gen_errors.extend(temp_errors)
+            data_gen_warnings.extend(temp_warnings)
 
             if data_gen_errors:
                 data_gen_id = '`' + data_gen.id + '`' if data_gen and data_gen.id else str(i_data_gen + 1)
@@ -773,7 +779,9 @@ def validate_model_changes(model):
                     var_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
                     change_warnings.append(['Variable {} is invalid.'.format(var_id), variable_warnings])
 
-            change_errors.extend(validate_calculation(change))
+            temp_errors, temp_warnings = validate_calculation(change)
+            change_errors.extend(temp_errors)
+            change_warnings.extend(temp_warnings)
 
         if change_errors:
             change_id = '`' + change.id + '`' if change and change.id else str(i_change + 1)
@@ -1002,7 +1010,7 @@ def validate_target(target, namespaces, context, language, doc=None):
     """ Validate that a target is a valid XPath and that the namespaces needed to resolve a target are defined
 
     Args:
-        target (:obj:`string`): XPath to a model element or attribute
+        target (:obj:`str`): XPath to a model element or attribute
         namespaces (:obj:`dict`): dictionary that maps prefixes of namespaces to their URIs
         context (:obj:`type`)
         language (:obj:`str`): model language
@@ -1088,9 +1096,13 @@ def validate_calculation(calculation):
         expression (:obj:`Calculation`)
 
     Returns:
-        nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * nested :obj:`list` of :obj:`str`: nested list of warmings (e.g., required ids missing or ids not unique)
     """
     errors = []
+    warnings = []
 
     if calculation.math:
         workspace = {}
@@ -1111,19 +1123,22 @@ def validate_calculation(calculation):
             compiled_math = compile_math(calculation.math)
         except TypeError:
             errors.append(['The mathematical expression must be a `string`, not a `{}`.'.format(calculation.math.__class__)])
-            return errors
+            return (errors, warnings)
         except SyntaxError:
             errors.append(['The syntax of the mathematical expression `{}` is invalid.'.format(calculation.math)])
-            return errors
+            return (errors, warnings)
+        except Exception as exception:
+            errors.append(['The mathematical expression `{}` is invalid.'.format(calculation.math), [[str(exception)]]])
+            return (errors, warnings)
 
         try:
             eval_math(calculation.math, compiled_math, workspace)
-        except ValueError as exception:
-            errors.append(['Some of the symbols for the expression `{}` are not defined.'.format(calculation.math), [[str(exception)]]])
-            return errors
+        except Exception as exception:
+            errors.append(['The mathematical expression `{}` cannot be evaluated.'.format(calculation.math), [[str(exception)]]])
+            return (errors, warnings)
 
     else:
         msg = 'Calculation must have math.'
         errors.append([msg])
 
-    return errors
+    return (errors, warnings)

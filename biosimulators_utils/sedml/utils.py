@@ -14,7 +14,7 @@ from ..xml.utils import eval_xpath
 from .data_model import (SedDocument, Model, ModelLanguagePattern, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange, SetValueComputeModelChange,
                          Task, RepeatedTask, Report, Plot2D, Plot3D,
-                         DataGenerator, Variable, MATHEMATICAL_FUNCTIONS, RESERVED_MATHEMATICAL_SYMBOLS,
+                         DataGenerator, Variable, MATHEMATICAL_FUNCTIONS, RESERVED_MATHEMATICAL_SYMBOLS, AGGREGATE_MATH_FUNCTIONS,
                          Range, UniformRange, VectorRange, FunctionalRange, UniformRangeType)
 from .warnings import InconsistentVariableShapesWarning
 from lxml import etree
@@ -22,7 +22,6 @@ import copy
 import evalidate
 import io
 import libsedml  # noqa: F401
-import math
 import numpy
 import os
 import re
@@ -595,10 +594,15 @@ def calc_data_generator_results(data_generator, variable_results):
         workspace[param.id] = param.value
 
     if not var_shapes:
-        value = eval_math(math, compiled_math, workspace)
+        value = eval_math(data_generator.math, compiled_math, workspace)
         result = numpy.array(value)
 
     else:
+        for aggregate_func in AGGREGATE_MATH_FUNCTIONS:
+            if re.search(aggregate_func + r' *\(', data_generator.math):
+                msg = 'Evaluation of aggregate mathematical functions such as `{}` is not supported.'.format(aggregate_func)
+                raise NotImplementedError(msg)
+
         padded_var_shapes = []
         for var in data_generator.variables:
             var_res = variable_results[var.id]
@@ -635,7 +639,7 @@ def calc_data_generator_results(data_generator, variable_results):
             if not vars_available:
                 continue
 
-            result_el = eval_math(math, compiled_math, workspace)
+            result_el = eval_math(data_generator.math, compiled_math, workspace)
 
             if n_dims == 0:
                 result = numpy.array(result_el)
@@ -728,10 +732,17 @@ def compile_math(math):
     Returns:
         :obj:`_ast.Expression`: compiled expression
     """
+    if isinstance(math, str):
+        math = (
+            math
+            .replace('&&', 'and')
+            .replace('||', 'or')
+        )
+
     math_node = evalidate.evalidate(math,
                                     addnodes=[
                                         'Eq', 'NotEq', 'Gt', 'Lt', 'GtE', 'LtE',
-                                        'Sub', 'Mult', 'Div' 'Pow',
+                                        'Sub', 'Mult', 'Div', 'Pow',
                                         'And', 'Or', 'Not',
                                         'BitAnd', 'BitOr', 'BitXor',
                                         'Call',

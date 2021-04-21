@@ -1202,7 +1202,7 @@ class ExecTaskCase(unittest.TestCase):
         log = init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
             with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
-                with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=[]):
+                with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=([], [])):
                     exec.exec_sed_doc(execute_task, filename, working_dir,
                                       out_dir, log=log, plot_formats=[PlotFormat.pdf])
 
@@ -1440,7 +1440,7 @@ class ExecTaskCase(unittest.TestCase):
         log = init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
             with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
-                with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=[]):
+                with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=([], [])):
                     exec.exec_sed_doc(execute_task, filename, working_dir,
                                       out_dir, log=log, plot_formats=[PlotFormat.pdf])
 

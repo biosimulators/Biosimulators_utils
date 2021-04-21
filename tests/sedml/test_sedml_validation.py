@@ -994,7 +994,7 @@ class ValidationTestCase(unittest.TestCase):
             variables=[data_model.Variable(id='x')],
             parameters=[data_model.Parameter(id='a', value=1.)],
         )
-        self.assertEqual(validation.validate_calculation(calculation), [])
+        self.assertEqual(validation.validate_calculation(calculation), ([], []))
 
         calculation = data_model.FunctionalRange(
             math='a * x + 1',
@@ -1002,20 +1002,20 @@ class ValidationTestCase(unittest.TestCase):
             parameters=[],
             range=data_model.FunctionalRange(id='a'),
         )
-        self.assertEqual(validation.validate_calculation(calculation), [])
+        self.assertEqual(validation.validate_calculation(calculation), ([], []))
 
         calculation_2 = copy.copy(calculation)
         calculation_2.math = None
-        self.assertIn('must have math', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)))
+        self.assertIn('must have math', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
 
         calculation_2 = copy.copy(calculation)
         calculation_2.math = 10.
-        self.assertIn('must be a `string`', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)))
+        self.assertIn('must be a `string`', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
 
         calculation_2 = copy.copy(calculation)
         calculation_2.math = 'a * '
-        self.assertIn('The syntax', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)))
+        self.assertIn('The syntax', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
 
         calculation_2 = copy.copy(calculation)
         calculation_2.math = 'a * x + y'
-        self.assertIn('are not defined', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)))
+        self.assertIn('cannot be evaluated', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
