@@ -11,7 +11,8 @@ from ..report.data_model import VariableResults, DataGeneratorResults  # noqa: F
 from ..utils.core import pad_arrays_to_consistent_shapes
 from ..warnings import warn
 from ..xml.utils import eval_xpath
-from .data_model import (SedDocument, Model, ModelLanguagePattern, ModelChange, ModelAttributeChange, AddElementModelChange,  # noqa: F401
+from .data_model import (SedBase, SedIdGroupMixin, SedDocument,  # noqa: F401
+                         Model, ModelLanguagePattern, ModelChange, ModelAttributeChange, AddElementModelChange,
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange, SetValueComputeModelChange,
                          Task, RepeatedTask, Report, Plot2D, Plot3D,
                          DataGenerator, Variable, MATHEMATICAL_FUNCTIONS, RESERVED_MATHEMATICAL_SYMBOLS, AGGREGATE_MATH_FUNCTIONS,
@@ -1135,3 +1136,34 @@ def is_model_language_encoded_in_xml(language):
         or re.match(ModelLanguagePattern.SBML, language)
         or re.match(ModelLanguagePattern.VCML, language)
     )
+
+
+def get_all_sed_objects(doc, type=(SedBase, SedIdGroupMixin)):
+    """ Get all of the identified objects (instances of :obj:`SedIdGroupMixin`) that
+    belong to a SED document
+
+    Args:
+        doc (:obj:`SedBase`) SED document
+        type (:obj:`type` or :obj:`tuple` of :obj:`type`, optional): type of SED object
+            to return
+    """
+    # get all linked objects
+    objs_to_see = [doc]
+    seen_objs = [doc]
+    while objs_to_see:
+        obj = objs_to_see.pop()
+        for attr in obj.__dict__.values():
+            if isinstance(attr, (SedBase, SedIdGroupMixin)):
+                if attr not in seen_objs:
+                    objs_to_see.append(attr)
+                    seen_objs.append(attr)
+
+            elif isinstance(attr, list):
+                for val in attr:
+                    if isinstance(val, (SedBase, SedIdGroupMixin)):
+                        if val not in seen_objs:
+                            objs_to_see.append(val)
+                            seen_objs.append(val)
+
+    # filter out elements of a specific type
+    return list(filter(lambda obj: isinstance(obj, type), seen_objs))

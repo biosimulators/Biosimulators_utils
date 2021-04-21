@@ -1559,3 +1559,38 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         self.assertEqual(temp_model.source, model_filename)
         self.assertEqual(temp_model_source, None)
         self.assertEqual(temp_model_etree, None)
+
+    def test_get_all_sed_objects(self):
+        doc = data_model.SedDocument(
+            tasks=[
+                data_model.Task(
+                    id='task',
+                    model=data_model.Model(
+                        id='model',
+                        changes=[
+                            data_model.ModelAttributeChange(id='modelChange'),
+                        ]
+                    ),
+                    simulation=data_model.UniformTimeCourseSimulation(
+                        id='simulation',
+                        algorithm=data_model.Algorithm(
+                            changes=[
+                                data_model.AlgorithmParameterChange(),
+                            ]
+                        )
+                    )
+                )
+            ]
+        )
+        expected_objs = [
+            doc,
+            doc.tasks[0],
+            doc.tasks[0].model,
+            doc.tasks[0].model.changes[0],
+            doc.tasks[0].simulation,
+            doc.tasks[0].simulation.algorithm,
+            doc.tasks[0].simulation.algorithm.changes[0],
+        ]
+
+        objs = set(utils.get_all_sed_objects(doc))
+        self.assertEqual(objs, set(expected_objs))
