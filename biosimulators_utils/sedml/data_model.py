@@ -656,7 +656,51 @@ class RemoveElementModelChange(ModelChange):
         return (self.target, self.target_namespaces)
 
 
-class ComputeModelChange(ModelChange):
+class Calculation(abc.ABC):
+    """A mathematical calculation
+
+    Attributes:
+        variables (:obj:`list` of :obj:`Variable`): variables
+        parameters (:obj:`list` of :obj:`Parameter`): parameters
+        math (:obj:`str`): mathematical expression
+    """
+
+    def __init__(self, variables=None, parameters=None, math=None):
+        """
+        Args:
+            variables (:obj:`list` of :obj:`Variable`, optional): variables
+            parameters (:obj:`list` of :obj:`Parameter`, optional): parameters
+            math (:obj:`str`, optional): mathematical expression
+        """
+        self.variables = variables or []
+        self.parameters = parameters or []
+        self.math = math
+
+    @abc.abstractmethod
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        pass   # pragma: no cover
+
+    def is_equal(self, other):
+        """ Determine if model changes are equal
+
+        Args:
+            other (:obj:`ComputeModelChange`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two model changes are equal
+        """
+        return self.__class__ == other.__class__ \
+            and are_lists_equal(self.variables, other.variables) \
+            and are_lists_equal(self.parameters, other.parameters) \
+            and self.math == other.math
+
+
+class ComputeModelChange(ModelChange, Calculation):
     """ A replacement of an element of a model
 
     Attributes:
@@ -680,10 +724,8 @@ class ComputeModelChange(ModelChange):
             parameters (:obj:`list` of :obj:`Parameter`, optional): parameters
             math (:obj:`str`, optional): mathematical expression
         """
-        super(ComputeModelChange, self).__init__(id=id, name=name, target=target, target_namespaces=target_namespaces)
-        self.variables = variables or []
-        self.parameters = parameters or []
-        self.math = math
+        ModelChange.__init__(self, id=id, name=name, target=target, target_namespaces=target_namespaces)
+        Calculation.__init__(self, variables=variables, parameters=parameters, math=math)
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -705,13 +747,11 @@ class ComputeModelChange(ModelChange):
         Returns:
             :obj:`bool`: :obj:`True`, if two model changes are equal
         """
-        return super(ComputeModelChange, self).is_equal(other) \
-            and are_lists_equal(self.variables, other.variables) \
-            and are_lists_equal(self.parameters, other.parameters) \
-            and self.math == other.math
+        return ModelChange.is_equal(self, other) \
+            and Calculation.is_equal(self, other)
 
 
-class SetValueComputeModelChange(ComputeModelChange):
+class SetValueComputeModelChange(ComputeModelChange, Calculation):
     """ A change that sets the value of an attribute of a model within an iteration of a repeated task
 
     Attributes:
@@ -742,10 +782,8 @@ class SetValueComputeModelChange(ComputeModelChange):
             range (:obj:`Range`, optional): range
             symbol (:obj:`str`, optional): symbol
         """
-        super(ComputeModelChange, self).__init__(id=id, name=name, target=target, target_namespaces=target_namespaces)
-        self.variables = variables or []
-        self.parameters = parameters or []
-        self.math = math
+        ComputeModelChange.__init__(self, id=id, name=name, target=target, target_namespaces=target_namespaces)
+        Calculation.__init__(self, variables=variables, parameters=parameters, math=math)
         self.model = model
         self.range = range
         self.symbol = symbol
@@ -774,10 +812,8 @@ class SetValueComputeModelChange(ComputeModelChange):
         Returns:
             :obj:`bool`: :obj:`True`, if two model changes are equal
         """
-        return super(SetValueComputeModelChange, self).is_equal(other) \
-            and are_lists_equal(self.variables, other.variables) \
-            and are_lists_equal(self.parameters, other.parameters) \
-            and self.math == other.math \
+        return ComputeModelChange.is_equal(self, other) \
+            and Calculation.is_equal(self, other) \
             and ((self.model is None and self.model == other.model)
                  or (self.model is not None and other.model is not None and self.model.id == other.model.id)) \
             and ((self.range is None and self.range == other.range)
@@ -1119,7 +1155,7 @@ class VectorRange(Range):
             and self.values == other.values
 
 
-class FunctionalRange(Range):
+class FunctionalRange(Range, Calculation):
     """ A functional range
 
     Attributes:
@@ -1139,11 +1175,9 @@ class FunctionalRange(Range):
             parameters (:obj:`list` of :obj:`Parameter`, optional): variables
             math (:obj:`str`, optional): mathematical expression
         """
-        super(FunctionalRange, self).__init__(id=id)
+        Range.__init__(self, id=id)
+        Calculation.__init__(self, variables=variables, parameters=parameters, math=math)
         self.range = range
-        self.variables = variables or []
-        self.parameters = parameters or []
-        self.math = math
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -1166,15 +1200,13 @@ class FunctionalRange(Range):
         Returns:
             :obj:`bool`: :obj:`True`, if two ranges are equal
         """
-        return super(FunctionalRange, self).is_equal(other) \
+        return Range.is_equal(self, other) \
+            and Calculation.is_equal(self, other) \
             and ((self.range is None and self.range == other.range)
-                 or (self.range is not None and other.range is not None and self.range.id == other.range.id)) \
-            and are_lists_equal(self.variables, other.variables) \
-            and are_lists_equal(self.parameters, other.parameters) \
-            and self.math == other.math
+                 or (self.range is not None and other.range is not None and self.range.id == other.range.id))
 
 
-class DataGenerator(object):
+class DataGenerator(Calculation):
     """ A data generator
 
     Attributes:
@@ -1196,9 +1228,7 @@ class DataGenerator(object):
         """
         self.id = id
         self.name = name
-        self.variables = variables or []
-        self.parameters = parameters or []
-        self.math = math
+        Calculation.__init__(self, variables=variables, parameters=parameters, math=math)
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -1224,9 +1254,7 @@ class DataGenerator(object):
         return self.__class__ == other.__class__ \
             and self.id == other.id \
             and self.name == other.name \
-            and are_lists_equal(self.variables, other.variables) \
-            and are_lists_equal(self.parameters, other.parameters) \
-            and self.math == other.math
+            and Calculation.is_equal(self, other)
 
 
 class Variable(object):
