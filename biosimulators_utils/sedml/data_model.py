@@ -20,6 +20,7 @@ __all__ = [
     'ModelLanguage',
     'ModelLanguagePattern',
     'Symbol',
+    'SedBase',
     'SedIdGroupMixin',
     'SedDocument',
     'Simulation',
