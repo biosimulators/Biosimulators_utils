@@ -20,6 +20,7 @@ __all__ = [
     'ModelLanguage',
     'ModelLanguagePattern',
     'Symbol',
+    'SedIdGroupMixin',
     'SedDocument',
     'Simulation',
     'SteadyStateSimulation',
@@ -82,7 +83,61 @@ class Symbol(str, enum.Enum):
     time = 'urn:sedml:symbol:time'
 
 
-class SedDocument(object):
+class SedBase(abc.ABC):
+    """ Base class for SED classes """
+    @abc.abstractmethod
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        pass  # pragma: no cover
+
+    def is_equal(self, other):
+        """ Determine if simulations are equal
+
+        Args:
+            other (:obj:`Simulation`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two simulations are equal
+        """
+        return self.__class__ == other.__class__
+
+
+class SedIdGroupMixin(abc.ABC):
+    """ Object with an id and optional name
+
+    Attributes:
+        id (:obj:`str`): id
+        name (:obj:`str`): name
+    """
+
+    def __init__(self, id=None, name=None):
+        """
+        Args:
+            id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
+        """
+        self.id = id
+        self.name = name
+
+    def is_equal(self, other):
+        """ Determine if simulations are equal
+
+        Args:
+            other (:obj:`Simulation`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two simulations are equal
+        """
+        return self.__class__ == other.__class__ \
+            and self.id == other.id \
+            and self.name == other.name
+
+
+class SedDocument(SedBase):
     """ A SED-ML document
 
     Attributes:
@@ -108,6 +163,7 @@ class SedDocument(object):
             outputs (:obj:`list` of :obj:`Output`, optional): outputs
             metadata (:obj:`Metadata`, optional): metadata
         """
+        SedBase.__init__(self)
         self.level = level
         self.version = version
         self.models = models or []
@@ -143,7 +199,7 @@ class SedDocument(object):
         Returns:
             :obj:`bool`: :obj:`True`, if two SED-ML documents are equal
         """
-        return self.__class__ == other.__class__ \
+        return SedBase.is_equal(self, other) \
             and self.level == other.level \
             and self.version == other.version \
             and are_lists_equal(self.models, other.models) \
@@ -155,7 +211,7 @@ class SedDocument(object):
                  or (self.metadata is not None and self.metadata.is_equal(other.metadata)))
 
 
-class Simulation(abc.ABC):
+class Simulation(SedBase, SedIdGroupMixin):
     """ A simulation
 
     Attributes:
@@ -171,18 +227,9 @@ class Simulation(abc.ABC):
             name (:obj:`str`, optional): name
             algorithm (:obj:`Algorithm`, optional): algorithm
         """
-        self.id = id
-        self.name = name
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
         self.algorithm = algorithm
-
-    @abc.abstractmethod
-    def to_tuple(self):
-        """ Get a tuple representation
-
-        Returns:
-            :obj:`tuple` of :obj:`str`: tuple representation
-        """
-        pass  # pragma: no cover
 
     def is_equal(self, other):
         """ Determine if simulations are equal
@@ -193,9 +240,8 @@ class Simulation(abc.ABC):
         Returns:
             :obj:`bool`: :obj:`True`, if two simulations are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id \
-            and self.name == other.name \
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other) \
             and ((self.algorithm is None and self.algorithm == other.algorithm)
                  or (self.algorithm is not None and self.algorithm.is_equal(other.algorithm)))
 
@@ -328,7 +374,7 @@ class UniformTimeCourseSimulation(Simulation):
             and self.number_of_steps == other.number_of_steps
 
 
-class Algorithm(object):
+class Algorithm(SedBase):
     """ A simulation algorithm
 
     Attributes:
@@ -342,6 +388,7 @@ class Algorithm(object):
             kisao_id (:obj:`str`, optional): KiSAO id (e.g., `KISAO_0000029`)
             changes (:obj:`list` of :obj:`AlgorithmParameterChange`, optional): parameter changes
         """
+        SedBase.__init__(self)
         self.kisao_id = kisao_id
         self.changes = changes or []
 
@@ -363,12 +410,13 @@ class Algorithm(object):
         Returns:
             :obj:`bool`: :obj:`True`, if two algorithms are equal
         """
-        return self.__class__ == other.__class__ \
+        return SedBase.is_equal(self, other) \
+            and self.__class__ == other.__class__ \
             and self.kisao_id == other.kisao_id \
             and are_lists_equal(self.changes, other.changes)
 
 
-class AlgorithmParameterChange(object):
+class AlgorithmParameterChange(SedBase):
     """ A changed parameter of an algorithm
 
     Attributes:
@@ -382,6 +430,7 @@ class AlgorithmParameterChange(object):
             kisao_id (:obj:`str`, optional): KiSAO id (e.g., `KISAO_0000029`)
             new_value (:obj:`str`, optional): new value
         """
+        SedBase.__init__(self)
         self.kisao_id = kisao_id
         self.new_value = new_value
 
@@ -402,12 +451,12 @@ class AlgorithmParameterChange(object):
         Returns:
             :obj:`bool`: :obj:`True`, if two parameter changes are equal
         """
-        return self.__class__ == other.__class__ \
+        return SedBase.is_equal(self, other) \
             and self.kisao_id == other.kisao_id \
             and self.new_value == other.new_value
 
 
-class Model(object):
+class Model(SedBase, SedIdGroupMixin):
     """ A model
 
     Attributes:
@@ -427,8 +476,8 @@ class Model(object):
             language (:obj:`str`, optional): URN of the format of the model
             changes (:obj:`list` of :obj:`ModelChange`, optional): model changes
         """
-        self.id = id
-        self.name = name
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
         self.source = source
         self.language = language
         self.changes = changes or []
@@ -451,15 +500,14 @@ class Model(object):
         Returns:
             :obj:`bool`: :obj:`True`, if two models are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id \
-            and self.name == other.name \
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other) \
             and self.source == other.source \
             and self.language == other.language \
             and are_lists_equal(self.changes, other.changes)
 
 
-class ModelChange(abc.ABC):
+class ModelChange(SedBase, SedIdGroupMixin):
     """ A change to a model
 
     Attributes:
@@ -477,19 +525,10 @@ class ModelChange(abc.ABC):
             target (:obj:`str`, optional): path to the model element that should be changed
             target_namespaces (:obj:`dict`, optional): map of prefixes of namespaces for the target to their URIs
         """
-        self.id = id
-        self.name = name
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
         self.target = target
         self.target_namespaces = target_namespaces or {}
-
-    @abc.abstractmethod
-    def to_tuple(self):
-        """ Get a tuple representation
-
-        Returns:
-            :obj:`tuple` of :obj:`str`: tuple representation
-        """
-        pass  # pragma: no cover
 
     def is_equal(self, other):
         """ Determine if model changes are equal
@@ -500,9 +539,8 @@ class ModelChange(abc.ABC):
         Returns:
             :obj:`bool`: :obj:`True`, if two model changes are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id \
-            and self.name == other.name \
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other) \
             and self.target == other.target \
             and self.target_namespaces == other.target_namespaces
 
@@ -657,7 +695,7 @@ class RemoveElementModelChange(ModelChange):
         return (self.target, self.target_namespaces)
 
 
-class Calculation(abc.ABC):
+class Calculation(SedBase):
     """A mathematical calculation
 
     Attributes:
@@ -673,18 +711,10 @@ class Calculation(abc.ABC):
             parameters (:obj:`list` of :obj:`Parameter`, optional): parameters
             math (:obj:`str`, optional): mathematical expression
         """
+        SedBase.__init__(self)
         self.variables = variables or []
         self.parameters = parameters or []
         self.math = math
-
-    @abc.abstractmethod
-    def to_tuple(self):
-        """ Get a tuple representation
-
-        Returns:
-            :obj:`tuple` of :obj:`str`: tuple representation
-        """
-        pass   # pragma: no cover
 
     def is_equal(self, other):
         """ Determine if model changes are equal
@@ -695,7 +725,7 @@ class Calculation(abc.ABC):
         Returns:
             :obj:`bool`: :obj:`True`, if two model changes are equal
         """
-        return self.__class__ == other.__class__ \
+        return SedBase.is_equal(self, other) \
             and are_lists_equal(self.variables, other.variables) \
             and are_lists_equal(self.parameters, other.parameters) \
             and self.math == other.math
@@ -822,7 +852,7 @@ class SetValueComputeModelChange(ComputeModelChange, Calculation):
             and self.symbol == other.symbol
 
 
-class AbstractTask(abc.ABC):
+class AbstractTask(SedBase, SedIdGroupMixin):
     """ Base class for tasks
 
     Attributes:
@@ -836,17 +866,8 @@ class AbstractTask(abc.ABC):
             id (:obj:`str`, optional): id
             name (:obj:`str`, optional): name
         """
-        self.id = id
-        self.name = name
-
-    @abc.abstractmethod
-    def to_tuple(self):
-        """ Get a tuple representation
-
-        Returns:
-            :obj:`tuple` of :obj:`str`: tuple representation
-        """
-        pass  # pragma: no cover
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
 
     def is_equal(self, other):
         """ Determine if tasks are equal
@@ -857,9 +878,8 @@ class AbstractTask(abc.ABC):
         Returns:
             :obj:`bool`: :obj:`True`, if two tasks are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id \
-            and self.name == other.name
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other)
 
 
 class Task(AbstractTask):
@@ -973,7 +993,7 @@ class RepeatedTask(AbstractTask):
             and are_lists_equal(self.ranges, other.ranges)
 
 
-class SubTask(object):
+class SubTask(SedBase):
     """ A subtask of a repeated task
 
     Attributes:
@@ -987,6 +1007,7 @@ class SubTask(object):
             task (:obj:`AbstractTask`, optional): task
             order (:obj:`int`, optional): order in which the subtask should be executed
         """
+        SedBase.__init__(self)
         self.task = task
         self.order = order
 
@@ -1009,34 +1030,28 @@ class SubTask(object):
         Returns:
             :obj:`bool`: :obj:`True`, if two repeated tasks are equal
         """
-        return self.__class__ == other.__class__ \
+        return SedBase.is_equal(self, other) \
             and ((self.task is None and self.task == other.task)
                  or (self.task is not None and other.task is not None and self.task.id == other.task.id)) \
             and self.order == other.order
 
 
-class Range(object):
+class Range(SedBase, SedIdGroupMixin):
     """ A range
 
     Attributes:
         id (:obj:`str`): id
+        name (:obj:`str`, optional): name
     """
 
-    def __init__(self, id=None):
+    def __init__(self, id=None, name=None):
         """
         Args:
             id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
         """
-        self.id = id
-
-    @abc.abstractmethod
-    def to_tuple(self):
-        """ Get a tuple representation
-
-        Returns:
-            :obj:`tuple` of :obj:`str`: tuple representation
-        """
-        pass  # pragma: no cover
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
 
     def is_equal(self, other):
         """ Determine if ranges are equal
@@ -1047,8 +1062,8 @@ class Range(object):
         Returns:
             :obj:`bool`: :obj:`True`, if two ranges are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other)
 
 
 class UniformRangeType(str, enum.Enum):
@@ -1062,23 +1077,25 @@ class UniformRange(Range):
 
     Attributes:
         id (:obj:`str`): id
+        name (:obj:`str`): name
         start (:obj:`float`): start value
         end (:obj:`float`): end value
         number_of_steps (:obj:`int`): number of steps
         type (:obj:`UniformRangeType`): type
     """
 
-    def __init__(self, id=None, start=None, end=None, number_of_steps=None, number_of_points=None, type=None):
+    def __init__(self, id=None, name=None, start=None, end=None, number_of_steps=None, number_of_points=None, type=None):
         """
         Args:
             id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
             start (:obj:`float`, optional): start value
             end (:obj:`float`, optional): end value
             number_of_steps (:obj:`int`, optional): number of steps
             number_of_points (:obj:`int`, optional): number of points
             type (:obj:`UniformRangeType`, optional): type
         """
-        super(UniformRange, self).__init__(id=id)
+        super(UniformRange, self).__init__(id=id, name=name)
         self.start = start
         self.end = end
         if number_of_steps is not None and number_of_points is not None and number_of_points != number_of_steps:
@@ -1100,7 +1117,7 @@ class UniformRange(Range):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.id, self.start, self.end, self.number_of_steps, self.type.value)
+        return (self.id, self.name, self.start, self.end, self.number_of_steps, self.type.value)
 
     def is_equal(self, other):
         """ Determine if ranges are equal
@@ -1123,16 +1140,18 @@ class VectorRange(Range):
 
     Attributes:
         id (:obj:`str`): id
+        name (:obj:`str`): name
         values (:obj:`list` of :obj:`float`): values
     """
 
-    def __init__(self, id=None, values=None):
+    def __init__(self, id=None, name=None, values=None):
         """
         Args:
             id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
             values (:obj:`list` of :obj:`float`): values
         """
-        super(VectorRange, self).__init__(id=id)
+        super(VectorRange, self).__init__(id=id, name=name)
         self.values = values or []
 
     def to_tuple(self):
@@ -1141,7 +1160,7 @@ class VectorRange(Range):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.id, tuple(self.values))
+        return (self.id, self.name, tuple(self.values))
 
     def is_equal(self, other):
         """ Determine if ranges are equal
@@ -1161,22 +1180,24 @@ class FunctionalRange(Range, Calculation):
 
     Attributes:
         id (:obj:`str`): id
+        name (:obj:`str`): name
         range (:obj:`Range`): range
         variables (:obj:`list` of :obj:`Variable`): variables
         parameters (:obj:`list` of :obj:`Parameter`): variables
         math (:obj:`str`): mathematical expression
     """
 
-    def __init__(self, id=None, range=None, variables=None, parameters=None, math=None):
+    def __init__(self, id=None, name=None, range=None, variables=None, parameters=None, math=None):
         """
         Args:
             id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
             range (:obj:`Range`, optional): range
             variables (:obj:`list` of :obj:`Variable`, optional): variables
             parameters (:obj:`list` of :obj:`Parameter`, optional): variables
             math (:obj:`str`, optional): mathematical expression
         """
-        Range.__init__(self, id=id)
+        Range.__init__(self, id=id, name=name)
         Calculation.__init__(self, variables=variables, parameters=parameters, math=math)
         self.range = range
 
@@ -1186,7 +1207,7 @@ class FunctionalRange(Range, Calculation):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.id,
+        return (self.id, self.name,
                 self.range.id if self.range else None,
                 tuple(none_sorted(variable.to_tuple() for variable in self.variables)),
                 tuple(none_sorted(parameter.to_tuple() for parameter in self.parameters)),
@@ -1207,7 +1228,7 @@ class FunctionalRange(Range, Calculation):
                  or (self.range is not None and other.range is not None and self.range.id == other.range.id))
 
 
-class DataGenerator(Calculation):
+class DataGenerator(Calculation, SedIdGroupMixin):
     """ A data generator
 
     Attributes:
@@ -1227,8 +1248,7 @@ class DataGenerator(Calculation):
             parameters (:obj:`list` of :obj:`Parameter`, optional): variables
             math (:obj:`str`, optional): mathematical expression
         """
-        self.id = id
-        self.name = name
+        SedIdGroupMixin.__init__(self, id=id, name=name)
         Calculation.__init__(self, variables=variables, parameters=parameters, math=math)
 
     def to_tuple(self):
@@ -1252,13 +1272,11 @@ class DataGenerator(Calculation):
         Returns:
             :obj:`bool`: :obj:`True`, if two data generators are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id \
-            and self.name == other.name \
+        return SedIdGroupMixin.is_equal(self, other) \
             and Calculation.is_equal(self, other)
 
 
-class Variable(object):
+class Variable(SedBase, SedIdGroupMixin):
     """ A model variable
 
     Attributes:
@@ -1282,8 +1300,8 @@ class Variable(object):
             task (:obj:`AbstractTask`, optional): task
             model (:obj:`Model`, optional): model
         """
-        self.id = id
-        self.name = name
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
         self.target = target
         self.target_namespaces = target_namespaces or {}
         self.symbol = symbol
@@ -1309,9 +1327,8 @@ class Variable(object):
         Returns:
             :obj:`bool`: :obj:`True`, if two data generator variables are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id \
-            and self.name == other.name \
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other) \
             and self.target == other.target \
             and self.target_namespaces == other.target_namespaces \
             and self.symbol == other.symbol \
@@ -1321,7 +1338,7 @@ class Variable(object):
                  or (self.model is not None and other.model is not None and self.model.id == other.model.id))
 
 
-class Parameter(object):
+class Parameter(SedBase, SedIdGroupMixin):
     """ A parameter involved in a data generator
 
     Attributes:
@@ -1337,8 +1354,8 @@ class Parameter(object):
             name (:obj:`str`, optional): name
             value (:obj:`float`, optional): value
         """
-        self.id = id
-        self.name = name
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
         self.value = value
 
     def to_tuple(self):
@@ -1358,13 +1375,12 @@ class Parameter(object):
         Returns:
             :obj:`bool`: :obj:`True`, if two data generator parameters are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id \
-            and self.name == other.name \
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other) \
             and self.value == other.value
 
 
-class Output(abc.ABC):
+class Output(SedBase, SedIdGroupMixin):
     """ An output
 
     Attributes:
@@ -1378,17 +1394,8 @@ class Output(abc.ABC):
             id (:obj:`str`, optional): id
             name (:obj:`str`, optional): name
         """
-        self.id = id
-        self.name = name
-
-    @abc.abstractmethod
-    def to_tuple(self):
-        """ Get a tuple representation
-
-        Returns:
-            :obj:`tuple` of :obj:`str`: tuple representation
-        """
-        pass  # pragma: no cover
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
 
     def is_equal(self, other):
         """ Determine if outputs are equal
@@ -1399,9 +1406,8 @@ class Output(abc.ABC):
         Returns:
             :obj:`bool`: :obj:`True`, if two outputs are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id \
-            and self.name == other.name
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other)
 
 
 class Report(Output):
@@ -1445,7 +1451,7 @@ class Report(Output):
             and are_lists_equal(self.data_sets, other.data_sets)
 
 
-class DataSet(object):
+class DataSet(SedBase, SedIdGroupMixin):
     """ A data set in a report
 
     Attributes:
@@ -1463,8 +1469,8 @@ class DataSet(object):
             label (:obj:`str`, optional): label
             data_generator (:obj:`DataGenerator`, optional): data generator
         """
-        self.id = id
-        self.name = name
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
         self.label = label
         self.data_generator = data_generator
 
@@ -1486,9 +1492,8 @@ class DataSet(object):
         Returns:
             :obj:`bool`: :obj:`True`, if two data sets are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id \
-            and self.name == other.name \
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other) \
             and self.label == other.label \
             and ((self.data_generator is None and self.data_generator == other.data_generator)
                  or (self.data_generator is not None
@@ -1590,7 +1595,7 @@ class AxisScale(str, enum.Enum):
     log = 'log'
 
 
-class Curve(object):
+class Curve(SedBase, SedIdGroupMixin):
     """ A curve in a 2D plot
 
     Attributes:
@@ -1612,8 +1617,8 @@ class Curve(object):
             x_data_generator (:obj:`DataGenerator`, optional): x data generator
             y_data_generator (:obj:`DataGenerator`, optional): y data generator
         """
-        self.id = id
-        self.name = name
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
         self.x_scale = x_scale
         self.y_scale = y_scale
         self.x_data_generator = x_data_generator
@@ -1640,9 +1645,8 @@ class Curve(object):
         Returns:
             :obj:`bool`: :obj:`True`, if two curves are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id \
-            and self.name == other.name \
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other) \
             and self.x_scale == other.x_scale \
             and self.y_scale == other.y_scale \
             and ((self.x_data_generator is None and self.x_data_generator == other.x_data_generator)
@@ -1655,7 +1659,7 @@ class Curve(object):
                      and self.y_data_generator.id == other.y_data_generator.id))
 
 
-class Surface(object):
+class Surface(SedBase, SedIdGroupMixin):
     """ A surface in a 3D plot
 
     Attributes:
@@ -1683,8 +1687,8 @@ class Surface(object):
             y_data_generator (:obj:`DataGenerator`, optional): y data generator
             z_data_generator (:obj:`DataGenerator`, optional): z data generator
         """
-        self.id = id
-        self.name = name
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
         self.x_scale = x_scale
         self.y_scale = y_scale
         self.z_scale = z_scale
@@ -1715,9 +1719,8 @@ class Surface(object):
         Returns:
             :obj:`bool`: :obj:`True`, if two surfaces are equal
         """
-        return self.__class__ == other.__class__ \
-            and self.id == other.id \
-            and self.name == other.name \
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other) \
             and self.x_scale == other.x_scale \
             and self.y_scale == other.y_scale \
             and self.z_scale == other.z_scale \
