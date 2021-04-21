@@ -414,6 +414,7 @@ class ValidationTestCase(unittest.TestCase):
                         range=None,
                         parameters=[
                             data_model.Parameter(id='a', value=1.25),
+                            data_model.Parameter(id='b', value=1.),
                         ],
                         variables=[
                             data_model.Variable(
@@ -984,4 +985,37 @@ class ValidationTestCase(unittest.TestCase):
                                                                                 data_model.ModelLanguage.SBML.value)[0]))
 
         # no validation for non-XML languages
-        self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model', {}, data_model.Model, data_model.ModelLanguage.BNGL.value), ([], []))
+        self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model', {},
+                                                    data_model.Model, data_model.ModelLanguage.BNGL.value), ([], []))
+
+    def test_validate_calculation(self):
+        calculation = data_model.DataGenerator(
+            math='a * x + 1',
+            variables=[data_model.Variable(id='x')],
+            parameters=[data_model.Parameter(id='a', value=1.)],
+        )
+        self.assertEqual(validation.validate_calculation(calculation), [])
+
+        calculation = data_model.FunctionalRange(
+            math='a * x + 1',
+            variables=[data_model.Variable(id='x')],
+            parameters=[],
+            range=data_model.FunctionalRange(id='a'),
+        )
+        self.assertEqual(validation.validate_calculation(calculation), [])
+
+        calculation_2 = copy.copy(calculation)
+        calculation_2.math = None
+        self.assertIn('must have math', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)))
+
+        calculation_2 = copy.copy(calculation)
+        calculation_2.math = 10.
+        self.assertIn('must be a `string`', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)))
+
+        calculation_2 = copy.copy(calculation)
+        calculation_2.math = 'a * '
+        self.assertIn('The syntax', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)))
+
+        calculation_2 = copy.copy(calculation)
+        calculation_2.math = 'a * x + y'
+        self.assertIn('are not defined', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)))

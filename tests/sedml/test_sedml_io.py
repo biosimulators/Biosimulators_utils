@@ -289,16 +289,15 @@ class IoTestCase(unittest.TestCase):
                         variables=[
                             data_model.Variable(
                                 id='yDataGenVar1',
-                                name='YDataGenVar1',
                                 target='/sbml:sbml/sbml:model/@id',
                                 task=task1,
                             )
                         ],
                         parameters=[
                             data_model.Parameter(
-                                id='yDataGenParam1', name='YDataGenParam1', value=2.)
+                                id='YDataGenParam1', value=2.)
                         ],
-                        math='yDataGenParam1 + YDataGenParam1',
+                        math='yDataGenVar1 + YDataGenParam1',
                     ),
                     y_data_generator=data_model.DataGenerator(
                         id='yDataGen5',
@@ -306,16 +305,15 @@ class IoTestCase(unittest.TestCase):
                         variables=[
                             data_model.Variable(
                                 id='yDataGenVar1',
-                                name='YDataGenVar1',
                                 target='/sbml:sbml/sbml:model/@id',
                                 task=task1,
                             )
                         ],
                         parameters=[
                             data_model.Parameter(
-                                id='yDataGenParam1', name='YDataGenParam1', value=2.)
+                                id='YDataGenParam1', value=2.),
                         ],
-                        math='yDataGenParam1 + YDataGenParam1',
+                        math='yDataGenVar1 + YDataGenParam1',
                     ),
                 ),
             ]
@@ -636,8 +634,12 @@ class IoTestCase(unittest.TestCase):
                         data_model.Curve(
                             id='curve',
                             x_scale='sin',
-                            x_data_generator=data_model.DataGenerator(id='x_data_gen', math='x'),
-                            y_data_generator=data_model.DataGenerator(id='y_data_gen', math='y'),
+                            x_data_generator=data_model.DataGenerator(id='x_data_gen',
+                                                                      parameters=[data_model.Parameter(id='x', value=1)],
+                                                                      math='x'),
+                            y_data_generator=data_model.DataGenerator(id='y_data_gen',
+                                                                      parameters=[data_model.Parameter(id='y', value=2)],
+                                                                      math='y'),
                         ),
                     ]
                 ),

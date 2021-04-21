@@ -1198,12 +1198,13 @@ class ExecTaskCase(unittest.TestCase):
 
         # error with a curve
         doc.data_generators[0].math = 'time * var'
-        io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
+        io.SedmlSimulationWriter().run(doc, filename, validate_semantics=False, validate_models_with_languages=False)
         log = init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
             with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
-                exec.exec_sed_doc(execute_task, filename, working_dir,
-                                  out_dir, log=log, plot_formats=[PlotFormat.pdf])
+                with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=[]):
+                    exec.exec_sed_doc(execute_task, filename, working_dir,
+                                      out_dir, log=log, plot_formats=[PlotFormat.pdf])
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_2.pdf')))
@@ -1435,12 +1436,13 @@ class ExecTaskCase(unittest.TestCase):
 
         # error with a surface
         doc.data_generators[0].math = 'time * var'
-        io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
+        io.SedmlSimulationWriter().run(doc, filename, validate_semantics=False, validate_models_with_languages=False)
         log = init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
             with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
-                exec.exec_sed_doc(execute_task, filename, working_dir,
-                                  out_dir, log=log, plot_formats=[PlotFormat.pdf])
+                with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=[]):
+                    exec.exec_sed_doc(execute_task, filename, working_dir,
+                                      out_dir, log=log, plot_formats=[PlotFormat.pdf])
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_2.pdf')))

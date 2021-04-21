@@ -13,9 +13,12 @@ from .data_model import (AbstractTask, Task, RepeatedTask,  # noqa: F401
                          Simulation, OneStepSimulation, SteadyStateSimulation,
                          UniformTimeCourseSimulation, Variable,
                          Range, FunctionalRange, UniformRange, VectorRange,
-                         Report, Plot2D, Plot3D, DataGenerator)
+                         SetValueComputeModelChange,
+                         Report, Plot2D, Plot3D, DataGenerator,
+                         Calculation)
 from .utils import (append_all_nested_children_to_doc, get_range_len,
-                    is_model_language_encoded_in_xml, get_models_referenced_by_task)
+                    is_model_language_encoded_in_xml, get_models_referenced_by_task,
+                    compile_math, eval_math)
 import collections
 import copy
 import lxml.etree
@@ -41,6 +44,7 @@ __all__ = [
     'validate_data_generator_variables',
     'validate_target',
     'validate_variable_xpaths',
+    'validate_calculation',
 ]
 
 
@@ -268,8 +272,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                                 variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
                                 range_warnings.append(['Variable {} may be invalid.'.format(variable_id), variable_warnings])
 
-                        if not range.math:
-                            range_errors.append(['Functional range must have math.'])
+                        range_errors.extend(validate_calculation(range))
 
                     elif isinstance(range, UniformRange):
                         range_errors.extend(validate_uniform_range(range))
@@ -446,9 +449,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                             variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
                             change_warnings.append(['Variable {} may be invalid.'.format(variable_id), variable_warnings])
 
-                    if not change.math:
-                        msg = 'Set value change must have math.'
-                        change_errors.append([msg])
+                    change_errors.extend(validate_calculation(change))
 
                     if change_errors:
                         change_id = '`' + change.id + '`' if change and change.id else str(i_change + 1)
@@ -492,8 +493,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
             data_gen_errors.extend(temp_errors)
             data_gen_warnings.extend(temp_warnings)
 
-            if not data_gen.math:
-                data_gen_errors.append(['Data generator must have math.'])
+            data_gen_errors.extend(validate_calculation(data_gen))
 
             if data_gen_errors:
                 data_gen_id = '`' + data_gen.id + '`' if data_gen and data_gen.id else str(i_data_gen + 1)
@@ -773,8 +773,7 @@ def validate_model_changes(model):
                     var_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
                     change_warnings.append(['Variable {} is invalid.'.format(var_id), variable_warnings])
 
-            if not change.math:
-                change_errors.append(['Compute model change must have math.'])
+            change_errors.extend(validate_calculation(change))
 
         if change_errors:
             change_id = '`' + change.id + '`' if change and change.id else str(i_change + 1)
@@ -1080,3 +1079,51 @@ def validate_variable_xpaths(variables, model_source, attr='id'):
             x_path_attrs[variable.target] = validate_xpaths_ref_to_unique_objects(
                 model_source, [x_path], variable.target_namespaces, attr=attr)[x_path]
     return x_path_attrs
+
+
+def validate_calculation(calculation):
+    """ Validate that all of the symbols needed for a calculation are defined
+
+    Args:
+        expression (:obj:`Calculation`)
+
+    Returns:
+        nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+    """
+    errors = []
+
+    if calculation.math:
+        workspace = {}
+
+        for parameter in calculation.parameters:
+            if parameter.id:
+                workspace[parameter.id] = parameter.value
+
+        for variable in calculation.variables:
+            if variable.id:
+                workspace[variable.id] = 1
+
+        if isinstance(calculation, (FunctionalRange, SetValueComputeModelChange)):
+            if calculation.range and calculation.range.id:
+                workspace[calculation.range.id] = 1
+
+        try:
+            compiled_math = compile_math(calculation.math)
+        except TypeError:
+            errors.append(['The mathematical expression must be a `string`, not a `{}`.'.format(calculation.math.__class__)])
+            return errors
+        except SyntaxError:
+            errors.append(['The syntax of the mathematical expression `{}` is invalid.'.format(calculation.math)])
+            return errors
+
+        try:
+            eval_math(calculation.math, compiled_math, workspace)
+        except ValueError as exception:
+            errors.append(['Some of the symbols for the expression `{}` are not defined.'.format(calculation.math), [[str(exception)]]])
+            return errors
+
+    else:
+        msg = 'Calculation must have math.'
+        errors.append([msg])
+
+    return errors
