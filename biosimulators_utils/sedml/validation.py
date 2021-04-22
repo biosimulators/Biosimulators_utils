@@ -18,7 +18,8 @@ from .data_model import (SedIdGroupMixin, AbstractTask, Task, RepeatedTask,  # n
                          Calculation)
 from .utils import (append_all_nested_children_to_doc, get_range_len,
                     is_model_language_encoded_in_xml, get_models_referenced_by_task,
-                    compile_math, eval_math, get_all_sed_objects)
+                    compile_math, eval_math, get_all_sed_objects,
+                    get_data_generators_for_output, get_variables_for_data_generators)
 import collections
 import copy
 import lxml.etree
@@ -519,11 +520,14 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
         #   - curves and surfaces have ids
         #   - x, y, z attributes reference data generators
         for i_output, output in enumerate(doc.outputs):
-            output_errors = validate_output(output)
+            output_errors, output_warnings = validate_output(output)
 
             if output_errors:
                 output_id = '`' + output.id + '`' if output and output.id else str(i_output + 1)
                 errors.append(['Output {} is invalid.'.format(output_id), output_errors])
+            if output_warnings:
+                output_id = '`' + output.id + '`' if output and output.id else str(i_output + 1)
+                errors.append(['Output {} may be invalid.'.format(output_id), output_warnings])
 
     return (errors, warnings)
 
@@ -986,9 +990,13 @@ def validate_output(output):
         output (:obj:`Output`): output
 
     Returns:
-        nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * nested :obj:`list` of :obj:`str`: nested list of warnings (e.g., required ids missing or ids not unique)
     """
     errors = []
+    warnings = []
 
     if isinstance(output, Report):
         for i_data_set, data_set in enumerate(output.data_sets):
@@ -1033,7 +1041,19 @@ def validate_output(output):
                 surface_id = '`' + surface.id + '`' if surface and surface.id else str(i_surface + 1)
                 errors.append(['Surface {} is invalid.'.format(surface_id), surface_errors])
 
-    return errors
+    involves_repeated_task = False
+    for variable in get_variables_for_data_generators(get_data_generators_for_output(output)):
+        if variable.task and not isinstance(variable.task, Task):
+            involves_repeated_task = True
+
+    if involves_repeated_task:
+        msg = (
+            'Some simulation tools will not be able to generate this output because it uses data from repeated tasks. '
+            'Output for repeated tasks is an experimental feature of SED-ML, which is not officially supported.'
+        )
+        warnings.append([msg])
+
+    return (errors, warnings)
 
 
 def validate_target(target, namespaces, context, language, doc=None):

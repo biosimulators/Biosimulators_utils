@@ -1050,3 +1050,110 @@ class ValidationTestCase(unittest.TestCase):
         errors = validation.validate_unique_ids(doc)
         self.assertIn('must have a unique id', flatten_nested_list_of_strings(errors))
         self.assertIn('model', flatten_nested_list_of_strings(errors))
+
+    def test_validate_output(self):
+        # valid report
+        task = data_model.Task()
+        report = data_model.Report(
+            data_sets=[
+                data_model.DataSet(
+                    id='x',
+                    label='x',
+                    data_generator=data_model.DataGenerator(
+                        variables=[
+                            data_model.Variable(
+                                task=task
+                            )
+                        ]
+                    )
+                )
+            ]
+        )
+
+        errors, warnings = validation.validate_output(report)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        # valid plot2d
+        task = data_model.Task()
+        plot2d = data_model.Plot2D(
+            curves=[
+                data_model.Curve(
+                    id='curve',
+                    x_data_generator=data_model.DataGenerator(
+                        variables=[
+                            data_model.Variable(
+                                task=task
+                            )
+                        ]
+                    ),
+                    y_data_generator=data_model.DataGenerator(
+                        variables=[
+                            data_model.Variable(
+                                task=task
+                            )
+                        ]
+                    )
+                )
+            ]
+        )
+
+        errors, warnings = validation.validate_output(plot2d)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        # valid plot3d
+        task = data_model.Task()
+        plot3d = data_model.Plot3D(
+            surfaces=[
+                data_model.Surface(
+                    id='surface',
+                    x_data_generator=data_model.DataGenerator(
+                        variables=[
+                            data_model.Variable(
+                                task=task
+                            )
+                        ]
+                    ),
+                    y_data_generator=data_model.DataGenerator(
+                        variables=[
+                            data_model.Variable(
+                                task=task
+                            )
+                        ]
+                    ),
+                    z_data_generator=data_model.DataGenerator(
+                        variables=[
+                            data_model.Variable(
+                                task=task
+                            )
+                        ]
+                    )
+                )
+            ]
+        )
+
+        errors, warnings = validation.validate_output(plot3d)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        # error
+        report.data_sets[0].id = None
+        report.data_sets[0].label = None
+        report.data_sets[0].data_generator.variables[0].task = data_model.RepeatedTask()
+        errors, warnings = validation.validate_output(report)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertIn('must have a label', flatten_nested_list_of_strings(errors))
+        self.assertIn('experimental feature of SED-ML', flatten_nested_list_of_strings(warnings))
+
+        plot2d.curves[0].id = None
+        plot2d.curves[0].x_data_generator.variables[0].task = data_model.RepeatedTask()
+        errors, warnings = validation.validate_output(plot2d)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertIn('experimental feature of SED-ML', flatten_nested_list_of_strings(warnings))
+
+        plot3d.surfaces[0].id = None
+        plot3d.surfaces[0].x_data_generator.variables[0].task = data_model.RepeatedTask()
+        errors, warnings = validation.validate_output(plot3d)
+        self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
+        self.assertIn('experimental feature of SED-ML', flatten_nested_list_of_strings(warnings))

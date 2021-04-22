@@ -177,7 +177,10 @@ def get_data_generators_for_output(output):
             data_generators.add(surface.z_data_generator)
 
     else:
-        raise NotImplementedError('Output of type {} is not supported'.format(output.__class__.__name__))
+        raise NotImplementedError('Output of type {} is not supported.'.format(output.__class__.__name__))
+
+    if None in data_generators:
+        data_generators.remove(None)
 
     return data_generators
 
@@ -478,7 +481,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
                 obj.set(attr, new_value)
 
         else:
-            raise NotImplementedError('Change{} of type {} is not supported'.format(
+            raise NotImplementedError('Change{} of type {} is not supported.'.format(
                 ' ' + change.name if change.name else '', change.__class__.__name__))
 
 
