@@ -14,7 +14,7 @@ from ..xml.utils import eval_xpath
 from .data_model import (SedBase, SedIdGroupMixin, SedDocument,  # noqa: F401
                          Model, ModelLanguagePattern, ModelChange, ModelAttributeChange, AddElementModelChange,
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange, SetValueComputeModelChange,
-                         Task, RepeatedTask, Report, Plot2D, Plot3D,
+                         Task, RepeatedTask, Output, Report, Plot2D, Plot3D,
                          DataGenerator, Variable, MATHEMATICAL_FUNCTIONS, RESERVED_MATHEMATICAL_SYMBOLS, AGGREGATE_MATH_FUNCTIONS,
                          Range, UniformRange, VectorRange, FunctionalRange, UniformRangeType)
 from .warnings import InconsistentVariableShapesWarning
@@ -33,6 +33,8 @@ __all__ = [
     'append_all_nested_children_to_doc',
     'add_namespaces_to_xml_node',
     'convert_xml_node_to_string',
+    'get_data_generators_for_output',
+    'get_variables_for_data_generators',
     'get_variables_for_task',
     'resolve_model_and_apply_xml_changes',
     'resolve_model',
@@ -148,6 +150,53 @@ def convert_xml_node_to_string(node):
     return node.convertXMLNodeToString(node)
 
 
+def get_data_generators_for_output(output):
+    """ Get the data generators involved in an output
+
+    Args:
+        output (:obj:`Output`): report or plot
+
+    Returns:
+        :obj:`set` of :obj:`DataGenerator`: data generators involved in the output
+    """
+    data_generators = set()
+
+    if isinstance(output, Report):
+        for data_set in output.data_sets:
+            data_generators.add(data_set.data_generator)
+
+    elif isinstance(output, Plot2D):
+        for curve in output.curves:
+            data_generators.add(curve.x_data_generator)
+            data_generators.add(curve.y_data_generator)
+
+    elif isinstance(output, Plot3D):
+        for surface in output.surfaces:
+            data_generators.add(surface.x_data_generator)
+            data_generators.add(surface.y_data_generator)
+            data_generators.add(surface.z_data_generator)
+
+    else:
+        raise NotImplementedError('Output of type {} is not supported'.format(output.__class__.__name__))
+
+    return data_generators
+
+
+def get_variables_for_data_generators(data_generators):
+    """ Get the variables involved in a collection of generators
+
+    Args:
+        data_generators (:obj:`list` of :obj:`DataGenerator`): data generators
+
+    Returns:
+        :obj:`set` of :obj:`Variable`: variables involved in the data generators
+    """
+    variables = set()
+    for data_gen in data_generators:
+        variables.update(set(data_gen.variables))
+    return variables
+
+
 def get_variables_for_task(doc, task):
     """ Get the variables that a task must record
 
@@ -160,31 +209,11 @@ def get_variables_for_task(doc, task):
     """
     data_generators = set()
     for output in doc.outputs:
-        if isinstance(output, Report):
-            for data_set in output.data_sets:
-                data_generators.add(data_set.data_generator)
+        data_generators.update(get_data_generators_for_output(output))
 
-        elif isinstance(output, Plot2D):
-            for curve in output.curves:
-                data_generators.add(curve.x_data_generator)
-                data_generators.add(curve.y_data_generator)
+    variables = get_variables_for_data_generators(data_generators)
 
-        elif isinstance(output, Plot3D):
-            for surface in output.surfaces:
-                data_generators.add(surface.x_data_generator)
-                data_generators.add(surface.y_data_generator)
-                data_generators.add(surface.z_data_generator)
-
-        else:
-            raise NotImplementedError('Output of type {} is not supported'.format(output.__class__.__name__))
-
-    variables = set()
-    for data_gen in data_generators:
-        for var in data_gen.variables:
-            if var.task == task:
-                variables.add(var)
-
-    return list(variables)
+    return list(filter(lambda var: var.task == task, variables))
 
 
 BIOMODELS_DOWNLOAD_ENDPOINT = 'https://www.ebi.ac.uk/biomodels/model/download/{}?filename={}_url.xml'
