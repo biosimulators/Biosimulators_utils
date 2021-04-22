@@ -10,10 +10,6 @@ from ..biosimulations.data_model import Metadata  # noqa: F401
 from ..utils.core import are_lists_equal, none_sorted
 import abc
 import enum
-import math
-import mpmath
-import numpy
-import numpy.random
 
 
 __all__ = [
@@ -56,8 +52,6 @@ __all__ = [
     'AxisScale',
     'Curve',
     'Surface',
-    'MATHEMATICAL_FUNCTIONS',
-    'RESERVED_MATHEMATICAL_SYMBOLS',
 ]
 
 
@@ -1737,118 +1731,3 @@ class Surface(SedBase, SedIdGroupMixin):
                  or (self.z_data_generator is not None
                      and other.z_data_generator is not None
                      and self.z_data_generator.id == other.z_data_generator.id))
-
-
-def log(*args):
-    """ Evaluate a logarithm
-
-    Args:
-        *args (:obj:`list` of :obj:`float`): value optional proceeded by a base; otherwise the logarithm
-            is calculated in base 10
-
-    Returns:
-        :obj:`float`
-    """
-    value = args[-1]
-    if len(args) > 1:
-        base = args[0]
-    else:
-        base = 10.
-
-    return math.log(value, base)
-
-
-def piecewise(*args):
-    """ Evaluate a MathML piecewise function
-
-    Args:
-        *args (:obj:`list` of :obj:`float`): pairs of value and conditions followed by a default value
-
-    Returns:
-        :obj:`float`
-    """
-    if len(args) % 2 == 0:
-        pieces = args
-        otherwise = math.nan
-
-    else:
-        pieces = args[0:-1]
-        otherwise = args[-1]
-
-    for i_piece in range(0, len(pieces), 2):
-        value = pieces[i_piece]
-        condition = pieces[i_piece + 1]
-        if condition:
-            return value
-
-    return otherwise
-
-
-MATHEMATICAL_FUNCTIONS = {
-    'root': lambda x, n: x**(1 / float(n)),
-    'abs': abs,
-    'exp': math.exp,
-    'ln': math.log,
-    'log': log,
-    'floor': math.floor,
-    'ceiling': math.ceil,
-    'factorial': math.factorial,
-    'sin': math.sin,
-    'cos': math.cos,
-    'tan': math.tan,
-    'sec': mpmath.sec,
-    'csc': mpmath.csc,
-    'cot': mpmath.cot,
-    'sinh': math.sinh,
-    'cosh': math.cosh,
-    'tanh': math.tanh,
-    'sech': mpmath.sech,
-    'csch': mpmath.csch,
-    'coth': mpmath.coth,
-    'arcsin': math.asin,
-    'arccos': math.acos,
-    'arctan': math.atan,
-    'arcsec': mpmath.asec,
-    'arccsc': mpmath.acsc,
-    'arccot': mpmath.acot,
-    'arcsinh': math.asinh,
-    'arccosh': math.acosh,
-    'arctanh': math.atanh,
-    'arcsech': mpmath.asech,
-    'arccsch': mpmath.acsch,
-    'arccoth': mpmath.acoth,
-    'min': numpy.min,
-    'max': numpy.max,
-    'sum': numpy.sum,
-    'product': numpy.product,
-    'count': len,
-    'mean': numpy.mean,
-    'stdev': numpy.std,
-    'variance': numpy.var,
-    'uniform': numpy.random.uniform,
-    'normal': numpy.random.normal,
-    'lognormal': numpy.random.lognormal,
-    'poisson': numpy.random.poisson,
-    'gamma': numpy.random.gamma,
-    'piecewise': piecewise,
-}
-
-RESERVED_MATHEMATICAL_SYMBOLS = {
-    'true': True,
-    'false': False,
-    'notanumber': math.nan,
-    'pi': math.pi,
-    'infinity': math.inf,
-    'exponentiale': math.e,
-}
-
-AGGREGATE_MATH_FUNCTIONS = (
-    'min',
-    'max',
-    'sum',
-    'product',
-    'count',
-    'mean',
-    'stdev',
-    'variance',
-)

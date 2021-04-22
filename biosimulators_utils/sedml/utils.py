@@ -15,12 +15,12 @@ from .data_model import (SedBase, SedIdGroupMixin, SedDocument,  # noqa: F401
                          Model, ModelLanguagePattern, ModelChange, ModelAttributeChange, AddElementModelChange,
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange, SetValueComputeModelChange,
                          Task, RepeatedTask, Output, Report, Plot2D, Plot3D,
-                         DataGenerator, Variable, MATHEMATICAL_FUNCTIONS, RESERVED_MATHEMATICAL_SYMBOLS, AGGREGATE_MATH_FUNCTIONS,
+                         DataGenerator, Variable,
                          Range, UniformRange, VectorRange, FunctionalRange, UniformRangeType)
+from .math import AGGREGATE_MATH_FUNCTIONS, compile_math, eval_math
 from .warnings import InconsistentVariableShapesWarning
 from lxml import etree
 import copy
-import evalidate
 import io
 import libsedml  # noqa: F401
 import numpy
@@ -44,8 +44,6 @@ __all__ = [
     'calc_compute_model_change_new_value',
     'calc_data_generator_results',
     'calc_data_generators_results',
-    'compile_math',
-    'eval_math',
     'remove_model_changes',
     'remove_algorithm_parameter_changes',
     'replace_complex_data_generators_with_generators_for_individual_variables',
@@ -533,7 +531,7 @@ def get_value_of_variable_model_xml_targets(variable, model_etrees):
         raise NotImplementedError('Compute model change variable `{}` must have a target'.format(variable.id))
 
     if variable.target.startswith('#'):
-        raise NotImplementedError('Variable references to data generators are not supported.')
+        raise NotImplementedError('Variable references to data descriptions are not supported.')
 
     obj_xpath, sep, attr = variable.target.rpartition('/@')
     if sep != '/@':
@@ -754,61 +752,6 @@ def calc_data_generators_results(data_generators, variable_results, output, task
         exception = None
 
     return results, statuses, exception, task_contributes_to_data_generators
-
-
-def compile_math(math):
-    """ Compile a mathematical expression
-
-    Args:
-        math (:obj:`str`): mathematical expression
-
-    Returns:
-        :obj:`_ast.Expression`: compiled expression
-    """
-    if isinstance(math, str):
-        math = (
-            math
-            .replace('&&', 'and')
-            .replace('||', 'or')
-        )
-
-    math_node = evalidate.evalidate(math,
-                                    addnodes=[
-                                        'Eq', 'NotEq', 'Gt', 'Lt', 'GtE', 'LtE',
-                                        'Sub', 'Mult', 'Div', 'Pow',
-                                        'And', 'Or', 'Not',
-                                        'BitAnd', 'BitOr', 'BitXor',
-                                        'Call', 'Constant',
-                                    ],
-                                    funcs=MATHEMATICAL_FUNCTIONS.keys())
-    compiled_math = compile(math_node, '<math>', 'eval')
-    return compiled_math
-
-
-def eval_math(math, compiled_math, workspace):
-    """ Compile a mathematical expression
-
-    Args:
-        math (:obj:`str`): mathematical expression
-        compiled_math (:obj:`_ast.Expression`): compiled expression
-        workspace (:obj:`dict`): values to use for the symbols in the expression
-
-    Returns:
-        :obj:`object`: result of the expression
-
-    Raises:
-        :obj:`ValueError`: if the expression could not be evaluated
-    """
-    invalid_symbols = set(RESERVED_MATHEMATICAL_SYMBOLS.keys()).intersection(set(workspace.keys()))
-    if invalid_symbols:
-        raise ValueError('Variables for mathematical expressions cannot have ids equal to the following reserved symbols:\n  - {}'.format(
-            '\n  - '.join('`' + symbol + '`' for symbol in sorted(invalid_symbols))))
-
-    try:
-        return eval(compiled_math, MATHEMATICAL_FUNCTIONS, dict(**RESERVED_MATHEMATICAL_SYMBOLS, **workspace))
-    except Exception as exception:
-        raise ValueError('Expression `{}` could not be evaluated:\n\n  {}\n\n  workspace:\n    {}'.format(
-            math, str(exception), '\n    '.join('{}: {}'.format(key, value) for key, value in workspace.items())))
 
 
 def remove_model_changes(sed_doc):

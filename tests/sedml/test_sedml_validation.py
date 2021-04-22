@@ -678,6 +678,46 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertIn('No validation is available for', flatten_nested_list_of_strings(warnings))
 
+    def test_validate_model_changes_warning_handling(self):
+        model = data_model.Model(
+            source=os.path.join('..', 'fixtures', 'BIOMD0000000297.xml'),
+            language=data_model.ModelLanguage.SBML.value,
+        )
+        model.changes.append(
+            data_model.ComputeModelChange(
+                id='change',
+                target='/sbml:sbml/sbml:model',
+                target_namespaces={'sbml': 'sbml'},
+                variables=[
+                    data_model.Variable(
+                        id='var',
+                        model=model,
+                        target='#dataDescription',
+                    ),
+                ],
+                math='var'
+            )
+        )
+        errors, warnings = validation.validate_model_changes(model)
+        self.assertIn('not supported', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
+        model.changes[0].variables[0].target = model.changes[0].target
+        model.changes[0].variables[0].target_namespaces = model.changes[0].target_namespaces
+        errors, warnings = validation.validate_model_changes(model)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        with mock.patch('biosimulators_utils.sedml.validation.validate_target', return_value=([], [['warning']])):
+            errors, warnings = validation.validate_model_changes(model)
+        self.assertEqual(errors, [])
+        self.assertIn('may be invalid', flatten_nested_list_of_strings(warnings))
+
+        with mock.patch('biosimulators_utils.sedml.validation.validate_target', return_value=([], [['warning']])):
+            errors, warnings = validation.validate_model(model, [], os.path.dirname(__file__))
+        self.assertEqual(errors, [])
+        self.assertIn('changes of the model may be invalid', flatten_nested_list_of_strings(warnings))
+
     def test_validate_simulation(self):
         sim = data_model.UniformTimeCourseSimulation(
             initial_time=0.,
@@ -899,6 +939,33 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn('must define a symbol or target', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
+        task = data_model.Task(
+            id='task',
+            model=data_model.Model(
+                id='model',
+                source=os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.xml'),
+                language=data_model.ModelLanguage.SBML.value,
+            ),
+            simulation=data_model.UniformTimeCourseSimulation(
+                id='sim',
+                initial_time=0.,
+                output_start_time=0.,
+                output_end_time=10.,
+                number_of_steps=10,
+                algorithm=data_model.Algorithm(
+                    kisao_id='KISAO_0000001',
+                )
+            ),
+        )
+        variables = [
+            data_model.Variable(id='var', target='#dataDescription')
+        ]
+        with mock.patch('biosimulators_utils.sedml.validation.validate_data_generator_variables',
+                        return_value=([], [['could not be validated']])):
+            errors, warnings = self._validate_task(task, variables)
+        self.assertEqual(errors, [])
+        self.assertIn('could not be validated', flatten_nested_list_of_strings(warnings))
+
     def test_validate_variable_xpaths(self):
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
 
@@ -988,6 +1055,17 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model', {},
                                                     data_model.Model, data_model.ModelLanguage.BNGL.value), ([], []))
 
+        # no validation for references to data descriptions
+        errors, warnings = validation.validate_target(
+            '#dataDescription', {}, data_model.DataGenerator, language=data_model.ModelLanguage.SBML.value)
+        self.assertEqual(errors, [])
+        self.assertIn('could not be validated', flatten_nested_list_of_strings(warnings))
+
+        errors, warnings = validation.validate_target('#dataDescription', {}, data_model.Model,
+                                                      language=data_model.ModelLanguage.SBML.value)
+        self.assertIn('are not supported', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
     def test_validate_calculation(self):
         calculation = data_model.DataGenerator(
             math='a * x + 1',
@@ -1015,6 +1093,11 @@ class ValidationTestCase(unittest.TestCase):
         calculation_2 = copy.copy(calculation)
         calculation_2.math = 'a * '
         self.assertIn('The syntax', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
+
+        calculation_2 = copy.copy(calculation)
+        calculation_2.math = 'a / 1'
+        with mock.patch('biosimulators_utils.sedml.math.VALID_MATH_EXPRESSION_NODES', new_callable=mock.PropertyMock(return_value=[])):
+            self.assertIn('is invalid', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
 
         calculation_2 = copy.copy(calculation)
         calculation_2.math = 'a * x + y'

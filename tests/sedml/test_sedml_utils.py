@@ -783,6 +783,10 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'must be a float'):
             utils.get_value_of_variable_model_xml_targets(change.variables[0], models)
 
+        change.variables[0].target = "#dataDescription"
+        with self.assertRaisesRegex(NotImplementedError, 'not supported'):
+            utils.get_value_of_variable_model_xml_targets(change.variables[0], models)
+
         change.variables[0].target = None
         change.variables[0].symbol = True
         with self.assertRaisesRegex(NotImplementedError, 'must have a target'):
@@ -915,31 +919,6 @@ class ApplyModelChangesTestCase(unittest.TestCase):
                 },
             )
 
-    def test_compile_eval_math(self):
-        math = '1 + 2'
-        workspace = {}
-        compiled_math = utils.compile_math(math)
-        self.assertEqual(utils.eval_math(math, compiled_math, workspace), 3)
-
-        math = 'x + 2'
-        workspace = {'x': 1}
-        compiled_math = utils.compile_math(math)
-        self.assertEqual(utils.eval_math(math, compiled_math, workspace), 3)
-
-        math = 'x * 2'
-        workspace = {'x': 1}
-        compiled_math = utils.compile_math(math)
-        self.assertEqual(utils.eval_math(math, compiled_math, workspace), 2.0)
-
-        math = 'x / 2'
-        workspace = {'x': 1}
-        compiled_math = utils.compile_math(math)
-        self.assertEqual(utils.eval_math(math, compiled_math, workspace), 0.5)
-
-    def test_eval_math_error_handling(self):
-        with self.assertRaisesRegex(ValueError, 'cannot have ids equal to the following reserved symbols'):
-            utils.eval_math('pi', 'pi', {'pi': 3.14})
-
     def test_calc_data_generator_results(self):
         data_gen = data_model.DataGenerator(
             id='data_gen_1',
@@ -988,6 +967,14 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             data_gen.variables[1].id: numpy.array([2, 3, 4]),
         }
         with self.assertRaises(ValueError):
+            utils.calc_data_generator_results(data_gen, var_results)
+
+        data_gen.math = 'min(var_1)'
+        var_results = {
+            data_gen.variables[0].id: numpy.array([1, 2]),
+            data_gen.variables[1].id: numpy.array([2, 3, 4]),
+        }
+        with self.assertRaises(NotImplementedError):
             utils.calc_data_generator_results(data_gen, var_results)
 
     def test_calc_data_generator_results_diff_shapes(self):

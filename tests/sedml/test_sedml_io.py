@@ -611,6 +611,10 @@ class IoTestCase(unittest.TestCase):
         with self.assertRaisesRegex(NotImplementedError, 'is not supported.'):
             io.SedmlSimulationWriter().run(document, '')
 
+        document = data_model.SedDocument(outputs=[mock.Mock(id='output')])
+        with self.assertRaisesRegex(NotImplementedError, 'is not supported.'):
+            io.SedmlSimulationWriter().run(document, '', validate_semantics=False)
+
         document = data_model.SedDocument(
             models=[
                 data_model.Model(

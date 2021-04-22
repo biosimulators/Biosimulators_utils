@@ -16,9 +16,10 @@ from .data_model import (SedIdGroupMixin, AbstractTask, Task, RepeatedTask,  # n
                          SetValueComputeModelChange,
                          Report, Plot2D, Plot3D, DataGenerator,
                          Calculation)
+from .math import compile_math, eval_math
 from .utils import (append_all_nested_children_to_doc, get_range_len,
                     is_model_language_encoded_in_xml, get_models_referenced_by_task,
-                    compile_math, eval_math, get_all_sed_objects,
+                    get_all_sed_objects,
                     get_data_generators_for_output, get_variables_for_data_generators)
 import collections
 import copy
@@ -42,6 +43,7 @@ __all__ = [
     'validate_simulation',
     'validate_uniform_range',
     'validate_output',
+    'validate_data_generator',
     'validate_data_generator_variables',
     'validate_target',
     'validate_variable_xpaths',
@@ -480,53 +482,32 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
             if task_errors[task]['other']:
                 errors.append(['Task {} is invalid.'.format(task_id), task_errors[task]['other']])
+
             if task_warnings[task]['other']:
                 warnings.append(['Task {} may be invalid.'.format(task_id), task_warnings[task]['other']])
 
-        # variables of data generators
-        # - have ids
-        # - have target OR symbol
-        # - don't have model references
-        # - have math
+        # validate data generators
         for i_data_gen, data_gen in enumerate(doc.data_generators):
-            data_gen_errors = []
-            data_gen_warnings = []
+            data_gen_errors, data_gen_warnings = validate_data_generator(data_gen)
 
-            for i_parameter, param in enumerate(data_gen.parameters):
-                if not param.id:
-                    data_gen_errors.append(['Parameter {} must have an id.'.format(i_parameter + 1)])
-
-            temp_errors, temp_warnings = validate_data_generator_variables(data_gen.variables)
-            data_gen_errors.extend(temp_errors)
-            data_gen_warnings.extend(temp_warnings)
-
-            temp_errors, temp_warnings = validate_calculation(data_gen)
-            data_gen_errors.extend(temp_errors)
-            data_gen_warnings.extend(temp_warnings)
+            data_gen_id = '`' + data_gen.id + '`' if data_gen and data_gen.id else str(i_data_gen + 1)
 
             if data_gen_errors:
-                data_gen_id = '`' + data_gen.id + '`' if data_gen and data_gen.id else str(i_data_gen + 1)
                 errors.append(['Data generator {} is invalid.'.format(data_gen_id), data_gen_errors])
 
             if data_gen_warnings:
-                data_gen_id = '`' + data_gen.id + '`' if data_gen and data_gen.id else str(i_data_gen + 1)
                 warnings.append(['Data generator {} may be invalid.'.format(data_gen_id), data_gen_warnings])
 
         # validate outputs
-        # - reports
-        #   - data sets have ids and labels
-        #   - data sets reference data generators
-        # - plots
-        #   - curves and surfaces have ids
-        #   - x, y, z attributes reference data generators
         for i_output, output in enumerate(doc.outputs):
             output_errors, output_warnings = validate_output(output)
 
+            output_id = '`' + output.id + '`' if output and output.id else str(i_output + 1)
+
             if output_errors:
-                output_id = '`' + output.id + '`' if output and output.id else str(i_output + 1)
                 errors.append(['Output {} is invalid.'.format(output_id), output_errors])
+
             if output_warnings:
-                output_id = '`' + output.id + '`' if output and output.id else str(i_output + 1)
                 errors.append(['Output {} may be invalid.'.format(output_id), output_warnings])
 
     return (errors, warnings)
@@ -811,7 +792,7 @@ def validate_model_changes(model):
 
                 if variable_warnings:
                     var_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
-                    change_warnings.append(['Variable {} is invalid.'.format(var_id), variable_warnings])
+                    change_warnings.append(['Variable {} may be invalid.'.format(var_id), variable_warnings])
 
             temp_errors, temp_warnings = validate_calculation(change)
             change_errors.extend(temp_errors)
@@ -936,6 +917,43 @@ def validate_uniform_range(range):
     return errors
 
 
+def validate_data_generator(data_generator):
+    """ Validate a data generator
+
+    * Parameters have ids
+    * Variables have ids
+    * Variables have target OR symbol
+    * Variables don't have model references
+    * Have math
+    * Math is valid
+
+    Args:
+        data_generator (:obj:`DataGenerator`): data generator
+
+    Returns:
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * nested :obj:`list` of :obj:`str`: nested list of warnings (e.g., required ids missing or ids not unique)
+    """
+    errors = []
+    warnings = []
+
+    for i_parameter, param in enumerate(data_generator.parameters):
+        if not param.id:
+            errors.append(['Parameter {} must have an id.'.format(i_parameter + 1)])
+
+    temp_errors, temp_warnings = validate_data_generator_variables(data_generator.variables)
+    errors.extend(temp_errors)
+    warnings.extend(temp_warnings)
+
+    temp_errors, temp_warnings = validate_calculation(data_generator)
+    errors.extend(temp_errors)
+    warnings.extend(temp_warnings)
+
+    return (errors, warnings)
+
+
 def validate_data_generator_variables(variables):
     """ Check variables have a symbol or target
 
@@ -978,13 +996,22 @@ def validate_data_generator_variables(variables):
 
         if variable_warnings:
             variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
-            warnings.append(['Variable {} is invalid.'.format(variable_id), variable_warnings])
+            warnings.append(['Variable {} may be invalid.'.format(variable_id), variable_warnings])
 
     return errors, warnings
 
 
 def validate_output(output):
     """ Validate an output
+
+    * Reports
+      * Data sets have ids and labels
+      * Data sets reference data generators
+
+    * Plots
+
+       * Curves and surfaces have ids
+       * x, y, z attributes reference data generators
 
     Args:
         output (:obj:`Output`): output
