@@ -1581,3 +1581,30 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         objs = set(utils.get_all_sed_objects(doc))
         self.assertEqual(objs, set(expected_objs))
+
+    def test_get_model_changes_for_task(self):
+        task = data_model.Task()
+        self.assertEqual(utils.get_model_changes_for_task(task), [])
+
+        task = data_model.RepeatedTask(
+            changes=[
+                data_model.SetValueComputeModelChange(id='ch1'),
+                data_model.SetValueComputeModelChange(id='ch2'),
+            ],
+            sub_tasks=[
+                data_model.SubTask(
+                    task=data_model.Task(),
+                ),
+                data_model.SubTask(
+                    task=data_model.RepeatedTask(
+                        changes=[
+                            data_model.SetValueComputeModelChange(id='ch3'),
+                        ]
+                    )
+                )
+            ],
+        )
+        self.assertEqual(set([change.id for change in utils.get_model_changes_for_task(task)]), set(['ch1', 'ch2', 'ch3']))
+
+        with self.assertRaisesRegex(NotImplementedError, 'not supported'):
+            utils.get_model_changes_for_task(None)

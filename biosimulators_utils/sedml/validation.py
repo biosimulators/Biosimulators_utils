@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..xml.utils import validate_xpaths_ref_to_unique_objects
+from ..xml.utils import validate_xpaths_ref_to_unique_objects, eval_xpath
 from .data_model import (SedIdGroupMixin, AbstractTask, Task, RepeatedTask,  # noqa: F401
                          Model, ModelLanguage, ModelLanguagePattern,
                          ModelChange, ComputeModelChange,
@@ -20,7 +20,8 @@ from .math import compile_math, eval_math
 from .utils import (append_all_nested_children_to_doc, get_range_len,
                     is_model_language_encoded_in_xml, get_models_referenced_by_task,
                     get_all_sed_objects,
-                    get_data_generators_for_output, get_variables_for_data_generators)
+                    get_data_generators_for_output, get_variables_for_data_generators,
+                    get_model_changes_for_task)
 import collections
 import copy
 import lxml.etree
@@ -265,7 +266,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
                             if variable.target and variable.model and variable.model.language:
                                 temp_errors, temp_warnings = validate_target(
-                                    variable.target, variable.target_namespaces, Model, variable.model.language)
+                                    variable.target, variable.target_namespaces, Calculation, variable.model.language, variable.model.id)
                                 variable_errors.extend(temp_errors)
                                 variable_warnings.extend(temp_warnings)
 
@@ -407,7 +408,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                     if change.target:
                         if change.model and change.model.language:
                             temp_errors, temp_warnings = validate_target(
-                                change.target, change.target_namespaces, Model, change.model.language)
+                                change.target, change.target_namespaces, ModelChange, change.model.language, change.model.id)
                             change_errors.extend(temp_errors)
                             change_warnings.extend(temp_warnings)
 
@@ -444,7 +445,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
                         if variable.target and variable.model and variable.model.language:
                             temp_errors, temp_warnings = validate_target(
-                                variable.target, variable.target_namespaces, Model, variable.model.language)
+                                variable.target, variable.target_namespaces, Calculation, variable.model.language, variable.model.id)
                             variable_errors.extend(temp_errors)
                             variable_warnings.extend(temp_warnings)
 
@@ -487,8 +488,29 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                 warnings.append(['Task {} may be invalid.'.format(task_id), task_warnings[task]['other']])
 
         # validate data generators
+        model_etrees = {}
+        for model in doc.models:
+            if (
+                model.language
+                and is_model_language_encoded_in_xml(model.language)
+                and model.source
+                and not model.source.startswith('#')
+                and not model.source.startswith('http://')
+                and not model.source.startswith('https://')
+            ):
+                if os.path.isabs(model.source):
+                    model_source = model.source
+                else:
+                    model_source = os.path.join(working_dir, model.source)
+
+                if os.path.isfile(model_source):
+                    try:
+                        model_etrees[model] = lxml.etree.parse(model_source)
+                    except Exception:
+                        pass
+
         for i_data_gen, data_gen in enumerate(doc.data_generators):
-            data_gen_errors, data_gen_warnings = validate_data_generator(data_gen)
+            data_gen_errors, data_gen_warnings = validate_data_generator(data_gen, model_etrees=model_etrees)
 
             data_gen_id = '`' + data_gen.id + '`' if data_gen and data_gen.id else str(i_data_gen + 1)
 
@@ -751,7 +773,7 @@ def validate_model_changes(model):
 
         if change.target:
             if model.language:
-                temp_errors, temp_warnings = validate_target(change.target, change.target_namespaces, Model, model.language)
+                temp_errors, temp_warnings = validate_target(change.target, change.target_namespaces, ModelChange, model.language, model.id)
                 change_errors.extend(temp_errors)
                 change_warnings.extend(temp_warnings)
 
@@ -782,7 +804,7 @@ def validate_model_changes(model):
 
                 if variable.target and variable.model and variable.model.language:
                     temp_errors, temp_warnings = validate_target(
-                        variable.target, variable.target_namespaces, Model, variable.model.language)
+                        variable.target, variable.target_namespaces, Calculation, variable.model.language, variable.model.id)
                     variable_errors.extend(temp_errors)
                     variable_warnings.extend(temp_warnings)
 
@@ -917,7 +939,7 @@ def validate_uniform_range(range):
     return errors
 
 
-def validate_data_generator(data_generator):
+def validate_data_generator(data_generator, model_etrees=None):
     """ Validate a data generator
 
     * Parameters have ids
@@ -929,6 +951,7 @@ def validate_data_generator(data_generator):
 
     Args:
         data_generator (:obj:`DataGenerator`): data generator
+        model_etrees (:obj:`dict`, optional): dictionary that maps models to XML element trees of their sources
 
     Returns:
         :obj:`tuple`:
@@ -943,7 +966,7 @@ def validate_data_generator(data_generator):
         if not param.id:
             errors.append(['Parameter {} must have an id.'.format(i_parameter + 1)])
 
-    temp_errors, temp_warnings = validate_data_generator_variables(data_generator.variables)
+    temp_errors, temp_warnings = validate_data_generator_variables(data_generator.variables, model_etrees=model_etrees)
     errors.extend(temp_errors)
     warnings.extend(temp_warnings)
 
@@ -954,15 +977,18 @@ def validate_data_generator(data_generator):
     return (errors, warnings)
 
 
-def validate_data_generator_variables(variables):
+def validate_data_generator_variables(variables, model_etrees=None):
     """ Check variables have a symbol or target
 
     Args:
         variables (:obj:`list` of :obj:`Variable`): variables
+        model_etrees (:obj:`dict`, optional): dictionary that maps models to XML element trees of their sources
 
     Returns:
         nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
     """
+    model_etrees = model_etrees or {}
+
     errors = []
     warnings = []
 
@@ -986,7 +1012,14 @@ def validate_data_generator_variables(variables):
             models = get_models_referenced_by_task(variable.task)
             for model in models:
                 if model and model.language:
-                    temp_errors, temp_warnings = validate_target(variable.target, variable.target_namespaces, DataGenerator, model.language)
+                    model_changes = model.changes or list(filter(lambda change: change.model == model,
+                                                                 get_model_changes_for_task(variable.task)))
+
+                    temp_errors, temp_warnings = validate_target(variable.target, variable.target_namespaces,
+                                                                 DataGenerator, model.language,
+                                                                 model_id=model.id,
+                                                                 model_etree=model_etrees.get(model, None),
+                                                                 check_in_model_source=not model_changes)
                     variable_errors.extend(temp_errors)
                     variable_warnings.extend(temp_warnings)
 
@@ -1083,7 +1116,7 @@ def validate_output(output):
     return (errors, warnings)
 
 
-def validate_target(target, namespaces, context, language, doc=None):
+def validate_target(target, namespaces, context, language, model_id, model_etree=None, doc=None, check_in_model_source=False):
     """ Validate that a target is a valid XPath and that the namespaces needed to resolve a target are defined
 
     Args:
@@ -1091,7 +1124,10 @@ def validate_target(target, namespaces, context, language, doc=None):
         namespaces (:obj:`dict`): dictionary that maps prefixes of namespaces to their URIs
         context (:obj:`type`)
         language (:obj:`str`): model language
-        doc (:obj:`SedDocument`): SED document
+        model_id (:obj:`str`): model id
+        model_etree (:obj:`etree.Element`, optional): XML element tree for model source
+        doc (:obj:`SedDocument`, optional): SED document
+        check_in_model_source (:obj:`bool`, optional): whether to check that the target exists in the source
 
     Returns:
         nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
@@ -1126,6 +1162,20 @@ def validate_target(target, namespaces, context, language, doc=None):
             root = lxml.etree.Element("root")
             try:
                 xpath.evaluate(root)
+
+                if model_etree and check_in_model_source and context in [DataGenerator, Calculation]:
+                    if context == DataGenerator and '/@' in target:
+                        xpath = target.rpartition('/@')[0]
+                    else:
+                        xpath = target
+
+                    objs = eval_xpath(model_etree, xpath, namespaces)
+
+                    if not objs:
+                        errors.append(['XPath `{}` does not match any elements of model `{}`.'.format(xpath, model_id or '')])
+                    elif len(objs) > 1:
+                        errors.append(['XPath `{}` matches multiple elements of model `{}`.'.format(xpath, model_id or '')])
+
             except lxml.etree.XPathEvalError as exception:
                 if 'Undefined namespace prefix' in str(exception):
                     if namespaces:

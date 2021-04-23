@@ -36,6 +36,7 @@ __all__ = [
     'get_data_generators_for_output',
     'get_variables_for_data_generators',
     'get_variables_for_task',
+    'get_model_changes_for_task',
     'resolve_model_and_apply_xml_changes',
     'resolve_model',
     'apply_changes_to_xml_model',
@@ -215,6 +216,30 @@ def get_variables_for_task(doc, task):
     variables = get_variables_for_data_generators(data_generators)
 
     return list(filter(lambda var: var.task == task, variables))
+
+
+def get_model_changes_for_task(task):
+    """ Get the changes to models for a task
+
+    Args:
+        task (:obj:`Task`): task
+
+    Returns:
+        :obj:`list` of :obj:`ModelChange`: changes to the model
+    """
+    if isinstance(task, Task):
+        return []
+
+    elif isinstance(task, RepeatedTask):
+        changes = list(task.changes)
+
+        for sub_task in task.sub_tasks:
+            changes.extend(get_model_changes_for_task(sub_task.task))
+
+        return changes
+
+    else:
+        raise NotImplementedError('Task of type {} is not supported.'.format(task.__class__.__name__))
 
 
 BIOMODELS_DOWNLOAD_ENDPOINT = 'https://www.ebi.ac.uk/biomodels/model/download/{}?filename={}_url.xml'

@@ -3,6 +3,7 @@ from biosimulators_utils.sedml import utils
 from biosimulators_utils.sedml import validation
 from biosimulators_utils.sedml.warnings import IllogicalSedmlWarning
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
+from lxml import etree
 from unittest import mock
 import copy
 import os
@@ -390,6 +391,41 @@ class ValidationTestCase(unittest.TestCase):
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('must be acyclic', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
+
+    def test_validate_doc_with_xml_file(self):
+        model_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures',
+                                      'Chaouiya-BMC-Syst-Biol-2013-EGF-TNFa-signaling.xml')
+
+        doc = data_model.SedDocument()
+        doc.models.append(data_model.Model(id='model', source=model_filename, language=data_model.ModelLanguage.SBML.value))
+        doc.simulations.append(data_model.SteadyStateSimulation(id='sim', algorithm=data_model.Algorithm(kisao_id='KISAO_0000001')))
+        doc.tasks.append(data_model.Task(
+            id='task',
+            model=doc.models[0],
+            simulation=doc.simulations[0],
+        ))
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen',
+            variables=[
+                data_model.Variable(
+                    id='var1',
+                    target="/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='erk']/@qual:level",
+                    target_namespaces={
+                        'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+                        'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
+                    },
+                    task=doc.tasks[0],
+                )
+            ],
+            math='var1',
+        ))
+        self.assertEqual(validation.validate_doc(doc, self.dirname), ([], []))
+
+        doc.data_generators[0].variables[0].target = doc.data_generators[0].variables[0].target.replace('erk', 'ERK')
+        self.assertNotEqual(validation.validate_doc(doc, self.dirname), ([], []))
+
+        doc.models[0].source = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'tellurium.json')
+        self.assertNotEqual(validation.validate_doc(doc, self.dirname), ([], []))
 
     def test_validate_doc_with_repeated_tasks(self):
         doc = data_model.SedDocument()
@@ -1008,12 +1044,14 @@ class ValidationTestCase(unittest.TestCase):
     def test_validate_target(self):
         self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model',
                                                     {None: 'sed-ml', 'sbml': 'sbml'},
-                                                    data_model.Model,
-                                                    data_model.ModelLanguage.SBML.value), ([], []))
+                                                    data_model.Calculation,
+                                                    data_model.ModelLanguage.SBML.value,
+                                                    ''), ([], []))
         self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model/@sbml:value',
                                                     {None: 'sed-ml', 'sbml': 'sbml'},
-                                                    data_model.Model,
-                                                    data_model.ModelLanguage.SBML.value), ([], []))
+                                                    data_model.Calculation,
+                                                    data_model.ModelLanguage.SBML.value,
+                                                    ''), ([], []))
         self.assertEqual(validation.validate_target(
             "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='A']/@qual:level",
             {
@@ -1021,8 +1059,9 @@ class ValidationTestCase(unittest.TestCase):
                 'sbml': 'sbml',
                 'qual': 'qual',
             },
-            data_model.Model,
+            data_model.Calculation,
             data_model.ModelLanguage.SBML.value,
+            '',
         ), ([], []))
         self.assertEqual(validation.validate_target(
             "/sbml/model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='A']/@qual:level",
@@ -1031,38 +1070,114 @@ class ValidationTestCase(unittest.TestCase):
                 'sbml': 'sbml',
                 'qual': 'qual',
             },
-            data_model.Model,
+            data_model.Calculation,
             data_model.ModelLanguage.SBML.value,
+            '',
+        ), ([], []))
+
+        model_etree = etree.parse(os.path.join(os.path.dirname(__file__), '..', 'fixtures',
+                                               'Chaouiya-BMC-Syst-Biol-2013-EGF-TNFa-signaling.xml'))
+        self.assertEqual(validation.validate_target(
+            "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='erk']/@qual:compartment",
+            {
+                None: 'sed-ml',
+                'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+                'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
+            },
+            data_model.Calculation,
+            data_model.ModelLanguage.SBML.value,
+            '',
+            model_etree=model_etree,
+            check_in_model_source=True,
+        ), ([], []))
+
+        self.assertEqual(validation.validate_target(
+            "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='erk']/@qual:level",
+            {
+                None: 'sed-ml',
+                'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+                'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
+            },
+            data_model.DataGenerator,
+            data_model.ModelLanguage.SBML.value,
+            '',
+            model_etree=model_etree,
+            check_in_model_source=True,
         ), ([], []))
 
         self.assertIn('not a valid XML XPath',
                       flatten_nested_list_of_strings(validation.validate_target('/sbml:sbml@sbml:model',
                                                                                 {None: 'sed-ml', 'sbml': 'sbml'},
-                                                                                data_model.Model,
-                                                                                data_model.ModelLanguage.SBML.value)[0]))
+                                                                                data_model.Calculation,
+                                                                                data_model.ModelLanguage.SBML.value, '')[0]))
         self.assertIn('No namespaces are defined',
                       flatten_nested_list_of_strings(validation.validate_target('/sbml:sbml/sbml:model',
                                                                                 {},
-                                                                                data_model.Model,
-                                                                                data_model.ModelLanguage.SBML.value)[0]))
+                                                                                data_model.Calculation,
+                                                                                data_model.ModelLanguage.SBML.value, '')[0]))
         self.assertIn('Only the following namespaces are defined',
                       flatten_nested_list_of_strings(validation.validate_target('/sbml:sbml/sbml:model',
                                                                                 {'sbml2': 'sbml'},
-                                                                                data_model.Model,
-                                                                                data_model.ModelLanguage.SBML.value)[0]))
+                                                                                data_model.Calculation,
+                                                                                data_model.ModelLanguage.SBML.value, '')[0]))
+
+        self.assertIn('does not match any elements of model',
+                      flatten_nested_list_of_strings(validation.validate_target(
+                          "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='erk']/@qual:level",
+                          {
+                              None: 'sed-ml',
+                              'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+                              'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
+                          },
+                          data_model.Calculation,
+                          data_model.ModelLanguage.SBML.value,
+                          '',
+                          model_etree=model_etree,
+                          check_in_model_source=True,
+                      )[0]))
+
+        self.assertIn('does not match any elements of model',
+                      flatten_nested_list_of_strings(validation.validate_target(
+                          "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='ERK']/@qual:compartment",
+                          {
+                              None: 'sed-ml',
+                              'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+                              'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
+                          },
+                          data_model.Calculation,
+                          data_model.ModelLanguage.SBML.value,
+                          '',
+                          model_etree=model_etree,
+                          check_in_model_source=True,
+                      )[0]))
+
+        self.assertIn('matches multiple elements of model',
+                      flatten_nested_list_of_strings(validation.validate_target(
+                          "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies",
+                          {
+                              None: 'sed-ml',
+                              'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+                              'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
+                          },
+                          data_model.Calculation,
+                          data_model.ModelLanguage.SBML.value,
+                          '',
+                          model_etree=model_etree,
+                          check_in_model_source=True,
+                      )[0]))
 
         # no validation for non-XML languages
         self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model', {},
-                                                    data_model.Model, data_model.ModelLanguage.BNGL.value), ([], []))
+                                                    data_model.Calculation, data_model.ModelLanguage.BNGL.value, ''), ([], []))
 
         # no validation for references to data descriptions
         errors, warnings = validation.validate_target(
-            '#dataDescription', {}, data_model.DataGenerator, language=data_model.ModelLanguage.SBML.value)
+            '#dataDescription', {}, data_model.DataGenerator, language=data_model.ModelLanguage.SBML.value, model_id='')
         self.assertEqual(errors, [])
         self.assertIn('could not be validated', flatten_nested_list_of_strings(warnings))
 
-        errors, warnings = validation.validate_target('#dataDescription', {}, data_model.Model,
-                                                      language=data_model.ModelLanguage.SBML.value)
+        errors, warnings = validation.validate_target('#dataDescription', {}, data_model.Calculation,
+                                                      language=data_model.ModelLanguage.SBML.value, model_id='')
         self.assertIn('are not supported', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 

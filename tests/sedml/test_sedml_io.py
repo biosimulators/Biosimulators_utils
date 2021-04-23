@@ -724,14 +724,14 @@ class IoTestCase(unittest.TestCase):
 
     def test_write_error_invalid_ids(self):
         document = data_model.SedDocument(models=[
-            mock.Mock(id=None, source=None, changes=[]),
+            mock.Mock(id=None, source=None, language=None, changes=[]),
         ])
         with self.assertRaisesRegex(ValueError, 'missing ids'):
             io.SedmlSimulationWriter().run(document, '')
 
         document = data_model.SedDocument(models=[
-            mock.Mock(id='model', source=None, changes=[]),
-            mock.Mock(id='model', source=None, changes=[]),
+            mock.Mock(id='model', source=None, language=None, changes=[]),
+            mock.Mock(id='model', source=None, language=None, changes=[]),
         ])
         with self.assertRaisesRegex(ValueError, 'ids are repeated'):
             io.SedmlSimulationWriter().run(document, '')
