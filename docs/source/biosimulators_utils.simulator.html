@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3.1.11. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.57 documentation</title>
+    <title>3.1.11. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.58 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -580,6 +580,106 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 </dd>
 </dl>
 <dl class="py function">
+<dt id="biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_parameter">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">does_algorithm_implementation_have_capabilities_to_execute_parameter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_kisao_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if an implementation of an algorithm has the capabilities to execute a model langugae</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameter_kisao_id</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – KiSAO id for an algorithm parameter</p></li>
+<li><p><strong>algorithm_specs</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> with schema <code class="docutils literal notranslate"><span class="pre">https://api.biosimulators.org/openapi.json#/components/schemas/Algorithm</span></code>) – specifications of the implementation of an algorithm</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether the implementation of the algorithm has the capabilities to execute the SED parameter</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_model_language">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">does_algorithm_implementation_have_capabilities_to_execute_sed_model_language</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_model_language" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if an implementation of an algorithm has the capabilities to execute a model langugae</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_language</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – SED URN for model language</p></li>
+<li><p><strong>algorithm_specs</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> with schema <code class="docutils literal notranslate"><span class="pre">https://api.biosimulators.org/openapi.json#/components/schemas/Algorithm</span></code>) – specifications of the implementation of an algorithm</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether the implementation of the algorithm has the capabilities to execute the SED model language</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_task">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">does_algorithm_implementation_have_capabilities_to_execute_sed_task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if an implementation of an algorithm has the capabilities to execute a SED task</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>) – SED task</p></li>
+<li><p><strong>algorithm_specs</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> with schema <code class="docutils literal notranslate"><span class="pre">https://api.biosimulators.org/openapi.json#/components/schemas/Algorithm</span></code>) – specifications of the implementation of an algorithm</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether the implementation of the algorithm has the capabilities to execute the SED task</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_document">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">does_simulator_have_capabilities_to_execute_sed_document</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sed_doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_document" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if a simulator has the capabilities to execute a SED document</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong> (<em>sed_doc</em>) – obj:<a href="#id1"><span class="problematic" id="id2">`</span></a>SedDocument): SED document</p></li>
+<li><p><strong>simulator_specs</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> with schema <code class="docutils literal notranslate"><span class="pre">https://api.biosimulators.org/openapi.json#/components/schemas/Simulator</span></code>) – specifications of a simulation tool</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether the simulator has the capabilities to execute the SED document</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_task">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">does_simulator_have_capabilities_to_execute_sed_task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if a simulator has the capabilities to execute a SED task</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>) – SED task</p></li>
+<li><p><strong>simulator_specs</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> with schema <code class="docutils literal notranslate"><span class="pre">https://api.biosimulators.org/openapi.json#/components/schemas/Simulator</span></code>) – specifications of a simulation tool</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether the simulator has the capabilities to execute the SED task</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="biosimulators_utils.simulator.specs.gen_algorithms_from_specs">
 <code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">gen_algorithms_from_specs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">specifications</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.gen_algorithms_from_specs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a list of algorithms and their parameters from the specifications of a simulator</p>
@@ -592,6 +692,26 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <code class="xref py py-obj docutils literal notranslate"><span class="pre">Algorithm</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.simulator.specs.get_simulator_specs">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">get_simulator_specs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'latest'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.get_simulator_specs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the specifications of a simulation tool from the BioSimulators registry</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – id</p></li>
+<li><p><strong>version</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – version</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>specifications</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> with schema <code class="docutils literal notranslate"><span class="pre">https://api.biosimulators.org/openapi.json#/components/schemas/Simulator</span></code></p>
 </dd>
 </dl>
 </dd></dl>
