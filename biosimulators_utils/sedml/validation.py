@@ -508,7 +508,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                 errors.append(['Output {} is invalid.'.format(output_id), output_errors])
 
             if output_warnings:
-                errors.append(['Output {} may be invalid.'.format(output_id), output_warnings])
+                warnings.append(['Output {} may be invalid.'.format(output_id), output_warnings])
 
     return (errors, warnings)
 
