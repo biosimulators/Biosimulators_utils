@@ -4,6 +4,7 @@ h5py
 lxml
 matplotlib
 mpmath
+natsort
 networkx
 numpy
 openpyxl
