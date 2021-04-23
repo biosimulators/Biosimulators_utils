@@ -9,6 +9,10 @@
 from ..config import get_config
 from .data_model import AlgorithmSubstitutionPolicy, ALGORITHM_SUBSTITUTION_POLICY_LEVELS
 
+__all__ = [
+    'get_algorithm_substitution_policy',
+]
+
 
 def get_algorithm_substitution_policy():
     """ Get the current algorithm substitution policy based on the value of the ``ALGORITHM_SUBSTITUTION_POLICY``
