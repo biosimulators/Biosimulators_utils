@@ -15,6 +15,7 @@ import enum
 __all__ = [
     'ModelLanguage',
     'ModelLanguagePattern',
+    'ModelLanguageEdamId',
     'Symbol',
     'SedBase',
     'SedIdGroupMixin',
@@ -71,6 +72,15 @@ class ModelLanguagePattern(str, enum.Enum):
     NeuroML = r'urn:sedml:language:neuroml(\.version-\d+_\d+_\d+\.level\-\d+)?$'
     SBML = r'^urn:sedml:language:sbml(\.level\-\d+\.version\-\d+)?$'
     VCML = 'urn:sedml:language:vcml'
+
+
+class ModelLanguageEdamId(str, enum.Enum):
+    """ Model language EDAM id """
+    BNGL = 'format_3972'
+    CellML = 'format_3240'
+    NeuroML = 'format_3971'
+    SBML = 'format_2585'
+    VCML = None
 
 
 class Symbol(str, enum.Enum):
