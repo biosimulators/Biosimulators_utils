@@ -81,6 +81,9 @@ def does_simulator_have_capabilities_to_execute_sed_task(task, simulator_specs):
         :obj:`bool`: whether the simulator has the capabilities to execute the SED task
     """
     if isinstance(task, Task):
+        if not isinstance(task.simulation, (SteadyStateSimulation, UniformTimeCourseSimulation)):
+            return False
+
         for alg_specs in simulator_specs['algorithms']:
             if does_algorithm_implementation_have_capabilities_to_execute_sed_task(task, alg_specs):
                 return True

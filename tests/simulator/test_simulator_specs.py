@@ -1,6 +1,6 @@
 from biosimulators_utils.sedml.data_model import (
     SedDocument, Task, RepeatedTask, SubTask, Model, ModelLanguage,
-    UniformTimeCourseSimulation, Algorithm, AlgorithmParameterChange,
+    UniformTimeCourseSimulation, OneStepSimulation, Algorithm, AlgorithmParameterChange,
 )
 from biosimulators_utils.simulator.specs import (
     get_simulator_specs,
@@ -82,6 +82,11 @@ class SimulatorSpecsTestCase(unittest.TestCase):
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[0].simulation.algorithm.changes[0].kisao_id = 'KISAO_0000019'
+        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs))
+
+        specs = get_simulator_specs('pysces', 'latest')
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[0].simulation = OneStepSimulation(algorithm=Algorithm(kisao_id='KISAO_0000019'))
         self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs))
 
     def test_gen_algorithms_from_specs(self):
