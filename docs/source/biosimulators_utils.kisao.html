@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3.1.5. biosimulators_utils.kisao package &#8212; BioSimulators utils 0.1.59 documentation</title>
+    <title>3.1.5. biosimulators_utils.kisao package &#8212; BioSimulators utils 0.1.60 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -150,6 +150,87 @@
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
+<dl class="py function">
+<dt id="biosimulators_utils.kisao.utils.get">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.kisao.utils.</span></code><code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/kisao/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.kisao.utils.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the KiSAO ontology</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dirname</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – path where KiSAO is/should be installed. Default: use
+the path managed by BioSimulators utils</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ontology</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pronto.Ontology</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.kisao.utils.get_child_terms">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.kisao.utils.</span></code><code class="sig-name descname"><span class="pre">get_child_terms</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dirname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/kisao/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.kisao.utils.get_child_terms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the child terms of a term in the ontology</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – id of the term (e.g., <code class="docutils literal notranslate"><span class="pre">KISAO_0000019</span></code>)</p></li>
+<li><p><strong>dirname</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – path where KiSAO is/should be installed. Default: use
+the path managed by BioSimulators utils</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>child terms</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">pronto.Term</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.kisao.utils.get_parent_terms">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.kisao.utils.</span></code><code class="sig-name descname"><span class="pre">get_parent_terms</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dirname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/kisao/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.kisao.utils.get_parent_terms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parent terms of a term in the ontology</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – id of the term (e.g., <code class="docutils literal notranslate"><span class="pre">KISAO_0000019</span></code>)</p></li>
+<li><p><strong>dirname</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – path where KiSAO is/should be installed. Default: use
+the path managed by BioSimulators utils</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>parent terms</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">pronto.Term</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="biosimulators_utils.kisao.utils.get_term">
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.kisao.utils.</span></code><code class="sig-name descname"><span class="pre">get_term</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dirname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/kisao/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.kisao.utils.get_term" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a term in the ontology</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – id of the term (e.g., <code class="docutils literal notranslate"><span class="pre">KISAO_0000019</span></code>)</p></li>
+<li><p><strong>dirname</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – path where KiSAO is/should be installed. Default: use
+the path managed by BioSimulators utils</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>term</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pronto.Term</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt id="biosimulators_utils.kisao.utils.normalize_kisao_id">
 <code class="sig-prename descclassname"><span class="pre">biosimulators_utils.kisao.utils.</span></code><code class="sig-name descname"><span class="pre">normalize_kisao_id</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/kisao/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.kisao.utils.normalize_kisao_id" title="Permalink to this definition">¶</a></dt>
