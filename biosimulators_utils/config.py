@@ -6,10 +6,11 @@
 :License: MIT
 """
 
+import appdirs
 import enum
 import os
 
-__all__ = ['Config', 'get_config', 'Colors']
+__all__ = ['Config', 'get_config', 'Colors', 'get_app_dirs']
 
 
 class Config(object):
@@ -112,3 +113,12 @@ Colors = enum.Enum('Colors',
                        'warned': 'yellow',
                    },
                    type=str)
+
+
+def get_app_dirs():
+    """ Get the directories for the application
+
+    Returns:
+        :obj:`appdirs.AppDirs`: application directories
+    """
+    return appdirs.AppDirs("BioSimulatorsUtils", "BioSimulatorsTeam")

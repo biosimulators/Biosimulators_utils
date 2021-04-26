@@ -1,3 +1,4 @@
+appdirs
 cement
 evalidate
 h5py
@@ -9,6 +10,7 @@ networkx
 numpy
 openpyxl
 pandas
+pronto
 python_dateutil
 python_libcombine >= 0.2.9
 python_libsedml >= 2.0.16
