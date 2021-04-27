@@ -169,10 +169,13 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
         # algorithms and parameters are described with valid ids of KiSAO terms
         for i_sim, sim in enumerate(doc.simulations):
-            sim_errors = validate_simulation(sim)
+            sim_errors, sim_warnings = validate_simulation(sim)
             if sim_errors:
                 sim_id = '`' + sim.id + '`' if sim and sim.id else str(i_sim + 1)
                 errors.append(['Simulation {} is invalid.'.format(sim_id), sim_errors])
+            if sim_warnings:
+                sim_id = '`' + sim.id + '`' if sim and sim.id else str(i_sim + 1)
+                warnings.append(['Simulation {} may be invalid.'.format(sim_id), sim_warnings])
 
         # basic tasks reference a model and a simulation
         task_errors = {}
@@ -859,9 +862,13 @@ def validate_simulation(simulation):
         simulation (:obj:`Simulation`): simulation
 
     Returns:
-        * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
     """
     errors = []
+    warnings = []
 
     if isinstance(simulation, OneStepSimulation):
         if not isinstance(simulation.step, (int, float)):
@@ -903,6 +910,17 @@ def validate_simulation(simulation):
             if math.floor(simulation.number_of_steps) != simulation.number_of_steps:
                 errors.append(['Number of points must be an integer.'])
 
+            elif (simulation.number_of_steps % 5) != 0:
+                warnings.append([
+                    'The time course simulation has an unusual number of steps. Check that the parameters of the time course are correct.',
+                    [
+                        ['Initial time: {}'.format(simulation.initial_time if simulation.initial_time is not None else '')],
+                        ['Output start time: {}'.format(simulation.output_start_time if simulation.output_start_time is not None else '')],
+                        ['Output end time: {}'.format(simulation.output_end_time if simulation.output_end_time is not None else '')],
+                        ['Number of steps: {}'.format(simulation.number_of_steps if simulation.number_of_steps is not None else '')],
+                    ],
+                ])
+
     else:
         errors.append(['Simulation must be a one step, steady-state, or uniform time course, not an instance of `{}`.'.format(
             simulation.__class__.__name__)])
@@ -918,7 +936,7 @@ def validate_simulation(simulation):
     else:
         errors.append(['Simulation must have an algorithm.'])
 
-    return errors
+    return errors, warnings
 
 
 def validate_uniform_range(range):

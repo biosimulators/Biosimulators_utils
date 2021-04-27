@@ -692,7 +692,10 @@ class ValidationTestCase(unittest.TestCase):
                 warnings.extend(temp_warnings)
             if task.simulation:
                 errors.extend(validation.validate_simulation_type(task.simulation, (data_model.UniformTimeCourseSimulation, )))
-                errors.extend(validation.validate_simulation(task.simulation))
+
+                temp_errors, temp_warnings = validation.validate_simulation(task.simulation)
+                errors.extend(temp_errors)
+                warnings.extend(temp_warnings)
         if variables:
             temp_errors, temp_warnings = validation.validate_data_generator_variables(variables)
             errors.extend(temp_errors)
@@ -763,20 +766,33 @@ class ValidationTestCase(unittest.TestCase):
         validation.validate_simulation(sim)
 
         sim.number_of_steps = 10.5
-        errors = validation.validate_simulation(sim)
+        errors, warnings = validation.validate_simulation(sim)
         self.assertIn('must be an integer', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         sim.number_of_steps = 0
-        errors = validation.validate_simulation(sim)
+        errors, warnings = validation.validate_simulation(sim)
         self.assertIn('must be at least 1', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         sim.output_end_time = -1
-        errors = validation.validate_simulation(sim)
+        errors, warnings = validation.validate_simulation(sim)
         self.assertIn('must be at least the output start time', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         sim.output_start_time = -2
-        errors = validation.validate_simulation(sim)
+        errors, warnings = validation.validate_simulation(sim)
         self.assertIn('must be at least the initial time', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
+        sim.algorithm = data_model.Algorithm(kisao_id='KISAO_0000001')
+        sim.initial_time = 0.
+        sim.output_start_time = 0.
+        sim.output_end_time = 1000.
+        sim.number_of_points = 1001
+        errors, warnings = validation.validate_simulation(sim)
+        self.assertEqual(errors, [])
+        self.assertIn('unusual number of steps', flatten_nested_list_of_strings(warnings))
 
     def test_validate_uniform_range(self):
         range = data_model.UniformRange(
