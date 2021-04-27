@@ -89,7 +89,7 @@ class ExecStatusDataModel(unittest.TestCase):
                                      y_scale=sedml_data_model.AxisScale.log,
                                      z_scale=sedml_data_model.AxisScale.log),
         ]))
-        SedmlSimulationWriter().run(exp_2, os.path.join(self.dirname, 'exp_2.sedml'), validate_models_with_languages=False)
+        SedmlSimulationWriter().run(exp_2, os.path.join(self.dirname, 'exp_2.sedml'), validate_semantics=False, validate_models_with_languages=False)
 
         status = utils.init_combine_archive_log(
             archive, self.dirname,

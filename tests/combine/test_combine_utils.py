@@ -51,7 +51,8 @@ class CombineUtilsTestCase(unittest.TestCase):
         exp_1.tasks.append(task_2)
         exp_1.outputs.append(sedml_data_model.Report(id='report_1'))
         exp_1.outputs.append(sedml_data_model.Plot2D(id='plot_2'))
-        SedmlSimulationWriter().run(exp_1, os.path.join(self.dirname, 'exp_1.sedml'), validate_models_with_languages=False)
+        SedmlSimulationWriter().run(exp_1, os.path.join(self.dirname, 'exp_1.sedml'),
+                                    validate_semantics=False, validate_models_with_languages=False)
 
         exp_2 = sedml_data_model.SedDocument()
         model_2 = sedml_data_model.Model(id='model_2', language=sedml_data_model.ModelLanguage.SBML.value, source='./model.xml')
@@ -63,9 +64,11 @@ class CombineUtilsTestCase(unittest.TestCase):
         exp_2.outputs.append(sedml_data_model.Report(id='report_3'))
         exp_2.outputs.append(sedml_data_model.Plot3D(id='plot_5'))
         exp_2.outputs.append(sedml_data_model.Plot2D(id='plot_4'))
-        SedmlSimulationWriter().run(exp_2, os.path.join(self.dirname, 'exp_2.sedml'), validate_models_with_languages=False)
+        SedmlSimulationWriter().run(exp_2, os.path.join(self.dirname, 'exp_2.sedml'),
+                                    validate_semantics=False, validate_models_with_languages=False)
 
-        summary = utils.get_summary_sedml_contents(archive, self.dirname)
+        with mock.patch('biosimulators_utils.sedml.validation.validate_output', return_value=([], [])):
+            summary = utils.get_summary_sedml_contents(archive, self.dirname)
         self.assertTrue(summary.startswith(
             'Archive contains 2 SED-ML documents with 2 models, 2 simulations, 3 tasks, 2 reports, and 3 plots:\n'))
         self.assertGreater(summary.index('exp_2.sedml'), summary.index('exp_1.sedml'))
