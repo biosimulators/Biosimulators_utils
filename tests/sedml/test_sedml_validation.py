@@ -1355,3 +1355,15 @@ class ValidationTestCase(unittest.TestCase):
         errors, warnings = validation.validate_output(plot3d)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
         self.assertIn('experimental feature of SED-ML', flatten_nested_list_of_strings(warnings))
+
+        report.data_sets = []
+        errors, warnings = validation.validate_output(report)
+        self.assertIn('must have at least one data set', flatten_nested_list_of_strings(errors))
+
+        plot2d.curves = []
+        errors, warnings = validation.validate_output(plot2d)
+        self.assertIn('must have at least one curve', flatten_nested_list_of_strings(errors))
+
+        plot3d.surfaces = []
+        errors, warnings = validation.validate_output(plot3d)
+        self.assertIn('must have at least one surface', flatten_nested_list_of_strings(errors))

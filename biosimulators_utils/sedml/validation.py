@@ -1059,6 +1059,9 @@ def validate_output(output):
     warnings = []
 
     if isinstance(output, Report):
+        if not output.data_sets:
+            errors.append(['Report must have at least one data set.'])
+
         for i_data_set, data_set in enumerate(output.data_sets):
             data_set_errors = []
 
@@ -1075,6 +1078,9 @@ def validate_output(output):
                 errors.append(['Data set {} is invalid.'.format(data_set_id), data_set_errors])
 
     elif isinstance(output, Plot2D):
+        if not output.curves:
+            errors.append(['Plot must have at least one curve.'])
+
         for i_curve, curve in enumerate(output.curves):
             curve_errors = []
 
@@ -1088,6 +1094,9 @@ def validate_output(output):
                 errors.append(['Curve {} is invalid.'.format(curve_id), curve_errors])
 
     elif isinstance(output, Plot3D):
+        if not output.surfaces:
+            errors.append(['Plot must have at least one surface.'])
+
         for i_surface, surface in enumerate(output.surfaces):
             surface_errors = []
 
