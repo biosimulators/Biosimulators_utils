@@ -7,14 +7,12 @@
 """
 
 from ..warnings import warn
-from .core import get_child_terms, get_parent_terms, get_term_ids
-from .data_model import ODE_INTEGRATION_ALGORITHM_PARENT_KISAO_IDS
 from .warnings import InvalidKisaoTermIdWarning
 import re
 
 __all__ = [
     'normalize_kisao_id',
-    'get_ode_integration_kisao_term_ids',
+    'get_url_for_term',
 ]
 
 
@@ -46,19 +44,13 @@ def normalize_kisao_id(id):
     return id
 
 
-def get_ode_integration_kisao_term_ids():
-    """ Get the KiSAO ids of ODE integration algorithms
+def get_url_for_term(id):
+    """ Get the URL for the OLS web page for a KiSAO term
+
+    Args:
+        id (:obj:`str`): id (e.g., ``KISAO_0000019`)
 
     Returns:
-        : obj: `list` of: obj: `str`: ids of ODE integration algorithms
+        :obj:`str`: URL for the OLS web page for a KiSAO term
     """
-    ode_term_ids = set()
-    for parent_id in ODE_INTEGRATION_ALGORITHM_PARENT_KISAO_IDS:
-        for term in get_child_terms(parent_id):
-            term_id = term.id.partition('#')[2]
-            term_parent_ids = set(get_term_ids(get_parent_terms(term_id)))
-            term_parent_ids.remove('KISAO_0000000')
-            if not term_parent_ids.difference(ODE_INTEGRATION_ALGORITHM_PARENT_KISAO_IDS):
-                ode_term_ids.add(term_id)
-
-    return sorted(ode_term_ids)
+    return 'https://www.ebi.ac.uk/ols/ontologies/kisao/terms?iri=http%3A%2F%2Fwww.biomodels.net%2Fkisao%2FKISAO%23' + id

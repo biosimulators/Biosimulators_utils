@@ -1,9 +1,4 @@
-from biosimulators_utils.kisao import data_model
 from biosimulators_utils.kisao import utils
-import os
-import pronto
-import shutil
-import tempfile
 import unittest
 
 
@@ -16,8 +11,5 @@ class KisaoUtilsTestCase(unittest.TestCase):
         with self.assertWarnsRegex(UserWarning, 'likely not an id'):
             self.assertEqual(utils.normalize_kisao_id('X'), 'X')
 
-    def test_get_ode_integration_kisao_term_ids(self):
-        term_ids = utils.get_ode_integration_kisao_term_ids()
-        self.assertIn('KISAO_0000019', term_ids)
-        self.assertIn('KISAO_0000560', term_ids)
-        self.assertNotIn('KISAO_0000029', term_ids)
+    def test_get_url_for_term(self):
+        utils.get_url_for_term('KISAO_0000029')
