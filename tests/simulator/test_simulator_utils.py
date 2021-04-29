@@ -1,5 +1,5 @@
 from biosimulators_utils.simulator import utils
-from biosimulators_utils.simulator.data_model import AlgorithmSubstitutionPolicy
+from kisao import AlgorithmSubstitutionPolicy
 from unittest import mock
 import os
 import unittest

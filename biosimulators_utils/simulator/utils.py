@@ -7,7 +7,7 @@
 """
 
 from ..config import get_config
-from .data_model import AlgorithmSubstitutionPolicy, ALGORITHM_SUBSTITUTION_POLICY_LEVELS
+from kisao import AlgorithmSubstitutionPolicy, ALGORITHM_SUBSTITUTION_POLICY_LEVELS
 
 __all__ = [
     'get_algorithm_substitution_policy',
