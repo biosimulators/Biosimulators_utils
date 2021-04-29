@@ -29,6 +29,7 @@ def validate_model(filename, name=None):
     if filename:
         if os.path.isfile(filename):
             doc = libsbml.readSBMLFromFile(filename)
+            doc.checkConsistency()
 
             for i_error in range(doc.getNumErrors()):
                 sbml_error = doc.getError(i_error)

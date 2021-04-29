@@ -759,7 +759,7 @@
       </qual:transition>
     </qual:listOfTransitions>
     <listOfCompartments>
-      <compartment constant="true" id="main" metaid="d5d113b5-ff33-44d9-9d65-d3e06e624623"/>
+      <compartment constant="true" id="main" metaid="d5d113b5-ff33-44d9-9d65-d3e06e624623" units="dimensionless"/>
     </listOfCompartments>
   </model>
 </sbml>

@@ -419,7 +419,9 @@ class ValidationTestCase(unittest.TestCase):
             ],
             math='var1',
         ))
-        self.assertEqual(validation.validate_doc(doc, self.dirname), ([], []))
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertEqual(errors, [], flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [], flatten_nested_list_of_strings(warnings))
 
         doc.data_generators[0].variables[0].target = doc.data_generators[0].variables[0].target.replace('erk', 'ERK')
         self.assertNotEqual(validation.validate_doc(doc, self.dirname), ([], []))

@@ -23,7 +23,7 @@ class ValidationTestCase(unittest.TestCase):
         archive = CombineArchiveReader().run(self.FIXTURE, self.tmp_dir)
         errors, warnings = validate(archive, self.tmp_dir)
         self.assertEqual(errors, [])
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
     def test_error_handling(self):
         archive = CombineArchive()

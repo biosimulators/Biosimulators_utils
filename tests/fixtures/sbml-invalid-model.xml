@@ -1,14 +1,17 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" metaid="metaid_0000001" version="4">
-  <model id="Ciliberto2003_Morphogenesis" metaid="metaid_0000002" name="Ciliberto2003_Morphogenesis_Checkpoint">
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="Ciliberto2003_Morphogenesis" name="Ciliberto2003_Morphogenesis_Checkpoint">
+    <listOfCompartments>
+      <compartment id="compartment" size="1"/>
+    </listOfCompartments>
     <listOfSpecies>
-      <species compartment="compartment" initialConcentration="0.1" metaid="metaid_0000084" name="CDC28_Clb2_Sic1_Complex" sboTerm="SBO:0000296">
+      <species compartment="compartment" initialConcentration="0.1" name="CDC28_Clb2_Sic1_Complex" sboTerm="SBO:0000296">
       </species>
-      <species compartment="compartment" id="Clb" initialConcentration="0.1" metaid="metaid_0000085" name="Clb2" sboTerm="SBO:0000245">
+      <species compartment="compartment" id="Clb" initialConcentration="0.1" name="Clb2" sboTerm="SBO:0000245">
       </species>
-      <species compartment="compartment" id="Sic" initialConcentration="0.1" metaid="metaid_0000086" name="Sic1" sboTerm="SBO:0000245">
+      <species compartment="compartment" id="Sic" initialConcentration="0.1" name="Sic1" sboTerm="SBO:0000245">
       </species>
-      <species compartment="compartment" id="SpeciesToReplace" initialConcentration="0.0035491784" metaid="metaid_0000086" name="Sic1" sboTerm="SBO:0000245">
+      <species compartment="compartment" id="SpeciesToReplace" initialConcentration="0.0035491784" name="Sic1" sboTerm="SBO:0000245">
       </species>
     </listOfSpecies>
   </model>
