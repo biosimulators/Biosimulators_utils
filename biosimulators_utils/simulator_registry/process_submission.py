@@ -8,6 +8,7 @@
 
 from .data_model import SimulatorSubmission
 import io
+import yaml
 import yamldown
 
 __all__ = ['get_simulator_submission_from_gh_issue_body']
@@ -23,7 +24,13 @@ def get_simulator_submission_from_gh_issue_body(body):
         :obj:`SimulatorSubmission`: simulator submission
     """
     body_stream = io.StringIO(body.replace('\r', ''))
+
+    # hack to make yamldown work with Python 3.9
+    if not hasattr(yaml, 'FullLoader'):
+        yaml.FullLoader = yaml.Loader
+
     data, _ = yamldown.load(body_stream)
+
     return get_simulator_submission_from_gh_issue_body_data(data)
 
 

@@ -13,6 +13,7 @@ import io
 import os
 import requests
 import types  # noqa: F401
+import yaml
 import yamldown
 
 __all__ = [
@@ -150,7 +151,13 @@ class GitHubAction(abc.ABC):
             :obj:`object`: YAML-structured data in an issue
         """
         body = io.StringIO(issue['body'].replace('\r', ''))
+
+        # hack to make yamldown work with Python 3.9
+        if not hasattr(yaml, 'FullLoader'):
+            yaml.FullLoader = yaml.Loader
+
         data, _ = yamldown.load(body)
+
         return data
 
     @classmethod
