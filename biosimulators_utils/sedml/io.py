@@ -12,12 +12,12 @@ from .validation import validate_doc
 from .warnings import SedmlFeatureNotSupportedWarning
 from ..biosimulations.data_model import Metadata, ExternalReferences, Citation
 from ..data_model import Person, Identifier, OntologyTerm
-from ..kisao.utils import normalize_kisao_id
 from ..warnings import warn, BioSimulatorsWarning
 from ..utils.core import flatten_nested_list_of_strings
 from xml.sax import saxutils
 import dateutil.parser
 import enum
+import kisao
 import libsedml
 import os
 
@@ -1335,10 +1335,10 @@ class SedmlSimulationReader(object):
         for sim in doc.simulations:
             if sim.algorithm:
                 if sim.algorithm.kisao_id:
-                    sim.algorithm.kisao_id = normalize_kisao_id(sim.algorithm.kisao_id)
+                    sim.algorithm.kisao_id = kisao.Kisao.get_normalized_id(sim.algorithm.kisao_id)
                 for change in sim.algorithm.changes:
                     if change.kisao_id:
-                        change.kisao_id = normalize_kisao_id(change.kisao_id)
+                        change.kisao_id = kisao.Kisao.get_normalized_id(change.kisao_id)
 
         if self._reference_errors:
             self.errors.append([
