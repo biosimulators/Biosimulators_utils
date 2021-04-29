@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3.1.11. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.61 documentation</title>
+    <title>3.1.11. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.62 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -210,109 +210,6 @@ variables recognized by the simulator</p></li>
 </dd>
 </dl>
 <dl class="py class">
-<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.data_model.</span></code><code class="sig-name descname"><span class="pre">AlgorithmSubstitutionPolicy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>Algorithm substitution policy</p>
-<dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.ANY">
-<code class="sig-name descname"><span class="pre">ANY</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'ANY'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.ANY" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.DISTINCT_APPROXIMATIONS">
-<code class="sig-name descname"><span class="pre">DISTINCT_APPROXIMATIONS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'DISTINCT_APPROXIMATIONS'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.DISTINCT_APPROXIMATIONS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Algorithms can be substituted with others that make distinct approximations
-to the same math.</p>
-<p>Examples:</p>
-<ul class="simple">
-<li><p>SSA &lt;=&gt; tau leaping &lt;=&gt; Pahle hybrid method</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.DISTINCT_SCALES">
-<code class="sig-name descname"><span class="pre">DISTINCT_SCALES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'DISTINCT_SCALES'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.DISTINCT_SCALES" title="Permalink to this definition">¶</a></dt>
-<dd><p>Algorithms can be substituted with others that make distinct approximations
-to the same math that substantially differ in their scale.</p>
-<p>Examples:</p>
-<ul class="simple">
-<li><p>SSA &lt;=&gt; CVODE</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.NONE">
-<code class="sig-name descname"><span class="pre">NONE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'None'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.NONE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_FRAMEWORK">
-<code class="sig-name descname"><span class="pre">SAME_FRAMEWORK</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'SAME_FRAMEWORK'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_FRAMEWORK" title="Permalink to this definition">¶</a></dt>
-<dd><p>Any algorithm of the same framework can be substituted (e.g., CVODE, LSODA).</p>
-<p>Examples:</p>
-<ul class="simple">
-<li><p>FBA &lt;=&gt; FVA</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_MATH">
-<code class="sig-name descname"><span class="pre">SAME_MATH</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'SAME_MATH'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_MATH" title="Permalink to this definition">¶</a></dt>
-<dd><p>Algorithms can be substituted with mathematically-equivalent algorithms.</p>
-<p>Examples:</p>
-<ul class="simple">
-<li><p>SSA &lt;=&gt; Next Reaction Method</p></li>
-<li><p>Simplex method &lt;=&gt; interior point method</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_METHOD">
-<code class="sig-name descname"><span class="pre">SAME_METHOD</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'SAME_METHOD'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_METHOD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Algorithms can be substituted with different realizations of the same method.</p>
-<p>Examples:</p>
-<ul class="simple">
-<li><p>GLPK Simplex method &lt;=&gt; SciPy Simplex method</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_VARIABLES">
-<code class="sig-name descname"><span class="pre">SAME_VARIABLES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'SAME_VARIABLES'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SAME_VARIABLES" title="Permalink to this definition">¶</a></dt>
-<dd><p>Algorithms that predict the same dependent variables can be substituted.</p>
-<p>Examples:</p>
-<ul class="simple">
-<li><p>FBA &lt;=&gt; parsimonious FBA</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SIMILAR_APPROXIMATIONS">
-<code class="sig-name descname"><span class="pre">SIMILAR_APPROXIMATIONS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'SIMILAR_APPROXIMATIONS'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SIMILAR_APPROXIMATIONS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Algorithms can be substituted with others that make similar approximations
-to the same math.</p>
-<p>Examples:</p>
-<ul class="simple">
-<li><p>CVODE &lt;=&gt; LSODA &lt;=&gt; RK-45</p></li>
-<li><p>tau leaping &lt;=&gt; partitioned tau leaping</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES">
-<code class="sig-name descname"><span class="pre">SIMILAR_VARIABLES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'SIMILAR_VARIABLES'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES" title="Permalink to this definition">¶</a></dt>
-<dd><p>Algorithms that predict similar dependent variables can be substituted.</p>
-<p>This is the recommended default value.</p>
-<p>Examples:</p>
-<ul class="simple">
-<li><p>FBA &lt;=&gt; geometric FBA</p></li>
-</ul>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt id="biosimulators_utils.simulator.data_model.EnvironmentVariable">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.data_model.</span></code><code class="sig-name descname"><span class="pre">EnvironmentVariable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">more_info_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.EnvironmentVariable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -427,13 +324,6 @@ to the same math.</p>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
-<dl class="py exception">
-<dt id="biosimulators_utils.simulator.exceptions.AlgorithmCannotBeSubstitutedException">
-<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.exceptions.</span></code><code class="sig-name descname"><span class="pre">AlgorithmCannotBeSubstitutedException</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exceptions.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.exceptions.AlgorithmCannotBeSubstitutedException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.exceptions.BioSimulatorsException" title="biosimulators_utils.exceptions.BioSimulatorsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.exceptions.BioSimulatorsException</span></code></a></p>
-<p>Exception that the algorithm substitution policy does not allow an algorithm to be substituted</p>
-</dd></dl>
-
 <dl class="py exception">
 <dt id="biosimulators_utils.simulator.exceptions.AlgorithmDoesNotSupportModelFeatureException">
 <em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.exceptions.</span></code><code class="sig-name descname"><span class="pre">AlgorithmDoesNotSupportModelFeatureException</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exceptions.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.exceptions.AlgorithmDoesNotSupportModelFeatureException" title="Permalink to this definition">¶</a></dt>
@@ -750,31 +640,6 @@ environment variable.</p>
 <dd class="field-odd"><p><strong>ValueError</strong> – if the value of <code class="docutils literal notranslate"><span class="pre">ALGORITHM_SUBSTITUTION_POLICY</span></code> is not the name of a recognized policy</p>
 </dd>
 </dl>
-</dd></dl>
-
-</div>
-<div class="section" id="module-biosimulators_utils.simulator.warnings">
-<span id="biosimulators-utils-simulator-warnings-module"></span><h2><span class="section-number">3.1.11.10. </span>biosimulators_utils.simulator.warnings module<a class="headerlink" href="#module-biosimulators_utils.simulator.warnings" title="Permalink to this headline">¶</a></h2>
-<p>Standard warnings issued by biosimulation tools</p>
-<dl class="field-list simple">
-<dt class="field-odd">Author</dt>
-<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
-</dd>
-<dt class="field-even">Date</dt>
-<dd class="field-even"><p>2020-12-29</p>
-</dd>
-<dt class="field-odd">Copyright</dt>
-<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
-</dd>
-<dt class="field-even">License</dt>
-<dd class="field-even"><p>MIT</p>
-</dd>
-</dl>
-<dl class="py exception">
-<dt id="biosimulators_utils.simulator.warnings.AlgorithmSubstitutedWarning">
-<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.warnings.</span></code><code class="sig-name descname"><span class="pre">AlgorithmSubstitutedWarning</span></code><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/warnings.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.warnings.AlgorithmSubstitutedWarning" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.warnings.BioSimulatorsWarning" title="biosimulators_utils.warnings.BioSimulatorsWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.warnings.BioSimulatorsWarning</span></code></a></p>
-<p>Warning that an alternative algorithm was used rather than the requested algorithm</p>
 </dd></dl>
 
 </div>
