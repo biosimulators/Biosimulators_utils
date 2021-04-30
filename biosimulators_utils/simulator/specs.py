@@ -9,6 +9,9 @@
 from ..sedml.data_model import (SedDocument, Task, ModelLanguagePattern, ModelLanguageEdamId,  # noqa: F401
                                 SteadyStateSimulation, UniformTimeCourseSimulation, Algorithm, AlgorithmParameterChange)
 from .data_model import SoftwareInterface
+from kisao import Kisao
+from kisao.data_model import AlgorithmSubstitutionPolicy
+from kisao.utils import get_substitutable_algorithms_for_policy
 import json
 import natsort
 import re
@@ -52,30 +55,34 @@ def get_simulator_specs(id, version='latest'):
         return response.json()
 
 
-def does_simulator_have_capabilities_to_execute_sed_document(sed_doc, simulator_specs):
+def does_simulator_have_capabilities_to_execute_sed_document(sed_doc, simulator_specs,
+                                                             alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_VARIABLES):
     """ Determine if a simulator has the capabilities to execute a SED document
 
     Args:
         sed_doc (:obj:`SedDocument): SED document
         simulator_specs (:obj:`dict` with schema ``https://api.biosimulators.org/openapi.json#/components/schemas/Simulator``):
             specifications of a simulation tool
+        alg_substitution_policy (:obj:`AlgorithmSubstitutionPolicy`, optional): algorithm substitution policy
 
     Returns:
         :obj:`bool`: whether the simulator has the capabilities to execute the SED document
     """
     for task in sed_doc.tasks:
-        if not does_simulator_have_capabilities_to_execute_sed_task(task, simulator_specs):
+        if not does_simulator_have_capabilities_to_execute_sed_task(task, simulator_specs, alg_substitution_policy=alg_substitution_policy):
             return False
     return True
 
 
-def does_simulator_have_capabilities_to_execute_sed_task(task, simulator_specs):
+def does_simulator_have_capabilities_to_execute_sed_task(task, simulator_specs,
+                                                         alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_VARIABLES):
     """ Determine if a simulator has the capabilities to execute a SED task
 
     Args:
         task (:obj:`Task`): SED task
         simulator_specs (:obj:`dict` with schema ``https://api.biosimulators.org/openapi.json#/components/schemas/Simulator``):
             specifications of a simulation tool
+        alg_substitution_policy (:obj:`AlgorithmSubstitutionPolicy`, optional): algorithm substitution policy
 
     Returns:
         :obj:`bool`: whether the simulator has the capabilities to execute the SED task
@@ -85,25 +92,29 @@ def does_simulator_have_capabilities_to_execute_sed_task(task, simulator_specs):
             return False
 
         for alg_specs in simulator_specs['algorithms']:
-            if does_algorithm_implementation_have_capabilities_to_execute_sed_task(task, alg_specs):
+            if does_algorithm_implementation_have_capabilities_to_execute_sed_task(task, alg_specs,
+                                                                                   alg_substitution_policy=alg_substitution_policy):
                 return True
 
         return False
 
     else:
         for sub_task in task.sub_tasks:
-            if not does_simulator_have_capabilities_to_execute_sed_task(sub_task.task, simulator_specs):
+            if not does_simulator_have_capabilities_to_execute_sed_task(sub_task.task, simulator_specs,
+                                                                        alg_substitution_policy=alg_substitution_policy):
                 return False
         return True
 
 
-def does_algorithm_implementation_have_capabilities_to_execute_sed_task(task, algorithm_specs):
+def does_algorithm_implementation_have_capabilities_to_execute_sed_task(task, algorithm_specs,
+                                                                        alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_VARIABLES):
     """ Determine if an implementation of an algorithm has the capabilities to execute a SED task
 
     Args:
         task (:obj:`Task`): SED task
         algorithm_specs (:obj:`dict` with schema ``https://api.biosimulators.org/openapi.json#/components/schemas/Algorithm``):
             specifications of the implementation of an algorithm
+        alg_substitution_policy (:obj:`AlgorithmSubstitutionPolicy`, optional): algorithm substitution policy
 
     Returns:
         :obj:`bool`: whether the implementation of the algorithm has the capabilities to execute the SED task
@@ -112,17 +123,23 @@ def does_algorithm_implementation_have_capabilities_to_execute_sed_task(task, al
     simulation = task.simulation
     algorithm = simulation.algorithm
 
-    if algorithm_specs['kisaoId']['id'] == algorithm.kisao_id:
+    kisao = Kisao()
+    alg_term = kisao.get_term(algorithm.kisao_id)
+    alt_algs = get_substitutable_algorithms_for_policy(alg_term, substitution_policy=alg_substitution_policy)
+    alt_alg_ids = kisao.get_term_ids(alt_algs)
+
+    if algorithm_specs['kisaoId']['id'] in alt_alg_ids:
         # check if the implementation supports the model language
         if not does_algorithm_implementation_have_capabilities_to_execute_sed_model_language(model.language, algorithm_specs):
             return False
 
         # check if implementation supports the parameters of the algorithm
         supports_parameters = True
-        for change in algorithm.changes:
-            if not does_algorithm_implementation_have_capabilities_to_execute_parameter(change.kisao_id, algorithm_specs):
-                supports_parameters = False
-                break
+        if algorithm_specs['kisaoId']['id'] == algorithm.kisao_id:
+            for change in algorithm.changes:
+                if not does_algorithm_implementation_have_capabilities_to_execute_parameter(change.kisao_id, algorithm_specs):
+                    supports_parameters = False
+                    break
 
         if not supports_parameters:
             return False

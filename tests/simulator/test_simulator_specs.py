@@ -7,6 +7,7 @@ from biosimulators_utils.simulator.specs import (
     does_simulator_have_capabilities_to_execute_sed_document,
     gen_algorithms_from_specs,
 )
+from kisao.data_model import AlgorithmSubstitutionPolicy
 import copy
 import os
 import unittest
@@ -49,7 +50,7 @@ class SimulatorSpecsTestCase(unittest.TestCase):
             ]
         )
 
-        self.assertTrue(does_simulator_have_capabilities_to_execute_sed_document(doc, specs))
+        self.assertTrue(does_simulator_have_capabilities_to_execute_sed_document(doc, specs, alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_METHOD))
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks.append(RepeatedTask(
@@ -57,7 +58,7 @@ class SimulatorSpecsTestCase(unittest.TestCase):
                 SubTask(task=copy.deepcopy(doc2.tasks[0]))
             ],
         ))
-        self.assertTrue(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs))
+        self.assertTrue(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs, alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_METHOD))
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks.append(RepeatedTask(
@@ -66,28 +67,36 @@ class SimulatorSpecsTestCase(unittest.TestCase):
             ],
         ))
         doc2.tasks[1].sub_tasks[0].task.model.language = ModelLanguage.CellML.value
-        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs))
+        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs, alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_METHOD))
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[0].model.language = ModelLanguage.CellML.value
-        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs))
+        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs, alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_METHOD))
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[0].model.language = 'urn:sedml:language:unknown'
-        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs))
+        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs, alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_METHOD))
 
         doc2 = copy.deepcopy(doc)
-        doc2.tasks[0].simulation.algorithm.kisao_id = 'KISAO_0000209'
-        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs))
+        doc2.tasks[0].simulation.algorithm.kisao_id = 'KISAO_0000088'
+        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs, alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_METHOD))
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[0].simulation.algorithm.kisao_id = 'KISAO_0000088'
+        self.assertTrue(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs, alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_VARIABLES))
+
+        doc2 = copy.deepcopy(doc)
+        doc2.tasks[0].simulation.algorithm.kisao_id = 'KISAO_0000560'
+        self.assertTrue(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs, alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_VARIABLES))
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[0].simulation.algorithm.changes[0].kisao_id = 'KISAO_0000019'
-        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs))
+        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs, alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_METHOD))
 
         specs = get_simulator_specs('pysces', 'latest')
         doc2 = copy.deepcopy(doc)
         doc2.tasks[0].simulation = OneStepSimulation(algorithm=Algorithm(kisao_id='KISAO_0000019'))
-        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs))
+        self.assertFalse(does_simulator_have_capabilities_to_execute_sed_document(doc2, specs, alg_substitution_policy=AlgorithmSubstitutionPolicy.SAME_METHOD))
 
     def test_gen_algorithms_from_specs(self):
         algs = gen_algorithms_from_specs(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'tellurium.json'))
