@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3.1.10. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.64 documentation</title>
+    <title>3.1.10. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.65 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -510,13 +510,14 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 <dl class="py function">
 <dt id="biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_task">
-<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">does_algorithm_implementation_have_capabilities_to_execute_sed_task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_task" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">does_algorithm_implementation_have_capabilities_to_execute_sed_task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">task</span></em>, <em class="sig-param"><span class="pre">algorithm_specs</span></em>, <em class="sig-param"><span class="pre">alg_substitution_policy=&lt;AlgorithmSubstitutionPolicy.SAME_VARIABLES:</span> <span class="pre">'SAME_VARIABLES'&gt;</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine if an implementation of an algorithm has the capabilities to execute a SED task</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>) – SED task</p></li>
 <li><p><strong>algorithm_specs</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> with schema <code class="docutils literal notranslate"><span class="pre">https://api.biosimulators.org/openapi.json#/components/schemas/Algorithm</span></code>) – specifications of the implementation of an algorithm</p></li>
+<li><p><strong>alg_substitution_policy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">AlgorithmSubstitutionPolicy</span></code>, optional) – algorithm substitution policy</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -530,13 +531,14 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 <dl class="py function">
 <dt id="biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_document">
-<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">does_simulator_have_capabilities_to_execute_sed_document</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sed_doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_document" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">does_simulator_have_capabilities_to_execute_sed_document</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sed_doc</span></em>, <em class="sig-param"><span class="pre">simulator_specs</span></em>, <em class="sig-param"><span class="pre">alg_substitution_policy=&lt;AlgorithmSubstitutionPolicy.SAME_VARIABLES:</span> <span class="pre">'SAME_VARIABLES'&gt;</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_document" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine if a simulator has the capabilities to execute a SED document</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>(</strong> (<em>sed_doc</em>) – obj:<a href="#id1"><span class="problematic" id="id2">`</span></a>SedDocument): SED document</p></li>
 <li><p><strong>simulator_specs</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> with schema <code class="docutils literal notranslate"><span class="pre">https://api.biosimulators.org/openapi.json#/components/schemas/Simulator</span></code>) – specifications of a simulation tool</p></li>
+<li><p><strong>alg_substitution_policy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">AlgorithmSubstitutionPolicy</span></code>, optional) – algorithm substitution policy</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -550,13 +552,14 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 <dl class="py function">
 <dt id="biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_task">
-<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">does_simulator_have_capabilities_to_execute_sed_task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_task" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></code><code class="sig-name descname"><span class="pre">does_simulator_have_capabilities_to_execute_sed_task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">task</span></em>, <em class="sig-param"><span class="pre">simulator_specs</span></em>, <em class="sig-param"><span class="pre">alg_substitution_policy=&lt;AlgorithmSubstitutionPolicy.SAME_VARIABLES:</span> <span class="pre">'SAME_VARIABLES'&gt;</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine if a simulator has the capabilities to execute a SED task</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>task</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>) – SED task</p></li>
 <li><p><strong>simulator_specs</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> with schema <code class="docutils literal notranslate"><span class="pre">https://api.biosimulators.org/openapi.json#/components/schemas/Simulator</span></code>) – specifications of a simulation tool</p></li>
+<li><p><strong>alg_substitution_policy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">AlgorithmSubstitutionPolicy</span></code>, optional) – algorithm substitution policy</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
