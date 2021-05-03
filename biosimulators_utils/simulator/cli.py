@@ -6,8 +6,16 @@
 :License: MIT
 """
 
+from .._version import __version__ as biosimulators_utils_version
 from .data_model import EnvironmentVariable  # noqa: F401
+from kisao._version import __version__ as kisao_version
 import cement
+import libcombine
+try:
+    import libsbml
+except ModuleNotFoundError:  # pragma: no cover
+    libsbml = None
+import libsedml
 import platform
 import sys
 import termcolor
@@ -84,13 +92,19 @@ def build_cli(cli_name=None, cli_version=None,
         versions.append(simulator_name + ': ' + simulator_version)
     if cli_version:
         versions.append('CLI: ' + cli_version)
+    versions.append('BioSimulators utils: ' + biosimulators_utils_version)
+    versions.append('libSED-ML: ' + libsedml.__version__)
+    versions.append('KiSAO: ' + kisao_version)
+    if libsbml:
+        versions.append('libSBML: ' + libsbml.__version__)
+    versions.append('libCOMBINE: ' + libcombine.__version__)
     versions.append('Python: ' + python_version)
     versions.append('OS: {} {}'.format(
         platform.system(),
         platform.release(),
     ))
     versions.append('Machine: ' + platform.machine())
-    version = ', '.join(versions)
+    version = '\n'.join(versions)
 
     class BaseController(cement.Controller):
         """ Base controller for command line application """
