@@ -12,6 +12,7 @@ try:
 except ModuleNotFoundError:
     docker = None
 from ..image import get_docker_image
+from unittest import mock
 import os
 import shutil
 import subprocess
@@ -23,7 +24,7 @@ __all__ = [
 ]
 
 
-def exec_sedml_docs_in_archive_with_simulator_cli(archive_filename, out_dir, simulator_command):
+def exec_sedml_docs_in_archive_with_simulator_cli(archive_filename, out_dir, simulator_command, environment=None):
     """ Use a command-line interface to a simulation tool to execute the tasks specified in archive
     COMBINE/OMEX archive and generate the reports specified in the archive
 
@@ -31,12 +32,15 @@ def exec_sedml_docs_in_archive_with_simulator_cli(archive_filename, out_dir, sim
         archive_filename (:obj:`str`): path to a COMBINE/OMEX archive
         out_dir (:obj:`str`): directory where outputs should be saved
         simulator_command (:obj:`str`): system command for the simulator to execute
+        environment (:obj:`dict`, optional): environment variables for executing the Docker image
 
     Raises:
         :obj:`RuntimeError`: if the execution failed
     """
+    environment = environment or {}
     try:
-        subprocess.check_call([simulator_command] + build_cli_args(archive_filename, out_dir))
+        with mock.patch.dict('os.environ', environment):
+            subprocess.check_call([simulator_command] + build_cli_args(archive_filename, out_dir))
 
     except FileNotFoundError:
         raise RuntimeError("The command '{}' could not be found".format(simulator_command))
