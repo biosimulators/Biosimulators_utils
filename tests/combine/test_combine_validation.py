@@ -1,9 +1,10 @@
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat
 from biosimulators_utils.combine.io import CombineArchiveReader
-from biosimulators_utils.combine.validation import validate
+from biosimulators_utils.combine.validation import validate, validate_format
 from biosimulators_utils.sedml.io import SedmlSimulationReader
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
 from unittest import mock
+import csv
 import os
 import shutil
 import tempfile
@@ -18,6 +19,23 @@ class ValidationTestCase(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.tmp_dir)
+
+    def test_validate_format(self):
+        self.assertEqual(validate_format('http://purl.org/NET/mediatypes/text/plain'), [])
+        self.assertEqual(validate_format('http://purl.org/NET/mediatypes/application/pdf'), [])
+
+        for format in CombineArchiveContentFormat.__members__.values():
+            self.assertEqual(validate_format(format), [])
+
+        filename = os.path.join(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'combine-formats.csv'))
+        with open(filename, newline='') as file:
+            reader = csv.DictReader(file, dialect='excel')
+            for format in reader:
+                url = 'http://identifiers.org/combine.specifications/' + format['Identifier (in the combine.specifications collection)']
+                self.assertEqual(validate_format(url), [])
+
+        self.assertNotEqual(validate_format('text/plain'), [])
+        self.assertNotEqual(validate_format('sbml'), [])
 
     def test_validate(self):
         archive = CombineArchiveReader().run(self.FIXTURE, self.tmp_dir)

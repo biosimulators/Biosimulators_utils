@@ -1,6 +1,6 @@
 from biosimulators_utils.archive.io import ArchiveReader
 from biosimulators_utils.combine import exec
-from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent
+from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat
 from biosimulators_utils.combine.exceptions import CombineArchiveExecutionError, NoSedmlError
 from biosimulators_utils.combine.io import CombineArchiveWriter
 from biosimulators_utils.log import utils as log_utils
@@ -85,7 +85,7 @@ class ExecCombineTestCase(unittest.TestCase):
         self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'sim.sedml'))),
                          sorted(['report1.csv', 'report2.csv']))
 
-        archive.contents[0].format = 'unknown'
+        archive.contents[0].format = CombineArchiveContentFormat.TEXT
         CombineArchiveWriter().run(archive, in_dir, archive_filename)
         with self.assertRaisesRegex(NoSedmlError, 'does not contain any executing SED-ML files'):
             with mock.patch('biosimulators_utils.sedml.exec.exec_sed_doc', side_effect=exec_sed_doc):

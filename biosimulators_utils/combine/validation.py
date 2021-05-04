@@ -10,6 +10,12 @@ from ..sedml.io import SedmlSimulationReader
 from .data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat, CombineArchiveContentFormatPattern  # noqa: F401
 from .utils import get_sedml_contents
 import os
+import re
+
+__all__ = [
+    'validate',
+    'validate_format',
+]
 
 
 def validate(archive, archive_dirname,
@@ -52,9 +58,7 @@ def validate(archive, archive_dirname,
                 content_errors.append(['Content element must have a location (e.g., `{}`).'.format(
                     'key-experiment/simulation.sedml')])
 
-            if not content.format:
-                content_errors.append(['Content element must have a format (e.g., `{}`).'.format(
-                    CombineArchiveContentFormat.SED_ML)])
+            content_errors.extend(validate_format(content.format))
 
         else:
             content_errors.append(['Contents element must be an instance of `CombineArchiveContent`.'])
@@ -93,3 +97,32 @@ def validate(archive, archive_dirname,
 
     # return errors and warnings
     return (errors, warnings)
+
+
+def validate_format(format):
+    """ Validate a COMBINE of an element of a COMBINE/OMEX archive
+
+    Args:
+        format (:obj:`str`): format
+
+    Returns:
+        nested :obj:`list` of :obj:`str`: nested list of errors with the archive
+    """
+    errors = []
+
+    if format:
+        if not (
+            re.match(r'^http://purl\.org/NET/mediatypes/[a-z0-9_\-\+\.]+/[a-z0-9_\-\+\.;]+$', format, re.IGNORECASE)
+            or re.match(r'^http://identifiers\.org/combine\.specifications/\w+(\-|\.|\w)*$', format, re.IGNORECASE)
+        ):
+            errors.append([(
+                'The format `{}` of the content element is invalid. '
+                'The format must be a persistent URL for an internet media type '
+                '(e.g., http://purl.org/NET/mediatypes/text/plain) or for the specifications '
+                'of a COMBINE format (e.g., http://identifiers.org/combine.specifications/sbml).'
+            ).format(format)])
+    else:
+        errors.append(['Content element must have a format (e.g., `{}`).'.format(
+            CombineArchiveContentFormat.SED_ML)])
+
+    return errors

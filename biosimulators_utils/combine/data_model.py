@@ -160,17 +160,31 @@ class CombineArchiveContent(CombineArchiveBase):
 
 class CombineArchiveContentFormat(str, enum.Enum):
     """ Format for the content of COMBINE/OMEX archives """
-    BNGL = 'http://bionetgen.org/'
+    BNGL = 'http://purl.org/NET/mediatypes/text/bngl+plain'
+    CPS = 'http://purl.org/NET/mediatypes/application/cps+xml'
     CellML = 'http://identifiers.org/combine.specifications/cellml'
+    OMEX = 'http://identifiers.org/combine.specifications/omex'
+    OMEX_MANIFEST = 'http://identifiers.org/combine.specifications/omex-manifest'
+    OMEX_METADATA = 'http://identifiers.org/combine.specifications/omex-metadata'
     SBGN = 'http://identifiers.org/combine.specifications/sbgn'
     SBML = 'http://identifiers.org/combine.specifications/sbml'
     SED_ML = 'http://identifiers.org/combine.specifications/sed-ml'
+    VCML = 'http://purl.org/NET/mediatypes/application/vcml+xml'
+    TEXT = 'http://purl.org/NET/mediatypes/text/plain'
+    OTHER = 'http://purl.org/NET/mediatypes/application/octet-stream'
 
 
 class CombineArchiveContentFormatPattern(str, enum.Enum):
     """ Format for the content of COMBINE/OMEX archives """
-    BNGL = r'^https?://bionetgen\.org($|/)'
+    BNGL = r'^https?://purl\.org/NET/mediatypes/text/bngl\+plain($|\.)'
+    CPS = r'^http?://purl\.org/NET/mediatypes/application/cps\+xml$'
     CellML = r'^https?://identifiers\.org/combine\.specifications/cellml($|\.)'
+    OMEX = r'https?://identifiers\.org/combine\.specifications/omex($|\.)'
+    OMEX_MANIFEST = r'https?://identifiers\.org/combine\.specifications/omex-manifest($|\.)'
+    OMEX_METADATA = r'https?://identifiers\.org/combine\.specifications/omex-metadata($|\.)'
     SBGN = r'^https?://identifiers\.org/combine\.specifications/sbgn($|\.)'
-    SBML = r'^https?://identifiers\.org/combine\.specifications/sbml(\.level\-\d+\.version\-\d+)?$'
-    SED_ML = r'^https?://identifiers\.org/combine\.specifications/sed\-?ml(\.level\-\d+\.version\-\d+)?$'
+    SBML = r'^https?://identifiers\.org/combine\.specifications/sbml($|\.)'
+    SED_ML = r'^https?://identifiers\.org/combine\.specifications/sed\-?ml($|\.)'
+    VCML = r'^http?://purl\.org/NET/mediatypes/application/vcml\+xml$'
+    TEXT = r'^http?://purl\.org/NET/mediatypes/text/plain$'
+    OTHER = r'^https?://purl\.org/NET/mediatypes/application/octet-stream$'
