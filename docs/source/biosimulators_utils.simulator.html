@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3.1.10. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.65 documentation</title>
+    <title>3.1.10. biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.66 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -388,7 +388,7 @@ execute commands</p></li>
 
 <dl class="py function">
 <dt id="biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_simulator_cli">
-<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.exec.</span></code><code class="sig-name descname"><span class="pre">exec_sedml_docs_in_archive_with_simulator_cli</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_command</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exec.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_simulator_cli" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.exec.</span></code><code class="sig-name descname"><span class="pre">exec_sedml_docs_in_archive_with_simulator_cli</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">environment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exec.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_simulator_cli" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use a command-line interface to a simulation tool to execute the tasks specified in archive
 COMBINE/OMEX archive and generate the reports specified in the archive</p>
 <dl class="field-list simple">
@@ -397,6 +397,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 <li><p><strong>archive_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to a COMBINE/OMEX archive</p></li>
 <li><p><strong>out_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – directory where outputs should be saved</p></li>
 <li><p><strong>simulator_command</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – system command for the simulator to execute</p></li>
+<li><p><strong>environment</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – environment variables for executing the Docker image</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
