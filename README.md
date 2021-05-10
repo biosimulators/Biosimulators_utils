@@ -15,7 +15,6 @@ Command-line application and high-level utilities for reading, writing, validati
 
 ### Optional requirements
 * Docker: required to execute containerized simulation tools
-* Java: required for NeuroML
 
 ### Install latest release from PyPI
 ```

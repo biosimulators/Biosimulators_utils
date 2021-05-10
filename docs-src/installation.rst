@@ -12,7 +12,6 @@ Optional requirements
 ---------------------------------------
 
 * Docker: required to execute containerized simulation tools
-* Java: required for NeuroML
 
 
 Installing the latest release from PyPI

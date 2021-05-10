@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from pyneuroml.pynml import read_neuroml2_file
+from neuroml.loaders import NeuroMLLoader
 import warnings
 
 
@@ -25,7 +25,7 @@ def validate_model(filename, name=None):
     """
     with warnings.catch_warnings(record=True) as caught_warnings:
         try:
-            read_neuroml2_file(filename)
+            NeuroMLLoader.load(filename)
             error_messages = []
         except Exception as exception:
             error_messages = [[str(exception)]]

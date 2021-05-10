@@ -2,7 +2,7 @@
 # libcellml
 
 [neuroml]
-pyneuroml
+libneuroml
 
 [sbml]
 python_libsbml
