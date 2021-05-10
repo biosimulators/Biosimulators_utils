@@ -15,6 +15,7 @@ Command-line application and high-level utilities for reading, writing, validati
 
 ### Optional requirements
 * Docker: required to execute containerized simulation tools
+* Java: required for NeuroML
 
 ### Install latest release from PyPI
 ```
@@ -27,6 +28,11 @@ pip install git+https://github.com/biosimulators/Biosimulators_utils.git#biosimu
 ```
 
 ### Installation optional features
+
+To use BioSimulators utils to validate NeuroML models, install BioSimulators utils with the `neuroml` option:
+```
+pip install biosimulators-utils[neuroml]
+```
 
 To use BioSimulators utils to validate SBML models, install BioSimulators utils with the `sbml` option:
 ```

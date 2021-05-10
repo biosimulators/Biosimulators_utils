@@ -723,8 +723,12 @@ def validate_model_with_language(source, language, name=None):
     errors = []
     warnings = []
 
-    if language and re.match(ModelLanguagePattern.SBML, language):
+    if language and re.match(ModelLanguagePattern.NeuroML, language):
+        from ..neuroml.validation import validate_model
+
+    elif language and re.match(ModelLanguagePattern.SBML, language):
         from ..sbml.validation import validate_model
+
     else:
         warnings.append(['No validation is available for models encoded in `{}`'.format(getattr(language, 'name', language) or '')])
         return (errors, warnings)

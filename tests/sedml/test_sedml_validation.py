@@ -719,6 +719,16 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertIn('No validation is available for', flatten_nested_list_of_strings(warnings))
 
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'IM.channel.nml')
+        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.NeuroML)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'invalid-model.nml')
+        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.NeuroML)
+        self.assertIn("Not a valid NeuroML 2 doc", flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
     def test_validate_model_changes_warning_handling(self):
         model = data_model.Model(
             source=os.path.join('..', 'fixtures', 'BIOMD0000000297.xml'),

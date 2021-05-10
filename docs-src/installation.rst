@@ -12,6 +12,7 @@ Optional requirements
 ---------------------------------------
 
 * Docker: required to execute containerized simulation tools
+* Java: required for NeuroML
 
 
 Installing the latest release from PyPI
@@ -36,6 +37,12 @@ After installing `Python <https://www.python.org/downloads/>`_ (>= 3.7) and `pip
 
 Installing the optional features
 --------------------------------
+
+To use BioSimulators utils to validate models encoded in NeuroML, install BioSimulators utils with the ``neuroml`` option:
+
+.. code-block:: text
+
+    pip install biosimulators-utils[neuroml]
 
 To use BioSimulators utils to validate models encoded in SBML, install BioSimulators utils with the ``sbml`` option:
 
