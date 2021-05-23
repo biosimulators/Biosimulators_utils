@@ -85,7 +85,7 @@ class ValidationTestCase(unittest.TestCase):
         utils.append_all_nested_children_to_doc(doc)
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('must define a symbol or target', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertIn('data generators do not contribute to outputs', flatten_nested_list_of_strings(warnings))
 
         doc = data_model.SedDocument(
             data_generators=[
@@ -104,7 +104,7 @@ class ValidationTestCase(unittest.TestCase):
         utils.append_all_nested_children_to_doc(doc)
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('must define a symbol or target', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc = data_model.SedDocument(
             outputs=[
@@ -150,7 +150,7 @@ class ValidationTestCase(unittest.TestCase):
         )
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc = data_model.SedDocument(
             data_generators=[
@@ -165,7 +165,7 @@ class ValidationTestCase(unittest.TestCase):
         )
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc = data_model.SedDocument()
         doc.models.append(data_model.Model(id='model1'))
@@ -183,6 +183,16 @@ class ValidationTestCase(unittest.TestCase):
                 )
             ],
             math='var',
+        ))
+        errors, warnings = validation.validate_doc(doc, self.dirname)
+        self.assertIn('must have a source', flatten_nested_list_of_strings(errors), flatten_nested_list_of_strings(errors))
+        self.assertIn('tasks do not contribute to outputs', flatten_nested_list_of_strings(
+            warnings), flatten_nested_list_of_strings(warnings))
+        doc.outputs.append(data_model.Report(
+            id='report',
+            data_sets=[
+                data_model.DataSet(id='d', label='d', data_generator=doc.data_generators[0])
+            ],
         ))
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('must have a source', flatten_nested_list_of_strings(errors), flatten_nested_list_of_strings(errors))
@@ -216,6 +226,12 @@ class ValidationTestCase(unittest.TestCase):
                 )
             ],
         ))
+        doc.outputs.append(data_model.Report(
+            id='report',
+            data_sets=[
+                data_model.DataSet(id='d', label='d', data_generator=doc.data_generators[0])
+            ],
+        ))
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('should not reference a model', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
@@ -233,6 +249,12 @@ class ValidationTestCase(unittest.TestCase):
                     task=doc.tasks[0],
                     model=None,
                 )
+            ],
+        ))
+        doc.outputs.append(data_model.Report(
+            id='report',
+            data_sets=[
+                data_model.DataSet(id='d', label='d', data_generator=doc.data_generators[0])
             ],
         ))
         errors, warnings = validation.validate_doc(doc, self.dirname)
@@ -322,13 +344,13 @@ class ValidationTestCase(unittest.TestCase):
         doc.tasks.append(doc.models[0].changes[0].variables[0].task)
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('should not reference a task', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc.models[0].changes[0].variables[0].task = None
         doc.models[0].changes[0].math = None
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('must have math', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         # internal model sources are defined
         doc = data_model.SedDocument(models=[
@@ -419,6 +441,16 @@ class ValidationTestCase(unittest.TestCase):
             ],
             math='var1',
         ))
+        doc.outputs.append(data_model.Report(
+            id='report',
+            data_sets=[
+                data_model.DataSet(
+                    id='d',
+                    label='d',
+                    data_generator=doc.data_generators[0],
+                ),
+            ]
+        ))
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertEqual(errors, [], flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [], flatten_nested_list_of_strings(warnings))
@@ -469,31 +501,31 @@ class ValidationTestCase(unittest.TestCase):
         doc.tasks[1].range = doc.tasks[1].ranges[0]
         errors, warnings = validation.validate_doc(doc, self.dirname, validate_models_with_languages=False)
         self.assertEqual(errors, [])
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].sub_tasks = []
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must have at least one sub-task', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].sub_tasks[0].task = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('Sub-task 1 must reference a task', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].sub_tasks[1].order = 1
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('The `order` of each sub-task should be distinct', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].sub_tasks[1].task = doc2.tasks[1]
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must be acyclic', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].range = None
@@ -505,13 +537,13 @@ class ValidationTestCase(unittest.TestCase):
         doc2.tasks[1].ranges[0].id = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].ranges[1].id = 'range1'
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('Ranges must have unique ids', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].ranges[1].values.append(7.)
@@ -523,7 +555,7 @@ class ValidationTestCase(unittest.TestCase):
         doc2.tasks[1].ranges[0].values.append(9.)
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must be at least as long', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].range = data_model.VectorRange(id='change_range', values=range(0, 100))
@@ -534,13 +566,13 @@ class ValidationTestCase(unittest.TestCase):
         doc2.tasks[1].changes[0].range = data_model.VectorRange(id='change_range', values=range(0, 2))
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must be at least as long', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].ranges.append(None)
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('not an instance of', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].ranges.append(
@@ -564,119 +596,211 @@ class ValidationTestCase(unittest.TestCase):
         doc2.tasks[1].ranges[2].range = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must reference another range', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].range = doc2.tasks[1].ranges[0]
         doc2.tasks[1].ranges[2].parameters[0].id = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].parameters[0].id = 'p_2'
         doc2.tasks[1].ranges[2].variables[0].id = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('Variable must have an id', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].variables[0].id = 'var1'
         doc2.tasks[1].ranges[2].variables[0].model = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must reference a model', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].variables[0].model = doc2.models[0]
         doc2.tasks[1].ranges[2].variables[0].task = doc2.tasks[0]
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('should not reference a task', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].variables[0].task = None
         doc2.tasks[1].ranges[2].variables[0].target = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('should define a symbol or target', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].variables[0].target = 'x'
         doc2.tasks[1].ranges[2].variables[0].symbol = 'y'
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('should define a symbol or target, not both', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].variables[0].target = None
         errors, warnings = validation.validate_doc(doc2, self.dirname, validate_models_with_languages=False)
         self.assertEqual(errors, [])
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].math = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must have math', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2.tasks[1].ranges[2].math = 'var1'
         doc2.tasks[1].ranges[2].range = doc2.tasks[1].ranges[2]
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must be acyclic', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].model = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must reference a model', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].target = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].symbol = 'x'
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('should not define a symbol', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].parameters[0].id = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('Parameter 1 must have an id', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].id = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('Variable must have an id', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].model = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('variable must reference a model', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].task = doc2.tasks[0]
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('should not reference a task', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].target = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must define a target or a symbol', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].variables[0].symbol = 'x'
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must define a target or a symbol, not both', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
 
         doc2 = copy.deepcopy(doc)
         doc2.tasks[1].changes[0].math = None
         errors, warnings = validation.validate_doc(doc2, self.dirname)
         self.assertIn('must have math', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertNotEqual(warnings, [])
+
+    def test_validate_sub_tasks_with_different_shapes(self):
+        doc = data_model.SedDocument()
+        doc.models.append(data_model.Model(id='model1', source='model1.xml', language=data_model.ModelLanguage.SBML))
+        doc.simulations.append(data_model.SteadyStateSimulation(id='sim1', algorithm=data_model.Algorithm(kisao_id='KISAO_0000001')))
+        doc.simulations.append(data_model.OneStepSimulation(id='sim2', algorithm=data_model.Algorithm(kisao_id='KISAO_0000001'), step=1.0))
+        doc.tasks.append(data_model.Task(id='task1', model=doc.models[0], simulation=doc.simulations[0]))
+        doc.tasks.append(data_model.Task(id='task2', model=doc.models[0], simulation=doc.simulations[1]))
+        doc.tasks.append(
+            data_model.RepeatedTask(
+                id='task3',
+                sub_tasks=[
+                    data_model.SubTask(order=1, task=doc.tasks[0]),
+                    data_model.SubTask(order=2, task=doc.tasks[1]),
+                ],
+                ranges=[
+                    data_model.VectorRange(id='range1', values=[1., 2., 3.]),
+                    data_model.VectorRange(id='range2', values=[4., 5., 6.]),
+                ],
+                changes=[
+                    data_model.SetValueComputeModelChange(
+                        model=doc.models[0],
+                        target='x',
+                        range=None,
+                        parameters=[
+                            data_model.Parameter(id='a', value=1.25),
+                            data_model.Parameter(id='b', value=1.),
+                        ],
+                        variables=[
+                            data_model.Variable(
+                                id='x',
+                                model=doc.models[0],
+                                target='x',
+                            )
+                        ],
+                        math='a * x + b',
+                    )
+                ],
+            ),
+        )
+        doc.tasks[-1].range = doc.tasks[-1].ranges[0]
+        doc.tasks.append(
+            data_model.RepeatedTask(
+                id='task4',
+                sub_tasks=[
+                    data_model.SubTask(order=1, task=doc.tasks[-1]),
+                ],
+                ranges=[
+                    data_model.VectorRange(id='range3', values=[1., 2., 3.]),
+                ],
+                changes=[
+                    data_model.SetValueComputeModelChange(
+                        model=doc.models[0],
+                        target='x',
+                        range=None,
+                        parameters=[
+                            data_model.Parameter(id='c', value=1.25),
+                            data_model.Parameter(id='d', value=1.),
+                        ],
+                        variables=[
+                            data_model.Variable(
+                                id='y',
+                                model=doc.models[0],
+                                target='y',
+                            )
+                        ],
+                        math='c * y + d',
+                    )
+                ],
+            ),
+        )
+        doc.tasks[-1].range = doc.tasks[-1].ranges[0]
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen',
+            variables=[
+                data_model.Variable(id='time', symbol=data_model.Symbol.time.value, task=doc.tasks[-1])
+            ],
+            math='time',
+        ))
+        doc.outputs.append(data_model.Report(
+            id='report',
+            data_sets=[
+                data_model.DataSet(
+                    id='data_set',
+                    label='data_set',
+                    data_generator=doc.data_generators[0],
+                ),
+            ],
+        ))
+        errors, warnings = validation.validate_doc(doc, self.dirname, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertIn("outputs of the sub-tasks have different shapes", flatten_nested_list_of_strings(warnings))
 
     def _validate_task(self, task, variables):
         errors = []
@@ -1331,7 +1455,9 @@ class ValidationTestCase(unittest.TestCase):
                                 task=task
                             )
                         ]
-                    )
+                    ),
+                    x_scale=data_model.AxisScale.linear,
+                    y_scale=data_model.AxisScale.linear,
                 )
             ]
         )
@@ -1366,7 +1492,10 @@ class ValidationTestCase(unittest.TestCase):
                                 task=task
                             )
                         ]
-                    )
+                    ),
+                    x_scale=data_model.AxisScale.linear,
+                    y_scale=data_model.AxisScale.linear,
+                    z_scale=data_model.AxisScale.linear,
                 )
             ]
         )
@@ -1407,3 +1536,97 @@ class ValidationTestCase(unittest.TestCase):
         plot3d.surfaces = []
         errors, warnings = validation.validate_output(plot3d)
         self.assertIn('must have at least one surface', flatten_nested_list_of_strings(errors))
+
+        plot2d.curves = [
+            data_model.Curve(id='c1',
+                             x_data_generator=data_model.DataGenerator(),
+                             y_data_generator=data_model.DataGenerator(),
+                             x_scale=None,
+                             y_scale=None,
+                             ),
+        ]
+        errors, warnings = validation.validate_output(plot2d)
+        self.assertIn('must have an x-scale', flatten_nested_list_of_strings(errors))
+
+        plot3d.surfaces = [
+            data_model.Surface(id='c1',
+                               x_data_generator=data_model.DataGenerator(),
+                               y_data_generator=data_model.DataGenerator(),
+                               z_data_generator=data_model.DataGenerator(),
+                               x_scale=None,
+                               y_scale=None,
+                               z_scale=None,
+                               ),
+        ]
+        errors, warnings = validation.validate_output(plot3d)
+        self.assertIn('must have an x-scale', flatten_nested_list_of_strings(errors))
+
+        # warnings
+        report.data_sets = [
+            data_model.DataSet(
+                id='d1',
+                label='d',
+                data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.Task())]),
+            ),
+            data_model.DataSet(
+                id='d2',
+                label='d',
+                data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.RepeatedTask())]),
+            ),
+        ]
+        errors, warnings = validation.validate_output(report)
+        self.assertEqual(errors, [])
+        self.assertIn('do not have unique labels', flatten_nested_list_of_strings(warnings))
+        self.assertIn('do not have consistent shapes', flatten_nested_list_of_strings(warnings))
+
+        plot2d.curves = [
+            data_model.Curve(id='c1',
+                             x_data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.Task())]),
+                             y_data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.RepeatedTask())]),
+                             x_scale=data_model.AxisScale.linear,
+                             y_scale=data_model.AxisScale.linear,
+                             ),
+            data_model.Curve(id='c2',
+                             x_data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.Task())]),
+                             y_data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.RepeatedTask())]),
+                             x_scale=data_model.AxisScale.log,
+                             y_scale=data_model.AxisScale.log,
+                             )
+        ]
+        errors, warnings = validation.validate_output(plot2d)
+        self.assertEqual(errors, [])
+        self.assertIn('Curves do not have consistent x-scales.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Curves do not have consistent y-scales.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('do not have consistent shapes', flatten_nested_list_of_strings(warnings))
+
+        plot3d.surfaces = [
+            data_model.Surface(id='s1',
+                               x_data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.Task())]),
+                               y_data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.Task())]),
+                               z_data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.RepeatedTask())]),
+                               x_scale=data_model.AxisScale.linear,
+                               y_scale=data_model.AxisScale.linear,
+                               z_scale=data_model.AxisScale.linear,
+                               ),
+            data_model.Surface(id='s2',
+                               x_data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.Task())]),
+                               y_data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.Task())]),
+                               z_data_generator=data_model.DataGenerator(variables=[data_model.Variable(task=data_model.RepeatedTask())]),
+                               x_scale=data_model.AxisScale.log,
+                               y_scale=data_model.AxisScale.log,
+                               z_scale=data_model.AxisScale.log,
+                               ),
+        ]
+        errors, warnings = validation.validate_output(plot3d)
+        self.assertEqual(errors, [])
+        self.assertIn('Surfaces do not have consistent x-scales.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Surfaces do not have consistent y-scales.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Surfaces do not have consistent z-scales.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('do not have consistent shapes', flatten_nested_list_of_strings(warnings))
+
+        errors, warnings = validation.validate_data_generator_variables([
+            data_model.Variable(id='v1', symbol=data_model.Symbol.time.value, task=data_model.Task()),
+            data_model.Variable(id='v2', symbol=data_model.Symbol.time.value, task=data_model.RepeatedTask()),
+        ])
+        self.assertEqual(errors, [])
+        self.assertIn('do not have consistent shapes', flatten_nested_list_of_strings(warnings))

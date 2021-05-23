@@ -1608,3 +1608,42 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         with self.assertRaisesRegex(NotImplementedError, 'not supported'):
             utils.get_model_changes_for_task(None)
+
+    def test_get_task_results_shape(self):
+        task = data_model.Task(
+            simulation=data_model.OneStepSimulation(),
+        )
+        self.assertEqual(utils.get_task_results_shape(task), (2,))
+
+        task = data_model.Task(
+            simulation=data_model.SteadyStateSimulation(),
+        )
+        self.assertEqual(utils.get_task_results_shape(task), (1,))
+
+        task = data_model.Task(simulation=data_model.UniformTimeCourseSimulation(number_of_steps=10))
+        self.assertEqual(utils.get_task_results_shape(task), (11,))
+
+        task = data_model.RepeatedTask(
+            range=data_model.VectorRange(values=[0.1, 0.2, 0.3]),
+            sub_tasks=[
+                data_model.SubTask(task=data_model.Task(simulation=data_model.SteadyStateSimulation())),
+                data_model.SubTask(task=data_model.Task(simulation=data_model.UniformTimeCourseSimulation(number_of_steps=10))),
+            ],
+        )
+        self.assertEqual(utils.get_task_results_shape(task), (3, 2, 11))
+
+        task = data_model.RepeatedTask(
+            range=data_model.UniformRange(number_of_steps=4),
+            sub_tasks=[
+                data_model.SubTask(
+                    task=data_model.RepeatedTask(
+                        range=data_model.VectorRange(values=[0.1, 0.2, 0.3]),
+                        sub_tasks=[
+                            data_model.SubTask(task=data_model.Task(simulation=data_model.SteadyStateSimulation())),
+                            data_model.SubTask(task=data_model.Task(simulation=data_model.UniformTimeCourseSimulation(number_of_steps=10))),
+                        ],
+                    ),
+                )
+            ],
+        )
+        self.assertEqual(utils.get_task_results_shape(task), (5, 1, 3, 2, 11))

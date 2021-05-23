@@ -638,6 +638,7 @@ class IoTestCase(unittest.TestCase):
                         data_model.Curve(
                             id='curve',
                             x_scale='sin',
+                            y_scale=data_model.AxisScale.linear,
                             x_data_generator=data_model.DataGenerator(id='x_data_gen',
                                                                       parameters=[data_model.Parameter(id='x', value=1)],
                                                                       math='x'),

@@ -21,7 +21,8 @@ from .utils import (append_all_nested_children_to_doc, get_range_len,
                     is_model_language_encoded_in_xml, get_models_referenced_by_task,
                     get_all_sed_objects,
                     get_data_generators_for_output, get_variables_for_data_generators,
-                    get_model_changes_for_task)
+                    get_model_changes_for_task,
+                    get_task_results_shape)
 import collections
 import copy
 import lxml.etree
@@ -217,7 +218,14 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
             networkx.algorithms.cycles.find_cycle(sub_task_graph)
             errors.append(['The subtasks are defined cyclically. The graph of subtasks must be acyclic.'])
         except networkx.NetworkXNoCycle:
-            pass
+            for task in doc.tasks:
+                if isinstance(task, RepeatedTask):
+                    sub_task_shapes = set()
+                    for sub_task in task.sub_tasks:
+                        sub_task_shapes.add(get_task_results_shape(sub_task.task))
+                    if len(sub_task_shapes) > 1:
+                        msg = 'The outputs of the sub-tasks have different shapes.'
+                        task_warnings[task]['other'].append([msg])
 
         # Ranges of repeated tasks
         # - Functional ranges
@@ -534,6 +542,74 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
             if output_warnings:
                 warnings.append(['Output {} may be invalid.'.format(output_id), output_warnings])
+
+        # tasks, data generators that don't contribute to outputs
+        used_data_generators = set()
+        used_tasks = set()
+        for output in doc.outputs:
+            if isinstance(output, Report):
+                for data_set in output.data_sets:
+                    if data_set.data_generator:
+                        used_data_generators.add(data_set.data_generator)
+                        for variable in data_set.data_generator.variables:
+                            if variable.task:
+                                used_tasks.add(variable.task)
+
+            elif isinstance(output, Plot2D):
+                for curve in output.curves:
+                    if curve.x_data_generator:
+                        used_data_generators.add(curve.x_data_generator)
+                        for variable in curve.x_data_generator.variables:
+                            if variable.task:
+                                used_tasks.add(variable.task)
+                    if curve.y_data_generator:
+                        used_data_generators.add(curve.y_data_generator)
+                        for variable in curve.y_data_generator.variables:
+                            if variable.task:
+                                used_tasks.add(variable.task)
+
+            elif isinstance(output, Plot3D):
+                for surface in output.surfaces:
+                    if surface.x_data_generator:
+                        used_data_generators.add(surface.x_data_generator)
+                        for variable in surface.x_data_generator.variables:
+                            if variable.task:
+                                used_tasks.add(variable.task)
+                    if surface.y_data_generator:
+                        used_data_generators.add(surface.y_data_generator)
+                        for variable in surface.y_data_generator.variables:
+                            if variable.task:
+                                used_tasks.add(variable.task)
+                    if surface.z_data_generator:
+                        used_data_generators.add(surface.z_data_generator)
+                        for variable in surface.z_data_generator.variables:
+                            if variable.task:
+                                used_tasks.add(variable.task)
+
+        tasks_to_check = list(used_tasks)
+        used_tasks = set()
+        while tasks_to_check:
+            task = tasks_to_check.pop()
+            used_tasks.add(task)
+            if isinstance(task, RepeatedTask):
+                for sub_task in task.sub_tasks:
+                    tasks_to_check.append(sub_task.task)
+
+        unused_tasks = []
+        for i_task, task in enumerate(doc.tasks):
+            if task not in used_tasks:
+                task_id = '`' + task.id + '`' if task.id else str(i_task + 1)
+                unused_tasks.append([task_id])
+        if unused_tasks:
+            warnings.append(['The following tasks do not contribute to outputs:', sorted(unused_tasks)])
+
+        unused_data_generators = []
+        for i_data_generator, data_generator in enumerate(doc.data_generators):
+            if data_generator not in used_data_generators:
+                data_generator_id = '`' + data_generator.id + '`' if data_generator.id else str(i_data_generator + 1)
+                unused_data_generators.append([data_generator_id])
+        if unused_data_generators:
+            warnings.append(['The following data generators do not contribute to outputs:', sorted(unused_data_generators)])
 
     return (errors, warnings)
 
@@ -1017,6 +1093,8 @@ def validate_data_generator_variables(variables, model_etrees=None):
     errors = []
     warnings = []
 
+    task_types = set()
+
     for i_variable, variable in enumerate(variables):
         variable_errors = []
         variable_warnings = []
@@ -1027,7 +1105,9 @@ def validate_data_generator_variables(variables, model_etrees=None):
         if variable.model:
             variable_errors.append(['Variable should not reference a model.'])
 
-        if not variable.task and not (variable.target and variable.target.startswith('#')):
+        if variable.task:
+            task_types.add(get_task_results_shape(variable.task))
+        elif not (variable.target and variable.target.startswith('#')):
             variable_errors.append(['Variable must reference a task.'])
 
         if (variable.symbol and variable.target) or (not variable.symbol and not variable.target):
@@ -1055,6 +1135,9 @@ def validate_data_generator_variables(variables, model_etrees=None):
         if variable_warnings:
             variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
             warnings.append(['Variable {} may be invalid.'.format(variable_id), variable_warnings])
+
+    if len(task_types) > 1:
+        warnings.append(['The variables do not have consistent shapes.'])
 
     return errors, warnings
 
@@ -1087,53 +1170,155 @@ def validate_output(output):
         if not output.data_sets:
             errors.append(['Report must have at least one data set.'])
 
+        labels = set()
+        duplicate_labels = set()
+        task_types = set()
+
         for i_data_set, data_set in enumerate(output.data_sets):
             data_set_errors = []
 
             if not data_set.id:
                 data_set_errors.append(['Data set must have an id.'])
 
-            if not data_set.label:
+            if data_set.label:
+                if data_set.label in labels:
+                    duplicate_labels.add(data_set.label)
+                labels.add(data_set.label)
+            else:
                 data_set_errors.append(['Data set must have a label.'])
 
+            if data_set.data_generator:
+                for variable in data_set.data_generator.variables:
+                    if variable.task:
+                        task_types.add(get_task_results_shape(variable.task))
             data_set_errors.extend(validate_reference(data_set, 'Data set', 'data_generator', 'data data generator'))
 
             if data_set_errors:
                 data_set_id = '`' + data_set.id + '`' if data_set and data_set.id else str(i_data_set + 1)
                 errors.append(['Data set {} is invalid.'.format(data_set_id), data_set_errors])
 
+        if len(task_types) > 1:
+            warnings.append(['The data sets do not have consistent shapes.'])
+
+        if duplicate_labels:
+            warnings.append([(
+                'Data sets do not have unique labels. '
+                'Unique labels are helpful for interpreting reports. '
+                'The following labels are repeated:'),
+                [[label] for label in sorted(duplicate_labels)]])
+
     elif isinstance(output, Plot2D):
         if not output.curves:
             errors.append(['Plot must have at least one curve.'])
 
+        x_scales = set()
+        y_scales = set()
+
         for i_curve, curve in enumerate(output.curves):
             curve_errors = []
+            curve_warnings = []
 
             if not curve.id:
                 curve_errors.append(['Curve must have an id.'])
+
+            task_types = set()
+            if curve.x_data_generator:
+                for variable in curve.x_data_generator.variables:
+                    if variable.task:
+                        task_types.add(get_task_results_shape(variable.task))
+            if curve.y_data_generator:
+                for variable in curve.y_data_generator.variables:
+                    if variable.task:
+                        task_types.add(get_task_results_shape(variable.task))
             curve_errors.extend(validate_reference(curve, 'Curve', 'x_data_generator', 'x data data generator'))
             curve_errors.extend(validate_reference(curve, 'Curve', 'y_data_generator', 'y data data generator'))
+            if len(task_types) > 1:
+                curve_warnings.append(['The curves do not have consistent shapes.'])
+
+            if curve.x_scale:
+                x_scales.add(curve.x_scale)
+            else:
+                curve_errors.append(['Curve must have an x-scale.'])
+
+            if curve.y_scale:
+                y_scales.add(curve.y_scale)
+            else:
+                curve_errors.append(['Curve must have a y-scale.'])
 
             if curve_errors:
                 curve_id = '`' + curve.id + '`' if curve and curve.id else str(i_curve + 1)
                 errors.append(['Curve {} is invalid.'.format(curve_id), curve_errors])
+            if curve_warnings:
+                curve_id = '`' + curve.id + '`' if curve and curve.id else str(i_curve + 1)
+                warnings.append(['Curve {} may be invalid.'.format(curve_id), curve_warnings])
+
+        if len(x_scales) > 1:
+            warnings.append(['Curves do not have consistent x-scales.'])
+        if len(y_scales) > 1:
+            warnings.append(['Curves do not have consistent y-scales.'])
 
     elif isinstance(output, Plot3D):
         if not output.surfaces:
             errors.append(['Plot must have at least one surface.'])
 
+        x_scales = set()
+        y_scales = set()
+        z_scales = set()
+
         for i_surface, surface in enumerate(output.surfaces):
             surface_errors = []
+            surface_warnings = []
 
             if not surface.id:
                 surface_errors.append(['Surface must have an id.'])
+
+            task_types = set()
+            if surface.x_data_generator:
+                for variable in surface.x_data_generator.variables:
+                    if variable.task:
+                        task_types.add(get_task_results_shape(variable.task))
+            if surface.y_data_generator:
+                for variable in surface.y_data_generator.variables:
+                    if variable.task:
+                        task_types.add(get_task_results_shape(variable.task))
+            if surface.z_data_generator:
+                for variable in surface.z_data_generator.variables:
+                    if variable.task:
+                        task_types.add(get_task_results_shape(variable.task))
             surface_errors.extend(validate_reference(surface, 'Surface', 'x_data_generator', 'x data data generator'))
             surface_errors.extend(validate_reference(surface, 'Surface', 'y_data_generator', 'y data data generator'))
             surface_errors.extend(validate_reference(surface, 'Surface', 'z_data_generator', 'z data data generator'))
+            if len(task_types) > 1:
+                surface_warnings.append(['The surfaces do not have consistent shapes.'])
+
+            if surface.x_scale:
+                x_scales.add(surface.x_scale)
+            else:
+                surface_errors.append(['Surface must have an x-scale.'])
+
+            if surface.y_scale:
+                y_scales.add(surface.y_scale)
+            else:
+                surface_errors.append(['Surface must have a y-scale.'])
+
+            if surface.z_scale:
+                z_scales.add(surface.z_scale)
+            else:
+                surface_errors.append(['Surface must have a z-scale.'])
 
             if surface_errors:
                 surface_id = '`' + surface.id + '`' if surface and surface.id else str(i_surface + 1)
                 errors.append(['Surface {} is invalid.'.format(surface_id), surface_errors])
+            if surface_warnings:
+                surface_id = '`' + surface.id + '`' if surface and surface.id else str(i_surface + 1)
+                warnings.append(['Surface {} may be invalid.'.format(surface_id), surface_warnings])
+
+        if len(x_scales) > 1:
+            warnings.append(['Surfaces do not have consistent x-scales.'])
+        if len(y_scales) > 1:
+            warnings.append(['Surfaces do not have consistent y-scales.'])
+        if len(z_scales) > 1:
+            warnings.append(['Surfaces do not have consistent z-scales.'])
 
     involves_repeated_task = False
     for variable in get_variables_for_data_generators(get_data_generators_for_output(output)):

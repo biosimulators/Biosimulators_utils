@@ -14,6 +14,7 @@ from ..xml.utils import eval_xpath
 from .data_model import (SedBase, SedIdGroupMixin, SedDocument,  # noqa: F401
                          Model, ModelLanguagePattern, ModelChange, ModelAttributeChange, AddElementModelChange,
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange, SetValueComputeModelChange,
+                         OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation,
                          Task, RepeatedTask, Output, Report, Plot2D, Plot3D,
                          DataGenerator, Variable,
                          Range, UniformRange, VectorRange, FunctionalRange, UniformRangeType)
@@ -58,6 +59,7 @@ __all__ = [
     'get_namespaces_for_sed_object',
     'get_xml_node_namespace_tag_target',
     'is_model_language_encoded_in_xml',
+    'get_task_results_shape',
 ]
 
 
@@ -1167,3 +1169,37 @@ def get_all_sed_objects(doc, type=(SedBase, SedIdGroupMixin)):
 
     # filter out elements of a specific type
     return list(filter(lambda obj: isinstance(obj, type), seen_objs))
+
+
+def get_task_results_shape(task):
+    """ Get the shape of the results of a task
+
+    Args:
+        task (:obj:`Task`): task
+
+    Returns:
+        :obj:`tuple` of :obj:`int`: shape of the results of a task
+    """
+    if isinstance(task, Task):
+        if isinstance(task.simulation, OneStepSimulation):
+            return (2,)
+        elif isinstance(task.simulation, SteadyStateSimulation):
+            return (1,)
+        elif isinstance(task.simulation, UniformTimeCourseSimulation):
+            return (task.simulation.number_of_steps + 1,)
+        else:
+            return (None,)
+
+    elif isinstance(task, RepeatedTask):
+        shape = [get_range_len(task.range) if task.range else None, len(task.sub_tasks)]
+        max_sub_task_shape = []
+
+        for sub_task in task.sub_tasks:
+            sub_task_shape = list(get_task_results_shape(sub_task.task))
+            max_sub_task_shape = max_sub_task_shape + [0] * max(0, len(sub_task_shape) - len(max_sub_task_shape))
+            sub_task_shape = sub_task_shape + [0] * max(0, len(max_sub_task_shape) - len(sub_task_shape))
+            max_sub_task_shape = [max(i, j) for i, j in zip(max_sub_task_shape, sub_task_shape)]
+
+        return tuple(shape + max_sub_task_shape)
+
+    return None
