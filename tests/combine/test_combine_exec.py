@@ -297,14 +297,14 @@ class ExecCombineTestCase(unittest.TestCase):
         exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
 
         # invalid archive
-        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'invalid.omex')
+        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml-validation', 'invalid-omex-manifest-missing-attribute.omex')
         with self.assertRaisesRegex(ValueError, re.compile('archive is invalid.\n  - ', re.MULTILINE)):
             exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
         with self.assertRaisesRegex(ValueError, 'must have the required attributes'):
             exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
 
         # invalid SED-ML file in archive
-        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'invalid-SED-ML.omex')
+        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml-validation', 'invalid-sedml-missing-attribute.omex')
         with self.assertRaisesRegex(ValueError, re.compile('archive is invalid.\n  - ', re.MULTILINE)):
             exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
         with self.assertRaisesRegex(ValueError, 'must have the required attributes'):

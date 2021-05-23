@@ -9,6 +9,7 @@ from biosimulators_utils.archive.data_model import Archive, ArchiveFile
 from biosimulators_utils.archive.io import ArchiveWriter
 from biosimulators_utils.combine import data_model
 from biosimulators_utils.combine import io
+from biosimulators_utils.combine import validation
 from biosimulators_utils.data_model import Person
 from biosimulators_utils.warnings import BioSimulatorsWarning
 from unittest import mock
@@ -117,7 +118,8 @@ class ReadWriteTestCase(unittest.TestCase):
         self.assertEqual(archive.updated, datetime.datetime(2020, 1, 1, 1, 1, 1, tzinfo=dateutil.tz.tzutc()))
 
     def test_read_error_handling(self):
-        archive_file = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'invalid.omex')
+        archive_file = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml-validation',
+                                    'invalid-omex-manifest-missing-attribute.omex')
         with self.assertRaisesRegex(ValueError, 'must have the required attributes'):
             io.CombineArchiveReader().run(archive_file, self.temp_dir)
 
@@ -190,3 +192,41 @@ class ReadWriteTestCase(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, 'not a valid COMBINE/OMEX archive'):
             io.CombineArchiveReader().run(sim_path, zip_out_dir, try_reading_as_plain_zip_archive=False)
+
+    def test_sedml_validation_examples(self):
+        dirname = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml-validation')
+
+        filename = os.path.join(dirname, 'invalid-omex-manifest-missing-attribute.omex')
+        with self.assertRaisesRegex(ValueError, 'must have the required attributes'):
+            io.CombineArchiveReader().run(filename, os.path.join(self.temp_dir, 'a'))
+
+        filename = os.path.join(dirname, 'invalid-sedml-missing-attribute.omex')
+        archive = io.CombineArchiveReader().run(filename, os.path.join(self.temp_dir, 'b'))
+        errors, warnings = validation.validate(archive, os.path.join(self.temp_dir, 'b'))
+        self.assertNotEqual(errors, [])
+
+        filename = os.path.join(dirname, 'invalid-sedml-missing-namespace.omex')
+        archive = io.CombineArchiveReader().run(filename, os.path.join(self.temp_dir, 'c'))
+        errors, warnings = validation.validate(archive, os.path.join(self.temp_dir, 'c'))
+        self.assertNotEqual(errors, [])
+
+        filename = os.path.join(dirname, 'invalid-sedml-multiple-errors.omex')
+        archive = io.CombineArchiveReader().run(filename, os.path.join(self.temp_dir, 'd'))
+        errors, warnings = validation.validate(archive, os.path.join(self.temp_dir, 'd'))
+        self.assertNotEqual(errors, [])
+
+        filename = os.path.join(dirname, 'warnings-sedml-sbml.omex')
+        archive = io.CombineArchiveReader().run(filename, os.path.join(self.temp_dir, 'e'))
+        errors, warnings = validation.validate(archive, os.path.join(self.temp_dir, 'e'))
+        self.assertEqual(errors, [])
+        self.assertNotEqual(warnings, [])
+
+        filename = os.path.join(dirname, 'valid-sedml-sbml-qual.omex')
+        archive = io.CombineArchiveReader().run(filename, os.path.join(self.temp_dir, 'f'))
+        errors, warnings = validation.validate(archive, os.path.join(self.temp_dir, 'f'))
+        self.assertEqual(errors, [])
+
+        filename = os.path.join(dirname, 'valid-sedml-bngl.omex')
+        archive = io.CombineArchiveReader().run(filename, os.path.join(self.temp_dir, 'g'))
+        errors, warnings = validation.validate(archive, os.path.join(self.temp_dir, 'g'))
+        self.assertEqual(errors, [])
