@@ -719,12 +719,24 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertIn('No validation is available for', flatten_nested_list_of_strings(warnings))
 
-        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'IM.channel.nml')
+        # CellML
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'cellml', 'level2.xml')
+        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.CellML)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'cellml', 'missing-attribute.xml')
+        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.CellML)
+        self.assertNotEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        # NeuroML
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'neuroml', 'IM.channel.nml')
         errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.NeuroML)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'invalid-model.nml')
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'neuroml', 'invalid-model.nml')
         errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.NeuroML)
         self.assertIn("Not a valid NeuroML 2 doc", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])

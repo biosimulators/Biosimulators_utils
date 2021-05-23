@@ -46,7 +46,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.models.append(data_model.Model(
             id='model2',
             source='https://models.edu/model1.xml',
-            language=data_model.ModelLanguage.CellML.value,
+            language=data_model.ModelLanguage.VCML.value,
         ))
 
         doc.simulations.append(data_model.SteadyStateSimulation(

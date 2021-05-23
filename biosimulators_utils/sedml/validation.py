@@ -723,7 +723,10 @@ def validate_model_with_language(source, language, name=None):
     errors = []
     warnings = []
 
-    if language and re.match(ModelLanguagePattern.NeuroML, language):
+    if language and re.match(ModelLanguagePattern.CellML, language):
+        from ..cellml.validation import validate_model
+
+    elif language and re.match(ModelLanguagePattern.NeuroML, language):
         from ..neuroml.validation import validate_model
 
     elif language and re.match(ModelLanguagePattern.SBML, language):

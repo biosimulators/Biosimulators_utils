@@ -5,7 +5,7 @@ import unittest
 
 
 class NeuroMlValidationTestCase(unittest.TestCase):
-    FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures')
+    FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'neuroml')
 
     def test(self):
         errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'IM.channel.nml'))

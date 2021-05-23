@@ -1,5 +1,5 @@
-# [cellml]
-# libcellml
+[cellml]
+libcellml
 
 [neuroml]
 libneuroml

@@ -37,6 +37,12 @@ After installing `Python <https://www.python.org/downloads/>`_ (>= 3.7) and `pip
 Installing the optional features
 --------------------------------
 
+To use BioSimulators utils to validate models encoded in CellML, install BioSimulators utils with the ``cellml`` option:
+
+.. code-block:: text
+
+    pip install biosimulators-utils[cellml]
+
 To use BioSimulators utils to validate models encoded in NeuroML, install BioSimulators utils with the ``neuroml`` option:
 
 .. code-block:: text

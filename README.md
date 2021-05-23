@@ -28,6 +28,11 @@ pip install git+https://github.com/biosimulators/Biosimulators_utils.git#biosimu
 
 ### Installation optional features
 
+To use BioSimulators utils to validate CellML models, install BioSimulators utils with the `cellml` option:
+```
+pip install biosimulators-utils[cellml]
+```
+
 To use BioSimulators utils to validate NeuroML models, install BioSimulators utils with the `neuroml` option:
 ```
 pip install biosimulators-utils[neuroml]
