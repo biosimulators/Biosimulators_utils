@@ -60,8 +60,11 @@ class ModelLanguage(str, enum.Enum):
     """ Model language """
     BNGL = 'urn:sedml:language:bngl'
     CellML = 'urn:sedml:language:cellml'
+    CopasiML = 'urn:sedml:language:copasiml'
+    MorpheusML = 'urn:sedml:language:morpheusml'
     NeuroML = 'urn:sedml:language:neuroml'
     SBML = 'urn:sedml:language:sbml'
+    Smoldyn = 'urn:sedml:language:smoldyn'
     VCML = 'urn:sedml:language:vcml'
 
 
@@ -69,8 +72,11 @@ class ModelLanguagePattern(str, enum.Enum):
     """ Model language """
     BNGL = 'urn:sedml:language:bngl'
     CellML = r'^urn:sedml:language:cellml(\.\d+_\d+)?$'
+    CopasiML = 'urn:sedml:language:copasiml'
+    MorpheusML = 'urn:sedml:language:morpheusml'
     NeuroML = r'urn:sedml:language:neuroml(\.version-\d+_\d+_\d+\.level\-\d+)?$'
     SBML = r'^urn:sedml:language:sbml(\.level\-\d+\.version\-\d+)?$'
+    Smoldyn = 'urn:sedml:language:smoldyn'
     VCML = 'urn:sedml:language:vcml'
 
 
@@ -78,8 +84,11 @@ class ModelLanguageEdamId(str, enum.Enum):
     """ Model language EDAM id """
     BNGL = 'format_3972'
     CellML = 'format_3240'
+    CopasiML = None
+    MorpheusML = None
     NeuroML = 'format_3971'
     SBML = 'format_2585'
+    Smoldyn = None
     VCML = None
 
 
