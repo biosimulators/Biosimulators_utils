@@ -7,11 +7,12 @@
 """
 
 import libcellml
+import lxml.etree
 import os
 
 
 def validate_model(filename, name=None):
-    """ Check that a model is valid
+    """ Check that a file is a valid CellML 2.0 model
 
     Args:
         filename (:obj:`str`): path to model
@@ -29,6 +30,16 @@ def validate_model(filename, name=None):
     if not os.path.isfile(filename):
         errors.append(['`{}` is not a file.'.format(filename)])
         return (errors, warnings)
+
+    try:
+        root = lxml.etree.parse(filename).getroot()
+    except lxml.etree.XMLSyntaxError as exception:
+        errors.append(['`{}` is not a valid XML file.'.format(filename), [[str(exception)]]])
+        return errors, warnings
+
+    default_ns = root.nsmap.get(None, '')
+    if default_ns.startswith('http://www.cellml.org/cellml/1'):
+        return errors, warnings
 
     # read model
     parser = libcellml.Parser()
