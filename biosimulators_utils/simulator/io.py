@@ -15,12 +15,13 @@ import requests
 import simplejson.errors
 
 
-def read_simulator_specs(path_or_url, patch=None):
+def read_simulator_specs(path_or_url, patch=None, validate=True):
     """ Read the specifications of a simulator
 
     Args:
         path_or_url (:obj:`str`): file path or URL for the specifications of a simulator
         patch (:obj:`dict`, optional): values of properties to supersede those in :obj:`path_or_url`
+        validate (:obj:`bool`, optional): whether to validate the specifications
 
     Returns:
         :obj:`dict`: specifications of a simulator
@@ -63,15 +64,16 @@ def read_simulator_specs(path_or_url, patch=None):
         patch_dict(specs, patch)
 
     # validate specifications
-    api_endpoint = get_config().BIOSIMULATORS_API_ENDPOINT
-    response = requests.post('{}simulators/validate'.format(api_endpoint), json=specs)
-    intro_failure_msg = ''.join([
-        "The simulator specifications from `{}` are invalid. ".format(path_or_url),
-        "The specifications of simulation tools must adhere to BioSimulators' schema. ",
-        "BioSimulators' schema is available in both JSON Schema and Open API Specifications formats. ",
-        "Documentation is available at {}.".format(api_endpoint)
-    ])
-    validate_biosimulations_api_response(response, intro_failure_msg)
+    if validate:
+        api_endpoint = get_config().BIOSIMULATORS_API_ENDPOINT
+        response = requests.post('{}simulators/validate'.format(api_endpoint), json=specs)
+        intro_failure_msg = ''.join([
+            "The simulator specifications from `{}` are invalid. ".format(path_or_url),
+            "The specifications of simulation tools must adhere to BioSimulators' schema. ",
+            "BioSimulators' schema is available in both JSON Schema and Open API Specifications formats. ",
+            "Documentation is available at {}.".format(api_endpoint)
+        ])
+        validate_biosimulations_api_response(response, intro_failure_msg)
 
     # return validated specifications
     return specs
