@@ -58,7 +58,7 @@ class ValidationTestCase(unittest.TestCase):
                         kisao_id='KISAO_0000029',
                         changes=[
                             data_model.AlgorithmParameterChange(
-                                kisao_id='KISAO:0000001',
+                                kisao_id='KISAO:0000488',
                             )
                         ],
                     ),
@@ -420,7 +420,7 @@ class ValidationTestCase(unittest.TestCase):
 
         doc = data_model.SedDocument()
         doc.models.append(data_model.Model(id='model', source=model_filename, language=data_model.ModelLanguage.SBML.value))
-        doc.simulations.append(data_model.SteadyStateSimulation(id='sim', algorithm=data_model.Algorithm(kisao_id='KISAO_0000001')))
+        doc.simulations.append(data_model.SteadyStateSimulation(id='sim', algorithm=data_model.Algorithm(kisao_id='KISAO_0000019')))
         doc.tasks.append(data_model.Task(
             id='task',
             model=doc.models[0],
@@ -464,7 +464,7 @@ class ValidationTestCase(unittest.TestCase):
     def test_validate_doc_with_repeated_tasks(self):
         doc = data_model.SedDocument()
         doc.models.append(data_model.Model(id='model1', source='model1.xml', language=data_model.ModelLanguage.SBML))
-        doc.simulations.append(data_model.SteadyStateSimulation(id='sim1', algorithm=data_model.Algorithm(kisao_id='KISAO_0000001')))
+        doc.simulations.append(data_model.SteadyStateSimulation(id='sim1', algorithm=data_model.Algorithm(kisao_id='KISAO_0000019')))
         doc.tasks.append(data_model.Task(id='task1', model=doc.models[0], simulation=doc.simulations[0]))
         doc.tasks.append(
             data_model.RepeatedTask(
@@ -713,8 +713,8 @@ class ValidationTestCase(unittest.TestCase):
     def test_validate_sub_tasks_with_different_shapes(self):
         doc = data_model.SedDocument()
         doc.models.append(data_model.Model(id='model1', source='model1.xml', language=data_model.ModelLanguage.SBML))
-        doc.simulations.append(data_model.SteadyStateSimulation(id='sim1', algorithm=data_model.Algorithm(kisao_id='KISAO_0000001')))
-        doc.simulations.append(data_model.OneStepSimulation(id='sim2', algorithm=data_model.Algorithm(kisao_id='KISAO_0000001'), step=1.0))
+        doc.simulations.append(data_model.SteadyStateSimulation(id='sim1', algorithm=data_model.Algorithm(kisao_id='KISAO_0000019')))
+        doc.simulations.append(data_model.OneStepSimulation(id='sim2', algorithm=data_model.Algorithm(kisao_id='KISAO_0000019'), step=1.0))
         doc.tasks.append(data_model.Task(id='task1', model=doc.models[0], simulation=doc.simulations[0]))
         doc.tasks.append(data_model.Task(id='task2', model=doc.models[0], simulation=doc.simulations[1]))
         doc.tasks.append(
@@ -933,7 +933,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn('must be at least the initial time', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        sim.algorithm = data_model.Algorithm(kisao_id='KISAO_0000001')
+        sim.algorithm = data_model.Algorithm(kisao_id='KISAO_0000019')
         sim.initial_time = 0.
         sim.output_start_time = 0.
         sim.output_end_time = 1000.
@@ -941,6 +941,33 @@ class ValidationTestCase(unittest.TestCase):
         errors, warnings = validation.validate_simulation(sim)
         self.assertEqual(errors, [])
         self.assertIn('unusual number of steps', flatten_nested_list_of_strings(warnings))
+
+    def test_validate_algorithm(self):
+        alg = data_model.Algorithm(
+            kisao_id='KISAO_0000019',
+            changes=[
+                data_model.AlgorithmParameterChange(kisao_id='KISAO_0000209', new_value='1e-6'),
+                data_model.AlgorithmParameterChange(kisao_id='KISAO_0000211', new_value='1e-12'),
+            ],
+        )
+        errors, warnings = validation.validate_algorithm(alg)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        alg.kisao_id = 'KISAO_0000211'
+        errors, warnings = validation.validate_algorithm(alg)
+        self.assertIn('Algorithm has an invalid', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
+        alg.changes[0].kisao_id = 'KISAO_0000019'
+        errors, warnings = validation.validate_algorithm(alg)
+        self.assertIn('Algorithm change ', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
+        alg.changes[0].kisao_id = 'KISAO_0000211'
+        errors, warnings = validation.validate_algorithm(alg)
+        self.assertIn('must have a unique KiSAO id', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
     def test_validate_uniform_range(self):
         range = data_model.UniformRange(
@@ -998,7 +1025,7 @@ class ValidationTestCase(unittest.TestCase):
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('Algorithm has an invalid KiSAO id', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
-        task.simulation.algorithm.kisao_id = 'KISAO_0000001'
+        task.simulation.algorithm.kisao_id = 'KISAO_0000019'
         task.simulation.algorithm.changes = [
             data_model.AlgorithmParameterChange()
         ]
@@ -1006,7 +1033,7 @@ class ValidationTestCase(unittest.TestCase):
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('has an invalid KiSAO id', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
-        task.simulation.algorithm.changes[0].kisao_id = 'KISAO_0000001'
+        task.simulation.algorithm.changes[0].kisao_id = 'KISAO_0000211'
         task.model.changes = [mock.Mock(id='', target='', target_namespaces={})]
 
         errors, warnings = self._validate_task(task, variables)
@@ -1089,7 +1116,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn('is not supported. Simulation must be', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
         task.simulation = data_model.UniformTimeCourseSimulation(
-            algorithm=data_model.Algorithm(kisao_id='KISAO_0000001'),
+            algorithm=data_model.Algorithm(kisao_id='KISAO_0000019'),
             initial_time=10.,
             output_start_time=-10.,
             output_end_time=-20.,
@@ -1153,7 +1180,7 @@ class ValidationTestCase(unittest.TestCase):
                 output_end_time=10.,
                 number_of_steps=10,
                 algorithm=data_model.Algorithm(
-                    kisao_id='KISAO_0000001',
+                    kisao_id='KISAO_0000019',
                 )
             ),
         )

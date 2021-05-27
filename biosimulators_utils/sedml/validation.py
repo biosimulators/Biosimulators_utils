@@ -6,12 +6,14 @@
 :License: MIT
 """
 
+from ..kisao.data_model import TermType as KisaoTermType
+from ..kisao.utils import get_term as get_kisao_term, get_term_type as get_kisao_term_type
 from ..xml.utils import validate_xpaths_ref_to_unique_objects, eval_xpath
 from .data_model import (SedIdGroupMixin, AbstractTask, Task, RepeatedTask,  # noqa: F401
                          Model, ModelLanguage, ModelLanguagePattern,
                          ModelChange, ComputeModelChange,
                          Simulation, OneStepSimulation, SteadyStateSimulation,
-                         UniformTimeCourseSimulation, Variable,
+                         UniformTimeCourseSimulation, Algorithm, Variable,
                          Range, FunctionalRange, UniformRange, VectorRange,
                          SetValueComputeModelChange,
                          Report, Plot2D, Plot3D, DataGenerator,
@@ -43,6 +45,7 @@ __all__ = [
     'validate_model_changes',
     'validate_simulation_type',
     'validate_simulation',
+    'validate_algorithm',
     'validate_uniform_range',
     'validate_output',
     'validate_data_generator',
@@ -1009,15 +1012,47 @@ def validate_simulation(simulation):
             simulation.__class__.__name__)])
 
     if simulation.algorithm:
-        if not simulation.algorithm.kisao_id or not re.match(r'^KISAO_\d{7}$', simulation.algorithm.kisao_id):
-            errors.append(['Algorithm has an invalid KiSAO id `{}`.'.format(simulation.algorithm.kisao_id)])
-        for i_change, change in enumerate(simulation.algorithm.changes):
-            if not change.kisao_id or not re.match(r'^KISAO_\d{7}$', change.kisao_id):
-                errors.append(
-                    ['Algorithm change {} has an invalid KiSAO id `{}`.'.format(i_change + 1, change.kisao_id)])
+        temp_errors, temp_warnings = validate_algorithm(simulation.algorithm)
+        errors.extend(temp_errors)
+        warnings.extend(temp_warnings)
 
     else:
         errors.append(['Simulation must have an algorithm.'])
+
+    return errors, warnings
+
+
+def validate_algorithm(algorithm):
+    """ Validate an algorithm
+
+    Args:
+        algorithm (:obj:`Algorithm`): algorithm
+
+    Returns:
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+    """
+    errors = []
+    warnings = []
+
+    if get_kisao_term_type(get_kisao_term(algorithm.kisao_id)) != KisaoTermType.algorithm:
+        errors.append(['Algorithm has an invalid KiSAO id `{}`.'.format(algorithm.kisao_id)])
+
+    change_kisao_ids = []
+    for i_change, change in enumerate(algorithm.changes):
+        if get_kisao_term_type(get_kisao_term(change.kisao_id)) == KisaoTermType.algorithm_parameter:
+            change_kisao_ids.append(change.kisao_id)
+        else:
+            errors.append(
+                ['Algorithm change {} has an invalid KiSAO id `{}`.'.format(i_change + 1, change.kisao_id)])
+
+    unique_change_kisao_ids = set(change_kisao_ids)
+    if len(change_kisao_ids) > len(unique_change_kisao_ids):
+        duplicate_change_kisao_ids = sorted([id] for id in unique_change_kisao_ids if change_kisao_ids.count(id) > 1)
+        errors.append(['Each algorithm parameter must have a unique KiSAO id. Multiple parameters have the following KiSAO ids:',
+                       duplicate_change_kisao_ids])
 
     return errors, warnings
 

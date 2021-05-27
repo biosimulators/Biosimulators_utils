@@ -14,7 +14,7 @@
   </listOfModels>
   <listOfSimulations>
     <steadyState id="simulation_1">
-      <algorithm kisaoID="KISAO:0000001" />
+      <algorithm kisaoID="KISAO:0000019" />
     </steadyState>
   </listOfSimulations>
   <listOfTasks>

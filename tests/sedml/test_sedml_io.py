@@ -104,9 +104,9 @@ class IoTestCase(unittest.TestCase):
             id='simulation1',
             name='Simulation1',
             algorithm=data_model.Algorithm(
-                kisao_id='KISAO_0000029',
+                kisao_id='KISAO_0000019',
                 changes=[
-                    data_model.AlgorithmParameterChange(kisao_id='KISAO_0000001', new_value='1.234'),
+                    data_model.AlgorithmParameterChange(kisao_id='KISAO_0000211', new_value='1.234'),
                 ]),
         )
 
@@ -114,9 +114,9 @@ class IoTestCase(unittest.TestCase):
             id='simulation2',
             name='Simulation2',
             algorithm=data_model.Algorithm(
-                kisao_id='KISAO_0000029',
+                kisao_id='KISAO_0000019',
                 changes=[
-                    data_model.AlgorithmParameterChange(kisao_id='KISAO_0000001', new_value='1.234'),
+                    data_model.AlgorithmParameterChange(kisao_id='KISAO_0000211', new_value='1.234'),
                 ]),
             step=10.)
 
@@ -124,10 +124,10 @@ class IoTestCase(unittest.TestCase):
             id='simulation3',
             name='Simulation3',
             algorithm=data_model.Algorithm(
-                kisao_id='KISAO_0000029',
+                kisao_id='KISAO_0000019',
                 changes=[
-                    data_model.AlgorithmParameterChange(kisao_id='KISAO_0000001', new_value='1.234'),
-                    data_model.AlgorithmParameterChange(kisao_id='KISAO_0000002', new_value='4.321'),
+                    data_model.AlgorithmParameterChange(kisao_id='KISAO_0000209', new_value='1.234'),
+                    data_model.AlgorithmParameterChange(kisao_id='KISAO_0000211', new_value='4.321'),
                 ]),
             initial_time=10.,
             output_start_time=20.,
@@ -679,7 +679,7 @@ class IoTestCase(unittest.TestCase):
     def test_unsupported_uniform_range_type(self):
         document = data_model.SedDocument(
             models=[data_model.Model(id='model', language=data_model.ModelLanguage.SBML.value, source='model.xml')],
-            simulations=[data_model.SteadyStateSimulation(id='sim', algorithm=data_model.Algorithm(kisao_id='KISAO_0000001'))],
+            simulations=[data_model.SteadyStateSimulation(id='sim', algorithm=data_model.Algorithm(kisao_id='KISAO_0000019'))],
             tasks=[
                 data_model.RepeatedTask(
                     id='task',
