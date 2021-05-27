@@ -84,12 +84,12 @@ class ModelLanguageEdamId(str, enum.Enum):
     """ Model language EDAM id """
     BNGL = 'format_3972'
     CellML = 'format_3240'
-    CopasiML = None
-    MorpheusML = None
+    CopasiML = 'format_9003'
+    MorpheusML = 'format_9002'
     NeuroML = 'format_3971'
     SBML = 'format_2585'
-    Smoldyn = None
-    VCML = None
+    Smoldyn = 'format_9001'
+    VCML = 'format_9000'
 
 
 class Symbol(str, enum.Enum):
