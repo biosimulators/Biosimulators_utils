@@ -27,6 +27,9 @@ class KisaoUtilsTestCase(unittest.TestCase):
         term_type = utils.get_term_type(utils.get_term('KISAO_0000019'))
         self.assertEqual(term_type, utils.TermType.algorithm)
 
+        term_type = utils.get_term_type(utils.get_term('KISAO_0000575'))
+        self.assertEqual(term_type, utils.TermType.algorithm)
+
         term_type = utils.get_term_type(utils.get_term('KISAO_0000211'))
         self.assertEqual(term_type, utils.TermType.algorithm_parameter)
 

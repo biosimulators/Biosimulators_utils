@@ -45,14 +45,14 @@ def get_term_type(term):
         :obj:`TermType`: type of the term
     """
     if term:
-        root = list(term.superclasses())[-1]
-        root_id = Kisao().get_term_id(root)
-
-        if root == term:
-            return TermType.root
+        kisao = Kisao()
+        superclass_ids = [kisao.get_term_id(superclass) for superclass in term.superclasses()]
 
         for term_type in TermType.__members__.values():
-            if root_id == term_type.value:
-                return term_type
+            if term_type.value in superclass_ids:
+                if term_type.value == kisao.get_term_id(term):
+                    return TermType.root
+                else:
+                    return term_type
 
     return None
