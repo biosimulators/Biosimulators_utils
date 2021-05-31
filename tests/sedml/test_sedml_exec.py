@@ -3,7 +3,6 @@ from biosimulators_utils.log.data_model import (
     Status, CombineArchiveLog, SedDocumentLog, TaskLog, ReportLog)
 from biosimulators_utils.log import utils as log_utils
 from biosimulators_utils.log.utils import init_sed_document_log
-from biosimulators_utils.log.warnings import StandardOutputNotLoggedWarning
 from biosimulators_utils.plot.data_model import PlotFormat
 from biosimulators_utils.report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
@@ -1794,12 +1793,12 @@ class ExecTaskCase(unittest.TestCase):
         with mock.patch('builtins.__import__', side_effect=import_mock):
             importlib.reload(log_utils)
 
-            with self.assertWarnsRegex(StandardOutputNotLoggedWarning, 'could not be logged'):
-                _, log = exec.exec_sed_doc(task_executer, doc, self.tmp_dir, self.tmp_dir)
-        self.assertEqual(log.output, None)
+            _, log = exec.exec_sed_doc(task_executer, doc, self.tmp_dir, self.tmp_dir)
+
         for task_log in log.tasks.values():
-            self.assertEqual(task_log.output, None)
+            self.assertNotEqual(task_log.output, None)
         for output_log in log.outputs.values():
-            self.assertEqual(output_log.output, None)
+            self.assertNotEqual(output_log.output, None)
+        self.assertEqual(log.output, None)
 
         importlib.reload(log_utils)

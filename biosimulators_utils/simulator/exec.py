@@ -139,6 +139,7 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(
 
     # run image
     try:
+        print(' '.join(args))
         subprocess.check_call(args)
 
     except FileNotFoundError:

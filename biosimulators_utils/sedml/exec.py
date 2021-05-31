@@ -7,7 +7,7 @@
 """
 
 from ..config import get_config, Colors
-from ..log.data_model import Status, SedDocumentLog, TaskLog, ReportLog, Plot2DLog, Plot3DLog  # noqa: F401
+from ..log.data_model import Status, SedDocumentLog, TaskLog, ReportLog, Plot2DLog, Plot3DLog, StandardOutputErrorCapturerLevel  # noqa: F401
 from ..log.utils import init_sed_document_log, StandardOutputErrorCapturer
 from ..plot.data_model import PlotFormat
 from ..plot.io import write_plot_2d, write_plot_3d
@@ -47,7 +47,8 @@ __all__ = [
 
 def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=None,
                  apply_xml_model_changes=False, report_formats=None, plot_formats=None,
-                 log=None, indent=0, pretty_print_modified_xml_models=False):
+                 log=None, indent=0, pretty_print_modified_xml_models=False,
+                 log_level=StandardOutputErrorCapturerLevel.c):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -85,6 +86,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         log (:obj:`SedDocumentLog`, optional): log of the document
         indent (:obj:`int`, optional): degree to indent status messages
         pretty_print_modified_xml_models (:obj:`bool`, optional): if :obj:`True`, pretty print modified XML models
+        log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
 
     Returns:
         :obj:`tuple`:
@@ -143,7 +145,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         # Execute task
         print('{}Executing simulation ...'.format(' ' * 2 * (indent + 1)), end='')
         sys.stdout.flush()
-        with StandardOutputErrorCapturer(relay=verbose) as captured:
+        with StandardOutputErrorCapturer(relay=verbose, level=log_level) as captured:
             start_time = datetime.datetime.now()
             try:
                 # get model and apply changes
@@ -218,7 +220,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             print('{}Generating output {}: `{}` ...'.format(' ' * 2 * (indent + 2), i_output + 1, output.id), end='')
             sys.stdout.flush()
             start_time = datetime.datetime.now()
-            with StandardOutputErrorCapturer(relay=verbose) as captured:
+            with StandardOutputErrorCapturer(relay=verbose, level=log_level) as captured:
                 try:
                     if log.outputs[output.id].status == Status.SUCCEEDED:
                         output_status = log.outputs[output.id].status

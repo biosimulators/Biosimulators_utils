@@ -21,6 +21,7 @@ __all__ = [
     'ReportLog',
     'Plot2DLog',
     'Plot3DLog',
+    'StandardOutputErrorCapturerLevel',
 ]
 
 
@@ -530,3 +531,9 @@ class Plot3DLog(OutputLog):
             else None
         )
         return dict_log
+
+
+class StandardOutputErrorCapturerLevel(int, enum.Enum):
+    """ Level at which stdout/stderr should be captured """
+    python = 0
+    c = 1

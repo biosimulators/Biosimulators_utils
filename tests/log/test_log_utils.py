@@ -1,10 +1,12 @@
 from biosimulators_utils.combine import data_model as combine_data_model
 from biosimulators_utils.log import data_model
 from biosimulators_utils.log import utils
+from biosimulators_utils.log.warnings import StandardOutputNotLoggedWarning
 from biosimulators_utils.sedml import data_model as sedml_data_model
 from biosimulators_utils.sedml.io import SedmlSimulationWriter
 import os
 import shutil
+import sys
 import tempfile
 import unittest
 
@@ -89,7 +91,9 @@ class ExecStatusDataModel(unittest.TestCase):
                                      y_scale=sedml_data_model.AxisScale.log,
                                      z_scale=sedml_data_model.AxisScale.log),
         ]))
-        SedmlSimulationWriter().run(exp_2, os.path.join(self.dirname, 'exp_2.sedml'), validate_semantics=False, validate_models_with_languages=False)
+        SedmlSimulationWriter().run(exp_2, os.path.join(self.dirname, 'exp_2.sedml'),
+                                    validate_semantics=False,
+                                    validate_models_with_languages=False)
 
         status = utils.init_combine_archive_log(
             archive, self.dirname,
@@ -582,3 +586,49 @@ class ExecStatusDataModel(unittest.TestCase):
         )
         summary = utils.get_summary_combine_archive_log(log)
         self.assertIn('Unknown: 1', summary)
+
+
+class StandardOutputErrorCapturerTestCase(unittest.TestCase):
+    def test(self):
+        with utils.StandardOutputErrorCapturer(disabled=False, level=data_model.StandardOutputErrorCapturerLevel.c, relay=False) as captured_outter:
+            with utils.StandardOutputErrorCapturer(disabled=False, level=data_model.StandardOutputErrorCapturerLevel.c, relay=True) as captured_inner:
+                print('here ', end='')
+                sys.stdout.flush()
+                print('i am', end='', file=sys.stderr)
+                sys.stderr.flush()
+                self.assertTrue(captured_inner.get_text().startswith('here i am'))
+            self.assertTrue(captured_outter.get_text().startswith('here i am'))
+
+        with utils.StandardOutputErrorCapturer(disabled=False, level=data_model.StandardOutputErrorCapturerLevel.python, relay=False) as captured_outter:
+            with utils.StandardOutputErrorCapturer(disabled=False, level=data_model.StandardOutputErrorCapturerLevel.python, relay=True) as captured_inner:
+                print('here ', end='')
+                sys.stdout.flush()
+                print('i am', end='', file=sys.stderr)
+                sys.stderr.flush()
+                self.assertTrue(captured_inner.get_text().startswith('here i am'))
+            self.assertTrue(captured_outter.get_text().startswith('here i am'))
+
+        with utils.StandardOutputErrorCapturer(disabled=False, level=data_model.StandardOutputErrorCapturerLevel.c, relay=False) as captured_outter:
+            with utils.StandardOutputErrorCapturer(disabled=False, level=data_model.StandardOutputErrorCapturerLevel.c, relay=False) as captured_inner:
+                print('here ', end='')
+                sys.stdout.flush()
+                print('i am', end='', file=sys.stderr)
+                sys.stderr.flush()
+                self.assertTrue(captured_inner.get_text().startswith('here i am'))
+            self.assertEqual(captured_outter.get_text(), '')
+
+        with utils.StandardOutputErrorCapturer(disabled=False, level=data_model.StandardOutputErrorCapturerLevel.python, relay=False) as captured_outter:
+            with utils.StandardOutputErrorCapturer(disabled=False, level=data_model.StandardOutputErrorCapturerLevel.python, relay=False) as captured_inner:
+                print('here ', end='')
+                sys.stdout.flush()
+                print('i am', end='', file=sys.stderr)
+                sys.stderr.flush()                
+                self.assertTrue(captured_inner.get_text().startswith('here i am'))
+            self.assertEqual(captured_outter.get_text(), '')
+
+        with self.assertWarns(StandardOutputNotLoggedWarning):
+            with utils.StandardOutputErrorCapturer(disabled=True):
+                print('here ', end='')
+                sys.stdout.flush()
+                print('i am', end='', file=sys.stderr)
+                sys.stderr.flush()

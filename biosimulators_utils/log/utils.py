@@ -12,14 +12,17 @@ from ..sedml.data_model import SedDocument, Task, Output, Report, Plot2D, Plot3D
 from ..sedml.io import SedmlSimulationReader
 from ..warnings import warn
 from .data_model import (Status, CombineArchiveLog, SedDocumentLog,  # noqa: F401
-                         TaskLog, OutputLog, ReportLog, Plot2DLog, Plot3DLog)
+                         TaskLog, OutputLog, ReportLog, Plot2DLog, Plot3DLog,
+                         StandardOutputErrorCapturerLevel)
 from .warnings import StandardOutputNotLoggedWarning
 try:
     import capturer
 except ModuleNotFoundError:
     capturer = None
 import contextlib
+import io  # noqa: F401
 import os
+import sys
 
 __all__ = [
     'init_combine_archive_log',
@@ -269,20 +272,32 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
     standard output/error).
 
     Attributes:
+        level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which stdout/stderr should be captured
+        relay (:obj:`bool`): if :obj:`True`, collect the standard output/error streams and continue to pass
+                them along. if :obj:`False`, collect the stream, squash them, and do not pass them along.
         disabled (:obj:`bool`): whether to capture standard output and error
-        _captured (:obj:`capturer.CaptureOutput`)
+        _captured (:obj:`capturer.CaptureOutput`): logged C output
+        _log (:obj:`str`): logged Python output
+        _stdout (:obj:`io.IOBase`): overridden stdout
+        _stderr (:obj:`io.IOBase`): overridden stderr
     """
 
-    def __init__(self, relay=False, disabled=False):
+    def __init__(self, level=StandardOutputErrorCapturerLevel.c, relay=False, disabled=False):
         """
         Args:
+            level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which stdout/stderr should be captured
             relay (:obj:`bool`): if :obj:`True`, collect the standard output/error streams and continue to pass
                 them along. if :obj:`False`, collect the stream, squash them, and do not pass them along.
             disabled (:obj:`bool`, optional): whether to capture standard output and error
         """
+        self.level = level
+        self.relay = relay
         self.disabled = disabled
-        if not self.disabled and capturer:
-            self._captured = capturer.CaptureOutput(merged=True, relay=relay)
+        if not self.disabled:
+            if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
+                self._captured = capturer.CaptureOutput(merged=True, relay=relay)
+            else:
+                self._log = ''
         else:
             msg = (
                 'Standard output and error could not be logged because capturer is not installed. '
@@ -293,14 +308,33 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
 
     def __enter__(self):
         """ Enter a context """
-        if not self.disabled and capturer:
-            self._captured.start_capture()
+        if not self.disabled:
+            if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
+                self._captured.start_capture()
+            else:
+                self._stdout = sys.stdout
+                self._stderr = sys.stderr
+                sys.stdout = self
+                sys.stderr = self
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         """ Exit a context """
-        if not self.disabled and capturer:
-            self._captured.finish_capture()
+        if not self.disabled:
+            if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
+                self._captured.finish_capture()
+            else:
+                sys.stdout = self._stdout
+                sys.stderr = self._stderr
+
+    def write(self, message):
+        if self.relay:
+            self._stdout.write(message)
+        self._log += message
+
+    def flush(self):
+        if self.relay:
+            self._stdout.flush()
 
     def get_text(self):
         """ Get the captured standard output/error
@@ -308,8 +342,11 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
         Returns:
             :obj:`str`: captured standard output/error
         """
-        if not self.disabled and capturer:
-            return self._captured.get_bytes().decode()
+        if not self.disabled:
+            if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
+                return self._captured.get_bytes().decode()
+            else:
+                return self._log
         else:
             return None
 

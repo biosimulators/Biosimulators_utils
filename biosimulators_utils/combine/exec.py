@@ -9,7 +9,7 @@
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config
-from ..log.data_model import Status, CombineArchiveLog  # noqa: F401
+from ..log.data_model import Status, CombineArchiveLog, StandardOutputErrorCapturerLevel  # noqa: F401
 from ..log.utils import init_combine_archive_log, get_summary_combine_archive_log, StandardOutputErrorCapturer
 from ..plot.data_model import PlotFormat  # noqa: F401
 from ..report.data_model import VariableResults, ReportFormat  # noqa: F401
@@ -38,7 +38,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                                sed_doc_executer_supported_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
                                report_formats=None, plot_formats=None,
                                bundle_outputs=None, keep_individual_outputs=None,
-                               sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface)):
+                               sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
+                               log_level=StandardOutputErrorCapturerLevel.c):
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
 
     Args:
@@ -67,6 +68,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                         plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
                         log (:obj:`SedDocumentLog`, optional): execution status of document
                         indent (:obj:`int`, optional): degree to indent status messages
+                        log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
                     '''
 
         archive_filename (:obj:`str`): path to COMBINE/OMEX archive
@@ -87,11 +89,12 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         keep_individual_outputs (:obj:`bool`, optional): if :obj:`True`, keep individual output files
         sed_doc_executer_logged_features (:obj:`list` of :obj:`type`, optional): list of the types fo elements which that
             the SED document executer logs. Default: tasks, reports, plots, data sets, curves, and surfaces.
+        log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
 
     Returns:
         :obj:`CombineArchiveLog`: log
     """
-    with StandardOutputErrorCapturer(relay=True) as archive_captured:
+    with StandardOutputErrorCapturer(relay=True, level=log_level) as archive_captured:
         config = get_config()
         verbose = config.VERBOSE
 
@@ -189,7 +192,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             doc_log.status = Status.RUNNING
             doc_log.export()
 
-            with StandardOutputErrorCapturer(relay=verbose) as doc_captured:
+            with StandardOutputErrorCapturer(relay=verbose, level=log_level) as doc_captured:
                 doc_start_time = datetime.datetime.now()
                 try:
                     working_dir = os.path.dirname(content_filename)
@@ -201,6 +204,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                                      report_formats=report_formats,
                                      plot_formats=plot_formats,
                                      log=doc_log,
+                                     log_level=log_level,
                                      indent=1)
                     doc_log.status = Status.SUCCEEDED
                 except Exception as exception:
