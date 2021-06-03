@@ -61,6 +61,7 @@ class ModelLanguage(str, enum.Enum):
     BNGL = 'urn:sedml:language:bngl'
     CellML = 'urn:sedml:language:cellml'
     CopasiML = 'urn:sedml:language:copasiml'
+    HOC = 'urn:sedml:language:hoc'
     LEMS = 'urn:sedml:language:lems'
     MorpheusML = 'urn:sedml:language:morpheusml'
     NeuroML = 'urn:sedml:language:neuroml'
@@ -71,15 +72,16 @@ class ModelLanguage(str, enum.Enum):
 
 class ModelLanguagePattern(str, enum.Enum):
     """ Model language """
-    BNGL = 'urn:sedml:language:bngl'
+    BNGL = r'^urn:sedml:language:bngl(\.|$)'
     CellML = r'^urn:sedml:language:cellml(\.\d+_\d+)?$'
-    CopasiML = 'urn:sedml:language:copasiml'
+    CopasiML = r'^urn:sedml:language:copasiml(\.|$)'
+    HOC = r'^urn:sedml:language:hoc(\.|$)'
     LEMS = r'^urn:sedml:language:lems(\.|$)'
-    MorpheusML = 'urn:sedml:language:morpheusml'
-    NeuroML = r'urn:sedml:language:neuroml(\.version-\d+_\d+_\d+\.level\-\d+)?$'
+    MorpheusML = r'^urn:sedml:language:morpheusml(\.|$)'
+    NeuroML = r'^urn:sedml:language:neuroml(\.version-\d+_\d+_\d+\.level\-\d+)?$'
     SBML = r'^urn:sedml:language:sbml(\.level\-\d+\.version\-\d+)?$'
-    Smoldyn = 'urn:sedml:language:smoldyn'
-    VCML = 'urn:sedml:language:vcml'
+    Smoldyn = r'^urn:sedml:language:smoldyn(\.|$)'
+    VCML = r'^urn:sedml:language:vcml(\.|$)'
 
 
 class ModelLanguageEdamId(str, enum.Enum):
@@ -87,6 +89,7 @@ class ModelLanguageEdamId(str, enum.Enum):
     BNGL = 'format_3972'
     CellML = 'format_3240'
     CopasiML = 'format_9003'
+    HOC = 'format_9005'
     LEMS = 'format_9004'
     MorpheusML = 'format_9002'
     NeuroML = 'format_3971'
