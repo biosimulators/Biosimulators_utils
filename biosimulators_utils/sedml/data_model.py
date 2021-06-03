@@ -75,7 +75,7 @@ class ModelLanguagePattern(str, enum.Enum):
     CellML = r'^urn:sedml:language:cellml(\.\d+_\d+)?$'
     CopasiML = 'urn:sedml:language:copasiml'
     LEMS = r'^urn:sedml:language:lems(\.|$)'
-    MorpheusML = 'urn:sedml:language:morpheusml'    
+    MorpheusML = 'urn:sedml:language:morpheusml'
     NeuroML = r'urn:sedml:language:neuroml(\.version-\d+_\d+_\d+\.level\-\d+)?$'
     SBML = r'^urn:sedml:language:sbml(\.level\-\d+\.version\-\d+)?$'
     Smoldyn = 'urn:sedml:language:smoldyn'

@@ -166,7 +166,7 @@ class CombineArchiveContentFormat(str, enum.Enum):
     CopasiML = 'http://purl.org/NET/mediatypes/application/x-copasi'
     LEMS = 'http://purl.org/NET/mediatypes/application/lems+xml'
     MorpheusML = 'http://purl.org/NET/mediatypes/application/morpheusml+xml'
-    NeuroML = 'http://identifiers.org/combine.specifications/neuroml'    
+    NeuroML = 'http://identifiers.org/combine.specifications/neuroml'
     OMEX = 'http://identifiers.org/combine.specifications/omex'
     OMEX_MANIFEST = 'http://identifiers.org/combine.specifications/omex-manifest'
     OMEX_METADATA = 'http://identifiers.org/combine.specifications/omex-metadata'
