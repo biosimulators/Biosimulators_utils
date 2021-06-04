@@ -59,6 +59,7 @@ __all__ = [
     'get_namespaces_for_sed_object',
     'get_xml_node_namespace_tag_target',
     'is_model_language_encoded_in_xml',
+    'does_model_language_use_xpath_variable_targets',
     'get_task_results_shape',
 ]
 
@@ -1134,7 +1135,28 @@ def is_model_language_encoded_in_xml(language):
     """
     return (
         re.match(ModelLanguagePattern.CellML, language)
+        or re.match(ModelLanguagePattern.CopasiML, language)
+        or re.match(ModelLanguagePattern.LEMS, language)
+        or re.match(ModelLanguagePattern.MorpheusML, language)
         or re.match(ModelLanguagePattern.NeuroML, language)
+        or re.match(ModelLanguagePattern.SBML, language)
+        or re.match(ModelLanguagePattern.VCML, language)
+    )
+
+
+def does_model_language_use_xpath_variable_targets(language):
+    """ Determine if the model language uses XPaths to target variables of data generators
+
+    Args:
+        language (:obj:`str`): language
+
+    Returns:
+        :obj:`bool`: :obj:`True`, if the model language is encoded in XML
+    """
+    return (
+        re.match(ModelLanguagePattern.CellML, language)
+        or re.match(ModelLanguagePattern.CopasiML, language)
+        or re.match(ModelLanguagePattern.MorpheusML, language)
         or re.match(ModelLanguagePattern.SBML, language)
         or re.match(ModelLanguagePattern.VCML, language)
     )

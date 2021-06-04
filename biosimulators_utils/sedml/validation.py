@@ -20,7 +20,9 @@ from .data_model import (SedIdGroupMixin, AbstractTask, Task, RepeatedTask,  # n
                          Calculation)
 from .math import compile_math, eval_math
 from .utils import (append_all_nested_children_to_doc, get_range_len,
-                    is_model_language_encoded_in_xml, get_models_referenced_by_task,
+                    is_model_language_encoded_in_xml,
+                    does_model_language_use_xpath_variable_targets,
+                    get_models_referenced_by_task,
                     get_all_sed_objects,
                     get_data_generators_for_output, get_variables_for_data_generators,
                     get_model_changes_for_task,
@@ -805,6 +807,9 @@ def validate_model_with_language(source, language, name=None):
     if language and re.match(ModelLanguagePattern.CellML, language):
         from ..cellml.validation import validate_model
 
+    elif language and re.match(ModelLanguagePattern.LEMS, language):
+        from ..lems.validation import validate_model
+
     elif language and re.match(ModelLanguagePattern.NeuroML, language):
         from ..neuroml.validation import validate_model
 
@@ -1405,7 +1410,7 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
         else:
             errors.append(['URI fragment targets are not supported in the context of {}.'.format(context.__name__)])
 
-    elif is_model_language_encoded_in_xml(language):
+    elif does_model_language_use_xpath_variable_targets(language):
 
         if None in namespaces:
             namespaces = dict(namespaces)

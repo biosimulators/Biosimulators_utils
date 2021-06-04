@@ -854,6 +854,17 @@ class ValidationTestCase(unittest.TestCase):
         self.assertNotEqual(errors, [])
         self.assertEqual(warnings, [])
 
+        # LEMS
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'lems', 'LEMS_NML2_Ex5_DetCell.xml')
+        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.LEMS)
+        self.assertEqual(errors, [])
+        self.assertIn('Includes could not be validated.', flatten_nested_list_of_strings(warnings))
+
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'lems', 'invalid.xml')
+        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.LEMS)
+        self.assertIn("<Lems> expected as root", flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
         # NeuroML
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'neuroml', 'IM.channel.nml')
         errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.NeuroML)

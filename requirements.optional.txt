@@ -1,6 +1,9 @@
 [cellml]
 libcellml
 
+[lems]
+pylems
+
 [neuroml]
 libneuroml
 
