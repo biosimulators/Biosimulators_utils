@@ -127,7 +127,7 @@ class ReportWriter(object):
                                                chunks=True, compression="gzip", compression_opts=9)
                 data_set.attrs['_type'] = Hdf5DataSetType(type).name
                 if report.id:
-                    data_set.attrs['uri'] = rel_path + '/' + report.id
+                    data_set.attrs['uri'] = rel_path
                     data_set.attrs['sedmlId'] = report.id
                 if report.name:
                     data_set.attrs['sedmlName'] = report.name
@@ -137,7 +137,7 @@ class ReportWriter(object):
                 data_set.attrs['sedmlDataSetDataTypes'] = data_set_data_types
                 data_set.attrs['sedmlDataSetShapes'] = data_set_shapes
 
-                group_ids = rel_path.split(os.path.sep)
+                group_ids = rel_path.split(os.path.sep)[0:-1]
                 for i_group in range(len(group_ids)):
                     uri = '/'.join(group_ids[0:i_group + 1])
                     group = file[uri]
