@@ -6,7 +6,6 @@
 :License: MIT
 """
 
-from ..kisao.data_model import TermType as KisaoTermType
 from ..kisao.utils import get_term as get_kisao_term, get_term_type as get_kisao_term_type
 from ..xml.utils import validate_xpaths_ref_to_unique_objects, eval_xpath
 from .data_model import (SedIdGroupMixin, AbstractTask, Task, RepeatedTask,  # noqa: F401
@@ -27,6 +26,7 @@ from .utils import (append_all_nested_children_to_doc, get_range_len,
                     get_data_generators_for_output, get_variables_for_data_generators,
                     get_model_changes_for_task,
                     get_task_results_shape)
+from kisao.data_model import TermType as KisaoTermType
 import collections
 import copy
 import lxml.etree

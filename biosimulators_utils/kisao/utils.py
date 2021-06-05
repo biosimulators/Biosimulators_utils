@@ -6,8 +6,9 @@
 :License: MIT
 """
 
-from .data_model import TermType
 from kisao import Kisao
+from kisao.data_model import TermType  # noqa: F401
+import kisao.utils
 import pronto  # noqa: F401
 import re
 
@@ -45,14 +46,6 @@ def get_term_type(term):
         :obj:`TermType`: type of the term
     """
     if term:
-        kisao = Kisao()
-        superclass_ids = [kisao.get_term_id(superclass) for superclass in term.superclasses()]
-
-        for term_type in TermType.__members__.values():
-            if term_type.value in superclass_ids:
-                if term_type.value == kisao.get_term_id(term):
-                    return TermType.root
-                else:
-                    return term_type
+        return kisao.utils.get_term_type(term)
 
     return None
