@@ -22,9 +22,9 @@ class SimulatorSpecsTestCase(unittest.TestCase):
         for alg_specs in specs['algorithms']:
             self.assertIsInstance(alg_specs, dict)
 
-        self.assertEqual(specs['version'], '4.30.240')
+        self.assertRegex(specs['version'], r'\d+\.\d+\.\d+$')
 
-        specs = get_simulator_specs('copasi', '4.30.240')
+        specs = get_simulator_specs('copasi', specs['version'])
         self.assertEqual(specs['id'], 'copasi')
         self.assertIsInstance(specs['algorithms'], list)
         for alg_specs in specs['algorithms']:

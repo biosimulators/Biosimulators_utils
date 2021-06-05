@@ -9,6 +9,9 @@
 from ..biosimulations.utils import validate_biosimulations_api_response
 from ..config import get_config
 from ..utils.core import patch_dict
+from kisao import Kisao
+from kisao.data_model import TermType as KisaoTermType
+from kisao.utils import get_term_type as get_kisao_term_type
 import json
 import os
 import requests
@@ -74,6 +77,24 @@ def read_simulator_specs(path_or_url, patch=None, validate=True):
             "Documentation is available at {}.".format(api_endpoint)
         ])
         validate_biosimulations_api_response(response, intro_failure_msg)
+
+        kisao = Kisao()
+        for i_alg, alg_specs in enumerate(specs['algorithms']):
+            alg_term = kisao.get_term(alg_specs['kisaoId']['id'])
+            alg_term_type = get_kisao_term_type(alg_term)
+            if alg_term_type != KisaoTermType.algorithm:
+                msg = 'KiSAO term `{}` of algorithm {} must be a term for an algorithm, not a `{}` term.'.format(
+                    alg_specs['kisaoId']['id'], i_alg + 1, alg_term_type.name)
+                raise ValueError(msg)
+
+            for i_param, param_specs in enumerate(alg_specs['parameters']):
+                param_term = kisao.get_term(param_specs['kisaoId']['id'])
+                param_term_type = get_kisao_term_type(param_term)
+                if param_term_type != KisaoTermType.algorithm_parameter:
+                    msg = (
+                        'KiSAO term `{}` of parameter {} of algorithm {} must be a term for an algorithm parameter, not a `{}` term.'
+                    ).format(param_specs['kisaoId']['id'], i_param + 1, i_alg + 1, param_term_type.name)
+                    raise ValueError(msg)
 
     # return validated specifications
     return specs
