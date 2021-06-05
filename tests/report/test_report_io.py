@@ -2,6 +2,7 @@ from biosimulators_utils.report import data_model
 from biosimulators_utils.report import io
 from biosimulators_utils.report.warnings import MissingDataWarning, ExtraDataWarning, CannotExportMultidimensionalTableWarning
 from biosimulators_utils.sedml.data_model import Report, DataSet
+import h5py
 import numpy
 import numpy.testing
 import os
@@ -105,7 +106,7 @@ class ReportIoTestCase(unittest.TestCase):
         for format in [data_model.ReportFormat.h5]:
             rel_path_1 = os.path.join(format.value, 'a/b/c.sedml', report_1.id)
             rel_path_2 = os.path.join(format.value, 'a/d.sedml', report_2.id)
-            rel_path_3 = os.path.join(format.value, 'e.sedml', report_2.id)
+            rel_path_3 = os.path.join(format.value, 'e.sedml', report_3.id)
 
             io.ReportWriter().run(report_1, data_set_results_1, self.dirname, rel_path_1, format=format)
             io.ReportWriter().run(report_2, data_set_results_2, self.dirname, rel_path_2, format=format)
@@ -142,6 +143,41 @@ class ReportIoTestCase(unittest.TestCase):
             self.assertEqual(data_set_results_3_b['a'].dtype.name, 'int64')
             self.assertEqual(data_set_results_3_b['b'].dtype.name, 'float64')
             self.assertEqual(data_set_results_3_b['c'].dtype.name, 'bool')
+
+            with h5py.File(os.path.join(self.dirname, 'reports.h5'), 'r') as file:
+                self.assertEqual(file[format.value + '/a'].attrs, {
+                    'uri': format.value + '/a',
+                    'combineArchiveLocation': format.value + '/a',
+                })
+                self.assertEqual(file[format.value + '/a/b'].attrs, {
+                    'uri': format.value + '/a/b',
+                    'combineArchiveLocation': format.value + '/a/b',
+                })
+                self.assertEqual(file[format.value + '/a/b/c.sedml'].attrs, {
+                    'uri': format.value + '/a/b/c.sedml',
+                    'combineArchiveLocation': format.value + '/a/b/c.sedml',
+                })
+                self.assertEqual(file[format.value + '/a/d.sedml'].attrs, {
+                    'uri': format.value + '/a/d.sedml',
+                    'combineArchiveLocation': format.value + '/a/d.sedml',
+                })
+                self.assertEqual(file[format.value + '/e.sedml'].attrs, {
+                    'uri': format.value + '/e.sedml',
+                    'combineArchiveLocation': format.value + '/e.sedml',
+                })
+
+                self.assertEqual(file[format.value + '/a/b/c.sedml/' + report_1.id].attrs['uri'],
+                                 format.value + '/a/b/c.sedml/' + report_1.id)
+                self.assertEqual(file[format.value + '/a/b/c.sedml/' + report_1.id].attrs['sedmlId'], report_1.id)
+                self.assertEqual(file[format.value + '/a/b/c.sedml/' + report_1.id].attrs['sedmlName'], report_1.name)
+
+                self.assertEqual(file[format.value + '/a/d.sedml/' + report_2.id].attrs['uri'], format.value + '/a/d.sedml/' + report_2.id)
+                self.assertEqual(file[format.value + '/a/d.sedml/' + report_2.id].attrs['sedmlId'], report_2.id)
+                self.assertEqual(file[format.value + '/a/d.sedml/' + report_2.id].attrs['sedmlName'], report_2.name)
+
+                self.assertEqual(file[format.value + '/e.sedml/' + report_3.id].attrs['uri'], format.value + '/e.sedml/' + report_3.id)
+                self.assertEqual(file[format.value + '/e.sedml/' + report_3.id].attrs['sedmlId'], report_3.id)
+                self.assertNotIn('sedmlName', file[format.value + '/e.sedml/' + report_3.id].attrs)
 
     def test_read_write_warnings(self):
         report_1 = Report(

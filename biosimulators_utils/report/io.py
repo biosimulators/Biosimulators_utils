@@ -127,14 +127,22 @@ class ReportWriter(object):
                                                chunks=True, compression="gzip", compression_opts=9)
                 data_set.attrs['_type'] = Hdf5DataSetType(type).name
                 if report.id:
-                    data_set.attrs['id'] = report.id
+                    data_set.attrs['uri'] = rel_path + '/' + report.id
+                    data_set.attrs['sedmlId'] = report.id
                 if report.name:
-                    data_set.attrs['name'] = report.name
-                data_set.attrs['dataSetIds'] = data_set_ids
-                data_set.attrs['dataSetNames'] = data_set_names
-                data_set.attrs['dataSetLabels'] = data_set_labels
-                data_set.attrs['dataSetDataTypes'] = data_set_data_types
-                data_set.attrs['dataSetShapes'] = data_set_shapes
+                    data_set.attrs['sedmlName'] = report.name
+                data_set.attrs['sedmlDataSetIds'] = data_set_ids
+                data_set.attrs['sedmlDataSetNames'] = data_set_names
+                data_set.attrs['sedmlDataSetLabels'] = data_set_labels
+                data_set.attrs['sedmlDataSetDataTypes'] = data_set_data_types
+                data_set.attrs['sedmlDataSetShapes'] = data_set_shapes
+
+                group_ids = rel_path.split(os.path.sep)
+                for i_group in range(len(group_ids)):
+                    uri = '/'.join(group_ids[0:i_group + 1])
+                    group = file[uri]
+                    group.attrs['uri'] = uri
+                    group.attrs['combineArchiveLocation'] = uri
 
         else:
             raise NotImplementedError('Report format {} is not supported'.format(format))
@@ -223,10 +231,10 @@ class ReportReader(object):
             with h5py.File(filename, 'r') as file:
                 data_set = file[rel_path]
                 data_set_results = data_set[:]
-                file_data_set_ids = data_set.attrs['dataSetIds']
-                data_set_data_types = data_set.attrs['dataSetDataTypes']
+                file_data_set_ids = data_set.attrs['sedmlDataSetIds']
+                data_set_data_types = data_set.attrs['sedmlDataSetDataTypes']
                 data_set_shapes = []
-                for data_set_shape in data_set.attrs['dataSetShapes']:
+                for data_set_shape in data_set.attrs['sedmlDataSetShapes']:
                     if data_set_shape:
                         data_set_shapes.append([int(dim_len) for dim_len in data_set_shape.split(',')])
                     else:
@@ -308,7 +316,13 @@ class ReportReader(object):
                 def append_report_id(name, object, type=type):
                     if isinstance(object, h5py.Dataset):
                         data_set_type = object.attrs.get('_type', None)
-                        if data_set_type and (Hdf5DataSetType[data_set_type].value == type or issubclass(Hdf5DataSetType[data_set_type].value, type)):
+                        if (
+                            data_set_type and
+                            (
+                                Hdf5DataSetType[data_set_type].value == type
+                                or issubclass(Hdf5DataSetType[data_set_type].value, type)
+                            )
+                        ):
                             report_ids.append(name)
 
                 file.visititems(append_report_id)
