@@ -1,4 +1,4 @@
-from biosimulators_utils.sbml.utils import get_parameters_variables_for_simulation
+from biosimulators_utils.model_lang.sbml.utils import get_parameters_variables_for_simulation
 from biosimulators_utils.sedml.data_model import (ModelLanguage, SteadyStateSimulation,
                                                   OneStepSimulation, UniformTimeCourseSimulation, Symbol)
 from unittest import mock

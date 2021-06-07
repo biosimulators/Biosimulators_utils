@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..sedml.data_model import (  # noqa: F401
+from ...sedml.data_model import (  # noqa: F401
     ModelAttributeChange, Variable, Symbol,
     Simulation, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation
     )

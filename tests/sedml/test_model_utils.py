@@ -6,7 +6,7 @@ import unittest
 
 class ModelUtilsTestCase(unittest.TestCase):
     def test_get_parameters_variables_for_simulation(self):
-        with mock.patch('biosimulators_utils.sbml.utils.get_parameters_variables_for_simulation', return_value=(['a', 'b'], ['c', 'd'])):
+        with mock.patch('biosimulators_utils.model_lang.sbml.utils.get_parameters_variables_for_simulation', return_value=(['a', 'b'], ['c', 'd'])):
             params, vars = model_utils.get_parameters_variables_for_simulation(None, ModelLanguage.SBML, None, None)
         self.assertEqual(params, ['a', 'b'])
         self.assertEqual(vars, ['c', 'd'])

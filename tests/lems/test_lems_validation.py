@@ -1,4 +1,4 @@
-from biosimulators_utils.lems.validation import validate_model
+from biosimulators_utils.model_lang.lems.validation import validate_model
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
 import os
 import unittest

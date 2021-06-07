@@ -804,17 +804,23 @@ def validate_model_with_language(source, language, name=None):
     errors = []
     warnings = []
 
+    # if language and re.match(ModelLanguagePattern.BNGL, language):
+    #     from ..model_lang.bngl.validation import validate_model
+
     if language and re.match(ModelLanguagePattern.CellML, language):
-        from ..cellml.validation import validate_model
+        from ..model_lang.cellml.validation import validate_model
 
     elif language and re.match(ModelLanguagePattern.LEMS, language):
-        from ..lems.validation import validate_model
+        from ..model_lang.lems.validation import validate_model
 
     elif language and re.match(ModelLanguagePattern.NeuroML, language):
-        from ..neuroml.validation import validate_model
+        from ..model_lang.neuroml.validation import validate_model
 
     elif language and re.match(ModelLanguagePattern.SBML, language):
-        from ..sbml.validation import validate_model
+        from ..model_lang.sbml.validation import validate_model
+
+    # elif language and re.match(ModelLanguagePattern.Smoldyn, language):
+    #    from ..model_lang.smoldyn.validation import validate_model
 
     else:
         warnings.append(['No validation is available for models encoded in `{}`'.format(getattr(language, 'name', language) or '')])

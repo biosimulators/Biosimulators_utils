@@ -202,7 +202,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with mock.patch('requests.get', return_value=mock.Mock(raise_for_status=lambda: None, content=b'')):
-            with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+            with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
                 output_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir,
                                                       out_dir, report_formats=[ReportFormat.csv], plot_formats=[])
 
@@ -247,7 +247,7 @@ class ExecTaskCase(unittest.TestCase):
         doc.models[1].source = doc.models[0].source
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
         shutil.rmtree(out_dir)
-        with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+        with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
             exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[])
 
         report_ids = ReportReader().get_ids(out_dir, format=ReportFormat.h5, type=data_model.Report)
@@ -300,7 +300,7 @@ class ExecTaskCase(unittest.TestCase):
         log.outputs['report_2'].parent = log
         log.outputs['report_3'].parent = log
         log.outputs['report_4'].parent = log
-        with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+        with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
             exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[],
                               log=log)
 
@@ -555,12 +555,12 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
 
-        with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+        with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
             report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=False)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id], numpy.array((1., )))
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id], numpy.array((2., )))
 
-        with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+        with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
             report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=True)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id], numpy.array((2.5, )))
         expected_value = 0.2 * 2.5 + 2.0 * 3.1 * 4.0
@@ -645,7 +645,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarns(NoOutputsWarning):
-            with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+            with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
                 exec.exec_sed_doc(execute_task, filename, working_dir, out_dir)
 
     def test_errors(self):
@@ -716,7 +716,7 @@ class ExecTaskCase(unittest.TestCase):
         ))
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(SedmlExecutionError, 'not supported'):
-            with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+            with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
                 exec.exec_sed_doc(execute_task, doc, '.', out_dir)
 
         # error: unsupported data generators
@@ -1152,7 +1152,7 @@ class ExecTaskCase(unittest.TestCase):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+        with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
             _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
                                        out_dir, plot_formats=[PlotFormat.pdf])
 
@@ -1200,7 +1200,7 @@ class ExecTaskCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(doc, filename, validate_semantics=False, validate_models_with_languages=False)
         log = init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
-            with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+            with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
                 with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=([], [])):
                     exec.exec_sed_doc(execute_task, filename, working_dir,
                                       out_dir, log=log, plot_formats=[PlotFormat.pdf])
@@ -1248,7 +1248,7 @@ class ExecTaskCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
         log = init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "Some generators could not be produced:"):
-            with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+            with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
                 exec.exec_sed_doc(execute_task, filename, working_dir,
                                   out_dir, log=log, plot_formats=[PlotFormat.pdf])
 
@@ -1394,7 +1394,7 @@ class ExecTaskCase(unittest.TestCase):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+        with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
             _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
                                        out_dir, plot_formats=[PlotFormat.pdf])
 
@@ -1438,7 +1438,7 @@ class ExecTaskCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(doc, filename, validate_semantics=False, validate_models_with_languages=False)
         log = init_sed_document_log(doc)
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
-            with mock.patch('biosimulators_utils.sbml.validation.validate_model', return_value=([], [])):
+            with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [])):
                 with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=([], [])):
                     exec.exec_sed_doc(execute_task, filename, working_dir,
                                       out_dir, log=log, plot_formats=[PlotFormat.pdf])

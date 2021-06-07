@@ -1,4 +1,4 @@
-from biosimulators_utils.cellml.validation import validate_model
+from biosimulators_utils.model_lang.cellml.validation import validate_model
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
 from unittest import mock
 import os
