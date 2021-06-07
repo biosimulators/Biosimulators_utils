@@ -836,6 +836,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(warnings, [])
 
     def test_validate_model_with_language(self):
+        # SBML
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-list-of-species.xml')
         validation.validate_model_with_language(filename, data_model.ModelLanguage.SBML)
 
@@ -885,6 +886,17 @@ class ValidationTestCase(unittest.TestCase):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'neuroml', 'invalid-model.nml')
         errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.NeuroML)
         self.assertIn("Not a valid NeuroML 2 doc", flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
+        # Smoldyn
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'smoldyn', 'bounce1.txt')
+        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.Smoldyn)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'smoldyn', 'invalid.txt')
+        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.Smoldyn)
+        self.assertIn("statement not recognized", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
     def test_validate_model_changes_warning_handling(self):

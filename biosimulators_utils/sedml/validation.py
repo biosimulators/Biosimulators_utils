@@ -819,8 +819,8 @@ def validate_model_with_language(source, language, name=None):
     elif language and re.match(ModelLanguagePattern.SBML, language):
         from ..model_lang.sbml.validation import validate_model
 
-    # elif language and re.match(ModelLanguagePattern.Smoldyn, language):
-    #    from ..model_lang.smoldyn.validation import validate_model
+    elif language and re.match(ModelLanguagePattern.Smoldyn, language):
+        from ..model_lang.smoldyn.validation import validate_model
 
     else:
         warnings.append(['No validation is available for models encoded in `{}`'.format(getattr(language, 'name', language) or '')])
