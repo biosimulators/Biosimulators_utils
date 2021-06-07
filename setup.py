@@ -18,7 +18,10 @@ import pkg_utils
 name = 'biosimulators_utils'
 dirname = os.path.dirname(__file__)
 package_data = {
-    name: [],
+    name: [
+        os.path.join('model_lang', 'cellml', 'cellml1.0.rng'),
+        os.path.join('model_lang', 'cellml', 'mathml2.rng'),
+    ],
 }
 
 # get package metadata

@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<model name="parameter_file" 
+	cmeta:id="parameter_file" 
+	xmlns="http://www.cellml.org/cellml/1.1#" 
+	xmlns:cellml="http://www.cellml.org/cellml/1.1#" 
+	xmlns:cmeta="http://www.cellml.org/metadata/1.0#">
+	
+<!--      <variable name="" units="dimensionless" initial_value="" public_interface="out"/> -->
+
+   <component name="state_variables">
+<!--      <variable name="AAR1_init" units="mmHg_minute_per_L" initial_value="40.0" public_interface="out"/>  -->
+<!--      <variable name="AAR" 		units="mmHg_minute_per_L" 	initial_value="40.0"		private_interface="none"	public_interface="out"/> -->	<!-- afferent arteriolar resistance -->
+      <variable name="ADHC_init" units="dimensionless" initial_value="1.0" public_interface="out"/>
+<!--      <variable name="ADHC" 	units="dimensionless" 	initial_value="1.0"			private_interface="none"	public_interface="out"/> -->	<!-- ADH concentration, ratio to normal --> 
+      <variable name="AHY_init" 		units="dimensionless" 	initial_value="0.301963"	public_interface="out"/>	<!-- adapted effect, volume receptor output -->
+<!--      <variable name="AHY" 		units="dimensionless" 	initial_value="0.301963"	private_interface="none"	public_interface="out"/> -->	<!-- adapted effect, volume receptor output -->
+      <variable name="AMC_init" units="dimensionless" initial_value="1.0" public_interface="out"/>
+<!--      <variable name="AMC" 		units="dimensionless" 	initial_value="1.0"			private_interface="none"	public_interface="out"/> -->	<!-- aldosterone concentration, ratio to normal --> 
+      <variable name="AMM1T_init" units="dimensionless" initial_value="1.00269" public_interface="out"/>
+<!--      <variable name="AMM1" 	units="dimensionless" 	initial_value="1.00269"		private_interface="none"	public_interface="out"/> -->	<!-- multiplier for rapid muscle autoregulation --> 
+      <variable name="AMM2_init" units="dimensionless" initial_value="1.09071" public_interface="out"/>
+<!--      <variable name="AMM2" 	units="dimensionless" 	initial_value="1.09071"		private_interface="none"	public_interface="out"/> -->	<!-- multiplier for long-term muscle autoregulation --> 
+      <variable name="ANC_init" units="dimensionless" initial_value="0.859476" public_interface="out"/>
+<!--      <variable name="ANC" 		units="dimensionless" 	initial_value="0.859476"	private_interface="none"	public_interface="out"/> -->	<!-- plasma angiotensin concentration -->
+      <variable name="ANPC_init" units="dimensionless" initial_value="1.0" public_interface="out"/>
+<!--      <variable name="ANPC" 	units="dimensionless" 	initial_value="1.0"			private_interface="none"	public_interface="out"/> -->	<!-- plasma ANP concentration -->
+      <variable name="ANX1_init" units="dimensionless" initial_value="0" public_interface="out"/>
+<!--      <variable name="ANX1" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/> -->	<!-- actual ANX after damping -->
+      <variable name="AR1T_init" units="dimensionless" initial_value="1.02127" public_interface="out"/>
+      <variable name="AR2T_init" units="dimensionless" initial_value="1.01179" public_interface="out"/>
+      <variable name="AR3T_init" units="dimensionless" initial_value="1.1448" public_interface="out"/>
+<!--      <variable name="AR1" 		units="dimensionless" 	initial_value="1.02127"		private_interface="none"	public_interface="out"/> -->	<!-- multiplier for rapid non-muscle autoregulation -->
+<!--      <variable name="AR2" 		units="dimensionless" 	initial_value="1.01179"		private_interface="none"	public_interface="out"/> -->	<!-- multiplier for intermediate non-muscle autoregulation -->
+<!--      <variable name="AR3" 		units="dimensionless" 	initial_value="1.1448"		private_interface="none"	public_interface="out"/> -->	<!-- multiplier for long-term non-muscle autoregulation -->
+      <variable name="AU1_init" units="dimensionless" initial_value="1.00007" public_interface="out"/>
+      <variable name="AU4_init" units="dimensionless" initial_value="-0.060024" public_interface="out"/>
+      <variable name="AU6_init" units="dimensionless" initial_value="1.00132" public_interface="out"/>
+<!--      <variable name="AU1" 		units="dimensionless" 	initial_value="1.00007"		private_interface="none"	public_interface="out"/> -->	<!-- integral of DAU -->
+<!--      <variable name="AU4" 		units="dimensionless" 	initial_value="-0.060024"	private_interface="none"	public_interface="out"/> -->	<!-- long-term baroreceptor adaptation output -->
+<!--      <variable name="AU6" 		units="dimensionless" 	initial_value="1.00132"		private_interface="none"	public_interface="out"/> -->	<!-- baroreceptor output -->
+      <variable name="DTKA_init" units="monovalent_mEq_per_minute" initial_value="0.0367573" public_interface="out"/>
+<!--      <variable name="DTKA" 	units="monovalent_mEq_per_minute" 	initial_value="0.0367573"	private_interface="none"	public_interface="out"/> -->	<!-- distal reabsorption of potassium -->
+      <variable name="HMD1_init" units="dimensionless" initial_value="1" public_interface="out"/>
+<!--      <variable name="HMD" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/> -->	<!-- cardiac depressant effect of hypoxia -->
+      <variable name="HPL_init" 		units="dimensionless" 	initial_value="1.00163"		private_interface="none"	public_interface="out"/>	<!-- hypertrophy effect on left ventricle -->
+<!--      <variable name="HPL" 		units="dimensionless" 	initial_value="1.00163"		private_interface="none"	public_interface="out"/> -->	<!-- hypertrophy effect on left ventricle -->
+      <variable name="HPR_init" 		units="dimensionless" 	initial_value="1.00237"		private_interface="none"	public_interface="out"/>	<!-- hypertrophy effect on right ventricle -->
+<!--      <variable name="HPR" 		units="dimensionless" 	initial_value="1.00237"		private_interface="none"	public_interface="out"/> -->	<!-- hypertrophy effect on right ventricle -->
+      <variable name="KTOT_init" units="monovalent_mEq" initial_value="3622.54" public_interface="out"/>
+<!--      <variable name="KTOT" 	units="monovalent_mEq" 	initial_value="3622.54"		private_interface="none"	public_interface="out"/> -->	<!-- total body potassium (intra + extracellular) -->
+      <variable name="NAE_init" units="monovalent_mEq" initial_value="2109.91" public_interface="out"/>
+<!--      <variable name="NAE" 		units="monovalent_mEq" 	initial_value="2109.91"		private_interface="none"	public_interface="out"/> -->	<!-- total extracellular sodium -->
+      <variable name="O2VAD1_init" units="dimensionless" initial_value="2.368e-07" public_interface="out"/>
+<!--      <variable name="O2VAD1" 	units="dimensionless" 	initial_value="2.368e-07"	private_interface="none"	public_interface="out"/>  -->	<!-- delayed ventilatory response -->
+      <variable name="OSV_init" units="dimensionless" initial_value="0.694163" public_interface="out"/>
+<!--      <variable name="OSV" 		units="dimensionless" 	initial_value="0.694163"	private_interface="none"	public_interface="out"/> -->	<!-- nonmuscle venous oxygen saturation -->
+      <variable name="OVA_init" units="mL_per_L" initial_value="204.497" public_interface="out"/>
+<!--      <variable name="OVA" 		units="mL_per_L" 	initial_value="204.497"		private_interface="none"	public_interface="out"/> -->	<!-- arterial O2 content -->
+      <variable name="OVS_init" units="dimensionless" initial_value="0.699673" public_interface="out"/>
+<!--      <variable name="OVS" 		units="dimensionless" 	initial_value="0.699673"	private_interface="none"	public_interface="out"/> -->	<!-- muscle venous oxygen saturation -->
+      <variable name="PAR1_init" units="mmHg" initial_value="103.525" public_interface="out"/>
+<!--      <variable name="PAR"	 	units="mmHg" 	initial_value="103.525"		private_interface="none"	public_interface="out"/> -->	<!-- renal arterial pressure -->
+      <variable name="PC_init" 		units="mmHg" 	initial_value="16.9144"		private_interface="none"	public_interface="out"/>	<!-- capillary pressure -->
+<!--      <variable name="PC" 		units="mmHg" 	initial_value="16.9144"		private_interface="none"	public_interface="out"/> -->	<!-- capillary pressure -->
+      <variable name="PLUR_init" units="mOsm" initial_value="159.549" public_interface="out"/>
+<!--      <variable name="PLUR" 	units="mOsm" 	initial_value="159.549"		private_interface="none"	public_interface="out"/> -->	<!-- total body urea -->
+      <variable name="PPR1_init" units="gram" initial_value="0.419998" public_interface="out"/>
+      <variable name="PRP_init" units="gram" initial_value="216.243" public_interface="out"/>
+<!--      <variable name="PPR" 		units="gram" 	initial_value="0.419998"	private_interface="none"	public_interface="out"/> -->	<!-- total protein in pulmonary fluids -->
+<!--      <variable name="PRP" 		units="gram" 	initial_value="216.243"		private_interface="none"	public_interface="out"/> -->	<!-- total plasma protein -->
+      <variable name="QO2T_init" units="mL" initial_value="72.2362" public_interface="out"/>
+      <variable name="QOM1_init" units="mL" initial_value="48.0839" public_interface="out"/>
+<!--      <variable name="QO2" 		units="mL" 	initial_value="72.2362"		private_interface="none"	public_interface="out"/> -->	<!-- quantity of O2 in nonmuscle tissue -->
+<!--      <variable name="QOM" 		units="mL" 	initial_value="48.0839"		private_interface="none"	public_interface="out"/> -->	<!-- quantity of O2 in muscle tissue -->
+      <variable name="RNAUG3_init" units="dimensionless" initial_value="0" public_interface="out"/>
+<!--      <variable name="RNAUG3" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/> -->	<!-- autoregulatory feedback on AAR due to adaptation -->
+      <variable name="TSP_init" units="gram" initial_value="279.945" public_interface="out"/>
+      <variable name="TVD_init" units="L_per_minute" initial_value="0.000980838" public_interface="out"/>
+<!--      <variable name="TSP" 		units="gram" 	initial_value="279.945"		private_interface="none"	public_interface="out"/> -->	<!-- total interstitial tissue protein -->
+<!--      <variable name="TVD" 		units="L_per_minute" 	initial_value="0.000980838"	private_interface="none"	public_interface="out"/> -->	<!-- rate of drinking -->
+      <variable name="VAS1_init" units="litre" initial_value="0.862514" public_interface="out"/>
+ <!--     <variable name="VAS" 		units="litre" 	initial_value="0.862514"	private_interface="none"	public_interface="out"/> -->	<!-- volume in systemic arteries -->
+      <variable name="VIC_init" units="litre" initial_value="25.0404" public_interface="out"/>
+<!--      <variable name="VIC" 		units="litre" 	initial_value="25.0404"		private_interface="none"	public_interface="out"/> -->	<!-- intracellular fluid volume -->
+      <variable name="VLA1_init" units="litre" initial_value="0.379883" public_interface="out"/>
+<!--      <variable name="VLA" 		units="litre" 	initial_value="0.379883"	private_interface="none"	public_interface="out"/> -->	<!-- volume of left atrium -->
+      <variable name="VPA1_init" units="litre" initial_value="0.38131" public_interface="out"/>
+<!--      <variable name="VPA" 		units="litre" 	initial_value="0.38131"		private_interface="none"	public_interface="out"/> -->	<!-- volume in pulmonary arteries -->
+      <variable name="VPF1_init" units="litre" initial_value="0.0123238" public_interface="out"/>
+<!--      <variable name="VPF" 		units="litre" 	initial_value="0.0123238"	private_interface="none"	public_interface="out"/> -->	<!-- pulmonary free fluid volume -->
+      <variable name="VP_init" units="litre" initial_value="3.00449" public_interface="out"/>
+<!--      <variable name="VP" 		units="litre" 	initial_value="3.00449"		private_interface="none"	public_interface="out"/> -->	<!-- plasma volume -->
+      <variable name="VRA1_init" units="litre" initial_value="0.100043" public_interface="out"/>
+<!--      <variable name="VRA" 		units="litre" 	initial_value="0.100043"	private_interface="none"	public_interface="out"/> -->	<!-- volume of right atrium -->
+      <variable name="VRC_init" units="litre" initial_value="2.00439" public_interface="out"/>
+<!--      <variable name="VRC" 		units="litre" 	initial_value="2.00439"		private_interface="none"	public_interface="out"/> -->	<!-- volume of red blood cells -->
+      <variable name="VTS2_init" units="litre" initial_value="0" public_interface="out"/>
+<!--      <variable name="VTS2" 	units="litre" 	initial_value="0"			private_interface="none"	public_interface="out"/> -->	<!-- VTS component due to interst. stress relaxation -->
+      <variable name="VTW_init" units="litre" initial_value="39.8952" public_interface="out"/>
+<!--      <variable name="VTW" 		units="litre" 	initial_value="39.8952"		private_interface="none"	public_interface="out"/> -->	<!-- total body water -->
+      <variable name="VV6_init" units="litre" initial_value="0.0101913" public_interface="out"/>
+      <variable name="VV7_init" units="litre" initial_value="0.00366525" public_interface="out"/>
+<!--      <variable name="VV6" 		units="litre" 	initial_value="0.0101913"	private_interface="none"	public_interface="out"/> -->	<!-- vascular volume caused by long-term stress relaxation -->
+<!--      <variable name="VV7" 		units="litre" 	initial_value="0.00366525"	private_interface="none"	public_interface="out"/> -->	<!-- vascular volume caused by short-term stress relaxation -->
+      <variable name="VVS1_init" units="litre" initial_value="3.28246" public_interface="out"/>
+<!--      <variable name="VVS" 		units="litre" 	initial_value="3.28246"		private_interface="none"	public_interface="out"/> -->	<!-- actual venous vascular volume -->
+
+	  </component>
+
+   
+   <component name="parameter_values">
+      <variable name="A1K" 		units="minute" 			initial_value="0.5"			private_interface="none"	public_interface="out"/>	<!-- time constant, rapid nonmuscle autoregulation [P] -->
+      <variable name="A2K" 		units="minute" 			initial_value="60"			private_interface="none"	public_interface="out"/>	<!-- time constant, intermediate nonmuscle autoregulation [P] -->
+      <variable name="A3K" 		units="minute" 			initial_value="40000"		private_interface="none"	public_interface="out"/>	<!-- time constant, long-term nonmuscle autoregulation [P] -->
+      <variable name="A4K" 		units="minute" 			initial_value="0.1"			private_interface="none"	public_interface="out"/>	<!-- time constant, rapid muscle autoregulation [P] -->
+      <variable name="A4K2" 	units="minute" 			initial_value="40000"		private_interface="none"	public_interface="out"/>	<!-- time constant, long-term muscle autoregulation [P] -->
+      <variable name="AARK" 	units="mmHg_minute_per_L" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- basic afferent arteriolar resistance [P] -->
+      <variable name="AARLL" 	units="mmHg_minute_per_L" 	initial_value="4"			private_interface="none"	public_interface="out"/>	<!-- AAR lower limit [P] -->
+      <variable name="ADHINF" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- rate of exogenous ADH infusion [P] -->
+      <variable name="ADHKLL" 	units="dimensionless" 	initial_value="0.2"			private_interface="none"	public_interface="out"/>	<!-- ADHMK lower limit [P] -->
+      <variable name="ADHKUL" 	units="dimensionless" 	initial_value="5"			private_interface="none"	public_interface="out"/>	<!-- ADHMK upper limit [P] -->
+      <variable name="ADHPAM"	units="per_mmHg2" 		initial_value="0.3"			private_interface="none"	public_interface="out"/>	<!-- sensitivity control of arterial pressure on ADH [P] -->
+      <variable name="ADHPUL"	units="mmHg" 			initial_value="85"			private_interface="none"	public_interface="out"/>	<!-- ADHPA upper limit [P] -->
+      <variable name="ADHTC" 	units="minute"		 	initial_value="15"			private_interface="none"	public_interface="out"/>	<!-- time constant, ADH secretion [P] -->
+      <variable name="ADHVLL"	units="dimensionless" 	initial_value="0.93617"		private_interface="none"	public_interface="out"/> 	<!-- ADHMV lower limit [P] -->
+      <variable name="ADHVUL" 	units="dimensionless" 	initial_value="2.5"			private_interface="none"	public_interface="out"/>	<!-- ADHMV upper limit [P] -->
+      <variable name="AH10" 	units="dimensionless" 	initial_value="0.333"		private_interface="none"	public_interface="out"/>	<!-- curve fitting exponent, right atrial pres. on vol receptors [P] -->
+      <variable name="AH11" 	units="minute" 			initial_value="1000"		private_interface="none"	public_interface="out"/>	<!-- time constant, volume receptor adaptation [P] -->
+      <variable name="AH9" 		units="per_mmHg" 		initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- sensitivity control of AHZ [P] -->
+      <variable name="AHMNAR" 	units="dimensionless" 	initial_value="0.3"			private_interface="none"	public_interface="out"/>	<!-- sensitivity control, renal effect of ADHMK [P] -->
+      <variable name="AHTHM"	units="dimensionless" 	initial_value="2"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller, effect of ADH on thirst [P] -->
+      <variable name="ALCLK" 	units="dimensionless" 	initial_value="0.3"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of AMK1 [P] -->
+      <variable name="ALDINF" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- rate of exogenous aldosterone infusion [P] -->
+      <variable name="ALDKNS" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- overriding value for aldosterone secretion [P] -->
+      <variable name="ALDMM" 	units="dimensionless" 	initial_value="2.5"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of aldosterone multiplier [P] -->
+      <variable name="AM1LL" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- AM1 lower limit [P] -->
+      <variable name="AM1UL" 	units="dimensionless" 	initial_value="5"			private_interface="none"	public_interface="out"/>	<!-- AM1 upper limit [P] -->
+      <variable name="AMCSNS" 	units="dimensionless" 	initial_value="0.65"		private_interface="none"	public_interface="out"/>	<!-- sensitivity controller, aldosterone secretion [P] -->
+      <variable name="AMKM" 	units="dimensionless" 	initial_value="0.5"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of AMK [P] -->
+      <variable name="AMKMUL" 	units="dimensionless" 	initial_value="12"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of AMR [P] -->
+      <variable name="AMM1LM" 	units="dimensionless" 	initial_value="0.005"		private_interface="none"	public_interface="out"/>	<!-- iteration limiter for AMM1 [P] -->
+      <variable name="AMM4" 	units="dimensionless" 	initial_value="0.005"		private_interface="none"	public_interface="out"/>	<!-- AMM1 lower limit [P] -->
+      <variable name="AMNALL" 	units="dimensionless" 	initial_value="0.04"		private_interface="none"	public_interface="out"/>	<!-- AMNA lower limit [P] -->
+      <variable name="AMNAM" 	units="dimensionless" 	initial_value="0.8"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of AMNA [P] -->
+      <variable name="AMNAUL" 	units="dimensionless" 	initial_value="15"			private_interface="none"	public_interface="out"/>	<!-- AMNA upper limit [P] -->
+      <variable name="AMT" 		units="minute" 			initial_value="60"			private_interface="none"	public_interface="out"/>	<!-- time constant, aldo accumulation and destruction [P] -->
+      <variable name="ANCSNS" 	units="dimensionless" 	initial_value="0.4"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of ANM [P] -->
+      <variable name="ANGINF" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- rate of exogenous angiotensin infusion [P] -->
+      <variable name="ANGKNS" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- overriding value for angiotensin secretion [P] -->
+      <variable name="ANMALD" 	units="dimensionless" 	initial_value="2.5"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller, angiotensin effect on aldo secretion [P] -->
+      <variable name="ANMAM" 	units="dimensionless" 	initial_value="1.4"			private_interface="none"	public_interface="out"/>	<!-- sensitivity effect of angiotensin on afferent arterioles [P] -->
+      <variable name="ANMARL" 	units="dimensionless" 	initial_value="0.86"		private_interface="none"	public_interface="out"/>	<!-- ANMAR lower limit [P] -->
+      <variable name="ANMEM" 	units="dimensionless" 	initial_value="1.6"			private_interface="none"	public_interface="out"/>	<!-- sensitivity effect of angiotensin on efferent arterioles [P] -->
+      <variable name="ANMKEL" 	units="dimensionless" 	initial_value="0.3"			private_interface="none"	public_interface="out"/>	<!-- ANMKE lower limit [P] -->
+      <variable name="ANMKEM" 	units="dimensionless" 	initial_value="2"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of ANMKE [P] -->
+      <variable name="ANMLL" 	units="dimensionless" 	initial_value="0.7"			private_interface="none"	public_interface="out"/>	<!-- ANM lower limit [P] -->
+      <variable name="ANMNAM" 	units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of DTNANG [P] -->
+      <variable name="ANMSLT" 	units="dimensionless" 	initial_value="2"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller ANMSML [P] -->
+      <variable name="ANMTM" 	units="dimensionless" 	initial_value="1.5"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of ANMTH [P] -->
+      <variable name="ANMUL" 	units="dimensionless" 	initial_value="1.8"			private_interface="none"	public_interface="out"/>	<!-- ANM upper limit [P] -->
+      <variable name="ANPTC" 	units="minute" 			initial_value="4"			private_interface="none"	public_interface="out"/>	<!-- time constant, ANP accumulation and destruction [P] -->
+      <variable name="ANPXAF" 	units="mmHg_minute_per_L" 	initial_value="1.5"			private_interface="none"	public_interface="out"/>	<!-- sensitivity factor of ANP on renal afferent resistance [P] -->
+      <variable name="ANPXUL" 	units="dimensionless" 	initial_value="10"			private_interface="none"	public_interface="out"/>	<!-- ANPX upper limit [P] -->
+      <variable name="ANT" 		units="minute" 			initial_value="12"			private_interface="none"	public_interface="out"/>	<!-- time constant, angiotensin accumulation and destruction [P] -->
+      <variable name="ANULL" 	units="dimensionless" 	initial_value="0.8"			private_interface="none"	public_interface="out"/>	<!-- ANU lower limit [P] -->
+      <variable name="ANUM" 	units="dimensionless" 	initial_value="6"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of ANU [P] -->
+      <variable name="ANUVM" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of ANUVN [P] -->
+      <variable name="ANV" 		units="minute" 			initial_value="5000"		private_interface="none"	public_interface="out"/>	<!-- time constant, angiotensin secretion [P] -->
+      <variable name="ANXM" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of ANX [P] -->
+      <variable name="ANY" 		units="litre" 			initial_value="-0.2"		private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of ANU for venous volume [P] -->
+      <variable name="AR1LM" 	units="dimensionless" 	initial_value="0.005"		private_interface="none"	public_interface="out"/>	<!-- iteration limiter for AR1 [P] -->
+      <variable name="AR2LM" 	units="dimensionless" 	initial_value="0.005"		private_interface="none"	public_interface="out"/>	<!-- iteration limiter for AR2 [P] -->
+      <variable name="ARF" 		units="dimensionless" 	initial_value="0.5"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of AUMK [P] -->
+      <variable name="AUC1" 	units="dimensionless" 	initial_value="0.3"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of AUC [P] -->
+      <variable name="AUDMP" 	units="minute" 			initial_value="0.3"			private_interface="none"	public_interface="out"/>	<!-- damping factor for AU1 [P] -->
+      <variable name="AUK" 		units="per_minute" 		initial_value="0.004"		private_interface="none"	public_interface="out"/>	<!-- time constant of baroreceptor adaptation [P] -->
+      <variable name="AUL" 		units="litre" 			initial_value="1.5"			private_interface="none"	public_interface="out"/>	<!-- curve fitting coefficient, calculation VVR [P] -->
+      <variable name="AULPM" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of AULP [P] -->
+      <variable name="AUM1" 	units="dimensionless" 	initial_value="3"			private_interface="none"	public_interface="out"/>	<!-- curve fitting coefficient, calculation AUM [P] -->
+      <variable name="AUM2" 	units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- curve fitting exponent, calculation AUM [P] -->
+      <variable name="AUMAX" 	units="dimensionless" 	initial_value="5.0"			private_interface="none"	public_interface="out"/>	<!-- maximal autonomic output [P] -->
+      <variable name="AUMIN" 	units="dimensionless" 	initial_value="0.4"			private_interface="none"	public_interface="out"/>	<!-- minimal autonomic output [P] -->
+      <variable name="AUMK1" 	units="dimensionless" 	initial_value="0.3"			private_interface="none"	public_interface="out"/>	<!-- autonomic sensitivity controller on EAR [P] -->
+      <variable name="AUN1" 	units="dimensionless" 	initial_value="0.5"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of AUN [P] -->
+      <variable name="AURG" 	units="dimensionless" 	initial_value="1.0"			private_interface="none"	public_interface="out"/>	<!-- to suppress autoregulation (if == 0) [P] -->
+      <variable name="AUS" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- sensitivity of sympathetic control of heart rate [P] -->
+      <variable name="AUSLP" 	units="dimensionless" 	initial_value="1.5"			private_interface="none"	public_interface="out"/>	<!-- curve fitting coefficient, calculation AU [P] -->
+      <variable name="AUTO" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- activates automatic rapid autoregulation (if > 0) [P] -->
+      <variable name="AUTOGN" 	units="dimensionless" 	initial_value="7"			private_interface="none"	public_interface="out"/>	<!-- gain of very rapid autoregulation (special exp.) [P] -->
+      <variable name="AUTOSN" 	units="dimensionless" 	initial_value="0.9"			private_interface="none"	public_interface="out"/>	<!-- overall sensitivity controller, nonmuscle autoreg. [P] -->
+      <variable name="AUX" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of arterial baroreceptors [P] -->
+      <variable name="BAROTC" 	units="minute" 			initial_value="0.16"		private_interface="none"	public_interface="out"/>	<!-- time constant, baroreceptor (AU6) [P] -->
+      <variable name="CFC" 		units="L_per_minute_per_mmHg" 	initial_value="0.01167"		private_interface="none"	public_interface="out"/>	<!-- capillary filtration coefficient [P] -->
+      <variable name="CKEEX" 	units="dimensionless" 	initial_value="4"			private_interface="none"	public_interface="out"/>	<!-- curve fitting exponent, distal potassium reabsorption [P] -->
+      <variable name="CMPTSS" 	units="dimensionless" 	initial_value="2"			private_interface="none"	public_interface="out"/>	<!-- curve fitting exponent, calculation of CHY [P] -->
+      <variable name="CN2" 		units="per_mmHg" 		initial_value="0.0212"		private_interface="none"	public_interface="out"/>	<!-- curve fitting coefficient, calculation of CN3 [P] -->
+      <variable name="CN7" 		units="dimensionless" 	initial_value="0.2"			private_interface="none"	public_interface="out"/>	<!-- curve fitting coefficient, calculation of CN3 [P] -->
+      <variable name="CNR" 		units="monovalent_mEq_per_litre" 	initial_value="139"			private_interface="none"	public_interface="out"/>	<!-- reference sodium conc to determine ADH secretion rate [P] -->
+      <variable name="CPF" 		units="L_per_minute_per_mmHg" 	initial_value="0.0003"		private_interface="none"	public_interface="out"/>	<!-- pulmonary capillary filtration coefficient [P] -->
+      <variable name="CPK" 		units="L_per_minute_per_mmHg" 	initial_value="0.000253"	private_interface="none"	public_interface="out"/>	<!-- curve fitting exponent, , capillary leakage [P] -->
+      <variable name="CPR" 		units="gram_per_L" 		initial_value="40"			private_interface="none"	public_interface="out"/>	<!-- critical plasma protein conc for protein destruction [P] -->
+      <variable name="CV" 		units="L_per_mmHg" 		initial_value="0.1"			private_interface="none"	public_interface="out"/>	<!-- venous compliance [P] -->
+      <variable name="CRRFLX" 	units="mmHg" 			initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- overriding value of PA1 (if > 0) [P] -->
+      <variable name="DIURET" 	units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- diuretic effect on tubular reabsorption [P] -->
+      <variable name="DHDTR" 	units="per_mmHg_per_minute" 	initial_value="0.05"		private_interface="none"	public_interface="out"/>	<!-- proportionality constant, cardiac deterioration [P] -->
+      <variable name="DTNAR" 	units="monovalent_mEq_per_minute" 	initial_value="0.675"		private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of DTNARA [P] -->
+      <variable name="DTNARL" 	units="monovalent_mEq_per_minute" 	initial_value="1e-06"		private_interface="none"	public_interface="out"/>	<!-- lower limiter of DTNARA [P] -->
+      <variable name="EARK" 	units="mmHg_minute_per_L" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- basic efferent arteriolar resistance [P] -->
+      <variable name="EARLL" 	units="mmHg_minute_per_L" 	initial_value="24"			private_interface="none"	public_interface="out"/>	<!-- lower limit for EAR [P] -->
+      <variable name="EFAFR" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- efferent arteriolar feedback, sensitivity controller [P] -->
+      <variable name="EXC" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- level of exercise activity [P] -->
+      <variable name="EXCML" 	units="dimensionless" 	initial_value="0.01"		private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of exercise on autonomics [P] -->
+      <variable name="EXCXP" 	units="dimensionless" 	initial_value="1.0"			private_interface="none"	public_interface="out"/>	<!-- curve fitting exponent, autonomic effect of exercise [P] -->
+      <variable name="EXCXP2" 	units="dimensionless" 	initial_value="0.17"		private_interface="none"	public_interface="out"/>	<!-- exponent factor of exercise on muscle metabolism [P] -->
+      <variable name="EXE" 		units="mmHg" 			initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- driving pressure on autonomic due to exercise [P] -->
+      <variable name="GCOPF" 	units="per_mmHg" 		initial_value="0.8092"		private_interface="none"	public_interface="out"/>	<!-- coefficient, calculation of PTC [P] -->
+      <variable name="GFLC" 	units="L_per_minute_per_mmHg" 	initial_value="0.0208333"	private_interface="none"	public_interface="out"/>	<!-- glomerular filtration coefficient [P] -->
+      <variable name="GFNDMP" 	units="dimensionless" 	initial_value="3"			private_interface="none"	public_interface="out"/>	<!-- GFN damping coefficient [P] -->
+      <variable name="GFNLL" 	units="L_per_minute" 	initial_value="0.001"		private_interface="none"	public_interface="out"/>	<!-- GFN lower limit [P] -->
+      <variable name="GPPD" 	units="dimensionless" 	initial_value="1.0"			private_interface="none"	public_interface="out"/>	<!-- damping coefficient GLPC [P] -->
+      <variable name="HM6" 		units="mmHg" 			initial_value="1850"		private_interface="none"	public_interface="out"/>	<!-- erythropoietic limiter [P] -->
+      <variable name="HM8" 		units="L_per_minute_per_mmHg" 	initial_value="4.714e-08"	private_interface="none"	public_interface="out"/>	<!-- sensitivity control for erythropoiesis [P] -->
+      <variable name="HTAUML" 	units="dimensionless" 	initial_value="0.4"			private_interface="none"	public_interface="out"/>	<!-- autonomic sensitivity on PRA [P] -->
+      <variable name="KORGN" 	units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- gain of positive feedback, Korner concept [P] -->
+      <variable name="KORNER" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- activates Korner's concept (if > 0) [P] -->
+      <variable name="KORREN" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- Korner effect also on afferent arterioles (if > 0) [P] -->
+      <variable name="KORTC" 	units="minute" 			initial_value="10000"		private_interface="none"	public_interface="out"/>	<!-- time constant, Korner effect [P] -->
+      <variable name="LPDE" 	units="dimensionless" 	initial_value="8"			private_interface="none"	public_interface="out"/>	<!-- curve fitting coefficient, liver protein destruction [P] -->
+      <variable name="LPK" 		units="L_per_minute" 	initial_value="2.728e-14"	private_interface="none"	public_interface="out"/>	<!-- curve fitting coefficient, liver protein destruction [P] -->
+      <variable name="LPPR" 	units="gram_per_minute" initial_value="0.03"		private_interface="none"	public_interface="out"/>	<!-- rate of liver protein production [P] -->
+      <variable name="MDFL1" 	units="dimensionless" 	initial_value="10"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of MDFLW [P] -->
+      <variable name="MDFLKM" 	units="monovalent_mEq_per_litre" 	initial_value="0.667"		private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of MDFLK [P] -->
+      <variable name="MDFLW2" 	units="dimensionless" 	initial_value="0.005"		private_interface="none"	public_interface="out"/>	<!-- iteration limiter, renal autoregulation [P] -->
+      <variable name="MDFLWX" 	units="dimensionless" 	initial_value="0.01"		private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of MDFL3 [P] -->
+      <variable name="MDMP" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- damping factor of AU6 [P] -->
+      <variable name="O2A" 		units="dimensionless" 	initial_value="0.1"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of AOM, autonomic on metabolism [P] -->
+      <variable name="O2CHMO" 	units="per_mmHg" 		initial_value="0.01"		private_interface="none"	public_interface="out"/>	<!-- O2 chemoreceptors sensitivity controller [P] -->
+      <variable name="OMM" 		units="mL_per_minute" 	initial_value="57.1"		private_interface="none"	public_interface="out"/>	<!-- basic O2 utilization in muscle tissues (at rest) [P] -->
+      <variable name="PA4" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- maximum deviation of PA (hemodynamic iteration) [P] -->
+      <variable name="PAEX" 	units="dimensionless" 	initial_value="2"			private_interface="none"	public_interface="out"/>	<!-- exponential factor affecting PAM [P] -->
+      <variable name="PCE" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- curve fitting exponent, capillary leakage [P] -->
+      <variable name="PCR" 		units="mmHg" 			initial_value="15"			private_interface="none"	public_interface="out"/>	<!-- critical capillary pressure for protein leakage [P] -->
+      <variable name="PR1LL" 	units="mmHg" 			initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- PR1 lower limit [P] -->
+      <variable name="PGHF" 	units="L_mmHg_per_gram" 	initial_value="-2"			private_interface="none"	public_interface="out"/>	<!-- proportionality coefficent, CHY to PGH [P] -->
+      <variable name="PK2" 		units="mmHg_per_mL" 	initial_value="0.79167"		private_interface="none"	public_interface="out"/>	<!-- proportionality constant, muscle tissue PO2 [P] -->
+      <variable name="PL2" 		units="L_mL_per_minute_per_mmHg" 	initial_value="1.8"			private_interface="none"	public_interface="out"/>	<!-- constant, computation of RSPDFC [P] -->
+      <variable name="PLDF" 	units="mmHg" 			initial_value="4.2"			private_interface="none"	public_interface="out"/>	<!-- constant pressure, computation of PLD [P] -->
+      <variable name="PM5" 		units="per_mmHg" 		initial_value="30"			private_interface="none"	public_interface="out"/>	<!-- constant, to change muscle capillarity [P] -->
+      <variable name="PO2ADV" 	units="dimensionless" 	initial_value="0.001"		private_interface="none"	public_interface="out"/>	<!-- iteration limiter, arterial PO2 [P] -->
+      <variable name="POK" 		units="dimensionless" 	initial_value="0.1"			private_interface="none"	public_interface="out"/>	<!-- sensitivity control, rapid nonmuscle autoregulation [P] -->
+      <variable name="POM" 		units="dimensionless" 	initial_value="0.04"		private_interface="none"	public_interface="out"/>	<!-- sensitivity control, rapid muscle autoregulation [P] -->
+      <variable name="POM2" 	units="dimensionless" 	initial_value="2"			private_interface="none"	public_interface="out"/>	<!-- sensitivity control, long-term muscle autoregulation [P] -->
+      <variable name="PON" 		units="dimensionless" 	initial_value="0.1"			private_interface="none"	public_interface="out"/>	<!-- sensitivity control, intermediate nonmuscle autoregulation [P] -->
+      <variable name="POR" 		units="mmHg" 			initial_value="35"			private_interface="none"	public_interface="out"/>	<!-- reference value of capillary PO2 in non-muscle tissue [P] -->
+      <variable name="POZ" 		units="dimensionless" 	initial_value="2"			private_interface="none"	public_interface="out"/>	<!-- sensitivity control, long-term nonmuscle autoregulation [P] -->
+      <variable name="PXTP" 	units="mmHg" 			initial_value="8"			private_interface="none"	public_interface="out"/>	<!-- proximal tubular hydrostatic pressure [P] -->
+      <variable name="QAOLM"	units="dimensionless" 	initial_value="0.2"			private_interface="none"	public_interface="out"/>	<!-- limiter for flow equilibrium [P] -->
+      <variable name="QRF" 		units="L_per_minute" 	initial_value="0.15"		private_interface="none"	public_interface="out"/>	<!-- left ventricle funct effect on right ventricle function [P] -->
+      <variable name="RABSC" 	units="per_mmHg" 		initial_value="0.5"			private_interface="none"	public_interface="out"/>	<!-- peritubular capillary reabsorption coefficient [P] -->
+      <variable name="RAM" 		units="mmHg_minute_per_L" 	initial_value="96.3"		private_interface="none"	public_interface="out"/>	<!-- basal muscle vascular resistance [P] -->
+      <variable name="RAPRSP" 	units="mmHg" 			initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- overriding value of renal arterial pressure (if > 0) [P] -->
+      <variable name="RAR" 		units="mmHg_minute_per_L" 	initial_value="30.52"		private_interface="none"	public_interface="out"/>	<!-- basal non-muscle vascular resistance [P] -->
+      <variable name="RCDFDP" 	units="minute" 			initial_value="2000"		private_interface="none"	public_interface="out"/>	<!-- renal function curve drift damping factor [P] -->
+      <variable name="RCDFPC" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- renal function curve drift coefficient [P] -->
+      <variable name="REK" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- total functional renal mass, ratio to normal [P] -->
+      <variable name="RFABKM" 	units="monovalent_mEq_per_minute" 	initial_value="0.03"		private_interface="none"	public_interface="out"/>	<!-- proportionality constant, RFABK [P] -->
+      <variable name="RFABDM" 	units="dimensionless" 	initial_value="0.3"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of RFABD [P] -->
+      <variable name="RFABDP" 	units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- RFAB damping factor [P] -->
+      <variable name="RFCDFT" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- renal function curve drift factor (if > 0) [P] -->
+      <variable name="RKC" 		units="per_minute" 	initial_value="5.8e-06"		private_interface="none"	public_interface="out"/>	<!-- sensitivity for red blood cell destruction [P] -->
+	  <variable name="RNAGTC" 	units="minute" 	initial_value="15"			private_interface="none"	public_interface="out"/>	<!-- time constant, renal autoregulation feedback [P] -->
+      <variable name="RNAUAD" 	units="per_minute" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- renal autoregulation, adaptation controller [P] -->
+      <variable name="RPS" 		units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- doubles extrarenal resistance (if > 0) [P] -->
+      <variable name="RTPPR" 	units="dimensionless" 	initial_value="0.9"			private_interface="none"	public_interface="out"/>	<!-- renal oncotic, internal var [P] -->
+      <variable name="RTPPRS" 	units="mmHg" 	initial_value="15.2"		private_interface="none"	public_interface="out"/>	<!-- renal oncotic, internal var [P] -->
+      <variable name="RTSPRS" 	units="mmHg" 	initial_value="6"			private_interface="none"	public_interface="out"/>	<!-- renal tissue fluid pressure [P] -->
+      <variable name="RVRS" 	units="mmHg_minute_per_L" 	initial_value="19.167"		private_interface="none"	public_interface="out"/>	<!-- curve fitting coefficient, RCPRS [P] -->
+      <variable name="RVSM" 	units="mmHg_minute_per_L" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- basal systemic venous multiplier [P] -->
+      <variable name="SR" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller, short-term stress relaxation [P] -->
+      <variable name="SR2" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller, long-term stress relaxation [P] -->
+      <variable name="SRK" 		units="minute" 	initial_value="5"			private_interface="none"	public_interface="out"/>	<!-- short time constant for stress relaxation [P] -->
+      <variable name="SRK2" 	units="minute" 	initial_value="10000"		private_interface="none"	public_interface="out"/>	<!-- long time constant for stress relaxation [P] -->
+      <variable name="STA" 		units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- overriding value of overall autonomic activity [P] -->
+      <variable name="TENSGN" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- gain, myogenic autoregulation [P] -->
+      <variable name="TENSTC" 	units="minute" 	initial_value="0.05"		private_interface="none"	public_interface="out"/>	<!-- time constant, myogenic autoregulation [P] -->
+      <variable name="TIMETR" 	units="minute" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- transfusion time (if > 0) [P] -->
+      <variable name="TRNSFS" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- rate of blood transfusion (l/min) [P] -->
+      <variable name="TRPL" 	units="L_per_minute" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- transfusion coefficient [P] -->
+      <variable name="TSSLML" 	units="dimensionless" 	initial_value="0.15"		private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of VTS [P] -->
+      <variable name="TSSLTC" 	units="per_minute" 	initial_value="0.005"		private_interface="none"	public_interface="out"/>	<!-- VTS1 time constant [P] -->
+      <variable name="TVDDL" 	units="minute" 	initial_value="30"			private_interface="none"	public_interface="out"/>	<!-- TVD damping coefficient [P] -->
+	  <variable name="U" 		units="dimensionless" 	initial_value="4"			private_interface="none"	public_interface="out"/>	<!-- damping coefficient, circulation [P] -->
+      <variable name="VID1" 	units="L_per_minute" 	initial_value="0.01"		private_interface="none"	public_interface="out"/>	<!-- iteration limiter, VID loop [P] -->
+      <variable name="VIDML" 	units="litre2_per_monovalent_mEq_per_minute" 	initial_value="0.01"		private_interface="none"	public_interface="out"/>	<!-- proportionality constant, CCD to VID [P] -->
+      <variable name="VNTSTM" 	units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller for alveolar ventilation [P] -->
+      <variable name="VP1" 		units="dimensionless" 	initial_value="0.01"		private_interface="none"	public_interface="out"/>	<!-- stability limiter of VPD, time test [P] -->
+      <variable name="VPTISS" 	units="litre" 	initial_value="0.0175"		private_interface="none"	public_interface="out"/>	<!-- pulmonary tissue fluid volume [P] -->
+	  <variable name="VTSF" 	units="litre" 	initial_value="6"			private_interface="none"	public_interface="out"/>	<!-- curve fitting coefficient, PTT [P] -->
+	  <variable name="VV9" 		units="litre" 	initial_value="2.51"		private_interface="none"	public_interface="out"/>	<!-- basic venous volume, without autonomic drive [P] -->	  
+      <variable name="X" 		units="dimensionless" 	initial_value="4"			private_interface="none"	public_interface="out"/>	<!-- damping coefficient, circulation [P] -->
+      <variable name="Z" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- damping factor for entire model [P] -->
+      <variable name="Z4" 		units="dimensionless" 	initial_value="0.5"			private_interface="none"	public_interface="out"/>	<!-- iteration limiter, nonmuscle oxygen [P] -->
+      <variable name="Z5" 		units="dimensionless" 	initial_value="0.3"			private_interface="none"	public_interface="out"/>	<!-- iteration limiter, muscle oxygen [P] -->
+      <variable name="Z6" 		units="dimensionless" 	initial_value="20"			private_interface="none"	public_interface="out"/>	<!-- damping factor for muscle venous saturation [P] -->
+      <variable name="Z7" 		units="dimensionless" 	initial_value="5"			private_interface="none"	public_interface="out"/>	<!-- damping factor for nonmuscle venous saturation [P] -->
+      <variable name="Z10" 		units="mmHg" 	initial_value="45"			private_interface="none"	public_interface="out"/>	<!-- damping factor, STH [P] -->
+      <variable name="Z11" 		units="per_mmHg2" 	initial_value="0.01"		private_interface="none"	public_interface="out"/>	<!-- damping factor, STH [P] -->
+      <variable name="Z12" 		units="dimensionless" 	initial_value="5"			private_interface="none"	public_interface="out"/>	<!-- damping factor, angiotensin system [P] -->
+      <variable name="Z13" 		units="dimensionless" 	initial_value="0.625"		private_interface="none"	public_interface="out"/>	<!-- exponent controlling degree of heart hypertrophy [P] -->
+      <variable name="Z14" 		units="dimensionless" 	initial_value="5"			private_interface="none"	public_interface="out"/>	<!-- damping factor for ANP concentration [P] -->
+      <variable name="Z16" 		units="dimensionless" 	initial_value="5"			private_interface="none"	public_interface="out"/>	<!-- damping factor for ADH concentration [P] -->
+      <variable name="Z18" 		units="dimensionless" 	initial_value="5"			private_interface="none"	public_interface="out"/>	<!-- damping factor for PPD [P] -->
+      <variable name="Z19" 		units="dimensionless" 	initial_value="5"			private_interface="none"	public_interface="out"/>	<!-- damping factor for DFP [P] -->
+
+      <variable name="KID" 		units="monovalent_mEq_per_minute" 	initial_value="0.08"		private_interface="none"	public_interface="out"/>	<!-- rate of potassium intake -->
+      <variable name="URFORM" 	units="mOsm_per_minute" 	initial_value="0.24"		private_interface="none"	public_interface="out"/>	<!-- rate of urea formation -->
+      <variable name="AUV" 		units="dimensionless" 	initial_value="0.55"		private_interface="none"	public_interface="out"/>	<!-- blood volume shifted from unstressed to stressed -->
+      <variable name="AUY" 		units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- sensitivity of sympathetic control of veins -->
+      <variable name="O2M" 		units="mL_per_minute" 	initial_value="164"			private_interface="none"	public_interface="out"/>	<!-- basic O2 utilization in nonmuscle tissues -->
+      <variable name="NID" 		units="monovalent_mEq_per_minute" 	initial_value="0.1"			private_interface="none"	public_interface="out"/>	<!-- rate of sodium intake -->
+      <variable name="ATRFBM" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of ATRRFB -->
+      <variable name="GBL" 		units="mmHg" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- Goldblatt pressure clamp (mmHg) -->
+      <variable name="RNAUGN" 	units="minute_per_L" 	initial_value="0.6"			private_interface="none"	public_interface="out"/>	<!-- basal renal autoregulation feedback multiplier -->
+      <variable name="RNAULL" 	units="dimensionless" 	initial_value="0.3"			private_interface="none"	public_interface="out"/>	<!-- RNAUG1 lower limit -->
+      <variable name="RNAUUL" 	units="dimensionless" 	initial_value="10"			private_interface="none"	public_interface="out"/>	<!-- RNAUG1 upper limit -->
+      <variable name="HSR" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- basic strength of right ventricle -->
+      <variable name="HSL" 		units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- basic strength of left ventricle -->
+      <variable name="HMK" 		units="dimensionless" 	initial_value="90"			private_interface="none"	public_interface="out"/>	<!-- portion of blood viscosity due to red blood cells -->
+      <variable name="PO2AMB" 	units="mmHg" 	initial_value="150"			private_interface="none"	public_interface="out"/>	<!-- ambiant PO2 -->
+      <variable name="HKM" 		units="dimensionless" 	initial_value="0.53333"		private_interface="none"	public_interface="out"/>	<!-- blood viscosity factor caused by red blood cells -->
+      <variable name="DR" 		units="L_per_minute" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- rate of water drinking (in addition of thirst) -->
+      <variable name="ANPKNS" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- overriding value of ANP secretion rate -->
+      <variable name="RMULT1" 	units="dimensionless" 	initial_value="1"			private_interface="none"	public_interface="out"/>	<!-- very rapid autoregulation multiplier (if AUTO > 0) -->
+      <variable name="GLPCA" 	units="mmHg" 	initial_value="1.0"			private_interface="none"	public_interface="out"/>	<!-- if > 0, activates GLPC comput. due to filtration fraction -->
+      <variable name="RFN" 		units="L_per_minute" 	initial_value="1.22057"		private_interface="none"	public_interface="out"/>	<!-- renal blood flow, undamaged kidney -->
+      <variable name="RFABX" 	units="dimensionless" 	initial_value="0.8"			private_interface="none"	public_interface="out"/>
+      <variable name="ANPINF" 	units="dimensionless" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- rate of exogenous ANP infusion -->
+      <variable name="FIS" 		units="L_per_minute_per_mmHg" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- fistula conductance factor -->
+      <variable name="CPPD" 	units="gram_per_L" 	initial_value="31.9719"		private_interface="none"	public_interface="out"/>	<!-- error signal for liver protein destruction -->
+      <variable name="TRRBC" 	units="L_per_minute" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- rate of transfusion of pure RBC -->
+      <variable name="HYL" 		units="gram" 	initial_value="60"			private_interface="none"	public_interface="out"/>	<!-- quantity of hyaluronic acid in tissues -->
+      <variable name="ATRVM" 	units="litre" 	initial_value="0"			private_interface="none"	public_interface="out"/>	<!-- sensitivity controller of ATRVFB -->
+
+
+	<!-- =========================================================================================================================================================================== -->
+
+
+	</component>
+</model>
