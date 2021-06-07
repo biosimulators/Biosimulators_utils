@@ -1,5 +1,6 @@
 from biosimulators_utils.sedml import model_utils
 from biosimulators_utils.sedml.data_model import ModelLanguage
+from biosimulators_utils.sedml.exceptions import UnsupportedModelLanguageError
 from unittest import mock
 import unittest
 
@@ -11,5 +12,5 @@ class ModelUtilsTestCase(unittest.TestCase):
         self.assertEqual(params, ['a', 'b'])
         self.assertEqual(vars, ['c', 'd'])
 
-        with self.assertRaisesRegex(NotImplementedError, 'are not supported'):
+        with self.assertRaisesRegex(UnsupportedModelLanguageError, 'are not supported'):
             model_utils.get_parameters_variables_for_simulation(None, 'not implemented', None, None)

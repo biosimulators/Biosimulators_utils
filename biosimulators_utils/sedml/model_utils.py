@@ -7,6 +7,7 @@
 """
 
 from .data_model import ModelLanguagePattern, ModelAttributeChange, Variable, Simulation  # noqa: F401
+from .exceptions import UnsupportedModelLanguageError
 import re
 import types  # noqa: F401
 
@@ -36,22 +37,22 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
 
     Raises:
-        :obj:`NotImplementedError`: if :obj:`model_language` is not a supported language
+        :obj:`UnsupportedModelLanguageError`: if :obj:`model_language` is not a supported language
     """
     # functions are imported here to only import libraries for required model languages
     if re.match(ModelLanguagePattern.BNGL.value, model_language):
         # from biosimulators_utils.model_lang.bngl.utils import get_parameters_variables_for_simulation
-        raise NotImplementedError(
+        raise UnsupportedModelLanguageError(
             'Models of language `{}` are not supported'.format(model_language))
 
     elif re.match(ModelLanguagePattern.CellML.value, model_language):
         # from biosimulators_utils.model_lang.cellml.utils import get_parameters_variables_for_simulation
-        raise NotImplementedError(
+        raise UnsupportedModelLanguageError(
             'Models of language `{}` are not supported'.format(model_language))
 
     elif re.match(ModelLanguagePattern.LEMS.value, model_language):
         # from biosimulators_utils.model_lang.lems.utils import get_parameters_variables_for_simulation
-        raise NotImplementedError(
+        raise UnsupportedModelLanguageError(
             'Models of language `{}` are not supported'.format(model_language))
 
     elif re.match(ModelLanguagePattern.SBML.value, model_language):
@@ -59,11 +60,11 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     elif re.match(ModelLanguagePattern.Smoldyn.value, model_language):
         # from biosimulators_utils.model_lang.smoldyn.utils import get_parameters_variables_for_simulation
-        raise NotImplementedError(
+        raise UnsupportedModelLanguageError(
             'Models of language `{}` are not supported'.format(model_language))
 
     else:
-        raise NotImplementedError(
+        raise UnsupportedModelLanguageError(
             'Models of language `{}` are not supported'.format(model_language))
 
     return get_parameters_variables_for_simulation(
