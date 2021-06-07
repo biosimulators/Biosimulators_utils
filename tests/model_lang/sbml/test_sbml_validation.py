@@ -5,7 +5,7 @@ import unittest
 
 
 class ValidationTestCase(unittest.TestCase):
-    FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures')
+    FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures')
 
     def test(self):
         errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'sbml-list-of-species.xml'))

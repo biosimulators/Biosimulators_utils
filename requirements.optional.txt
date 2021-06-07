@@ -1,3 +1,7 @@
+[bngl]
+bionetgen
+seaborn
+
 [cellml]
 libcellml
 

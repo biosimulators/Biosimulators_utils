@@ -6,7 +6,7 @@ import unittest
 
 
 class CellMlValidationTestCase(unittest.TestCase):
-    FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'cellml')
+    FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'cellml')
 
     def test(self):
         errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'level2.xml'))

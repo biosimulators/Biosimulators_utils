@@ -843,6 +843,17 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertIn('No validation is available for', flatten_nested_list_of_strings(warnings))
 
+        # BNGL
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'bngl', 'valid.bngl')
+        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.BNGL)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'bngl', 'invalid.bngl')
+        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.BNGL)
+        self.assertNotEqual(errors, [])
+        self.assertEqual(warnings, [])
+
         # CellML
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'cellml', 'level2.xml')
         errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.CellML)

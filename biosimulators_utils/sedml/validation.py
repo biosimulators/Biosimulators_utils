@@ -804,10 +804,10 @@ def validate_model_with_language(source, language, name=None):
     errors = []
     warnings = []
 
-    # if language and re.match(ModelLanguagePattern.BNGL, language):
-    #     from ..model_lang.bngl.validation import validate_model
+    if language and re.match(ModelLanguagePattern.BNGL, language):
+        from ..model_lang.bngl.validation import validate_model
 
-    if language and re.match(ModelLanguagePattern.CellML, language):
+    elif language and re.match(ModelLanguagePattern.CellML, language):
         from ..model_lang.cellml.validation import validate_model
 
     elif language and re.match(ModelLanguagePattern.LEMS, language):

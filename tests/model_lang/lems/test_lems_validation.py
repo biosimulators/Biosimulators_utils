@@ -5,7 +5,7 @@ import unittest
 
 
 class LemsValidationTestCase(unittest.TestCase):
-    FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'lems')
+    FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'lems')
 
     def test(self):
         errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'LEMS_NML2_Ex5_DetCell.xml'))

@@ -8,14 +8,14 @@ import unittest
 
 
 class GetVariableForSimulationTestCase(unittest.TestCase):
-    CORE_FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.xml')
-    CORE_FIXTURE_L3 = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000075.xml')
+    CORE_FIXTURE = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'BIOMD0000000297.xml')
+    CORE_FIXTURE_L3 = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'BIOMD0000000075.xml')
     CORE_FIXTURE_WITH_EXTRAS_PARAMS_VARS = os.path.join(
-        os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297-params-vars.xml')
-    FBC_FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-fbc-textbook.xml')
-    QUAL_FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'Chaouiya-BMC-Syst-Biol-2013-EGF-TNFa-signaling.xml')
+        os.path.dirname(__file__), '..', '..', 'fixtures', 'BIOMD0000000297-params-vars.xml')
+    FBC_FIXTURE = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'sbml-fbc-textbook.xml')
+    QUAL_FIXTURE = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'Chaouiya-BMC-Syst-Biol-2013-EGF-TNFa-signaling.xml')
     QUAL_FIXTURE_WITH_EXTRAS_PARAMS_VARS = os.path.join(
-        os.path.dirname(__file__), '..', 'fixtures', 'Chaouiya-BMC-Syst-Biol-2013-EGF-TNFa-signaling-params-vars.xml')
+        os.path.dirname(__file__), '..', '..', 'fixtures', 'Chaouiya-BMC-Syst-Biol-2013-EGF-TNFa-signaling-params-vars.xml')
 
     def test_core_steady_state(self):
         params, vars = get_parameters_variables_for_simulation(
