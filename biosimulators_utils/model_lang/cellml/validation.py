@@ -12,12 +12,13 @@ import os
 import pkg_resources
 
 
-def validate_model(filename, name=None):
+def validate_model(filename, name=None, resolve_imports=True):
     """ Check that a file is a valid CellML model
 
     Args:
         filename (:obj:`str`): path to model
         name (:obj:`str`, optional): name of model for use in error messages
+        resolve_imports (:obj:`bool`, optional): whether to resolve imports
 
     Returns:
         :obj:`tuple`:
@@ -46,13 +47,13 @@ def validate_model(filename, name=None):
     root = doc.getroot()
     default_ns = root.nsmap.get(None, '')
     if default_ns.startswith('http://www.cellml.org/cellml/1.0'):
-        v_errors, v_warnings, model = validate_model_version_1_0(filename, doc)
+        v_errors, v_warnings, model = validate_model_version_1_0(filename, doc, resolve_imports=resolve_imports)
 
     elif default_ns.startswith('http://www.cellml.org/cellml/1.1'):
-        v_errors, v_warnings, model = validate_model_version_1_1(filename, doc)
+        v_errors, v_warnings, model = validate_model_version_1_1(filename, doc, resolve_imports=resolve_imports)
 
     elif default_ns.startswith('http://www.cellml.org/cellml/2'):
-        v_errors, v_warnings, model = validate_model_version_2(filename, doc)
+        v_errors, v_warnings, model = validate_model_version_2(filename, doc, resolve_imports=resolve_imports)
 
     else:
         v_errors = [[(
@@ -66,12 +67,13 @@ def validate_model(filename, name=None):
     return (errors, warnings, (model, root))
 
 
-def validate_model_version_1_0(filename, doc):
+def validate_model_version_1_0(filename, doc, resolve_imports=True):
     """ Check that a file is a valid CellML 2.0 model
 
     Args:
         filename (:obj:`str`): path to model
         doc (:obj:`lxml.etree._ElementTree`): XML document for file
+        resolve_imports (:obj:`bool`, optional): whether to resolve imports
 
     Returns:
         :obj:`tuple`:
@@ -115,12 +117,13 @@ def validate_model_version_1_0(filename, doc):
     return (errors, warnings, None)
 
 
-def validate_model_version_1_1(filename, doc):
+def validate_model_version_1_1(filename, doc, resolve_imports=True):
     """ Check that a file is a valid CellML 2.0 model
 
     Args:
         filename (:obj:`str`): path to model
         doc (:obj:`lxml.etree._ElementTree`): XML document for file
+        resolve_imports (:obj:`bool`, optional): whether to resolve imports
 
     Returns:
         :obj:`tuple`:
@@ -137,12 +140,13 @@ def validate_model_version_1_1(filename, doc):
     return (errors, warnings, None)
 
 
-def validate_model_version_2(filename, doc):
+def validate_model_version_2(filename, doc, resolve_imports=True):
     """ Check that a file is a valid CellML 2.0 model
 
     Args:
         filename (:obj:`str`): path to model
         doc (:obj:`lxml.etree._ElementTree`): XML document for file
+        resolve_imports (:obj:`bool`, optional): whether to resolve imports
 
     Returns:
         :obj:`tuple`:
@@ -170,6 +174,21 @@ def validate_model_version_2(filename, doc):
     if errors:
         return (errors, warnings, model)
 
+    # import imported models
+    if resolve_imports:
+        importer = libcellml.Importer()
+        if not importer.resolveImports(model, os.path.dirname(filename) + os.path.sep):
+            for i_error in range(importer.errorCount()):
+                error = importer.error(i_error)
+                errors.append([error.description()])
+
+            for i_warning in range(importer.warningCount()):
+                warning = importer.warning(i_warning)
+                warnings.append([warning.description()])
+
+        if errors:
+            return (errors, warnings, model)
+
     # validate model
     validator = libcellml.Validator()
     validator.validateModel(model)
@@ -181,8 +200,5 @@ def validate_model_version_2(filename, doc):
     for i_warning in range(validator.warningCount()):
         warning = validator.warning(i_warning)
         warnings.append([warning.description()])
-
-    if model.hasImports():
-        warnings.append(['Imports could not be validated.'])
 
     return (errors, warnings, model)

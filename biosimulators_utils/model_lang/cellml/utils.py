@@ -47,7 +47,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
     if not os.path.isfile(model_filename):
         raise FileNotFoundError('Model file `{}` does not exist.'.format(model_filename))
 
-    errors, _, (model, root) = validate_model(model_filename)
+    errors, _, (model, root) = validate_model(model_filename, resolve_imports=False)
     if errors:
         raise ValueError('Model file `{}` is not a valid CellML file.\n  {}'.format(
             model_filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  ')))

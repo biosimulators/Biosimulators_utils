@@ -859,12 +859,12 @@ class ValidationTestCase(unittest.TestCase):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'cellml', 'version2.xml')
         errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.CellML)
         self.assertEqual(errors, [])
-        self.assertEqual(warnings, [['Imports could not be validated.']])
+        self.assertEqual(warnings, [])
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'cellml', 'missing-attribute.xml')
         errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.CellML)
         self.assertNotEqual(errors, [])
-        self.assertEqual(warnings, [['Imports could not be validated.']])
+        self.assertEqual(warnings, [])
 
         # LEMS
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'lems', 'LEMS_NML2_Ex5_DetCell.xml')

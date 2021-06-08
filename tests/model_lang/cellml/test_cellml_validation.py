@@ -26,7 +26,15 @@ class CellMlValidationTestCase(unittest.TestCase):
         # 2.0 model
         errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'version2.xml'))
         self.assertEqual(errors, [])
-        self.assertEqual(warnings, [['Imports could not be validated.']])
+        self.assertEqual(warnings, [])
+
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'version2-with-imports.xml'))
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'version2-missing-imports.xml'))
+        self.assertIn("the file could not be opened", flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         # 2.0 error: invalid namespace
         errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid_namespace.xml'))
@@ -44,7 +52,7 @@ class CellMlValidationTestCase(unittest.TestCase):
         return_value = mock.Mock(
             getroot=lambda: mock.Mock(
                 nsmap=mock.Mock(
-                    get=lambda x,y: 'http://www.cellml.org/cellml/2.0#'
+                    get=lambda x, y: 'http://www.cellml.org/cellml/2.0#'
                 )
             )
         )
@@ -55,4 +63,4 @@ class CellMlValidationTestCase(unittest.TestCase):
 
         errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'missing-attribute.xml'))
         self.assertIn("does not have a valid name attribute", flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [['Imports could not be validated.']])
+        self.assertEqual(warnings, [])

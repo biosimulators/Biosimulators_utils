@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="level2_model">
-    <component>
+    <component name="level2_component">
         <variable name="time" units="dimensionless" interface="public"/>
         <variable name="parameter" units="dimensionless" interface="public"/>
         <variable name="cosine" units="dimensionless" interface="public" initial_value="0"/>
@@ -20,4 +20,7 @@
         </math>
     </component>
     <component name="isnt_imported"/>
+    <import xlink:href="level2-imported-model.xml">
+        <component name="also_never_imported" component_ref="level2_component"/>
+    </import>
 </model>
