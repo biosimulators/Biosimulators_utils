@@ -7,7 +7,6 @@
 """
 
 from lems.model.model import Model
-import lxml.etree
 
 
 def validate_model(filename, name=None):
@@ -22,23 +21,23 @@ def validate_model(filename, name=None):
 
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
-            * :obj:`tuple`:
-
-                * :obj:`Model`: model
-                * :obj:`lxml.etree._ElementTree`: XML representation of model
+            * :obj:`Model`: model
     """
     errors = []
     warnings = []
     model = None
-    root = None
-    try:
-        model = Model(include_includes=False)
-        model.import_from_file(filename)
 
-        root = lxml.etree.parse(filename).getroot()
-        if root.xpath('/Lems/Include'):
-            warnings.append(['Includes could not be validated.'])
+    try:
+        model = Model(include_includes=True, fail_on_missing_includes=False)
+        model.import_from_file(filename)
     except Exception as exception:
         errors.append([str(exception)])
 
-    return (errors, warnings, (model, root))
+    if not errors:
+        try:
+            model = Model(include_includes=True, fail_on_missing_includes=True)
+            model.import_from_file(filename)
+        except Exception as exception:
+            warnings.append(['One or more includes could not be resolved and validated.'])
+
+    return (errors, warnings, model)
