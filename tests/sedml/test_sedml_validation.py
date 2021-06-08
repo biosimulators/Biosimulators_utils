@@ -856,7 +856,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(warnings, [])
 
         # CellML
-        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'cellml', 'level2.xml')
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'cellml', 'version2.xml')
         errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.CellML)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])

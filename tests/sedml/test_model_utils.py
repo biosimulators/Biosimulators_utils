@@ -19,6 +19,20 @@ class ModelUtilsTestCase(unittest.TestCase):
             symbol=Symbol.time.value,
         )))
 
+        # CellML
+        filename = os.path.join(self.FIXTURES_DIRNAME, 'cellml', 'albrecht_colegrove_friel_2002.xml')
+        params, vars = model_utils.get_parameters_variables_for_simulation(filename, ModelLanguage.CellML, None, None)
+        self.assertTrue(vars[0].is_equal(Variable(
+            id='value_component_environment_variable_time',
+            name='Value of variable "time" of component "environment"',
+            target=(
+                "/cellml:model"
+                "/cellml:component[@name='environment']"
+                "/cellml:variable[@name='time']"
+            ),
+            target_namespaces={'cellml': 'http://www.cellml.org/cellml/1.0#'},
+        )))
+
         # SBML
         filename = os.path.join(self.FIXTURES_DIRNAME, 'BIOMD0000000297.xml')
         params, vars = model_utils.get_parameters_variables_for_simulation(

@@ -24,9 +24,9 @@ class CellMlValidationTestCase(unittest.TestCase):
         self.assertIn("not available for CellML 1.1", flatten_nested_list_of_strings(warnings))
 
         # 2.0 model
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'level2.xml'))
+        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'version2.xml'))
         self.assertEqual(errors, [])
-        self.assertEqual(warnings, [])
+        self.assertEqual(warnings, [['Imports could not be validated.']])
 
         # 2.0 error: invalid namespace
         errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid_namespace.xml'))
@@ -55,4 +55,4 @@ class CellMlValidationTestCase(unittest.TestCase):
 
         errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'missing-attribute.xml'))
         self.assertIn("does not have a valid name attribute", flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertEqual(warnings, [['Imports could not be validated.']])

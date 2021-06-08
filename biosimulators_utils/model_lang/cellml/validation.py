@@ -173,4 +173,7 @@ def validate_model_version_2(filename):
         warning = validator.warning(i_warning)
         warnings.append([warning.description()])
 
+    if model.hasImports():
+        warnings.append(['Imports could not be validated.'])
+
     return (errors, warnings)
