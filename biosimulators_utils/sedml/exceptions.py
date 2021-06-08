@@ -18,6 +18,7 @@ class SedmlExecutionError(BioSimulatorsException):
     """ Error that a SED document could not be executed """
     pass  # pragma: no cover
 
+
 class UnsupportedModelLanguageError(BioSimulatorsException, NotImplementedError):
     """ Error that a SED document could not be executed """
     pass  # pragma: no cover

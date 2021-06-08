@@ -41,9 +41,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
     """
     # functions are imported here to only import libraries for required model languages
     if re.match(ModelLanguagePattern.BNGL.value, model_language):
-        # from biosimulators_utils.model_lang.bngl.utils import get_parameters_variables_for_simulation
-        raise UnsupportedModelLanguageError(
-            'Models of language `{}` are not supported'.format(model_language))
+        from biosimulators_utils.model_lang.bngl.utils import get_parameters_variables_for_simulation
 
     elif re.match(ModelLanguagePattern.CellML.value, model_language):
         # from biosimulators_utils.model_lang.cellml.utils import get_parameters_variables_for_simulation

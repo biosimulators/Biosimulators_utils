@@ -18,6 +18,7 @@ __all__ = [
     'patch_dict', 'pad_arrays_to_consistent_shapes',
     'flatten_nested_list_of_strings',
     'raise_errors_warnings',
+    'format_float',
 ]
 
 
@@ -376,3 +377,28 @@ def raise_errors_warnings(errors, warnings=None, error_summary=None, warning_sum
         if error_summary:
             msg = error_summary + '\n  ' + msg.replace('\n', '\n  ')
         raise ValueError(msg)
+
+
+def format_float(val):
+    """ Format a float in scientific notation
+
+    Args:
+        val (:obj:`float`): value
+
+    Returns:
+        :obj:`str`: value formatted as a string
+    """
+    if val == int(val):
+        return str(int(val))
+
+    elif abs(val) < 1e3 and abs(val) > 1e-3:
+        return str(val)
+
+    else:
+        return (
+            '{:e}'
+            .format(val)
+            .replace('e-0', 'e-')
+            .replace('e+0', 'e')
+            .replace('e+', 'e')
+        )
