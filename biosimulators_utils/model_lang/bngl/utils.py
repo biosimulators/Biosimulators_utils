@@ -6,15 +6,12 @@
 :License: MIT
 """
 
-from ...log.data_model import StandardOutputErrorCapturerLevel
-from ...log.utils import StandardOutputErrorCapturer
 from ...sedml.data_model import (  # noqa: F401
     ModelAttributeChange, Variable, Symbol,
     Simulation, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation
     )
 from ...utils.core import flatten_nested_list_of_strings
 from .validation import validate_model
-import bionetgen
 import os
 import re
 import types  # noqa: F401
@@ -29,7 +26,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     Args:
         model_filename (:obj:`str`): path to model file
-        model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:sbml``)
+        model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:bngl``)
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
         algorithm (:obj:`str`): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
@@ -49,13 +46,10 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
     if not os.path.isfile(model_filename):
         raise FileNotFoundError('Model file `{}` does not exist.'.format(model_filename))
 
-    errors, _ = validate_model(model_filename)
+    errors, _, model = validate_model(model_filename)
     if errors:
         raise ValueError('Model file `{}` is not a valid BNGL or BNGL XML file.\n  {}'.format(
             model_filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  ')))
-
-    with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.c, relay=False):
-        model = bionetgen.bngmodel(model_filename)
 
     # parameters
     params = []

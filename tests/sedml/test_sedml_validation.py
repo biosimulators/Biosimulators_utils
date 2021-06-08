@@ -809,7 +809,7 @@ class ValidationTestCase(unittest.TestCase):
         if task:
             if task.model:
                 errors.extend(validation.validate_model_language(task.model.language, data_model.ModelLanguage.SBML))
-                tmp_errors, tmp_warnings = validation.validate_model_with_language(task.model.source, task.model.language)
+                tmp_errors, tmp_warnings, _ = validation.validate_model_with_language(task.model.source, task.model.language)
                 errors.extend(tmp_errors)
                 warnings.extend(tmp_warnings)
                 errors.extend(validation.validate_model_change_types(task.model.changes))
@@ -840,62 +840,62 @@ class ValidationTestCase(unittest.TestCase):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-list-of-species.xml')
         validation.validate_model_with_language(filename, data_model.ModelLanguage.SBML)
 
-        errors, warnings = validation.validate_model_with_language(filename, '--not-supported--')
+        errors, warnings, _ = validation.validate_model_with_language(filename, '--not-supported--')
         self.assertEqual(errors, [])
         self.assertIn('No validation is available for', flatten_nested_list_of_strings(warnings))
 
         # BNGL
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'bngl', 'valid.bngl')
-        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.BNGL)
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.BNGL)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'bngl', 'invalid.bngl')
-        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.BNGL)
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.BNGL)
         self.assertNotEqual(errors, [])
         self.assertEqual(warnings, [])
 
         # CellML
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'cellml', 'version2.xml')
-        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.CellML)
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.CellML)
         self.assertEqual(errors, [])
-        self.assertEqual(warnings, [])
+        self.assertEqual(warnings, [['Imports could not be validated.']])
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'cellml', 'missing-attribute.xml')
-        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.CellML)
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.CellML)
         self.assertNotEqual(errors, [])
-        self.assertEqual(warnings, [])
+        self.assertEqual(warnings, [['Imports could not be validated.']])
 
         # LEMS
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'lems', 'LEMS_NML2_Ex5_DetCell.xml')
-        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.LEMS)
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.LEMS)
         self.assertEqual(errors, [])
         self.assertIn('Includes could not be validated.', flatten_nested_list_of_strings(warnings))
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'lems', 'invalid.xml')
-        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.LEMS)
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.LEMS)
         self.assertIn("<Lems> expected as root", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         # NeuroML
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'neuroml', 'IM.channel.nml')
-        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.NeuroML)
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.NeuroML)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'neuroml', 'invalid-model.nml')
-        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.NeuroML)
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.NeuroML)
         self.assertIn("Not a valid NeuroML 2 doc", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         # Smoldyn
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'smoldyn', 'bounce1.txt')
-        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.Smoldyn)
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.Smoldyn)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'smoldyn', 'invalid.txt')
-        errors, warnings = validation.validate_model_with_language(filename, data_model.ModelLanguage.Smoldyn)
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.Smoldyn)
         self.assertIn("statement not recognized", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 

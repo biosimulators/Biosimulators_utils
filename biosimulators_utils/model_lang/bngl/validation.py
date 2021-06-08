@@ -1,4 +1,4 @@
-""" Utilities for validating SBML models
+""" Utilities for validating BNGL models
 
 :Author: Jonathan Karr <karr@mssm.edu>
 :Date: 2021-04-13
@@ -24,15 +24,17 @@ def validate_model(filename, name=None):
 
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * :obj:`bionetgen.xmlapi.model.bngmodel`: model
     """
     errors = []
     warnings = []
+    model = None
 
     if filename:
         if os.path.isfile(filename):
             with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.c, relay=False) as captured:
                 try:
-                    bionetgen.bngmodel(filename)
+                    model = bionetgen.bngmodel(filename)
                 except Exception as exception:
                     errors.append(['`{}` is not a valid BNGL or BGNL XML file.'.format(filename or ''), [[str(exception)]]])
 
@@ -46,4 +48,4 @@ def validate_model(filename, name=None):
     else:
         errors.append(['`filename` must be a path to a file, not `{}`.'.format(filename or '')])
 
-    return (errors, warnings)
+    return (errors, warnings, model)

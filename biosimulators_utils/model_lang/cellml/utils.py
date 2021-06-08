@@ -12,8 +12,8 @@ from ...sedml.data_model import (  # noqa: F401
     )
 from ...utils.core import flatten_nested_list_of_strings
 from .validation import validate_model
-import libcellml
-import lxml
+import libcellml  # noqa: F401
+import lxml  # noqa: F401
 import os
 import types  # noqa: F401
 
@@ -27,7 +27,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     Args:
         model_filename (:obj:`str`): path to model file
-        model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:sbml``)
+        model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:cellml``)
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
         algorithm (:obj:`str`): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
@@ -47,29 +47,27 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
     if not os.path.isfile(model_filename):
         raise FileNotFoundError('Model file `{}` does not exist.'.format(model_filename))
 
-    errors, _ = validate_model(model_filename)
+    errors, _, (model, root) = validate_model(model_filename)
     if errors:
         raise ValueError('Model file `{}` is not a valid CellML file.\n  {}'.format(
             model_filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  ')))
 
-    doc = lxml.etree.parse(model_filename)
-    root = doc.getroot()
     default_ns = root.nsmap.get(None, '')
     if (
         default_ns.startswith('http://www.cellml.org/cellml/1.0')
         or default_ns.startswith('http://www.cellml.org/cellml/1.1')
     ):
-        return get_parameters_variables_for_simulation_version_1(model_filename, root)
+        return get_parameters_variables_for_simulation_version_1(model, root)
 
     else:
-        return get_parameters_variables_for_simulation_version_2(model_filename, root)
+        return get_parameters_variables_for_simulation_version_2(model, root)
 
 
-def get_parameters_variables_for_simulation_version_1(model_filename, xml_root):
+def get_parameters_variables_for_simulation_version_1(model, xml_root):
     """ Get the possible observables for a simulation of a model
 
     Args:
-        model_filename (:obj:`str`): path to model file
+        model (:obj:`None`): model
         xml_root (:obj:`lxml.etree._Element`): element tree for model
 
     Returns:
@@ -112,21 +110,17 @@ def get_parameters_variables_for_simulation_version_1(model_filename, xml_root):
     return params, vars
 
 
-def get_parameters_variables_for_simulation_version_2(model_filename, xml_root):
+def get_parameters_variables_for_simulation_version_2(model, xml_root):
     """ Get the possible observables for a simulation of a model
 
     Args:
-        model_filename (:obj:`str`): path to model file
+        model (:obj:`libcellml.model.Model`): model
         xml_root (:obj:`lxml.etree._Element`): element tree for model
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
     """
-    parser = libcellml.Parser()
-    with open(model_filename, 'r') as file:
-        model = parser.parseModel(file.read())
-
     namespaces = {
         'cellml': xml_root.nsmap.get(None, '')
     }

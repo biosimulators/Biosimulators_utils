@@ -10,34 +10,34 @@ class CellMlValidationTestCase(unittest.TestCase):
 
     def test(self):
         # 1 model
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'albrecht_colegrove_friel_2002.xml'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'albrecht_colegrove_friel_2002.xml'))
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'albrecht_colegrove_friel_2002-error.xml'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'albrecht_colegrove_friel_2002-error.xml'))
         self.assertIn("has extra content: units2", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         # 1.1 model
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'parameters-1.1.cellml'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'parameters-1.1.cellml'))
         self.assertEqual(errors, [])
         self.assertIn("not available for CellML 1.1", flatten_nested_list_of_strings(warnings))
 
         # 2.0 model
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'version2.xml'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'version2.xml'))
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [['Imports could not be validated.']])
 
         # 2.0 error: invalid namespace
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid_namespace.xml'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid_namespace.xml'))
         self.assertIn("default namespace must be", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'not_a_path.xml'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'not_a_path.xml'))
         self.assertIn("is not a file", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid_cellml_2.0.xml'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid_cellml_2.0.xml'))
         self.assertIn("Start tag expected", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
@@ -49,10 +49,10 @@ class CellMlValidationTestCase(unittest.TestCase):
             )
         )
         with mock.patch('lxml.etree.parse', return_value=return_value):
-            errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid_cellml_2.0.xml'))
+            errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid_cellml_2.0.xml'))
             self.assertIn("Start tag expected", flatten_nested_list_of_strings(errors))
             self.assertEqual(warnings, [])
 
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'missing-attribute.xml'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'missing-attribute.xml'))
         self.assertIn("does not have a valid name attribute", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [['Imports could not be validated.']])

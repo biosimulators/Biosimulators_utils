@@ -8,22 +8,22 @@ class BgnlValidationTestCase(unittest.TestCase):
     FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl')
 
     def test(self):
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'valid.bngl'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'valid.bngl'))
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid.bngl2'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid.bngl2'))
         self.assertIn("not a valid BNGL or BGNL XML file", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid.bngl'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid.bngl'))
         self.assertIn("XML file couldn't be generated", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_model(os.path.join(self.FIXTURE_DIR, 'does-not-exist'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'does-not-exist'))
         self.assertIn('is not a file', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_model(None)
+        errors, warnings, _ = validate_model(None)
         self.assertIn('must be a path', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])

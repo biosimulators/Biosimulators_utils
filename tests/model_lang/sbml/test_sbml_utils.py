@@ -67,7 +67,8 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         params, vars = get_parameters_variables_for_simulation(
             self.CORE_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000019',
             include_compartment_sizes_in_simulation_variables=True,
-            include_model_parameters_in_simulation_variables=True)
+            include_model_parameters_in_simulation_variables=True,
+            validate=False)
 
         self.assertEqual(params[0].id, 'init_amount_species_Trim')
         self.assertEqual(params[0].name, 'Initial amount of species "CDC28_Clb2_Sic1_Complex"')
@@ -104,7 +105,8 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         params, vars = get_parameters_variables_for_simulation(
             self.CORE_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000019',
             include_compartment_sizes_in_simulation_variables=False,
-            include_model_parameters_in_simulation_variables=False)
+            include_model_parameters_in_simulation_variables=False, 
+            validate=False)
         self.assertNotEqual(next((param for param in params if param.id == 'init_size_compartment_compartment'), None), None)
         self.assertEqual(next((variable for variable in vars if variable.id == 'size_compartment_compartment'), None), None)
         self.assertEqual(next((variable for variable in vars if variable.id == 'value_parameter_local_param'), None), None)
@@ -214,7 +216,8 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         params, vars = get_parameters_variables_for_simulation(
             self.QUAL_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000450',
             include_compartment_sizes_in_simulation_variables=True,
-            include_model_parameters_in_simulation_variables=True)
+            include_model_parameters_in_simulation_variables=True,
+            validate=False)
 
         param = next((param for param in params if param.id == 'init_level_species_erk'), None)
         self.assertEqual(param.name, 'Initial level of species "erk"')
@@ -246,7 +249,8 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         params, vars = get_parameters_variables_for_simulation(
             self.QUAL_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000450',
             include_compartment_sizes_in_simulation_variables=False,
-            include_model_parameters_in_simulation_variables=False)
+            include_model_parameters_in_simulation_variables=False,
+            validate=False)
 
         self.assertNotEqual(next((param for param in params if param.id == 'init_level_species_erk'), None), None)
         self.assertNotEqual(next((param for param in params if param.id == 'init_size_compartment_main'), None), None)

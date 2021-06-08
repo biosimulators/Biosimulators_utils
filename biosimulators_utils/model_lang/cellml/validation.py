@@ -24,30 +24,35 @@ def validate_model(filename, name=None):
 
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * :obj:`tuple`:
+
+                * :obj:`libcellml.model.Model`: model
+                * :obj:`lxml.etree._ElementTree`: model
     """
     errors = []
     warnings = []
+    model = None
 
     if not os.path.isfile(filename):
         errors.append(['`{}` is not a file.'.format(filename)])
-        return (errors, warnings)
+        return (errors, warnings, (model, None))
 
     try:
         doc = lxml.etree.parse(filename)
     except lxml.etree.XMLSyntaxError as exception:
         errors.append(['`{}` is not a valid XML file.'.format(filename), [[str(exception)]]])
-        return errors, warnings
+        return (errors, warnings, (model, None))
 
     root = doc.getroot()
     default_ns = root.nsmap.get(None, '')
     if default_ns.startswith('http://www.cellml.org/cellml/1.0'):
-        v_errors, v_warnings = validate_model_version_1_0(filename, doc)
+        v_errors, v_warnings, model = validate_model_version_1_0(filename, doc)
 
     elif default_ns.startswith('http://www.cellml.org/cellml/1.1'):
-        v_errors, v_warnings = validate_model_version_1_1(filename, doc)
+        v_errors, v_warnings, model = validate_model_version_1_1(filename, doc)
 
     elif default_ns.startswith('http://www.cellml.org/cellml/2'):
-        v_errors, v_warnings = validate_model_version_2(filename)
+        v_errors, v_warnings, model = validate_model_version_2(filename, doc)
 
     else:
         v_errors = [[(
@@ -58,7 +63,7 @@ def validate_model(filename, name=None):
     errors.extend(v_errors)
     warnings.extend(v_warnings)
 
-    return (errors, warnings)
+    return (errors, warnings, (model, root))
 
 
 def validate_model_version_1_0(filename, doc):
@@ -66,13 +71,14 @@ def validate_model_version_1_0(filename, doc):
 
     Args:
         filename (:obj:`str`): path to model
-        root (:obj:`lxml.etree._ElementTree`): XML document for file
+        doc (:obj:`lxml.etree._ElementTree`): XML document for file
 
     Returns:
         :obj:`tuple`:
 
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * :obj:`None`
     """
 
     # ``cellml1.0.rnc`` and ``mathml2.rnc`` were obtained from https://www.cellml.org/tools/validation
@@ -106,7 +112,7 @@ def validate_model_version_1_0(filename, doc):
                 '{}.{}: {}'.format(warning.line, warning.column, warning.message)
             ])
 
-    return (errors, warnings)
+    return (errors, warnings, None)
 
 
 def validate_model_version_1_1(filename, doc):
@@ -114,33 +120,36 @@ def validate_model_version_1_1(filename, doc):
 
     Args:
         filename (:obj:`str`): path to model
-        root (:obj:`lxml.etree._ElementTree`): XML document for file
+        doc (:obj:`lxml.etree._ElementTree`): XML document for file
 
     Returns:
         :obj:`tuple`:
 
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * :obj:`None`
     """
     errors = []
     warnings = []
 
     warnings.append(['Validation is not available for CellML 1.1 files.'])
 
-    return (errors, warnings)
+    return (errors, warnings, None)
 
 
-def validate_model_version_2(filename):
+def validate_model_version_2(filename, doc):
     """ Check that a file is a valid CellML 2.0 model
 
     Args:
         filename (:obj:`str`): path to model
+        doc (:obj:`lxml.etree._ElementTree`): XML document for file
 
     Returns:
         :obj:`tuple`:
 
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * :obj:`libcellml.model.Model`: model
     """
     errors = []
     warnings = []
@@ -159,7 +168,7 @@ def validate_model_version_2(filename):
         warnings.append([warning.description()])
 
     if errors:
-        return (errors, warnings)
+        return (errors, warnings, model)
 
     # validate model
     validator = libcellml.Validator()
@@ -176,4 +185,4 @@ def validate_model_version_2(filename):
     if model.hasImports():
         warnings.append(['Imports could not be validated.'])
 
-    return (errors, warnings)
+    return (errors, warnings, model)

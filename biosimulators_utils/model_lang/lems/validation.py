@@ -22,9 +22,15 @@ def validate_model(filename, name=None):
 
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * :obj:`tuple`:
+
+                * :obj:`Model`: model
+                * :obj:`lxml.etree._ElementTree`: XML representation of model
     """
     errors = []
     warnings = []
+    model = None
+    root = None
     try:
         model = Model(include_includes=False)
         model.import_from_file(filename)
@@ -35,4 +41,4 @@ def validate_model(filename, name=None):
     except Exception as exception:
         errors.append([str(exception)])
 
-    return (errors, warnings)
+    return (errors, warnings, (model, root))

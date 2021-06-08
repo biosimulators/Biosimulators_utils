@@ -778,7 +778,7 @@ def validate_model_source(model, model_ids, working_dir, validate_models_with_la
             model_source = os.path.join(working_dir, model.source)
 
         if validate_models_with_languages:
-            model_source_errors, model_source_warnings = validate_model_with_language(model_source, model.language, name=model.id)
+            model_source_errors, model_source_warnings, _ = validate_model_with_language(model_source, model.language, name=model.id)
             if model_source_errors:
                 errors.append(['The model file `{}` is invalid.'.format(model.source), model_source_errors])
             if model_source_warnings:
@@ -800,6 +800,7 @@ def validate_model_with_language(source, language, name=None):
 
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * :obj:`object`: model object
     """
     errors = []
     warnings = []
@@ -824,7 +825,7 @@ def validate_model_with_language(source, language, name=None):
 
     else:
         warnings.append(['No validation is available for models encoded in `{}`'.format(getattr(language, 'name', language) or '')])
-        return (errors, warnings)
+        return (errors, warnings, None)
 
     return validate_model(source, name=name)
 

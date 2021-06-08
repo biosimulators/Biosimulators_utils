@@ -31,9 +31,15 @@ def validate_model(filename, name=None):
 
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * :obj:`tuple`:
+
+                * :obj:`smoldyn.Simulation`: model configuration
+                * :obj:`list` of :obj:`str`: model configuration
     """
     errors = []
     warnings = []
+    model = None
+    config = None
 
     if filename:
         if os.path.isfile(filename):
@@ -44,7 +50,7 @@ def validate_model(filename, name=None):
             write_smoldyn_simulation_configuration(config, config_filename)
             with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.c, relay=False) as captured:
                 try:
-                    init_smoldyn_simulation_from_configuration_file(config_filename)
+                    model = init_smoldyn_simulation_from_configuration_file(config_filename)
                     valid = True
                 except ValueError:
                     valid = False
@@ -58,4 +64,4 @@ def validate_model(filename, name=None):
     else:
         errors.append(['`filename` must be a path to a file, not `{}`.'.format(filename or '')])
 
-    return (errors, warnings)
+    return (errors, warnings, (model, config))

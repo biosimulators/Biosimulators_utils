@@ -22,14 +22,16 @@ def validate_model(filename, name=None):
 
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * :obj:`neuroml.nml.nml.NeuroMLDocument`: model
     """
     with warnings.catch_warnings(record=True) as caught_warnings:
         try:
-            NeuroMLLoader.load(filename)
+            model = NeuroMLLoader.load(filename)
             error_messages = []
         except Exception as exception:
+            model = None
             error_messages = [[str(exception)]]
 
         warning_messages = [['{}: {}'.format(caught_warning.category, caught_warning.message)] for caught_warning in caught_warnings]
 
-    return (error_messages, warning_messages)
+    return (error_messages, warning_messages, model)

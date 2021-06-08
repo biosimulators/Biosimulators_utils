@@ -10,8 +10,8 @@ from ...sedml.data_model import (  # noqa: F401
     ModelAttributeChange, Variable, Symbol,
     Simulation, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation
     )
-from ...utils.core import format_float
-import libsbml
+from ...utils.core import format_float, flatten_nested_list_of_strings
+from .validation import validate_model
 import os
 import types  # noqa: F401
 
@@ -20,7 +20,8 @@ __all__ = ['get_parameters_variables_for_simulation']
 
 def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm,
                                             include_compartment_sizes_in_simulation_variables=False,
-                                            include_model_parameters_in_simulation_variables=False):
+                                            include_model_parameters_in_simulation_variables=False,
+                                            validate=True, validate_consistency=True):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -33,6 +34,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             non-constant SBML compartments with assignment rules among the returned SED variables
         include_model_parameters_in_simulation_variables (:obj:`bool`, optional): whether to include the values of
             non-constant SBML parameters with assignment rules among the returned SED variables
+        validate (:obj:`str`, optional): whether to validate the model
+        validate_consistency (:obj:`str`, optional): whether to check the consistency of the model
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
@@ -43,10 +46,11 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         raise FileNotFoundError('Model file `{}` does not exist'.format(model_filename))
 
     # read model
-    doc = libsbml.readSBMLFromFile(model_filename)
+    errors, _, doc = validate_model(model_filename, validate_consistency=validate and validate_consistency)
+    if not doc or (validate and errors):
+        raise ValueError('Model file `{}` is not a valid SBML file.\n  {}'.format(
+            model_filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  ')))
     model = doc.getModel()
-    if not model:
-        raise ValueError('{} does not contain a valid model'.format(model_filename))
 
     # determine plugin usage
     has_fbc = False
