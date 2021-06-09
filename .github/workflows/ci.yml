@@ -55,9 +55,6 @@ jobs:
       - name: Install the package
         run: python -m pip install .[all]
 
-      - name: Install latest version of Smoldyn
-        run: python -m pip install --pre -U smoldyn
-
       # lint
       - name: Install flake8
         run: python -m pip install flake8

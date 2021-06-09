@@ -15,7 +15,7 @@ libneuroml
 python_libsbml
 
 [smoldyn]
-smoldyn
+smoldyn >= 2.66.dev20210609
 
 [containers]
 docker >= 4.4
