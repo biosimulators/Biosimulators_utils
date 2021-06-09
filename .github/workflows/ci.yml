@@ -129,6 +129,16 @@ jobs:
       - name: Install the package
         run: python -m pip install .[all]
 
+      - name: Install latest version of Smoldyn
+        run: |
+          git clone https://github.com/ssandrews/Smoldyn.git
+          cd Smoldyn
+          git checkout parsing-vars-observables
+          python -m pip show smoldyn
+          cp -R source/python/smoldyn/biosimulators/ /home/jonrkarr/.local/lib/python3.9/site-packages/smoldyn/
+          cd ..
+          rm -r Smoldyn
+
       # compile and push documentation
       - name: Install the requirements for compiling the documentation
         run: python -m pip install -r docs-src/requirements.txt
