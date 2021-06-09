@@ -1,6 +1,8 @@
-from biosimulators_utils.model_lang.bngl.validation import validate_model
+from biosimulators_utils.model_lang.bngl.validation import validate_model, read_model
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
 import os
+import shutil
+import tempfile
 import unittest
 
 
@@ -12,9 +14,16 @@ class BgnlValidationTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid.bngl2'))
-        self.assertIn("not a valid BNGL or BGNL XML file", flatten_nested_list_of_strings(errors))
+        fid, filename = tempfile.mkstemp()
+        os.close(fid)
+        shutil.copyfile(os.path.join(self.FIXTURE_DIR, 'valid.bngl'), filename)
+        errors, warnings, _ = validate_model(filename)
+        self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
+        os.remove(filename)
+
+        _, errors, _ = read_model(os.path.join(self.FIXTURE_DIR, 'invalid.bngl2'), '')
+        self.assertIn("not a valid BNGL or BGNL XML file", flatten_nested_list_of_strings(errors))
 
         errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid.bngl'))
         self.assertIn("XML file couldn't be generated", flatten_nested_list_of_strings(errors))

@@ -10,6 +10,8 @@ from ...log.data_model import StandardOutputErrorCapturerLevel
 from ...log.utils import StandardOutputErrorCapturer
 import bionetgen
 import os
+import shutil
+import tempfile
 
 
 def validate_model(filename, name=None):
@@ -32,15 +34,21 @@ def validate_model(filename, name=None):
 
     if filename:
         if os.path.isfile(filename):
-            with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.c, relay=False) as captured:
-                try:
-                    model = bionetgen.bngmodel(filename)
-                except Exception as exception:
-                    errors.append(['`{}` is not a valid BNGL or BGNL XML file.'.format(filename or ''), [[str(exception)]]])
+            if os.path.splitext(filename)[1] == '.bngl':
+                bngl_filename = filename
+            else:
+                fid, bngl_filename = tempfile.mkstemp(dir=os.path.dirname(filename), suffix='.bngl')
+                os.close(fid)
+                shutil.copyfile(filename, bngl_filename)
 
-            stdout = captured.get_text()
+            model, temp_errors, stdout = read_model(bngl_filename, filename)
+            errors.extend(temp_errors)
+
             if "XML file couldn't be generated" in stdout:
-                errors.append(['`{}` is not a valid BNGL or BGNL XML file.'.format(filename or ''), [[captured.get_text()]]])
+                errors.append(['`{}` is not a valid BNGL or BGNL XML file.'.format(filename or ''), [[stdout]]])
+
+            if bngl_filename != filename:
+                os.remove(bngl_filename)
 
         else:
             errors.append(['`{}` is not a file.'.format(filename or '')])
@@ -49,3 +57,14 @@ def validate_model(filename, name=None):
         errors.append(['`filename` must be a path to a file, not `{}`.'.format(filename or '')])
 
     return (errors, warnings, model)
+
+
+def read_model(bngl_filename, filename):
+    model = None
+    errors = []
+    with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.c, relay=False) as captured:
+        try:
+            model = bionetgen.bngmodel(bngl_filename)
+        except Exception as exception:
+            errors.append(['`{}` is not a valid BNGL or BGNL XML file.'.format(filename or ''), [[str(exception)]]])
+    return model, errors, captured.get_text()
