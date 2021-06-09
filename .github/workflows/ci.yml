@@ -52,7 +52,7 @@ jobs:
           singularity-version: 3.6.4
 
       # setup headless environment for Smoldyn
-      - run:
+      - run: |
           sudo apt-get install --no-install-recommends -y xvfb
           mkdir /tmp/.X11-unix
           chmod 1777 /tmp/.X11-unix          
