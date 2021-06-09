@@ -54,7 +54,7 @@ jobs:
       # setup headless environment for Smoldyn
       - run: |
           sudo apt-get install --no-install-recommends -y xvfb
-          mkdir /tmp/.X11-unix
+          mkdir -p /tmp/.X11-unix
           chmod 1777 /tmp/.X11-unix          
 
       # install package
