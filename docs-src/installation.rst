@@ -37,11 +37,23 @@ After installing `Python <https://www.python.org/downloads/>`_ (>= 3.7) and `pip
 Installing the optional features
 --------------------------------
 
+To use BioSimulators utils to validate models encoded in BNGL, install BioSimulators utils with the ``bngl`` option:
+
+.. code-block:: text
+
+    pip install biosimulators-utils[bngl]
+
 To use BioSimulators utils to validate models encoded in CellML, install BioSimulators utils with the ``cellml`` option:
 
 .. code-block:: text
 
     pip install biosimulators-utils[cellml]
+
+To use BioSimulators utils to validate models encoded in LEMS, install BioSimulators utils with the ``lems`` option:
+
+.. code-block:: text
+
+    pip install biosimulators-utils[lems]
 
 To use BioSimulators utils to validate models encoded in NeuroML, install BioSimulators utils with the ``neuroml`` option:
 
@@ -54,6 +66,12 @@ To use BioSimulators utils to validate models encoded in SBML, install BioSimula
 .. code-block:: text
 
     pip install biosimulators-utils[sbml]
+
+To use BioSimulators utils to validate models encoded in Smoldyn, install BioSimulators utils with the ``smoldyn`` option:
+
+.. code-block:: text
+
+    pip install biosimulators-utils[smoldyn]
 
 To use BioSimulators utils to execute containerized simulation tools, install BioSimulators utils with the ``containers`` option:
 

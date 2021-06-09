@@ -28,9 +28,19 @@ pip install git+https://github.com/biosimulators/Biosimulators_utils.git#biosimu
 
 ### Installation optional features
 
+To use BioSimulators utils to validate BNGL models, install BioSimulators utils with the `bgnl` option:
+```
+pip install biosimulators-utils[bgnl]
+```
+
 To use BioSimulators utils to validate CellML models, install BioSimulators utils with the `cellml` option:
 ```
 pip install biosimulators-utils[cellml]
+```
+
+To use BioSimulators utils to validate LEMS models, install BioSimulators utils with the `lems` option:
+```
+pip install biosimulators-utils[lems]
 ```
 
 To use BioSimulators utils to validate NeuroML models, install BioSimulators utils with the `neuroml` option:
@@ -41,6 +51,11 @@ pip install biosimulators-utils[neuroml]
 To use BioSimulators utils to validate SBML models, install BioSimulators utils with the `sbml` option:
 ```
 pip install biosimulators-utils[sbml]
+```
+
+To use BioSimulators utils to validate SBML models, install BioSimulators utils with the `smoldyn` option:
+```
+pip install biosimulators-utils[smoldyn]
 ```
 
 To use BioSimulators utils to execute containerized simulation tools, install BioSimulators utils with the `containers` option:
