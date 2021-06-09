@@ -61,7 +61,7 @@ jobs:
           cd Smoldyn
           git checkout parsing-vars-observables
           python -m pip show smoldyn
-          cp -R source/python/smoldyn/biosimulators/ /home/jonrkarr/.local/lib/python3.9/site-packages/smoldyn/
+          cp -R source/python/smoldyn/biosimulators/ /opt/hostedtoolcache/Python/3.9.5/x64/lib/python3.9/site-packages/smoldyn/
           cd ..
           rm -r Smoldyn
 
