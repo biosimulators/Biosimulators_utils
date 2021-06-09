@@ -1,5 +1,5 @@
 from biosimulators_utils.sedml import model_utils
-from biosimulators_utils.sedml.data_model import ModelLanguage, Variable, Symbol, UniformTimeCourseSimulation
+from biosimulators_utils.sedml.data_model import ModelLanguage, Variable, Symbol, UniformTimeCourseSimulation, ModelAttributeChange
 from biosimulators_utils.sedml.exceptions import UnsupportedModelLanguageError
 from unittest import mock
 import os
@@ -41,6 +41,16 @@ class ModelUtilsTestCase(unittest.TestCase):
             id='time',
             name='Time',
             symbol=Symbol.time.value,
+        )))
+
+        # Smoldyn
+        filename = os.path.join(self.FIXTURES_DIRNAME, 'smoldyn', 'bounce1.txt')
+        params, vars = model_utils.get_parameters_variables_for_simulation(filename, ModelLanguage.Smoldyn, None, None)
+        self.assertTrue(params[0].is_equal(ModelAttributeChange(
+            id='number_dimensions',
+            name='Number of dimensions',
+            target='dim',
+            new_value='1',
         )))
 
     def test_get_parameters_variables_for_simulation_error_handling(self):

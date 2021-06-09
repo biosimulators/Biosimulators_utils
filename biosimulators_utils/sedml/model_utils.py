@@ -55,9 +55,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         from biosimulators_utils.model_lang.sbml.utils import get_parameters_variables_for_simulation
 
     elif re.match(ModelLanguagePattern.Smoldyn.value, model_language):
-        # from biosimulators_utils.model_lang.smoldyn.utils import get_parameters_variables_for_simulation
-        raise UnsupportedModelLanguageError(
-            'Models of language `{}` are not supported'.format(model_language))
+        from biosimulators_utils.model_lang.smoldyn.utils import get_parameters_variables_for_simulation
 
     else:
         raise UnsupportedModelLanguageError(

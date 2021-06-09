@@ -7,7 +7,7 @@ import os
 import unittest
 
 
-class BgnlUtilsTestCase(unittest.TestCase):
+class CellmlUtilsTestCase(unittest.TestCase):
     V1_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'cellml', 'albrecht_colegrove_friel_2002.xml')
     V2_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'cellml', 'version2.xml')
     INVALID_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'cellml', 'invalid_namespace.xml')

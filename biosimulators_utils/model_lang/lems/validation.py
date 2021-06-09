@@ -37,7 +37,7 @@ def validate_model(filename, name=None):
         try:
             model = Model(include_includes=True, fail_on_missing_includes=True)
             model.import_from_file(filename)
-        except Exception as exception:
+        except Exception:
             warnings.append(['One or more includes could not be resolved and validated.'])
 
     return (errors, warnings, model)

@@ -39,7 +39,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
     """
-    # check model file exists
+    # check model file exists and is valid
     if not isinstance(model_filename, str):
         raise ValueError('`{}` is not a path to a model file.'.format(model_filename))
 
@@ -59,7 +59,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             escaped_el_name = escape_id(el.name)
             params.append(ModelAttributeChange(
                 id='value_parameter_{}'.format(escaped_el_name),
-                name='Value of parameter {}'.format(el.name),
+                name='Value of parameter "{}"'.format(el.name),
                 target='parameters.{}.value'.format(el.name),
                 new_value=el.expr,
             ))
@@ -68,7 +68,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         for el in model.compartments.items.values():
             params.append(ModelAttributeChange(
                 id='initial_size_compartment_{}'.format(el.name),
-                name='Initial size of {}-D compartment {}'.format(el.dim, el.name),
+                name='Initial size of {}-D compartment "{}"'.format(el.dim, el.name),
                 target='compartments.{}.size'.format(el.name),
                 new_value=el.size,
             ))
@@ -79,7 +79,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             escaped_el_pattern = escape_id(el_pattern)
             params.append(ModelAttributeChange(
                 id='initial_amount_species_{}'.format(escaped_el_pattern),
-                name='Initial amount of species {}'.format(el_pattern),
+                name='Initial amount of species "{}"'.format(el_pattern),
                 target='species.{}.initialCount'.format(el_pattern),
                 new_value=el.count,
             ))
@@ -88,7 +88,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         for el in model.functions.items.values():
             params.append(ModelAttributeChange(
                 id='expression_function_{}'.format(el.name),
-                name='Expression of function {}({})'.format(el.name, ', '.join(el.args)),
+                name='Expression of function "{}({})"'.format(el.name, ', '.join(el.args)),
                 target='functions.{}.expression'.format(el.name),
                 new_value=str(el.expr),
             ))
@@ -108,7 +108,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             escaped_el_molecule = escape_id(el_molecule)
             vars.append(Variable(
                 id='amount_molecule_{}'.format(escaped_el_molecule),
-                name='Dynamics of molecule {}'.format(el_molecule),
+                name='Dynamics of molecule "{}"'.format(el_molecule),
                 target='molecules.{}.count'.format(el_molecule),
             ))
 
@@ -118,7 +118,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             escaped_el_pattern = escape_id(el_pattern)
             vars.append(Variable(
                 id='amount_species_{}'.format(escaped_el_pattern),
-                name='Dynamics of species {}'.format(el_pattern),
+                name='Dynamics of species "{}"'.format(el_pattern),
                 target='species.{}.count'.format(el_pattern),
             ))
 
@@ -132,7 +132,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                         escaped_pattern = escape_id(pattern)
                         vars.append(Variable(
                             id='amount_molecule_{}'.format(escaped_pattern),
-                            name='Dynamics of molecule {}'.format(pattern),
+                            name='Dynamics of molecule "{}"'.format(pattern),
                             target='molecules.{}.count'.format(pattern),
                         ))
 
