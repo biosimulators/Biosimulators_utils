@@ -3,14 +3,7 @@ from biosimulators_utils.utils.core import flatten_nested_list_of_strings
 import os
 import unittest
 
-try:
-    import smoldyn.biosimulators
-    smoldyn_biosimulators = True
-except ModuleNotFoundError:
-    smoldyn_biosimulators = False
 
-
-@unittest.skipIf(not smoldyn_biosimulators, 'The smoldyn.biosimulators module is not available')
 class SmoldynValidationTestCase(unittest.TestCase):
     FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'smoldyn')
 

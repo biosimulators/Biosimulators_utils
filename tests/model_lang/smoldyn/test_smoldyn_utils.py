@@ -1,18 +1,9 @@
 from biosimulators_utils.model_lang.smoldyn.utils import get_parameters_variables_for_simulation
 from biosimulators_utils.sedml.data_model import Symbol, ModelAttributeChange, Variable
-from unittest import mock
 import os
 import unittest
 
 
-try:
-    import smoldyn.biosimulators
-    smoldyn_biosimulators = True
-except ModuleNotFoundError:
-    smoldyn_biosimulators = False
-
-
-@unittest.skipIf(not smoldyn_biosimulators, 'The smoldyn.biosimulators module is not available')
 class SmoldynUtilsTestCase(unittest.TestCase):
     FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'smoldyn', 'bounce1.txt')
     COMP_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'smoldyn', 'compart.txt')
