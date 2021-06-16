@@ -835,6 +835,21 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
+    def test_validate_model_source_with_urn(self):
+        errors, warnings = validation.validate_model_source(data_model.Model(
+            source='urn:miriam:biomodels.db:BIOMD0000000297',
+            language=data_model.ModelLanguage.SBML), [], None)
+        self.assertEqual(errors, [])
+        self.assertIn('be deprecated', flatten_nested_list_of_strings(warnings))
+        self.assertIn('not validated', flatten_nested_list_of_strings(warnings))
+
+    def test_validate_model_source_with_url(self):
+        errors, warnings = validation.validate_model_source(data_model.Model(
+            source='https://github.com/org/repo/model.xml',
+            language=data_model.ModelLanguage.SBML), [], None)
+        self.assertEqual(errors, [])
+        self.assertIn('not validated', flatten_nested_list_of_strings(warnings))
+
     def test_validate_model_with_language(self):
         # SBML
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-list-of-species.xml')

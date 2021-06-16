@@ -511,6 +511,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                 and is_model_language_encoded_in_xml(model.language)
                 and model.source
                 and not model.source.startswith('#')
+                and not model.source.startswith('urn:')
                 and not model.source.startswith('http://')
                 and not model.source.startswith('https://')
             ):
@@ -771,7 +772,17 @@ def validate_model_source(model, model_ids, working_dir, validate_models_with_la
         if model.source[1:] not in model_ids:
             errors.append(['The referenced source `{}` is not defined.'.format(model.source)])
 
-    elif not model.source.startswith('#') and not model.source.startswith('http://') and not model.source.startswith('https://'):
+    elif model.source.startswith('urn:'):
+        warnings.append([(
+            'Model resolution via URNs will likely be deprecated in a future version of SED-ML. '
+            'Instead models can be resolved by URLs.'
+        )])
+        warnings.append(['URN model source `{}` was not validated.'.format(model.source)])
+
+    elif model.source.startswith('http://') or model.source.startswith('https://'):
+        warnings.append(['URL model source `{}` was not validated.'.format(model.source)])
+
+    else:
         if os.path.isabs(model.source):
             model_source = model.source
         else:
