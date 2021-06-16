@@ -38,7 +38,7 @@ To use BioSimulators utils to validate CellML models, install BioSimulators util
 pip install biosimulators-utils[cellml]
 ```
 
-To use BioSimulators utils to validate LEMS models, install BioSimulators utils with the `lems` option:
+To use BioSimulators utils to validate LEMS models, install [Java](https://www.java.com/) and then install BioSimulators utils with the `lems` option:
 ```
 pip install biosimulators-utils[lems]
 ```

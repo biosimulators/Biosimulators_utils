@@ -49,7 +49,7 @@ To use BioSimulators utils to validate models encoded in CellML, install BioSimu
 
     pip install biosimulators-utils[cellml]
 
-To use BioSimulators utils to validate models encoded in LEMS, install BioSimulators utils with the ``lems`` option:
+To use BioSimulators utils to validate models encoded in LEMS, install `Java <https://www.java.com/>`_ and then install BioSimulators utils with the ``lems`` option:
 
 .. code-block:: text
 
