@@ -870,7 +870,7 @@ class ValidationTestCase(unittest.TestCase):
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'lems', 'LEMS_NML2_Ex5_DetCell.xml')
         errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.LEMS)
         self.assertEqual(errors, [])
-        self.assertIn('could not be resolved and validated', flatten_nested_list_of_strings(warnings))
+        self.assertEqual(warnings, [])
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'lems', 'invalid.xml')
         errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.LEMS)
