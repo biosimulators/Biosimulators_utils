@@ -10,7 +10,11 @@ class LemsValidationTestCase(unittest.TestCase):
     def test(self):
         errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'LEMS_NML2_Ex5_DetCell.xml'))
         self.assertEqual(errors, [])
-        self.assertEqual(warnings, [['One or more includes could not be resolved and validated.']])
+        self.assertEqual(warnings, [])
+
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'missing-include.xml'))
+        self.assertIn("Unable to open Cells2.xml", flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid.xml'))
         self.assertIn("<Lems> expected as root", flatten_nested_list_of_strings(errors))

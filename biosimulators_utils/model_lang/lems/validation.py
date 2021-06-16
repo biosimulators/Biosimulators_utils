@@ -7,6 +7,11 @@
 """
 
 from lems.model.model import Model
+from pyneuroml.pynml import get_path_to_jnml_jar
+import os
+import shutil
+import tempfile
+import zipfile
 
 
 def validate_model(filename, name=None):
@@ -27,17 +32,19 @@ def validate_model(filename, name=None):
     warnings = []
     model = None
 
+    core_types_dir = tempfile.mkdtemp()
+    jar_filename = get_path_to_jnml_jar()
+    with zipfile.ZipFile(jar_filename, 'r') as jar_file:
+        neuroml2_core_type_members = (name for name in jar_file.namelist() if name.startswith('NeuroML2CoreTypes/'))
+        jar_file.extractall(core_types_dir, members=neuroml2_core_type_members)
+
+    model = Model(include_includes=True, fail_on_missing_includes=True)
+    model.add_include_directory(os.path.join(core_types_dir, 'NeuroML2CoreTypes'))
     try:
-        model = Model(include_includes=True, fail_on_missing_includes=False)
         model.import_from_file(filename)
     except Exception as exception:
-        errors.append([str(exception)])
+        errors.append(['`{}` is not valid LEMS file.'.format(filename), [[str(exception)]]])
 
-    if not errors:
-        try:
-            model = Model(include_includes=True, fail_on_missing_includes=True)
-            model.import_from_file(filename)
-        except Exception:
-            warnings.append(['One or more includes could not be resolved and validated.'])
+    shutil.rmtree(core_types_dir)
 
     return (errors, warnings, model)
