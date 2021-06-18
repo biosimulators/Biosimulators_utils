@@ -44,9 +44,6 @@ def validate_model(filename, name=None):
             model, temp_errors, stdout = read_model(bngl_filename, filename)
             errors.extend(temp_errors)
 
-            if "XML file couldn't be generated" in stdout:
-                errors.append(['`{}` is not a valid BNGL or BGNL XML file.'.format(filename or ''), [[stdout]]])
-
             if bngl_filename != filename:
                 os.remove(bngl_filename)
 
