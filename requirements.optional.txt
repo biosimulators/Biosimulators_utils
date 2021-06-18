@@ -1,6 +1,5 @@
 [bngl]
-bionetgen
-seaborn
+bionetgen >= 0.3.1
 
 [cellml]
 libcellml
