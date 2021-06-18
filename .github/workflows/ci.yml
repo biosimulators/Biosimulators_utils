@@ -52,6 +52,11 @@ jobs:
           distribution: 'adopt'
           java-version: '15'
 
+      - name: Install Perl # for BioNetGen
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends perl
+
       - name: Install Singularity # to validate that the Docker image can be converted into a Singularity image
         uses: eWaterCycle/setup-singularity@v5
         with:
