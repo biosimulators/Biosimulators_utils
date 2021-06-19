@@ -6,8 +6,11 @@
 :License: MIT
 """
 
+from ...log.data_model import StandardOutputErrorCapturerLevel
+from ...log.utils import StandardOutputErrorCapturer
 from lems.model.model import Model
 from pyneuroml.pynml import get_path_to_jnml_jar
+from pyneuroml.pynml import run_jneuroml, DEFAULTS
 import os
 import shutil
 import tempfile
@@ -32,6 +35,13 @@ def validate_model(filename, name=None):
     warnings = []
     model = None
 
+    with StandardOutputErrorCapturer(relay=False, level=StandardOutputErrorCapturerLevel.python) as captured:
+        try:
+            validate_neuroml2_lems_file(filename)
+        except SystemExit:
+            errors.append(['`{}` is not valid LEMS file.'.format(filename), [[captured.get_text() or '']]])
+            return (errors, warnings, model)
+
     core_types_dir = tempfile.mkdtemp()
     jar_filename = get_path_to_jnml_jar()
     with zipfile.ZipFile(jar_filename, 'r') as jar_file:
@@ -40,11 +50,37 @@ def validate_model(filename, name=None):
 
     model = Model(include_includes=True, fail_on_missing_includes=True)
     model.add_include_directory(os.path.join(core_types_dir, 'NeuroML2CoreTypes'))
-    try:
-        model.import_from_file(filename)
-    except Exception as exception:
-        errors.append(['`{}` is not valid LEMS file.'.format(filename), [[str(exception)]]])
-
+    model.import_from_file(filename)
     shutil.rmtree(core_types_dir)
 
     return (errors, warnings, model)
+
+
+def validate_neuroml2_lems_file(nml2_lems_file_name, max_memory=DEFAULTS['default_java_max_memory']):
+    # type (str, str) -> bool
+    """Validate a NeuroML 2 LEMS file using jNeuroML.
+
+    Note that this uses jNeuroML and so is aware of the standard NeuroML LEMS
+    definitions.
+
+    TODO: allow inclusion of other paths for user-defined LEMS definitions
+    (does the -norun option allow the use of -I?)
+
+    :param nml2_lems_file_name: name of file to validate
+    :type nml2_lems_file_name: str
+    :param max_memory: memory to use for the Java virtual machine
+    :type max_memory: str
+    :returns: True if valid, False if invalid
+
+    """
+    post_args = ""
+    post_args += "-norun"
+
+    return run_jneuroml(
+        "",
+        nml2_lems_file_name,
+        post_args,
+        max_memory=max_memory,
+        verbose=False,
+        report_jnml_output=True,
+        exit_on_fail=True)
