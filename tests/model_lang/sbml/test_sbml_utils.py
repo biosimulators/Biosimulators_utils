@@ -18,7 +18,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         os.path.dirname(__file__), '..', '..', 'fixtures', 'Chaouiya-BMC-Syst-Biol-2013-EGF-TNFa-signaling-params-vars.xml')
 
     def test_core_steady_state(self):
-        params, vars = get_parameters_variables_for_simulation(
+        params, sim, vars = get_parameters_variables_for_simulation(
             self.CORE_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000019',
             include_compartment_sizes_in_simulation_variables=True,
             include_model_parameters_in_simulation_variables=True)
@@ -64,7 +64,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         self.assertEqual(variable, None)
 
     def test_core_steady_state_with_more_params_and_vars(self):
-        params, vars = get_parameters_variables_for_simulation(
+        params, sim, vars = get_parameters_variables_for_simulation(
             self.CORE_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000019',
             include_compartment_sizes_in_simulation_variables=True,
             include_model_parameters_in_simulation_variables=True,
@@ -102,7 +102,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
                                            "/sbml:listOfParameters/sbml:parameter[@id='local_param']/@value"))
         self.assertEqual(variable.target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
 
-        params, vars = get_parameters_variables_for_simulation(
+        params, sim, vars = get_parameters_variables_for_simulation(
             self.CORE_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000019',
             include_compartment_sizes_in_simulation_variables=False,
             include_model_parameters_in_simulation_variables=False, 
@@ -112,10 +112,10 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         self.assertEqual(next((variable for variable in vars if variable.id == 'value_parameter_local_param'), None), None)
 
     def test_core_one_step(self):
-        params, vars = get_parameters_variables_for_simulation(self.CORE_FIXTURE, ModelLanguage.SBML, OneStepSimulation, 'KISAO_0000019')
+        params, sim, vars = get_parameters_variables_for_simulation(self.CORE_FIXTURE, ModelLanguage.SBML, OneStepSimulation, 'KISAO_0000019')
 
     def test_core_time_course(self):
-        params, vars = get_parameters_variables_for_simulation(
+        params, sim, vars = get_parameters_variables_for_simulation(
             self.CORE_FIXTURE, ModelLanguage.SBML, UniformTimeCourseSimulation, 'KISAO_0000019')
 
         self.assertEqual(vars[0].id, 'time')
@@ -131,7 +131,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         self.assertEqual(vars[-1].target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
 
     def test_core_time_course_l3(self):
-        params, vars = get_parameters_variables_for_simulation(
+        params, sim, vars = get_parameters_variables_for_simulation(
             self.CORE_FIXTURE_L3, ModelLanguage.SBML, UniformTimeCourseSimulation, 'KISAO_0000019')
 
         param = next(param for param in params if param.id == 'value_parameter_k_PIP2hyd')
@@ -142,7 +142,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         self.assertEqual(param.target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level3/version1/core'})
 
     def test_fbc_steady_state_fba(self):
-        params, vars = get_parameters_variables_for_simulation(self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000437')
+        params, sim, vars = get_parameters_variables_for_simulation(self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000437')
 
         self.assertEqual(params[0].id, 'value_parameter_cobra_default_lb')
         self.assertEqual(params[0].name, 'Value of parameter "cobra_default_lb"')
@@ -177,7 +177,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         self.assertEqual(vars[-1].target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level3/version1/core'})
 
     def test_fbc_steady_state_fva(self):
-        params, vars = get_parameters_variables_for_simulation(self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000526')
+        params, sim, vars = get_parameters_variables_for_simulation(self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000526')
 
         self.assertEqual(vars[0].id, 'min_flux_reaction_R_ACALD')
         self.assertEqual(vars[0].name, 'Minimum flux of reaction "acetaldehyde dehydrogenase (acetylating)"')
@@ -200,21 +200,22 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
             get_parameters_variables_for_simulation(self.FBC_FIXTURE, ModelLanguage.SBML, UniformTimeCourseSimulation, None)
 
     def test_qual_steady_state(self):
-        params, vars = get_parameters_variables_for_simulation(
-            self.QUAL_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000450')
+        with self.assertRaisesRegex(NotImplementedError, 'not supported'):
+            params, sim, vars = get_parameters_variables_for_simulation(
+                self.QUAL_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000450')
 
-        self.assertEqual(vars[0].id, 'level_species_erk')
-        self.assertEqual(vars[0].name, 'Level of species "erk"')
-        self.assertEqual(vars[0].symbol, None)
-        self.assertEqual(vars[0].target, "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='erk']")
-        self.assertEqual(vars[0].target_namespaces, {
-            'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
-            'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
-        })
+            self.assertEqual(vars[0].id, 'level_species_erk')
+            self.assertEqual(vars[0].name, 'Level of species "erk"')
+            self.assertEqual(vars[0].symbol, None)
+            self.assertEqual(vars[0].target, "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='erk']")
+            self.assertEqual(vars[0].target_namespaces, {
+                'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+                'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
+            })
 
     def test_qual_steady_state_with_extra_vars(self):
-        params, vars = get_parameters_variables_for_simulation(
-            self.QUAL_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000450',
+        params, sim, vars = get_parameters_variables_for_simulation(
+            self.QUAL_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, UniformTimeCourseSimulation, 'KISAO_0000450',
             include_compartment_sizes_in_simulation_variables=True,
             include_model_parameters_in_simulation_variables=True,
             validate=False)
@@ -246,8 +247,8 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
             'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
         })
 
-        params, vars = get_parameters_variables_for_simulation(
-            self.QUAL_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000450',
+        params, sim, vars = get_parameters_variables_for_simulation(
+            self.QUAL_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, UniformTimeCourseSimulation, 'KISAO_0000450',
             include_compartment_sizes_in_simulation_variables=False,
             include_model_parameters_in_simulation_variables=False,
             validate=False)
@@ -257,7 +258,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         self.assertEqual(next((variable for variable in vars if variable.id == 'size_compartment_main'), None), None)
 
     def test_qual_one_step(self):
-        params, vars = get_parameters_variables_for_simulation(self.QUAL_FIXTURE, ModelLanguage.SBML, OneStepSimulation, 'KISAO_0000450')
+        params, sim, vars = get_parameters_variables_for_simulation(self.QUAL_FIXTURE, ModelLanguage.SBML, OneStepSimulation, 'KISAO_0000450')
 
         self.assertEqual(vars[0].id, 'time')
         self.assertEqual(vars[0].name, 'Time')
@@ -275,7 +276,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         })
 
     def test_qual_time_course(self):
-        params, vars = get_parameters_variables_for_simulation(
+        params, sim, vars = get_parameters_variables_for_simulation(
             self.QUAL_FIXTURE, ModelLanguage.SBML, UniformTimeCourseSimulation, 'KISAO_0000450')
 
         self.assertEqual(vars[0].id, 'time')

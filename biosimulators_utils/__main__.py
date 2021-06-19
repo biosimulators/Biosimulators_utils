@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from .sedml.data_model import ModelLanguage, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation
 from .utils.core import flatten_nested_list_of_strings
 from .warnings import warn, BioSimulatorsWarning
 import biosimulators_utils
@@ -31,6 +32,103 @@ class BaseController(cement.Controller):
     @cement.ex(hide=True)
     def _default(self):
         self._parser.print_help()
+
+
+BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES = [
+    ModelLanguage.BNGL,
+    ModelLanguage.CellML,
+    # ModelLanguage.LEMS,
+    ModelLanguage.SBML,
+    ModelLanguage.Smoldyn,
+]
+
+BUILD_COMBINE_ARCHIVE_SIMULATION_TYPES = [
+    OneStepSimulation,
+    SteadyStateSimulation,
+    UniformTimeCourseSimulation,
+]
+
+
+class BuildModelingProjectController(cement.Controller):
+    """ Controller for building a COMBINE/OMEX archive with a SED-ML file for a model """
+
+    class Meta:
+        label = 'build-project'
+        stacked_on = 'base'
+        stacked_type = 'nested'
+        help = "Build a modeling project"
+        description = "Build a COMBINE/OMEX archive with a SED-ML file for a model"
+        arguments = [
+            (
+                ['model_language'],
+                dict(
+                    metavar='model-language',
+                    type=str,
+                    help='Model language ({}, or {})'.format(
+                        ', '.join('`{}`'.format(lang.name) for lang in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES[0:-1]),
+                        ', '.join('`{}`'.format(lang.name) for lang in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES[-1:]),
+                    ),
+                ),
+            ),
+            (
+                ['model_filename'],
+                dict(
+                    metavar='model-filename',
+                    type=str,
+                    help='Path to model',
+                ),
+            ),
+            (
+                ['simulation_type'],
+                dict(
+                    metavar='simulation-type',
+                    type=str,
+                    help='Type of simulation ({}, or {})'.format(
+                        ', '.join('`{}`'.format(type.__name__[0:-10]) for type in BUILD_COMBINE_ARCHIVE_SIMULATION_TYPES[0:-1]),
+                        ', '.join('`{}`'.format(type.__name__[0:-10]) for type in BUILD_COMBINE_ARCHIVE_SIMULATION_TYPES[-1:]),
+                    ),
+                ),
+            ),
+            (
+                ['archive_filename'],
+                dict(
+                    metavar='archive-filename',
+                    type=str,
+                    help='Path to save archive',
+                ),
+            ),
+        ]
+
+    @cement.ex(hide=True)
+    def _default(self):
+        from .sedml.model_utils import build_combine_archive_for_model
+
+        args = self.app.pargs
+
+        try:
+            model_lang = ModelLanguage[args.model_language]
+        except KeyError:
+            raise SystemExit('Model language must be one of {}, or {}, not `{}`.'.format(
+                ', '.join('`{}`'.format(lang.name) for lang in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES[0:-1]),
+                ', '.join('`{}`'.format(lang.name) for lang in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES[-1:]),
+                args.model_language,
+            ))
+
+        model_filename = args.model_filename
+
+        sim_type = None
+        for a_sim_type in BUILD_COMBINE_ARCHIVE_SIMULATION_TYPES:
+            if a_sim_type.__name__ == args.simulation_type + 'Simulation':
+                sim_type = a_sim_type
+                break
+        if sim_type is None:
+            raise SystemExit('Simulation type must be one of {}, or {}, not `{}`.'.format(
+                ', '.join('`{}`'.format(type.__name__[0:-10]) for type in BUILD_COMBINE_ARCHIVE_SIMULATION_TYPES[0:-1]),
+                ', '.join('`{}`'.format(type.__name__[0:-10]) for type in BUILD_COMBINE_ARCHIVE_SIMULATION_TYPES[-1:]),
+                args.simulation_type,
+            ))
+
+        build_combine_archive_for_model(model_filename, model_lang, sim_type, args.archive_filename)
 
 
 class ValidateModelingProjectController(cement.Controller):
@@ -207,6 +305,7 @@ class App(cement.App):
         base_controller = 'base'
         handlers = [
             BaseController,
+            BuildModelingProjectController,
             ValidateModelingProjectController,
             ExecuteModelingProjectController,
         ]

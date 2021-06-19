@@ -14,16 +14,20 @@ class CellmlUtilsTestCase(unittest.TestCase):
 
     def test_get_parameters_variables_for_simulation_error_handling(self):
         with self.assertRaisesRegex(ValueError, 'is not a path to a model file'):
-            get_parameters_variables_for_simulation(None, None, None, None)
+            get_parameters_variables_for_simulation(None, None, UniformTimeCourseSimulation, None)
 
         with self.assertRaisesRegex(FileNotFoundError, 'does not exist'):
-            get_parameters_variables_for_simulation('not a file', None, None, None)
+            get_parameters_variables_for_simulation('not a file', None, UniformTimeCourseSimulation, None)
 
         with self.assertRaisesRegex(ValueError, 'not a valid CellML file'):
-            get_parameters_variables_for_simulation(self.INVALID_FIXTURE_FILENAME, None, None, None)
+            get_parameters_variables_for_simulation(self.INVALID_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+
+        with self.assertRaisesRegex(NotImplementedError, 'must be'):
+            get_parameters_variables_for_simulation(self.V1_FIXTURE_FILENAME, None, SteadyStateSimulation, None)
 
     def test_get_parameters_variables_for_simulation_version_1(self):
-        params, vars = get_parameters_variables_for_simulation(self.V1_FIXTURE_FILENAME, None, None, None)
+        params, sim, vars = get_parameters_variables_for_simulation(self.V1_FIXTURE_FILENAME, None, OneStepSimulation, None)
+        params, sim, vars = get_parameters_variables_for_simulation(self.V1_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertEqual(len(params), 13)
         self.assertEqual(len(vars), 54)
@@ -45,6 +49,8 @@ class CellmlUtilsTestCase(unittest.TestCase):
             new_value='96.5',
         )))
 
+        self.assertIsInstance(sim, UniformTimeCourseSimulation)
+
         self.assertTrue(vars[0].is_equal(Variable(
             id='value_component_environment_variable_time',
             name='Value of variable "time" of component "environment"',
@@ -57,7 +63,8 @@ class CellmlUtilsTestCase(unittest.TestCase):
         )))
 
     def test_get_parameters_variables_for_simulation_version_2(self):
-        params, vars = get_parameters_variables_for_simulation(self.V2_FIXTURE_FILENAME, None, None, None)
+        params, sim, vars = get_parameters_variables_for_simulation(self.V2_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+        params, sim, vars = get_parameters_variables_for_simulation(self.V2_FIXTURE_FILENAME, None, OneStepSimulation, None)
 
         self.assertEqual(len(params), 1)
         self.assertEqual(len(vars), 3)
@@ -78,6 +85,8 @@ class CellmlUtilsTestCase(unittest.TestCase):
             target_namespaces=namespaces,
             new_value='0',
         )))
+
+        self.assertIsInstance(sim, OneStepSimulation)
 
         self.assertTrue(vars[0].is_equal(Variable(
             id='value_component_level2_component_variable_time',

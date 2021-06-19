@@ -8,7 +8,8 @@
 
 from ...sedml.data_model import (  # noqa: F401
     ModelAttributeChange, Variable, Symbol,
-    Simulation, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation
+    Simulation, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation,
+    Algorithm
     )
 from ...utils.core import format_float, flatten_nested_list_of_strings
 from .validation import validate_model
@@ -18,7 +19,7 @@ import types  # noqa: F401
 __all__ = ['get_parameters_variables_for_simulation']
 
 
-def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm,
+def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm=None,
                                             include_compartment_sizes_in_simulation_variables=False,
                                             include_model_parameters_in_simulation_variables=False,
                                             validate=True, validate_consistency=True):
@@ -28,7 +29,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         model_filename (:obj:`str`): path to model file
         model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:sbml``)
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
-        algorithm (:obj:`str`): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
+        algorithm (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
         include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
             non-constant SBML compartments with assignment rules among the returned SED variables
@@ -39,6 +40,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
+        :obj:`Simulation`: simulation of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
     """
     # check model file exists
@@ -89,13 +91,21 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         ))
 
     elif simulation_type in [SteadyStateSimulation]:
-        pass
+        if has_qual:
+            raise NotImplementedError('Steady state simulations are not supported for qual models')
 
     else:
         raise NotImplementedError('Simulation of type `{}` are not supported'.format(simulation_type))
 
     # add independent variables
     if has_fbc:
+        sim = SteadyStateSimulation(
+            id='simulation',
+            algorithm=algorithm or Algorithm(
+                kisao_id='KISAO_0000437',
+            ),
+        )
+
         plugin = model.getPlugin('fbc')
 
         has_flux = False
@@ -179,6 +189,25 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 vars.append(var)
 
     elif has_qual:
+        if simulation_type == OneStepSimulation:
+            sim = OneStepSimulation(
+                step=1.,
+                algorithm=algorithm or Algorithm(
+                    kisao_id='KISAO_0000449',
+                ),
+            )
+        else:
+            sim = UniformTimeCourseSimulation(
+                id='simulation',
+                initial_time=0.,
+                output_start_time=0.,
+                output_end_time=10.,
+                number_of_steps=10,
+                algorithm=algorithm or Algorithm(
+                    kisao_id='KISAO_0000449',
+                ),
+            )
+
         plugin = model.getPlugin('qual')
         namespaces = {
             'sbml': model.getURI(),
@@ -238,6 +267,33 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 vars.append(var)
 
     else:
+        if simulation_type == OneStepSimulation:
+            sim = OneStepSimulation(
+                id='simulation',
+                step=1.,
+                algorithm=algorithm or Algorithm(
+                    kisao_id='KISAO_0000019',
+                ),
+            )
+        elif simulation_type == SteadyStateSimulation:
+            sim = SteadyStateSimulation(
+                id='simulation',
+                algorithm=algorithm or Algorithm(
+                    kisao_id='KISAO_0000408',
+                ),
+            )
+        else:
+            sim = UniformTimeCourseSimulation(
+                id='simulation',
+                initial_time=0.,
+                output_start_time=0.,
+                output_end_time=1.,
+                number_of_steps=10,
+                algorithm=algorithm or Algorithm(
+                    kisao_id='KISAO_0000019',
+                ),
+            )
+
         namespaces = {
             'sbml': model.getURI(),
         }
@@ -368,4 +424,4 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                         )
                         vars.append(var)
 
-    return (params, vars)
+    return (params, sim, vars)

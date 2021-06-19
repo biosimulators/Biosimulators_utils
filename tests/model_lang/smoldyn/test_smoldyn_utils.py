@@ -1,5 +1,5 @@
 from biosimulators_utils.model_lang.smoldyn.utils import get_parameters_variables_for_simulation
-from biosimulators_utils.sedml.data_model import Symbol, ModelAttributeChange, Variable
+from biosimulators_utils.sedml.data_model import Symbol, ModelAttributeChange, Variable, SteadyStateSimulation, UniformTimeCourseSimulation
 import os
 import unittest
 
@@ -11,16 +11,19 @@ class SmoldynUtilsTestCase(unittest.TestCase):
 
     def test_get_parameters_variables_for_simulation_error_handling(self):
         with self.assertRaisesRegex(ValueError, 'is not a path to a model file'):
-            get_parameters_variables_for_simulation(None, None, None, None)
+            get_parameters_variables_for_simulation(None, None, UniformTimeCourseSimulation, None)
 
         with self.assertRaisesRegex(FileNotFoundError, 'does not exist'):
-            get_parameters_variables_for_simulation('not a file', None, None, None)
+            get_parameters_variables_for_simulation('not a file', None, UniformTimeCourseSimulation, None)
 
         with self.assertRaisesRegex(ValueError, 'not a valid BNGL or BNGL XML file'):
-            get_parameters_variables_for_simulation(self.INVALID_FIXTURE_FILENAME, None, None, None)
+            get_parameters_variables_for_simulation(self.INVALID_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+
+        with self.assertRaisesRegex(NotImplementedError, 'must be'):
+            get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, SteadyStateSimulation, None)
 
     def test_get_parameters_variables_for_simulation(self):
-        params, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, None, None)
+        params, sim, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='number_dimensions',
@@ -34,6 +37,12 @@ class SmoldynUtilsTestCase(unittest.TestCase):
             target='boundaries x',
             new_value='0 100 r',
         )))
+
+        self.assertEqual(sim.initial_time, 0.0)
+        self.assertEqual(sim.output_start_time, 0.0)
+        self.assertEqual(sim.output_end_time, 100.0)
+        self.assertEqual(sim.number_of_steps, 10000)
+        self.assertEqual(sim.algorithm.kisao_id, 'KISAO_0000057')
 
         self.assertTrue(vars[0].is_equal(Variable(
             id='time',
@@ -51,7 +60,7 @@ class SmoldynUtilsTestCase(unittest.TestCase):
             target='molcount green',
         )))
 
-        params, vars = get_parameters_variables_for_simulation(self.COMP_FIXTURE_FILENAME, None, None, None)
+        params, sim, vars = get_parameters_variables_for_simulation(self.COMP_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertTrue(vars[0].is_equal(Variable(
             id='time',

@@ -50,6 +50,39 @@ class CliTestCase(unittest.TestCase):
                 biosimulators_utils.__main__.main()
                 self.assertRegex(context.Exception, 'usage: biosimulators-utils')
 
+    def test_build_modeling_project(self):
+        archive_filename = os.path.join(self.tmp_dir, 'archive.omex')
+
+        with biosimulators_utils.__main__.App(argv=[
+            'build-project',
+            'undefined',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'bngl', 'valid.bngl'),
+            'UniformTimeCourse',
+            archive_filename,
+        ]) as app:
+            with self.assertRaisesRegex(SystemExit, 'Model language must be'):
+                app.run()
+
+        with biosimulators_utils.__main__.App(argv=[
+            'build-project',
+            'BNGL',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'bngl', 'valid.bngl'),
+            'undefined',
+            archive_filename,
+        ]) as app:
+            with self.assertRaisesRegex(SystemExit, 'Simulation type must be'):
+                app.run()
+
+        with biosimulators_utils.__main__.App(argv=[
+            'build-project',
+            'BNGL',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'bngl', 'valid.bngl'),
+            'UniformTimeCourse',
+            archive_filename,
+        ]) as app:
+            app.run()
+        self.assertTrue(os.path.isfile(archive_filename))
+
     def test_validate_modeling_project(self):
         with biosimulators_utils.__main__.App(argv=[
             'validate',

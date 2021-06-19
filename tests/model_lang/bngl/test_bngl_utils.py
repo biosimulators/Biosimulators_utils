@@ -14,16 +14,20 @@ class BgnlUtilsTestCase(unittest.TestCase):
 
     def test_get_parameters_variables_for_simulation_error_handling(self):
         with self.assertRaisesRegex(ValueError, 'is not a path to a model file'):
-            get_parameters_variables_for_simulation(None, None, None, None)
+            get_parameters_variables_for_simulation(None, None, UniformTimeCourseSimulation, None)
 
         with self.assertRaisesRegex(FileNotFoundError, 'does not exist'):
-            get_parameters_variables_for_simulation('not a file', None, None, None)
+            get_parameters_variables_for_simulation('not a file', None, UniformTimeCourseSimulation, None)
 
         with self.assertRaisesRegex(ValueError, 'not a valid BNGL or BNGL XML file'):
-            get_parameters_variables_for_simulation(self.INVALID_FIXTURE_FILENAME, None, None, None)
+            get_parameters_variables_for_simulation(self.INVALID_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+
+        with self.assertRaisesRegex(NotImplementedError, 'must be'):
+            get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, SteadyStateSimulation, None)
 
     def test_get_parameters_variables_for_simulation(self):
-        params, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, None, None)
+        params, sim, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, OneStepSimulation, None)
+        params, sim, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='value_parameter_k_1',
@@ -50,6 +54,8 @@ class BgnlUtilsTestCase(unittest.TestCase):
             new_value='(0.5*(Atot^2))/(10+(Atot^2))',
         )))
 
+        self.assertIsInstance(sim, UniformTimeCourseSimulation)
+
         self.assertTrue(vars[0].is_equal(Variable(
             id='time',
             name='Time',
@@ -68,7 +74,7 @@ class BgnlUtilsTestCase(unittest.TestCase):
         self.assertEqual(len(vars), 17)
 
     def test_get_parameters_variables_for_simulation_compartmentalized(self):
-        params, vars = get_parameters_variables_for_simulation(self.COMP_FIXTURE_FILENAME, None, None, None)
+        params, sim, vars = get_parameters_variables_for_simulation(self.COMP_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='value_parameter_NaV',
