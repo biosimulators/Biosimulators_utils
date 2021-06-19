@@ -889,7 +889,7 @@ class ValidationTestCase(unittest.TestCase):
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'lems', 'invalid.xml')
         errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.LEMS)
-        self.assertIn("<Lems> expected as root", flatten_nested_list_of_strings(errors))
+        self.assertIn("Can't read LEMS from XMLElt:", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         # NeuroML
