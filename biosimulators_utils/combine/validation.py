@@ -6,15 +6,20 @@
 :License: MIT
 """
 
+from ..log.data_model import StandardOutputErrorCapturerLevel
+from ..log.utils import StandardOutputErrorCapturer
 from ..sedml.io import SedmlSimulationReader
 from .data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat, CombineArchiveContentFormatPattern  # noqa: F401
 from .utils import get_sedml_contents
 import os
+import pyomexmeta
 import re
 
 __all__ = [
     'validate',
     'validate_format',
+    'validate_content',
+    'validate_omex_meta_file',
 ]
 
 
@@ -74,26 +79,13 @@ def validate(archive, archive_dirname,
     if not sedml_contents:
         warnings.append(['The archive does not contain any SED-ML files that should be executed.'])
 
-    # validate SED-ML files
-    for doc_contents in sedml_contents:
-        doc_filename = os.path.join(archive_dirname, doc_contents.location)
-        reader = SedmlSimulationReader()
-        try:
-            reader.run(doc_filename, validate_models_with_languages=validate_models_with_languages)
-        except Exception:
-            if not reader.errors:
-                raise
-
-        if reader.errors:
-            errors.append([
-                'The SED-ML file at location `{}` is invalid.'.format(doc_contents.location),
-                reader.errors,
-            ])
-        if reader.warnings:
-            warnings.append([
-                'The SED-ML file at location `{}` may be invalid.'.format(doc_contents.location),
-                reader.warnings,
-            ])
+    # validate files
+    for content in archive.contents:
+        if isinstance(content, CombineArchiveContent) and content.format:
+            content_errors, content_warnings = validate_content(
+                content, archive_dirname, validate_models_with_languages=validate_models_with_languages)
+            errors.extend(content_errors)
+            warnings.extend(content_warnings)
 
     # return errors and warnings
     return (errors, warnings)
@@ -126,3 +118,85 @@ def validate_format(format):
             CombineArchiveContentFormat.SED_ML)])
 
     return errors
+
+
+def validate_content(content, archive_dirname, validate_models_with_languages=True):
+    """ Validate an item of a COMBINE/OMEX archive
+
+    Args:
+        content (:obj:`CombineArchiveContent`): item of a COMBINE/OMEX archive
+        archive_dirname (:obj:`str`): directory with the content of the archive
+        validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
+
+    Returns:
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: nested list of errors with the archive
+            * nested :obj:`list` of :obj:`str`: nested list of warnings with the archive
+    """
+    errors = []
+    warnings = []
+    filename = os.path.join(archive_dirname, content.location)
+    file_type = None
+
+    if re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format):
+        file_type = 'SED-ML'
+        reader = SedmlSimulationReader()
+        try:
+            reader.run(filename, validate_models_with_languages=validate_models_with_languages)
+        except Exception:
+            if not reader.errors:
+                raise
+
+        errors = reader.errors or []
+        warnings = reader.warnings or []
+
+    elif re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format):
+        file_type = 'OMEX Meta'
+
+        errors, warnings = validate_omex_meta_file(filename)
+
+    if errors:
+        errors = [[
+            'The {} file at location `{}` is invalid.'.format(file_type, content.location),
+            errors,
+        ]]
+    if warnings:
+        warnings = [[
+            'The {} file at location `{}` may be invalid.'.format(file_type, content.location),
+            warnings,
+        ]]
+
+    return (errors, warnings)
+
+
+def validate_omex_meta_file(filename, format='rdfxml'):
+    """ validate an OMEX Meta file
+
+    Args:
+        filename (:obj:`str`): path to file
+        format (:obj:`str`, optional): format of the file; must be one of the formats
+            supported by pyomexmeta such as ``rdfxml`` or ``turtle``
+
+    Returns:
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: nested list of errors with the archive
+            * nested :obj:`list` of :obj:`str`: nested list of warnings with the archive
+    """
+    errors = []
+    warnings = []
+
+    with StandardOutputErrorCapturer(relay=False, level=StandardOutputErrorCapturerLevel.c) as captured:
+        pyomexmeta.RDF.from_file(filename, format)
+    stdout = captured.get_text().strip()
+    if stdout:
+        errors_warnings = re.split(r'((^|\n)librdf (error|warning)) *-? *', stdout)
+        for type, message in zip(errors_warnings[3::4], errors_warnings[4::4]):
+            message = message.strip()
+            if 'error' in type:
+                errors.append([message])
+            else:
+                warnings.append([message])
+
+    return (errors, warnings)

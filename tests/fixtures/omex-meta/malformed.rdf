@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+    xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+    xmlns:dc="https://dublincore.org/specifications/dublin-core/dcmi-terms/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:collex="http://www.collex.org/schema#"
+>
+  <!-- name -->
+  rdf:Description rdf:about=".">
+    <dc:title>Name</dc:title>
+  </rdf:Description>
+
+  <!-- summary (short description) -->
+  <rdf:Description rdf:about=".">
+    <dc:abstract>Short summary</dc:abstract>
+  </rdf:Description>
+
+  <!-- tags(s) -->
+  <rdf:Description rdf:about=".">
+    <dc:subject>tag 1</dc:subject>
+  </rdf:Description>
+
+  <rdf:Description rdf:about=".">
+    <dc:subject>tag 2</dc:subject>
+  </rdf:Description>
+
+  <!-- description -->
+  <rdf:Description rdf:about=".">
+    <dc:description>Description</dc:description>
+  </rdf:Description>
+
+  <!-- taxon -->
+  <rdf:Description rdf:about=".">
+    <bqbiol:hasTaxon rdf:resource="https://identifiers.org/taxonomy/9606"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="https://identifiers.org/taxonomy/9606">
+    <dc:title>Homo sapiens</dc:title>
+  </rdf:Description>
+
+  <!-- authors(s) -->
+  <rdf:Description rdf:about=".">
+    <dc:creator rdf:resource="https://orcid.org/0000-0001-8254-4958">
+      <rdf:Description rdf:about="https://orcid.org/0000-0001-8254-4958">
+        <foaf:name>Jonathan Karr</foaf:name>
+      </rdf:Description>
+    </dc:creator>
+  </rdf:Description>
+
+  <!-- curator(s) -->
+  <rdf:Description rdf:about=".">
+    <dc:contributor rdf:resource="_00001"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="#_00001">
+    <foaf:name>Jonathan Karr</foaf:name>
+  </rdf:Description>
+
+  <!-- related things (e.g., prior version) -->
+  <rdf:Description rdf:about=".">
+    <dc:relation rdf:resource="https://identifiers.org/biomodels.db:BIOMD0000000838"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="https://identifiers.org/biomodels.db:BIOMD0000000838">
+    <dc:title>Tsur2019 - Response of patients with melanoma to immune checkpoint blockade</dc:title>
+  </rdf:Description>
+
+  <!-- citations(s) -->
+  <rdf:Description rdf:about=".">
+    <bqmodel:isDescribedBy rdf:resource="https://identifiers.org/doi:10.1016/j.copbio.2017.12.013"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="https://identifiers.org/doi:10.1016/j.copbio.2017.12.013">
+    <dc:description>Goldberg AP, Szigeti B, Chew YH, Sekar JA, Roth YD &amp; Karr JR. Emerging whole-cell modeling principles and methods. Curr Opin Biotechnol 2018, 51:97-102.</dc:description>
+  </rdf:Description>
+
+  <rdf:Description rdf:about=".">
+    <bqmodel:isDescribedBy rdf:resource="https://identifiers.org/pubmed:29275251"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="https://identifiers.org/pubmed:29275251">
+    <dc:description>Goldberg AP, Szigeti B, Chew YH, Sekar JA, Roth YD &amp; Karr JR. Emerging whole-cell modeling principles and methods. Curr Opin Biotechnol 2018, 51:97-102.</dc:description>
+  </rdf:Description>
+
+  <!-- other identifiers -->
+  <rdf:Description rdf:about=".">
+    <bqmodel:is rdf:resource="https://identifiers.org/biomodels.db:BIOMD0000000838"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="https://identifiers.org/biomodels.db:BIOMD0000000838">
+    <dc:title>Tsur2019 - Response of patients with melanoma to immune checkpoint blockade</dc:title>
+  </rdf:Description>
+
+  <!-- license -->
+  <rdf:Description rdf:about=".">
+    <dc:license rdf:resource="http://identifiers.org/spdx:MIT"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://identifiers.org/spdx:MIT">
+    <dc:title>MIT</dc:title>
+  </rdf:Description>
+
+  <!-- date created -->
+  <rdf:Description rdf:about=".">
+    <dc:W3CDTF>2020-06-18</dc:W3CDTF>
+  </rdf:Description>
+
+  <!-- thumbnail -->
+  <rdf:Description rdf:about=".">
+        <collex:thumbnail rdf:resource="./thumbnail.png"/>
+  </rdf:Description>
+</rdf:RDF>

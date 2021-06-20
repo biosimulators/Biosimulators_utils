@@ -1,6 +1,6 @@
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat
 from biosimulators_utils.combine.io import CombineArchiveReader
-from biosimulators_utils.combine.validation import validate, validate_format
+from biosimulators_utils.combine.validation import validate, validate_format, validate_omex_meta_file
 from biosimulators_utils.sedml.io import SedmlSimulationReader
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
 from unittest import mock
@@ -12,7 +12,9 @@ import unittest
 
 
 class ValidationTestCase(unittest.TestCase):
-    FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex')
+    FIXTURES_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures')
+    OMEX_FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex')
+    OMEX_META_FIXTURES_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-meta')
 
     def setUp(self):
         self.tmp_dir = tempfile.mkdtemp()
@@ -27,7 +29,7 @@ class ValidationTestCase(unittest.TestCase):
         for format in CombineArchiveContentFormat.__members__.values():
             self.assertEqual(validate_format(format), [])
 
-        filename = os.path.join(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'combine-formats.csv'))
+        filename = os.path.join(os.path.join(self.FIXTURES_DIR, 'combine-formats.csv'))
         with open(filename, newline='') as file:
             reader = csv.DictReader(file, dialect='excel')
             for format in reader:
@@ -37,8 +39,31 @@ class ValidationTestCase(unittest.TestCase):
         self.assertNotEqual(validate_format('text/plain'), [])
         self.assertNotEqual(validate_format('sbml'), [])
 
+    def test_validate_omex_meta_file(self):
+        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'libcombine.rdf'))
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'biosimulations.rdf'))
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'warning.rdf'))
+        self.assertEqual(errors, [])
+        self.assertIn("Unsupported version '1.1'", flatten_nested_list_of_strings(warnings))
+
+        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'invalid.rdf'))
+        self.assertEqual(len(errors), 1)
+        self.assertIn("has multiple object node elements", flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
+        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'malformed.rdf'))
+        self.assertEqual(len(errors), 3)
+        self.assertIn("Opening and ending tag mismatch", flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
     def test_validate(self):
-        archive = CombineArchiveReader().run(self.FIXTURE, self.tmp_dir)
+        archive = CombineArchiveReader().run(self.OMEX_FIXTURE, self.tmp_dir)
         errors, warnings = validate(archive, self.tmp_dir)
         self.assertEqual(errors, [])
         self.assertNotEqual(warnings, [])

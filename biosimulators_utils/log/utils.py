@@ -344,7 +344,8 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
         """
         if not self.disabled:
             if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
-                return self._captured.get_bytes().decode()
+                bytes = self._captured.get_bytes()
+                return bytes.decode(errors='ignore')
             else:
                 return self._log
         else:
