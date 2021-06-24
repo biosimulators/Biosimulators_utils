@@ -1,0 +1,694 @@
+""" Methods for reading and writing OMEX Meta files
+
+:Author: Jonathan Karr <karr@mssm.edu>
+:Date: 2021-06-23
+:Copyright: 2021, Center for Reproducible Biomedical Modeling
+:License: MIT
+"""
+
+from ..log.data_model import StandardOutputErrorCapturerLevel
+from ..log.utils import StandardOutputErrorCapturer
+from .data_model import (Triple, OmexMetaInputFormat, OmexMetaOutputFormat, OmexMetaSchema,
+                         BIOSIMULATIONS_ROOT_URI_FORMAT,
+                         BIOSIMULATIONS_ROOT_URI_PATTERN,
+                         BIOSIMULATIONS_PREDICATE_TYPES)
+from .validation import validate_biosimulations_metadata
+import abc
+import json
+import os
+import pyomexmeta
+import rdflib
+import re
+
+__all__ = [
+    'read_omex_meta_file',
+    'write_omex_meta_file',
+    'TriplesOmexMetaReader',
+    'TriplesOmexMetaWriter',
+    'BiosimulationsOmexMetaReader',
+    'BiosimulationsOmexMetaWriter',
+]
+
+
+def read_omex_meta_file(filename, schema, format=OmexMetaInputFormat.rdfxml, working_dir=None):
+    """ Read an OMEX Meta file
+
+    Args:
+        filename (:obj:`str`): path to OMEX Meta file
+        schema (:obj:`OmexMetaSchema`, optional): schema to parse :obj:`filename` into
+        format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
+        working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
+
+    Returns:
+        :obj:`tuple`:
+
+            * :obj:`object`: representation of the OMEX Meta file in :obj:`schema`
+            * :obj:`pyomexmeta.RDF`: RDF representation of the OMEX Meta file
+            * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Meta file
+            * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Meta file
+    """
+    content = None
+    rdf = None
+    errors = []
+    warnings = []
+
+    if schema == OmexMetaSchema.biosimulations:
+        return BiosimulationsOmexMetaReader().run(filename, format=format, working_dir=working_dir)
+
+    elif schema == OmexMetaSchema.triples:
+        return TriplesOmexMetaReader().run(filename, format=format, working_dir=working_dir)
+
+    else:
+        errors.append(['Schema `{}` is not supported. The following schemas are supported:',
+                       [['None']] + sorted([
+                           [schema.value] for schema in OmexMetaSchema.__members__.values()
+                       ])])
+        return (content, rdf, errors, warnings)
+
+
+def write_omex_meta_file(content, schema, filename, format=OmexMetaOutputFormat.rdfxml_abbrev):
+    """ Write an OMEX Meta file
+
+    Args:
+        content (:obj:`object`): representation of the OMEX Meta file in :obj:`schema`
+        schema (:obj:`OmexMetaSchema`): schema for :obj:`content` into
+        filename (:obj:`str`): path to save OMEX Meta file
+        format (:obj:`OmexMetaOutputFormat`, optional): format for :obj:`filename`
+    """
+    if schema == OmexMetaSchema.biosimulations:
+        return BiosimulationsOmexMetaWriter().run(content, filename, format=format)
+
+    elif schema == OmexMetaSchema.triples:
+        return TriplesOmexMetaWriter().run(content, filename, format=format)
+
+    else:
+        msg = 'Schema `{}` is not supported. The following schemas are supported:\n  {}'.format(
+            schema,
+            '\n  '.join(['None'] + sorted([schema.value for schema in OmexMetaSchema.__members__.values()])))
+        raise NotImplementedError(msg)
+
+
+class OmexMetaReader(abc.ABC):
+    """ Base class for reading OMEX Meta files """
+
+    @abc.abstractmethod
+    def run(self, filename, format=OmexMetaInputFormat.rdfxml, working_dir=None):
+        """ Read an OMEX Meta file
+
+        Args:
+            filename (:obj:`str`): path to OMEX Meta file
+            format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
+            working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
+
+        Returns:
+            :obj:`tuple`:
+
+                * :obj:`object`: representation of the OMEX Meta file
+                * :obj:`pyomexmeta.RDF`: RDF representation of the OMEX Meta file
+                * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Meta file
+                * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Meta file
+        """
+        pass  # pragma: no cover
+
+    @classmethod
+    def read_rdf(cls, filename, format=OmexMetaInputFormat.rdfxml):
+        """ Read an RDF file
+
+        Args:
+            filename (:obj:`str`): path to the RDF file
+            format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
+
+        Returns:
+            :obj:`tuple`:
+
+                * :obj:`pyomexmeta.RDF`: RDF representation of the file
+                * nested :obj:`list` of :obj:`str`: nested list of errors with the RDF file
+                * nested :obj:`list` of :obj:`str`: nested list of warnings with the RDF file
+        """
+        rdf = None
+        errors = []
+        warnings = []
+
+        if not os.path.isfile(filename):
+            errors.append(['`{}` is not a file.'.format(filename)])
+            return (rdf, errors, warnings)
+
+        with StandardOutputErrorCapturer(relay=False, level=StandardOutputErrorCapturerLevel.c) as captured:
+            rdf = pyomexmeta.RDF.from_file(filename, format.value)
+        stdout = captured.get_text().strip()
+        if stdout:
+            errors_warnings = re.split(r'((^|\n)librdf (error|warning)) *-? *', stdout)
+            for type, message in zip(errors_warnings[3::4], errors_warnings[4::4]):
+                message = message.strip()
+                if 'error' in type:
+                    rdf = None
+                    errors.append([message])
+                else:
+                    warnings.append([message])
+
+        return (rdf, errors, warnings)
+
+    @classmethod
+    def get_rdf_triples(cls, rdf):
+        """ Read an RDF file
+
+        Args:
+            rdf (:obj:`pyomexmeta.RDF`): RDF representation of the file
+
+        Returns:
+            * :obj:`list` of :obj:`Triple`: representation of the OMEX Meta file as list of triples
+        """
+        query = "SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate ?object }"
+        plain_triples = json.loads(rdf.query(query, 'json'))['results']['bindings']
+        triples = []
+        for plain_triple in plain_triples:
+            subject = cls.make_rdf_node(plain_triple['subject'])
+            predicate = cls.make_rdf_node(plain_triple['predicate'])
+            object = cls.make_rdf_node(plain_triple['object'])
+
+            triples.append(Triple(
+                subject=subject,
+                predicate=predicate,
+                object=object,
+            ))
+        return triples
+
+    @classmethod
+    def make_rdf_node(cls, node):
+        """ Make an RDF node
+
+        Args:
+            node (:obj:`dict`): node
+
+        Returns:
+            :obj:`rdflib.term.BNode`, :obj:`rdflib.term.Literal`, or :obj:`rdflib.term.URIRef`: node
+        """
+        if node['type'] == 'bnode':
+            return rdflib.term.BNode(node['value'])
+
+        elif node['type'] == 'literal':
+            return rdflib.term.Literal(node['value'])
+
+        else:
+            return rdflib.term.URIRef(node['value'])
+
+
+class OmexMetaWriter(abc.ABC):
+    """ Base class for writing OMEX Meta files """
+
+    @abc.abstractmethod
+    def run(self, content, filename, format=OmexMetaOutputFormat.rdfxml_abbrev):
+        """ Write an OMEX Meta file
+
+        Args:
+            content (:obj:`object`): representation of the OMEX Meta file
+            filename (:obj:`str`): path to save OMEX Meta file
+            format (:obj:`OmexMetaOutputFormat`, optional): format for :obj:`filename`
+        """
+        pass  # pragma: no cover
+
+
+class TriplesOmexMetaReader(OmexMetaReader):
+    """ Utility for reading an OMEX Meta file into a list of triples """
+
+    def run(self, filename, format=OmexMetaInputFormat.rdfxml, working_dir=None):
+        """ Read an OMEX Meta file into a list of triples
+
+        Args:
+            filename (:obj:`str`): path to OMEX Meta file
+            format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
+            working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
+
+        Returns:
+            :obj:`tuple`:
+
+                * :obj:`list` of :obj:`dict`: representation of the OMEX Meta file as list of triples
+                * :obj:`pyomexmeta.RDF`: RDF representation of the OMEX Meta file
+                * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Meta file
+                * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Meta file
+        """
+        triples = None
+        rdf = None
+        errors = []
+        warnings = []
+
+        rdf, tmp_errors, tmp_warnings = self.read_rdf(filename, format=format)
+        errors.extend(tmp_errors)
+        warnings.extend(tmp_warnings)
+        if errors:
+            return (triples, rdf, errors, warnings)
+
+        triples = self.get_rdf_triples(rdf)
+
+        return (triples, rdf, errors, warnings)
+
+
+class TriplesOmexMetaWriter(OmexMetaWriter):
+    """ Utility for writing a list of triples to an OMEX Meta file """
+
+    def run(self, triples, filename, namespaces=None, format=OmexMetaOutputFormat.rdfxml):
+        """ Write a list of triples to an OMEX Meta file
+
+        Args:
+            triples (:obj:`list` of :obj:`Triple`): representation of the OMEX Meta file as list of triples
+            filename (:obj:`str`): path to OMEX Meta file
+            format (:obj:`OmexMetaOutputFormat`, optional): format for :obj:`filename`
+        """
+        graph = rdflib.Graph()
+        for prefix, namespace in (namespaces or {}).items():
+            graph.namespace_manager.bind(prefix, namespace)
+        # graph.namespace_manager.bind('omexLibrary', rdflib.Namespace('http://omex-library.org/'))
+        # graph.namespace_manager.bind('identifiers', rdflib.Namespace('http://identifiers.org/'))
+
+        for triple in triples:
+            graph.add((triple.subject, triple.predicate, triple.object))
+
+        if format == OmexMetaOutputFormat.rdfxml:
+            graph.serialize(filename, format="xml")
+
+        elif format == OmexMetaOutputFormat.turtle:
+            graph.serialize(filename, format="turtle")
+
+        else:
+            graph.serialize(filename, format="xml")
+            rdf = pyomexmeta.RDF.from_file(filename, 'rdfxml')
+            rdf.to_file(filename, format.value)
+
+
+class BiosimulationsOmexMetaReader(OmexMetaReader):
+    """ Utility for reading the metadata about a COMBINE/OMEX archive in an OMEX Meta
+    file into a dictionary with BioSimulations schema """
+
+    def run(self, filename, format=OmexMetaInputFormat.rdfxml, working_dir=None):
+        """ Read the metadata about a COMBINE/OMEX archive in an OMEX Meta file into a dictionary
+         with BioSimulations schema
+
+        Args:
+            filename (:obj:`str`): path to OMEX Meta file
+            format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
+            working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
+
+        Returns:
+            :obj:`tuple`:
+
+                * :obj:`dict`: representation of the metadata about a COMBINE/OMEX
+                    archive in an OMEX Meta file as a dictionary with BioSimulations schema
+                * :obj:`pyomexmeta.RDF`: RDF representation of the OMEX Meta file
+                * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Meta file
+                * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Meta file
+        """
+        metadata = None
+        rdf = None
+        errors = []
+        warnings = []
+
+        rdf, tmp_errors, tmp_warnings = self.read_rdf(filename, format=format)
+        errors.extend(tmp_errors)
+        warnings.extend(tmp_warnings)
+        if errors:
+            return (metadata, rdf, errors, warnings)
+
+        triples = self.get_rdf_triples(rdf)
+
+        root_uri, tmp_errors, tmp_warnings = self.get_combine_archive_uri(triples)
+        errors.extend(tmp_errors)
+        warnings.extend(tmp_warnings)
+        if errors:
+            return (metadata, rdf, errors, warnings)
+
+        metadata, tmp_errors, tmp_warnings = self.parse_triples_to_schema(triples, root_uri, working_dir=working_dir)
+        errors.extend(tmp_errors)
+        warnings.extend(tmp_warnings)
+        if errors:
+            return (metadata, rdf, errors, warnings)
+
+        return (metadata, rdf, errors, warnings)
+
+    @classmethod
+    def get_combine_archive_uri(cls, triples):
+        """ Get the URI used to the describe the COMBINE/OMEX archive in a list of RDF triples
+
+        Args:
+            triples (:obj:`list` of :obj:`dict`): representation of the OMEX Meta file as list of triples
+
+        Returns:
+            :obj:`str`: URI used to the describe the COMBINE/OMEX archive in the list of triples
+        """
+        root_uris = set()
+        for triple in triples:
+            if (
+                isinstance(triple.subject, rdflib.term.URIRef)
+                and re.match(BIOSIMULATIONS_ROOT_URI_PATTERN, str(triple.subject))
+            ):
+                root_uris.add(str(triple.subject))
+
+        if len(root_uris) == 0:
+            msg = 'File does not contain metadata about an OMEX archive.'
+            return(None, [[msg]], [])
+
+        elif len(root_uris) > 1:
+            msg = 'File contains metadata about multiple OMEX archives. File must contains data about 1 archive.'
+            return(None, [[msg]], [])
+
+        else:
+            return (list(root_uris)[0], [], [])
+
+    @classmethod
+    def parse_triples_to_schema(cls, triples, root_uri, working_dir=None):
+        """ Convert a graph of RDF triples into BioSimulations' metadata schema
+
+        Args:
+            triples (:obj:`list` of :obj:`dict`): representation of the OMEX Meta file as list of triples
+            root_uri (:obj:`str`): URI used to the describe the COMBINE/OMEX archive in the list of triples
+            working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
+
+        Returns:
+            :obj:`list` of :obj:`object`: representation of the triples in BioSimulations' metadata schema
+        """
+        errors = []
+        warnings = []
+
+        objects = {}
+        for triple in triples:
+            if (
+                isinstance(triple.subject, rdflib.term.URIRef)
+                and re.match(BIOSIMULATIONS_ROOT_URI_PATTERN, str(triple.subject))
+            ):
+                root_uri = str(triple.subject)
+
+            for node, is_subject in [(triple.subject, True), (triple.object, False)]:
+                object = objects.get(str(node), None)
+                if object is None:
+                    object = objects[str(node)] = {
+                        'type': node.__class__.__name__,
+                        'is_subject': is_subject,
+                        'is_object': not is_subject,
+                    }
+                    if isinstance(node, (rdflib.term.BNode, rdflib.term.URIRef)):
+                        object['uri'] = str(node)
+                    else:
+                        object['label'] = str(node)
+                object['is_subject'] = object['is_subject'] or is_subject
+                object['is_object'] = object['is_object'] or not is_subject
+
+        for triple in triples:
+            subject = str(triple.subject)
+            predicate = str(triple.predicate)
+            object = str(triple.object)
+
+            predicate_type = BIOSIMULATIONS_PREDICATE_TYPES.get(predicate, None)
+            if predicate_type is None:
+                attr = 'other'
+                value = objects[object]
+            else:
+                attr = predicate_type['attribute']
+                value = objects[object]
+
+            if attr not in objects[subject]:
+                objects[subject][attr] = []
+
+            objects[subject][attr].append({
+                'predicate': predicate,
+                'value': value,
+            })
+
+        file_metadatas = []
+        for uri, raw_metadata in objects.items():
+            if (uri != root_uri and not uri.startswith(root_uri + '/')) or not raw_metadata['is_subject']:
+                continue
+
+            metadata = {
+                'location': '.' + uri[len(root_uri):]
+            }
+            file_metadatas.append(metadata)
+            ignored_statements = []
+            for predicate_uri, predicate_type in BIOSIMULATIONS_PREDICATE_TYPES.items():
+                metadata[predicate_type['attribute']] = raw_metadata.get(predicate_type['attribute'], [])
+
+                values = []
+                for el in metadata[predicate_type['attribute']]:
+                    if predicate_type['has_uri'] and predicate_type['has_label']:
+                        value = {
+                            'uri': None,
+                            'label': None,
+                        }
+                        for sub_el in el['value'].get('other', []):
+                            if (
+                                sub_el['predicate'] == 'https://dublincore.org/specifications/dublin-core/dcmi-terms/identifier'
+                                and 'uri' in sub_el['value']
+                            ):
+                                value['uri'] = sub_el['value']['uri']
+                            elif (
+                                sub_el['predicate'] == 'http://www.w3.org/2000/01/rdf-schema#label'
+                                and 'label' in sub_el['value']
+                            ):
+                                value['label'] = sub_el['value']['label']
+                        if value['label'] is None:
+                            if el['value']['type'] != 'BNode':
+                                msg = '({}, {}, {}) does not contain an rdf:label.'.format(
+                                    root_uri, predicate_uri, el['value']['uri']
+                                )
+                                ignored_statements.append([msg])
+                        else:
+                            values.append(value)
+                    else:
+                        if predicate_type['has_uri']:
+                            value = el['value'].get('uri', None)
+                            if value is None:
+                                msg = '({}, {}) does not contain an URI.'.format(
+                                    root_uri, predicate_uri
+                                )
+                                ignored_statements.append([msg])
+                            else:
+                                values.append(value)
+
+                            for sub_el in el['value'].get('other', []):
+                                if 'uri' in sub_el['value']:
+                                    values.append(sub_el['value']['uri'])
+
+                        else:
+                            value = el['value'].get('label', None) or None
+                            if value is None:
+                                if el['value']['type'] != 'BNode':
+                                    msg = '({}, {}, {}) does not contain an rdf:label.'.format(
+                                        root_uri, predicate_uri, el['value']['uri']
+                                    )
+                                    ignored_statements.append([msg])
+                            else:
+                                values.append(value)
+
+                            for sub_el in el['value'].get('other', []):
+                                if 'label' in sub_el['value']:
+                                    values.append(sub_el['value']['label'])
+
+                metadata[predicate_type['attribute']] = values
+
+                if not predicate_type['multiple_allowed']:
+                    if len(metadata[predicate_type['attribute']]) == 0:
+                        metadata[predicate_type['attribute']] = None
+
+                    elif len(metadata[predicate_type['attribute']]) == 1:
+                        metadata[predicate_type['attribute']] = metadata[predicate_type['attribute']][0]
+
+                    else:
+                        metadata[predicate_type['attribute']] = metadata[predicate_type['attribute']][0]
+                        msg = 'The COMBINE archive should only contain one instance of predicate `{}`.'.format(
+                            predicate_uri
+                        )
+                        errors.append([msg])
+
+            metadata['other'] = []
+            for other_md in raw_metadata.get('other', []):
+                value = {
+                    'attribute_uri': other_md['predicate'],
+                    'attribute_label': None,
+                    'uri': None,
+                    'label': None
+                }
+                for el in other_md['value'].get('description', []):
+                    if (
+                        el['predicate'] == 'https://dublincore.org/specifications/dublin-core/dcmi-terms/description'
+                        and 'label' in el['value']
+                    ):
+                        value['attribute_label'] = el['value']['label']
+                for el in other_md['value'].get('other', []):
+                    if (
+                        el['predicate'] == 'https://dublincore.org/specifications/dublin-core/dcmi-terms/identifier'
+                        and 'uri' in el['value']
+                    ):
+                        value['uri'] = el['value']['uri']
+                    if (
+                        el['predicate'] == 'http://www.w3.org/2000/01/rdf-schema#label'
+                        and 'label' in el['value']
+                    ):
+                        value['label'] = el['value']['label']
+                if value['attribute_label'] is None or value['label'] is None:
+                    msg = '({}, {}, {}) does not contain an rdf:label.'.format(
+                        root_uri, other_md['predicate'], other_md['value']['uri']
+                    )
+                    ignored_statements.append([msg])
+                else:
+                    metadata['other'].append(value)
+
+            metadata['thumbnails'] = [re.sub(BIOSIMULATIONS_ROOT_URI_PATTERN[0:-1], '.', thumbnail) for thumbnail in metadata['thumbnails']]
+
+        if ignored_statements:
+            warnings.append(['Some statements were ignored:', ignored_statements])
+
+        if errors:
+            return (file_metadatas, errors, warnings)
+
+        for file_metadata in file_metadatas:
+            temp_errors, temp_warnings = validate_biosimulations_metadata(file_metadata, working_dir=working_dir)
+
+            if temp_errors:
+                errors.append(['The metadata for location `{}` is invalid.'.format(
+                    file_metadata['location']), temp_errors])
+
+            if temp_warnings:
+                warnings.append(['The metadata for location `{}` may be invalid.'.format(
+                    file_metadata['location']),  temp_warnings])
+
+        return (file_metadatas, errors, warnings)
+
+
+class BiosimulationsOmexMetaWriter(OmexMetaWriter):
+    """ Utility for writing the metadata about a COMBINE/OMEX archive to an OMEX Meta
+    file """
+
+    def run(self, file_metadatas, filename, format=OmexMetaOutputFormat.rdfxml_abbrev):
+        """ Write an OMEX Meta file
+
+        Args:
+            file_metadatas (:obj:`list` of :obj:`dict`): representation of the metadata about the files in
+                a COMBINE/OMEX archive in an OMEX Meta file
+            filename (:obj:`str`): path to save OMEX Meta file
+            format (:obj:`OmexMetaOutputFormat`, optional): format for :obj:`filename`
+        """
+        # convert to triples
+        triples = []
+
+        combine_archive_uri = BIOSIMULATIONS_ROOT_URI_FORMAT.format('archive')
+        local_id = 0
+
+        namespaces = {
+            'dc': rdflib.Namespace('https://dublincore.org/specifications/dublin-core/dcmi-terms/'),
+            'dcterms': rdflib.Namespace('http://purl.org/dc/terms/'),
+            'foaf': rdflib.Namespace('http://xmlns.com/foaf/0.1/'),
+            'rdfs': rdflib.Namespace('http://www.w3.org/2000/01/rdf-schema#'),
+        }
+        for predicate_type in BIOSIMULATIONS_PREDICATE_TYPES.values():
+            namespaces[predicate_type['namespace']['prefix']] = rdflib.Namespace(predicate_type['namespace']['uri'])
+
+        for file_metadata in file_metadatas:
+            file_uri_ref = rdflib.term.URIRef(combine_archive_uri + file_metadata['location'][1:])
+            for predicate_type in BIOSIMULATIONS_PREDICATE_TYPES.values():
+                namespace = namespaces[predicate_type['namespace']['prefix']]
+                predicate = getattr(namespace, predicate_type['uri'].replace(predicate_type['namespace']['uri'], ''))
+
+                if predicate_type['multiple_allowed']:
+                    values = file_metadata.get(predicate_type['attribute'], [])
+                else:
+                    value = file_metadata.get(predicate_type['attribute'], None)
+                    if value is None:
+                        values = []
+                    else:
+                        values = [value]
+
+                for value in values:
+                    if predicate_type['has_uri'] and predicate_type['has_label']:
+                        local_id += 1
+                        object = rdflib.term.URIRef('local:{:05d}'.format(local_id))
+
+                        if value.get('uri', None) is not None:
+                            triples.append(Triple(
+                                object,
+                                namespaces['dc'].identifier,
+                                rdflib.term.URIRef(value['uri'])
+                            ))
+
+                        if value.get('label', None) is not None:
+                            triples.append(Triple(
+                                object,
+                                namespaces['rdfs'].label,
+                                rdflib.term.Literal(value['label'])
+                            ))
+
+                        if predicate_type['uri'] in [
+                            'https://dublincore.org/specifications/dublin-core/dcmi-terms/creator',
+                            'https://dublincore.org/specifications/dublin-core/dcmi-terms/contributor',
+                        ]:
+                            if value.get('uri', None) is not None:
+                                triples.append(Triple(
+                                    object,
+                                    namespaces['foaf'].accountName,
+                                    rdflib.term.URIRef(value['uri']
+                                                       .replace('https://identifiers.org/orcid:',
+                                                                'https://orcid.org/'))
+                                ))
+
+                            if value.get('label', None) is not None:
+                                triples.append(Triple(
+                                    object,
+                                    namespaces['foaf'].name,
+                                    rdflib.term.Literal(value['label'])
+                                ))
+
+                    elif predicate_type['has_uri']:
+                        if predicate_type['uri'] == 'http://www.collex.org/schema#thumbnail':
+                            value = combine_archive_uri + '/' + value
+
+                        object = rdflib.term.URIRef(value)
+
+                    else:
+                        object = rdflib.term.Literal(value)
+
+                    triples.append(Triple(
+                        subject=file_uri_ref,
+                        predicate=predicate,
+                        object=object,
+                    ))
+
+            for other in file_metadata.get('other', []):
+                if '#' in other['attribute_uri']:
+                    namespace, _, predicate = other['attribute_uri'].partition('#')
+                    namespace += '#'
+                else:
+                    namespace, _, predicate = other['attribute_uri'].rpartition('/')
+                    namespace += '/'
+
+                namespace = rdflib.Namespace(namespace)
+                predicate = getattr(namespace, predicate)
+
+                local_id += 1
+                object = rdflib.term.URIRef('local:{:05d}'.format(local_id))
+
+                triples.append(Triple(
+                    subject=file_uri_ref,
+                    predicate=predicate,
+                    object=object,
+                ))
+
+                if other.get('attribute_label', None) is not None:
+                    triples.append(Triple(
+                        object,
+                        namespaces['dc'].description,
+                        rdflib.term.Literal(other['attribute_label'])
+                    ))
+
+                if other.get('uri', None) is not None:
+                    triples.append(Triple(
+                        object,
+                        namespaces['dc'].identifier,
+                        rdflib.term.URIRef(other['uri'])
+                    ))
+
+                if other.get('label', None) is not None:
+                    triples.append(Triple(
+                        object,
+                        namespaces['rdfs'].label,
+                        rdflib.term.Literal(other['label'])
+                    ))
+
+        # save triples to file
+        TriplesOmexMetaWriter().run(triples, filename, namespaces=namespaces, format=format)

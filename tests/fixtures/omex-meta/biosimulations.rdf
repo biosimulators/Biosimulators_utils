@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
     xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
-    xmlns:dc="https://dublincore.org/specifications/dublin-core/dcmi-terms/"
-    xmlns:foaf="http://xmlns.com/foaf/0.1/"
-    xmlns:prism="http://prismstandard.org/namespaces/basic/2.0/"
-    xmlns:scoro="http://purl.org/spar/scoro/"
     xmlns:collex="http://www.collex.org/schema#"
-    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-    xmlns:om="http://ontology.eil.utoronto.ca/icity/OM/"
+    xmlns:dc="https://dublincore.org/specifications/dublin-core/dcmi-terms/"
     xmlns:dcterms="http://purl.org/dc/terms/"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:om="http://ontology.eil.utoronto.ca/icity/OM/"
+    xmlns:prism="http://prismstandard.org/namespaces/basic/2.0/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:scoro="http://purl.org/spar/scoro/"
 >
   <rdf:Description rdf:about="http://omex-libary.org/BioSim0001.omex">
     <!-- name -->
@@ -93,7 +92,7 @@
 
   <!-- gene, RNA, protein, cell type, tissue, organ -->
   <rdf:Description rdf:about="local:_00002">
-    <dc:identifier rdf:resource="http://purl.obolibrary.org/obo/CL_0001057"/>
+    <dc:identifier rdf:resource="https://identifiers.org/CL:0001057"/>
     <rdfs:label>myeloid dendritic cell, human</rdfs:label>
   </rdf:Description>
 
@@ -150,7 +149,7 @@
     <foaf:accountName rdf:resource="https://orcid.org/0000-0001-8254-4958"/>
     <foaf:name>Jonathan Karr</foaf:name>
 
-    <dc:identifier rdf:resource="https://orcid.org/0000-0001-8254-4958"/>
+    <dc:identifier rdf:resource="https://identifiers.org/orcid:0000-0001-8254-4958"/>
     <rdfs:label>Jonathan Karr</rdfs:label>
   </rdf:Description>
 
@@ -163,13 +162,13 @@
 
   <!-- license -->
   <rdf:Description rdf:about="local:_00013">
-    <dc:identifier rdf:resource="http://identifiers.org/spdx:MIT"/>
+    <dc:identifier rdf:resource="https://identifiers.org/spdx:MIT"/>
     <rdfs:label>MIT</rdfs:label>
   </rdf:Description>
 
   <!-- funder -->
   <rdf:Description rdf:about="local:_00014">
-    <dc:identifier rdf:resource="http://dx.doi.org/10.13039/100000001"/>
+    <dc:identifier rdf:resource="https://identifiers.org/doi:10.13039/100000001"/>
     <rdfs:label>National Science Foundation</rdfs:label>
   </rdf:Description>
 </rdf:RDF>

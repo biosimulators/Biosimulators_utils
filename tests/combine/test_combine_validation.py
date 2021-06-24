@@ -18,6 +18,8 @@ class ValidationTestCase(unittest.TestCase):
 
     def setUp(self):
         self.tmp_dir = tempfile.mkdtemp()
+        with open(os.path.join(self.tmp_dir, 'thumbnail.png'), 'w') as file:
+            pass
 
     def tearDown(self):
         shutil.rmtree(self.tmp_dir)
@@ -40,24 +42,29 @@ class ValidationTestCase(unittest.TestCase):
         self.assertNotEqual(validate_format('sbml'), [])
 
     def test_validate_omex_meta_file(self):
-        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'libcombine.rdf'))
+        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'libcombine.rdf'),
+                                                   archive_dirname=self.tmp_dir)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'biosimulations.rdf'))
+        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'biosimulations.rdf'),
+                                                   archive_dirname=self.tmp_dir)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'warning.rdf'))
+        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'warning.rdf'),
+                                                   archive_dirname=self.tmp_dir)
         self.assertEqual(errors, [])
         self.assertIn("Unsupported version '1.1'", flatten_nested_list_of_strings(warnings))
 
-        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'invalid.rdf'))
+        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'invalid.rdf'),
+                                                   archive_dirname=self.tmp_dir)
         self.assertEqual(len(errors), 1)
         self.assertIn("has multiple object node elements", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'malformed.rdf'))
+        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'malformed.rdf'),
+                                                   archive_dirname=self.tmp_dir)
         self.assertEqual(len(errors), 3)
         self.assertIn("Opening and ending tag mismatch", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])

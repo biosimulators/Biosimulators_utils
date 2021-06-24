@@ -42,8 +42,8 @@
 
   <!-- authors(s) -->
   <rdf:Description rdf:about=".">
-    <dc:creator rdf:resource="https://orcid.org/0000-0001-8254-4958">
-      <rdf:Description rdf:about="https://orcid.org/0000-0001-8254-4958">
+    <dc:creator rdf:resource="https://identifiers.org/orcid:0000-0001-8254-4958">
+      <rdf:Description rdf:about="https://identifiers.org/orcid:0000-0001-8254-4958">
         <foaf:name>Jonathan Karr</foaf:name>
       </rdf:Description>
     </dc:creator>

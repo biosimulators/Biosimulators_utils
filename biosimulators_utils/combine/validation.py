@@ -6,7 +6,8 @@
 :License: MIT
 """
 
-from ..biosimulations.omex_meta.io import BiosimulationsOmexMetaReader
+from ..omex_meta.data_model import OmexMetaInputFormat, OmexMetaSchema
+from ..omex_meta.io import read_omex_meta_file
 from ..sedml.io import SedmlSimulationReader
 from .data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat, CombineArchiveContentFormatPattern  # noqa: F401
 from .utils import get_sedml_contents
@@ -152,7 +153,7 @@ def validate_content(content, archive_dirname, validate_models_with_languages=Tr
     elif re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format):
         file_type = 'OMEX Meta'
 
-        errors, warnings = validate_omex_meta_file(filename)
+        errors, warnings = validate_omex_meta_file(filename, archive_dirname)
 
     if errors:
         errors = [[
@@ -168,19 +169,21 @@ def validate_content(content, archive_dirname, validate_models_with_languages=Tr
     return (errors, warnings)
 
 
-def validate_omex_meta_file(filename, format='rdfxml'):
+def validate_omex_meta_file(filename, archive_dirname, schema=OmexMetaSchema.triples, format=OmexMetaInputFormat.rdfxml):
     """ validate an OMEX Meta file
 
     Args:
         filename (:obj:`str`): path to file
-        format (:obj:`str`, optional): format of the file; must be one of the formats
+        archive_dirname (:obj:`str`): directory with the content of the archive
+        schema (:obj:`OmexMetaSchema`, optional): expected schema for OMEX Meta file
+        format (:obj:`OmexMetaInputFormat`, optional): format of the file; must be one of the formats
             supported by pyomexmeta such as ``rdfxml`` or ``turtle``
 
     Returns:
         :obj:`tuple`:
 
-            * nested :obj:`list` of :obj:`str`: nested list of errors with the archive
-            * nested :obj:`list` of :obj:`str`: nested list of warnings with the archive
+            * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Meta file
+            * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Meta file
     """
-    _, errors, warnings = BiosimulationsOmexMetaReader.read_rdf(filename, format=format)
+    _, _, errors, warnings = read_omex_meta_file(filename, schema=schema, format=format, working_dir=archive_dirname)
     return (errors, warnings)

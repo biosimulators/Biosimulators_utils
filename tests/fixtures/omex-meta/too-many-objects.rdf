@@ -151,7 +151,7 @@
     <foaf:accountName rdf:resource="https://orcid.org/0000-0001-8254-4958"/>
     <foaf:name>Jonathan Karr</foaf:name>
 
-    <dc:identifier rdf:resource="https://orcid.org/0000-0001-8254-4958"/>
+    <dc:identifier rdf:resource="https://identifiers.org/orcid:0000-0001-8254-4958"/>
     <rdfs:label>Jonathan Karr</rdfs:label>
   </rdf:Description>
 
