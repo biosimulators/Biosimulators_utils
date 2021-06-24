@@ -15,7 +15,9 @@
 >
   <rdf:Description rdf:about="http://omex-libary.org/BioSim0001.omex">
     <!-- name -->
+    <!--
     <dc:title>Name</dc:title>
+    -->
 
     <!-- short summary -->
     <dc:abstract>Short summary</dc:abstract>
@@ -55,7 +57,9 @@
     <bqmodel:is rdf:resource="local:_00008"/>
 
     <!-- authors(s) -->
+    <!--
     <dc:creator rdf:resource="local:_00009"/>
+    -->
 
     <!-- contributor(s) -->
     <dc:contributor rdf:resource="local:_00010"/>
@@ -145,7 +149,8 @@
     <rdfs:label>Goldberg AP, Szigeti B, Chew YH, Sekar JA, Roth YD &amp; Karr JR. Emerging whole-cell modeling principles and methods. Curr Opin Biotechnol 2018, 51:97-102.</rdfs:label>
   </rdf:Description>
 
-    <!-- authors(s) -->
+  <!-- authors(s) -->
+  <!--
   <rdf:Description rdf:about="local:_00009">
     <foaf:accountName rdf:resource="https://orcid.org/0000-0001-8254-4958"/>
     <foaf:name>Jonathan Karr</foaf:name>
@@ -153,6 +158,7 @@
     <dc:identifier rdf:resource="https://orcid.org/0000-0001-8254-4958"/>
     <rdfs:label>Jonathan Karr</rdfs:label>
   </rdf:Description>
+  -->
 
   <!-- contributor(s) -->
   <rdf:Description rdf:about="local:_00010">

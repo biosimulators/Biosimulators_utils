@@ -100,7 +100,6 @@
   <!-- more information -->
   <rdf:Description rdf:about="local:_00003">
     <dc:identifier rdf:resource="http://www.w3.org/2006/time#second"/>
-    <rdfs:label>second</rdfs:label>
     <dc:description>Temporal unit</dc:description>
   </rdf:Description>
 

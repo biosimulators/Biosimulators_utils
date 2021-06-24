@@ -66,6 +66,7 @@
 
     <!-- license -->
     <dc:license rdf:resource="local:_00013"/>
+    <dc:license rdf:resource="local:_00015"/>
 
     <!-- funder -->
     <scoro:funder rdf:resource="local:_00014"/>
@@ -165,6 +166,11 @@
   <rdf:Description rdf:about="local:_00013">
     <dc:identifier rdf:resource="http://identifiers.org/spdx:MIT"/>
     <rdfs:label>MIT</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="local:_00015">
+    <dc:identifier rdf:resource="http://identifiers.org/spdx:Apache-2.0"/>
+    <rdfs:label>Apache-2.0</rdfs:label>
   </rdf:Description>
 
   <!-- funder -->

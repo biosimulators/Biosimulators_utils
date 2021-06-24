@@ -88,7 +88,7 @@
   <!-- taxon -->
   <rdf:Description rdf:about="local:_00001">
     <dc:identifier rdf:resource="https://identifiers.org/taxonomy/9606"/>
-    <rdfs:label>Homo sapiens</rdfs:label>
+    <!--<rdfs:label>Homo sapiens</rdfs:label>-->
   </rdf:Description>
 
   <!-- gene, RNA, protein, cell type, tissue, organ -->

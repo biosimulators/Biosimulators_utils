@@ -25,7 +25,7 @@
     <prism:keyword>tag 2</prism:keyword>
 
     <!-- thumbnail image -->
-    <collex:thumbnail rdf:resource="http://omex-libary.org/BioSim0001.omex/thumbnail.png"/>
+    <collex:thumbnail/>
 
     <!-- long description -->
     <dc:description>Description</dc:description>

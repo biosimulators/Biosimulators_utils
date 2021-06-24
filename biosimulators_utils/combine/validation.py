@@ -6,13 +6,11 @@
 :License: MIT
 """
 
-from ..log.data_model import StandardOutputErrorCapturerLevel
-from ..log.utils import StandardOutputErrorCapturer
+from ..biosimulations.omex_meta.io import BiosimulationsOmexMetaReader
 from ..sedml.io import SedmlSimulationReader
 from .data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat, CombineArchiveContentFormatPattern  # noqa: F401
 from .utils import get_sedml_contents
 import os
-import pyomexmeta
 import re
 
 __all__ = [
@@ -184,19 +182,5 @@ def validate_omex_meta_file(filename, format='rdfxml'):
             * nested :obj:`list` of :obj:`str`: nested list of errors with the archive
             * nested :obj:`list` of :obj:`str`: nested list of warnings with the archive
     """
-    errors = []
-    warnings = []
-
-    with StandardOutputErrorCapturer(relay=False, level=StandardOutputErrorCapturerLevel.c) as captured:
-        pyomexmeta.RDF.from_file(filename, format)
-    stdout = captured.get_text().strip()
-    if stdout:
-        errors_warnings = re.split(r'((^|\n)librdf (error|warning)) *-? *', stdout)
-        for type, message in zip(errors_warnings[3::4], errors_warnings[4::4]):
-            message = message.strip()
-            if 'error' in type:
-                errors.append([message])
-            else:
-                warnings.append([message])
-
+    _, errors, warnings = BiosimulationsOmexMetaReader.read_rdf(filename, format=format)
     return (errors, warnings)

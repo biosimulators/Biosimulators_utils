@@ -16,7 +16,9 @@
   <rdf:Description rdf:about="http://omex-libary.org/BioSim0001.omex">
     <!-- name -->
     <dc:title>Name</dc:title>
+  </rdf:Description>
 
+  <rdf:Description rdf:about="http://omex-libary.org/BioSim0002.omex">
     <!-- short summary -->
     <dc:abstract>Short summary</dc:abstract>
 
