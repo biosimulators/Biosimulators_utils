@@ -56,6 +56,8 @@ class ReportWriter(object):
             format (:obj:`ReportFormat`, optional): report format
             type (:obj:`type`): type of output (e.g., subclass of :obj:`Output` such as :obj:`Report`, :obj:`Plot2D`)
         """
+        rel_path = os.path.relpath(rel_path, '.')
+
         results_array = []
         data_set_ids = []
         data_set_labels = []
@@ -171,6 +173,8 @@ class ReportReader(object):
         Returns:
             :obj:`DataSetResults`: report results
         """
+        rel_path = os.path.relpath(rel_path, '.')
+
         if format in [ReportFormat.csv, ReportFormat.tsv, ReportFormat.xlsx]:
             warn('Reports exported to {} do not contain information about the data type or size of each data set.'.format(
                 format.value.upper()), MissingReportMetadataWarning)

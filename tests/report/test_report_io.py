@@ -303,7 +303,7 @@ class ReportIoTestCase(unittest.TestCase):
 
     def test_write_error_handling(self):
         with self.assertRaisesRegex(NotImplementedError, 'is not supported'):
-            io.ReportWriter().run(Report(), None, None, None, format='TSV')
+            io.ReportWriter().run(Report(), None, None, 'a', format='TSV')
 
         report = Report(data_sets=[DataSet(id='x', label='x')])
 
@@ -316,7 +316,7 @@ class ReportIoTestCase(unittest.TestCase):
 
     def test_read_error_handling(self):
         with self.assertRaisesRegex(NotImplementedError, 'is not supported'):
-            io.ReportReader().run(Report(), None, None, format='TSV')
+            io.ReportReader().run(Report(), None, 'a', format='TSV')
 
     def test_get_ids(self):
         report = Report(
