@@ -1,3 +1,4 @@
+from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat
 from biosimulators_utils.omex_meta import data_model
 from biosimulators_utils.omex_meta import io
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
@@ -406,3 +407,27 @@ class OmexMetaIoTestCase(unittest.TestCase):
 
         with self.assertRaises(NotImplementedError):
             io.write_omex_meta_file(triples, None, filename)
+
+    def test_read_omex_meta_files_for_archive(self):
+        shutil.copyfile(os.path.join(self.FIXTURE_DIR, 'biosimulations.rdf'),
+                        os.path.join(self.dir_name, 'biosimulations.rdf'))
+        shutil.copyfile(os.path.join(self.FIXTURE_DIR, 'biosimulations-with-file-annotations.rdf'),
+                        os.path.join(self.dir_name, 'biosimulations-with-file-annotations.rdf'))
+
+        archive = CombineArchive()
+        archive.contents = [
+            CombineArchiveContent(
+                location='biosimulations.rdf',
+                format=CombineArchiveContentFormat.OMEX_METADATA,
+            ),
+            CombineArchiveContent(
+                location='biosimulations-with-file-annotations.rdf',
+                format=CombineArchiveContentFormat.OMEX_METADATA,
+            ),
+        ]
+        md, errors, warnings = io.read_omex_meta_files_for_archive(
+            archive, self.dir_name, data_model.OmexMetaSchema.biosimulations)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+        self.assertEqual(len(md), 3)
+        self.assertEqual(sorted(m['location'] for m in md), sorted(['.', '.', './sim.sedml/figure1']))

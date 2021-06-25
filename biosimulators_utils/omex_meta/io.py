@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ..combine.data_model import CombineArchive, CombineArchiveContentFormatPattern  # noqa: F401
 from ..log.data_model import StandardOutputErrorCapturerLevel
 from ..log.utils import StandardOutputErrorCapturer
 from .data_model import (Triple, OmexMetaInputFormat, OmexMetaOutputFormat, OmexMetaSchema,
@@ -23,6 +24,7 @@ import re
 __all__ = [
     'read_omex_meta_file',
     'write_omex_meta_file',
+    'read_omex_meta_files_for_archive',
     'TriplesOmexMetaReader',
     'TriplesOmexMetaWriter',
     'BiosimulationsOmexMetaReader',
@@ -35,7 +37,7 @@ def read_omex_meta_file(filename, schema, format=OmexMetaInputFormat.rdfxml, wor
 
     Args:
         filename (:obj:`str`): path to OMEX Meta file
-        schema (:obj:`OmexMetaSchema`, optional): schema to parse :obj:`filename` into
+        schema (:obj:`OmexMetaSchema`): schema to parse :obj:`filename` into
         format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
         working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
 
@@ -88,10 +90,46 @@ def write_omex_meta_file(content, schema, filename, format=OmexMetaOutputFormat.
         raise NotImplementedError(msg)
 
 
+def read_omex_meta_files_for_archive(archive, archive_dirname, schema):
+    """ Read all of the OMEX Meta files in an archive
+
+    Args:
+        archive (:obj:`CombineArchive`): COMBINE/OMEX archive
+        archive_dirname (:obj:`str`): directory with the content of the archive
+        schema (:obj:`OmexMetaSchema`): schema to parse :obj:`filename` into
+
+    Returns:
+        :obj:`tuple`:
+
+            * :obj:`object`: representation of the OMEX Meta file in :obj:`schema`
+            * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Meta file
+            * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Meta file
+    """
+    content = []
+    errors = []
+    warnings = []
+
+    for item in archive.contents:
+        if re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, item.format):
+            temp_content, _, temp_errors, temp_warnings = read_omex_meta_file(
+                os.path.join(archive_dirname, item.location),
+                schema=schema, working_dir=archive_dirname)
+
+            if temp_errors:
+                errors.append(['OMEX Meta file `{}` is invalid.'.format(item.location), temp_errors])
+            else:
+                content.extend(temp_content)
+
+            if temp_warnings:
+                warnings.append(['OMEX Meta file `{}` may be invalid.'.format(item.location), temp_warnings])
+
+    return (content, errors, warnings)
+
+
 class OmexMetaReader(abc.ABC):
     """ Base class for reading OMEX Meta files """
 
-    @abc.abstractmethod
+    @ abc.abstractmethod
     def run(self, filename, format=OmexMetaInputFormat.rdfxml, working_dir=None):
         """ Read an OMEX Meta file
 
@@ -110,7 +148,7 @@ class OmexMetaReader(abc.ABC):
         """
         pass  # pragma: no cover
 
-    @classmethod
+    @ classmethod
     def read_rdf(cls, filename, format=OmexMetaInputFormat.rdfxml):
         """ Read an RDF file
 
@@ -148,7 +186,7 @@ class OmexMetaReader(abc.ABC):
 
         return (rdf, errors, warnings)
 
-    @classmethod
+    @ classmethod
     def get_rdf_triples(cls, rdf):
         """ Read an RDF file
 
@@ -173,7 +211,7 @@ class OmexMetaReader(abc.ABC):
             ))
         return triples
 
-    @classmethod
+    @ classmethod
     def make_rdf_node(cls, node):
         """ Make an RDF node
 
@@ -196,7 +234,7 @@ class OmexMetaReader(abc.ABC):
 class OmexMetaWriter(abc.ABC):
     """ Base class for writing OMEX Meta files """
 
-    @abc.abstractmethod
+    @ abc.abstractmethod
     def run(self, content, filename, format=OmexMetaOutputFormat.rdfxml_abbrev):
         """ Write an OMEX Meta file
 
@@ -324,7 +362,7 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
 
         return (metadata, rdf, errors, warnings)
 
-    @classmethod
+    @ classmethod
     def get_combine_archive_uri(cls, triples):
         """ Get the URI used to the describe the COMBINE/OMEX archive in a list of RDF triples
 
