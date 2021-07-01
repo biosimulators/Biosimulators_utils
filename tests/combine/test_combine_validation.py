@@ -45,54 +45,55 @@ class ValidationTestCase(unittest.TestCase):
 
     def test_validate_content(self):
         fixtures_dir = os.path.join(self.FIXTURES_DIR, 'images')
+        formats_to_validate = list(CombineArchiveContentFormat.__members__.values())
 
         content = CombineArchiveContent(
             location='all_gray.bmp',
             format=CombineArchiveContentFormat.BMP.value,
         )
-        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
         content.format = CombineArchiveContentFormat.GIF.value
-        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertNotEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
 
         content = CombineArchiveContent(
             location='Rotating_earth_(large).gif',
             format=CombineArchiveContentFormat.GIF.value,
         )
-        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
         content.format = CombineArchiveContentFormat.BMP.value
-        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertNotEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
 
         content = CombineArchiveContent(
             location='Jpegvergroessert.jpg',
             format=CombineArchiveContentFormat.JPEG.value,
         )
-        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
         content.format = CombineArchiveContentFormat.GIF.value
-        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertNotEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
 
         content = CombineArchiveContent(
             location='PNG_transparency_demonstration_1.png',
             format=CombineArchiveContentFormat.PNG.value,
         )
-        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
         content.format = CombineArchiveContentFormat.GIF.value
-        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertNotEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
 
         content = CombineArchiveContent(
             location='Tif.tif',
             format=CombineArchiveContentFormat.TIFF.value,
         )
-        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
         content.format = CombineArchiveContentFormat.GIF.value
-        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertNotEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
 
         content = CombineArchiveContent(
             location='Johnrogershousemay2020.webp',
             format=CombineArchiveContentFormat.WEBP.value,
         )
-        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
         content.format = CombineArchiveContentFormat.GIF.value
-        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+        self.assertNotEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
 
     def test_validate_omex_meta_file(self):
         errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'libcombine.rdf'),

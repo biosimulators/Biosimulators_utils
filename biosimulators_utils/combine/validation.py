@@ -26,6 +26,9 @@ __all__ = [
 def validate(archive, archive_dirname,
              include_all_sed_docs_when_no_sed_doc_is_master=True,
              always_include_all_sed_docs=False,
+             formats_to_validate=[
+                 CombineArchiveContentFormat.SED_ML,
+             ],
              validate_models_with_languages=True):
     """ Validate a COMBINE/OMEX archive and the SED-ML and model documents it contains
 
@@ -36,6 +39,8 @@ def validate(archive, archive_dirname,
             and no SED document has ``master="true"``, return all SED documents.
         always_include_all_sed_docs (:obj:`bool`, optional): if :obj:`true`,
             return all SED documents, regardless of whether they have ``master="true"`` or not.
+        formats_to_validate (:obj:`list` of :obj:`CombineArchiveContentFormat`, optional): list
+            for formats of files to validate
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
 
     Returns:
@@ -108,7 +113,9 @@ def validate(archive, archive_dirname,
     for content in archive.contents:
         if isinstance(content, CombineArchiveContent) and content.format:
             content_errors, content_warnings = validate_content(
-                content, archive_dirname, validate_models_with_languages=validate_models_with_languages)
+                content, archive_dirname,
+                formats_to_validate=formats_to_validate,
+                validate_models_with_languages=validate_models_with_languages)
             errors.extend(content_errors)
             warnings.extend(content_warnings)
 
@@ -145,12 +152,18 @@ def validate_format(format):
     return errors
 
 
-def validate_content(content, archive_dirname, validate_models_with_languages=True):
+def validate_content(content, archive_dirname,
+                     formats_to_validate=[
+                         CombineArchiveContentFormat.SED_ML,
+                     ],
+                     validate_models_with_languages=True):
     """ Validate an item of a COMBINE/OMEX archive
 
     Args:
         content (:obj:`CombineArchiveContent`): item of a COMBINE/OMEX archive
         archive_dirname (:obj:`str`): directory with the content of the archive
+        formats_to_validate (:obj:`list` of :obj:`CombineArchiveContentFormat`, optional): list
+            for formats of files to validate
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
 
     Returns:
@@ -164,7 +177,10 @@ def validate_content(content, archive_dirname, validate_models_with_languages=Tr
     filename = os.path.join(archive_dirname, content.location)
     file_type = None
 
-    if re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format):
+    if (
+        CombineArchiveContentFormat.SED_ML in formats_to_validate
+        and re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format)
+    ):
         file_type = 'SED-ML'
         reader = SedmlSimulationReader()
         try:
@@ -176,27 +192,47 @@ def validate_content(content, archive_dirname, validate_models_with_languages=Tr
         errors = reader.errors or []
         warnings = reader.warnings or []
 
-    elif re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format):
+    elif (
+        CombineArchiveContentFormat.OMEX_METADATA in formats_to_validate
+        and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format)
+    ):
         file_type = 'OMEX Meta'
-
         errors, warnings = validate_omex_meta_file(filename, archive_dirname)
 
-    elif re.match(CombineArchiveContentFormatPattern.BMP.value, content.format):
+    elif (
+        CombineArchiveContentFormat.BMP in formats_to_validate
+        and re.match(CombineArchiveContentFormatPattern.BMP.value, content.format)
+    ):
         if imghdr.what(filename) != 'bmp':
             errors.append(['`{}` is not a valid BMP image.'.format(content.location)])
-    elif re.match(CombineArchiveContentFormatPattern.GIF.value, content.format):
+    elif (
+        CombineArchiveContentFormat.GIF in formats_to_validate
+        and re.match(CombineArchiveContentFormatPattern.GIF.value, content.format)
+    ):
         if imghdr.what(filename) != 'gif':
             errors.append(['`{}` is not a valid GIF image.'.format(content.location)])
-    elif re.match(CombineArchiveContentFormatPattern.JPEG.value, content.format):
+    elif (
+        CombineArchiveContentFormat.JPEG in formats_to_validate
+        and re.match(CombineArchiveContentFormatPattern.JPEG.value, content.format)
+    ):
         if imghdr.what(filename) != 'jpeg':
             errors.append(['`{}` is not a valid JPEG image.'.format(content.location)])
-    elif re.match(CombineArchiveContentFormatPattern.PNG.value, content.format):
+    elif (
+        CombineArchiveContentFormat.PNG in formats_to_validate
+        and re.match(CombineArchiveContentFormatPattern.PNG.value, content.format)
+    ):
         if imghdr.what(filename) != 'png':
             errors.append(['`{}` is not a valid PNG image.'.format(content.location)])
-    elif re.match(CombineArchiveContentFormatPattern.TIFF.value, content.format):
+    elif (
+        CombineArchiveContentFormat.TIFF in formats_to_validate
+        and re.match(CombineArchiveContentFormatPattern.TIFF.value, content.format)
+    ):
         if imghdr.what(filename) != 'tiff':
             errors.append(['`{}` is not a valid TIFF image.'.format(content.location)])
-    elif re.match(CombineArchiveContentFormatPattern.WEBP.value, content.format):
+    elif (
+        CombineArchiveContentFormat.WEBP in formats_to_validate
+        and re.match(CombineArchiveContentFormatPattern.WEBP.value, content.format)
+    ):
         if imghdr.what(filename) != 'webp':
             errors.append(['`{}` is not a valid WEBP image.'.format(content.location)])
 
