@@ -69,10 +69,11 @@ def validate_biosimulations_metadata(metadata, working_dir=None):
                                 warnings.append(['URI `{}` of attribute `{}` ({}) could not be validated.'.format(
                                     object['uri'], predicate_type['attribute'], predicate_type['uri'])])
 
-    # thumbnail is a file
+    # thumbnail is a file; file type is checked by COMBINE validation
     if working_dir:
         for thumbnail in metadata['thumbnails']:
-            if not os.path.isfile(os.path.join(working_dir, thumbnail)):
+            thumbnail_filename = os.path.join(working_dir, thumbnail)
+            if not os.path.isfile(thumbnail_filename):
                 errors.append(['Thumbnail `{}` is not a file.'.format(thumbnail)])
     else:
         if metadata['thumbnails']:

@@ -11,6 +11,7 @@ from ..omex_meta.io import read_omex_meta_file
 from ..sedml.io import SedmlSimulationReader
 from .data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat, CombineArchiveContentFormatPattern  # noqa: F401
 from .utils import get_sedml_contents
+import imghdr
 import os
 import re
 
@@ -48,6 +49,31 @@ def validate(archive, archive_dirname,
 
     if not archive.contents:
         errors.append(['Archive must have at least one content element.'])
+
+    # check that locations are listed once per manifest
+    locations = set(['manifest.xml'])
+    duplicate_locations = set()
+    for content in archive.contents:
+        if content and content.location:
+            location = os.path.relpath(content.location, '.')
+            if content.location in locations:
+                duplicate_locations.add(location)
+            else:
+                locations.add(location)
+    if duplicate_locations:
+        errors.append(['The manifest contains repeated content items for these locations:', [
+            [location] for location in sorted(duplicate_locations)]])
+
+    # check that all files in the archive are in the manifest
+    missing_locations = []
+    for dirname, _, filenames in os.walk(archive_dirname):
+        for filename in filenames:
+            location = os.path.relpath(os.path.join(dirname, filename), archive_dirname)
+            if location not in locations:
+                missing_locations.append(location)
+    if missing_locations:
+        errors.append(['The manifest does not contain content items for these locations:', [
+            [location] for location in sorted(missing_locations)]])
 
     # check for errors with the content elements of the archive
     for i_content, content in enumerate(archive.contents):
@@ -154,6 +180,25 @@ def validate_content(content, archive_dirname, validate_models_with_languages=Tr
         file_type = 'OMEX Meta'
 
         errors, warnings = validate_omex_meta_file(filename, archive_dirname)
+
+    elif re.match(CombineArchiveContentFormatPattern.BMP.value, content.format):
+        if imghdr.what(filename) != 'bmp':
+            errors.append(['`{}` is not a valid BMP image.'.format(content.location)])
+    elif re.match(CombineArchiveContentFormatPattern.GIF.value, content.format):
+        if imghdr.what(filename) != 'gif':
+            errors.append(['`{}` is not a valid GIF image.'.format(content.location)])
+    elif re.match(CombineArchiveContentFormatPattern.JPEG.value, content.format):
+        if imghdr.what(filename) != 'jpeg':
+            errors.append(['`{}` is not a valid JPEG image.'.format(content.location)])
+    elif re.match(CombineArchiveContentFormatPattern.PNG.value, content.format):
+        if imghdr.what(filename) != 'png':
+            errors.append(['`{}` is not a valid PNG image.'.format(content.location)])
+    elif re.match(CombineArchiveContentFormatPattern.TIFF.value, content.format):
+        if imghdr.what(filename) != 'tiff':
+            errors.append(['`{}` is not a valid TIFF image.'.format(content.location)])
+    elif re.match(CombineArchiveContentFormatPattern.WEBP.value, content.format):
+        if imghdr.what(filename) != 'webp':
+            errors.append(['`{}` is not a valid WEBP image.'.format(content.location)])
 
     if errors:
         errors = [[

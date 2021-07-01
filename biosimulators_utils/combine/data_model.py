@@ -160,6 +160,7 @@ class CombineArchiveContent(CombineArchiveBase):
 
 class CombineArchiveContentFormat(str, enum.Enum):
     """ Format for the content of COMBINE/OMEX archives """
+    BMP = 'http://purl.org/NET/mediatypes/image/bmp'
     BNGL = 'http://purl.org/NET/mediatypes/text/bngl+plain'
     BioPAX = 'http://identifiers.org/combine.specifications/biopax'
     CellML = 'http://identifiers.org/combine.specifications/cellml'
@@ -183,13 +184,17 @@ class CombineArchiveContentFormat(str, enum.Enum):
     SBOL_VISUAL = 'http://identifiers.org/combine.specifications/sbol-visual'
     SED_ML = 'http://identifiers.org/combine.specifications/sed-ml'
     Smoldyn = 'http://purl.org/NET/mediatypes/text/smoldyn+plain'
-    VCML = 'http://purl.org/NET/mediatypes/application/vcml+xml'
+    SVG = 'http://purl.org/NET/mediatypes/image/svg+xml'
     TEXT = 'http://purl.org/NET/mediatypes/text/plain'
+    TIFF = 'http://purl.org/NET/mediatypes/image/tiff'
+    VCML = 'http://purl.org/NET/mediatypes/application/vcml+xml'
+    WEBP = 'http://purl.org/NET/mediatypes/image/webp'
     OTHER = 'http://purl.org/NET/mediatypes/application/octet-stream'
 
 
 class CombineArchiveContentFormatPattern(str, enum.Enum):
     """ Format for the content of COMBINE/OMEX archives """
+    BMP = r'^https?://purl\.org/NET/mediatypes/image/bmp$'
     BNGL = r'^https?://purl\.org/NET/mediatypes/text/bngl\+plain($|\.)'
     BioPAX = r'^https?://identifiers\.org/combine\.specifications/biopax($|\.)'
     CellML = r'^https?://identifiers\.org/combine\.specifications/cellml($|\.)'
@@ -213,6 +218,9 @@ class CombineArchiveContentFormatPattern(str, enum.Enum):
     SBOL_VISUAL = r'^https?://identifiers\.org/combine\.specifications/sbol-visual($|\.)'
     SED_ML = r'^https?://identifiers\.org/combine\.specifications/sed\-?ml($|\.)'
     Smoldyn = r'^https?://purl\.org/NET/mediatypes/text/smoldyn\+plain$'
-    VCML = r'^https?://purl\.org/NET/mediatypes/application/vcml\+xml$'
+    SVG = r'^https?://purl\.org/NET/mediatypes/image/svg+xml$'
     TEXT = r'^https?://purl\.org/NET/mediatypes/text/plain$'
+    TIFF = r'^https?://purl\.org/NET/mediatypes/image/tiff$'
+    VCML = r'^https?://purl\.org/NET/mediatypes/application/vcml\+xml$'
+    WEBP = r'^https?://purl\.org/NET/mediatypes/image/webp$'
     OTHER = r'^https?://purl\.org/NET/mediatypes/application/octet-stream$'

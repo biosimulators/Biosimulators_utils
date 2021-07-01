@@ -1,9 +1,10 @@
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat
 from biosimulators_utils.combine.io import CombineArchiveReader
-from biosimulators_utils.combine.validation import validate, validate_format, validate_omex_meta_file
+from biosimulators_utils.combine.validation import validate, validate_format, validate_content, validate_omex_meta_file
 from biosimulators_utils.sedml.io import SedmlSimulationReader
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
 from unittest import mock
+import copy
 import csv
 import os
 import shutil
@@ -41,6 +42,57 @@ class ValidationTestCase(unittest.TestCase):
         self.assertNotEqual(validate_format('text/plain'), [])
         self.assertNotEqual(validate_format('sbml'), [])
 
+    def test_validate_content(self):
+        fixtures_dir = os.path.join(self.FIXTURES_DIR, 'images')
+
+        content = CombineArchiveContent(
+            location='all_gray.bmp',
+            format=CombineArchiveContentFormat.BMP.value,
+        )
+        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        content.format = CombineArchiveContentFormat.GIF.value
+        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+
+        content = CombineArchiveContent(
+            location='Rotating_earth_(large).gif',
+            format=CombineArchiveContentFormat.GIF.value,
+        )
+        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        content.format = CombineArchiveContentFormat.BMP.value
+        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+
+        content = CombineArchiveContent(
+            location='Jpegvergroessert.jpg',
+            format=CombineArchiveContentFormat.JPEG.value,
+        )
+        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        content.format = CombineArchiveContentFormat.GIF.value
+        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+
+        content = CombineArchiveContent(
+            location='PNG_transparency_demonstration_1.png',
+            format=CombineArchiveContentFormat.PNG.value,
+        )
+        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        content.format = CombineArchiveContentFormat.GIF.value
+        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+
+        content = CombineArchiveContent(
+            location='Tif.tif',
+            format=CombineArchiveContentFormat.TIFF.value,
+        )
+        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        content.format = CombineArchiveContentFormat.GIF.value
+        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+
+        content = CombineArchiveContent(
+            location='Johnrogershousemay2020.webp',
+            format=CombineArchiveContentFormat.WEBP.value,
+        )
+        self.assertEqual(validate_content(content, fixtures_dir), ([], []))
+        content.format = CombineArchiveContentFormat.GIF.value
+        self.assertNotEqual(validate_content(content, fixtures_dir), ([], []))
+
     def test_validate_omex_meta_file(self):
         errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'libcombine.rdf'),
                                                    archive_dirname=self.tmp_dir)
@@ -70,12 +122,27 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(warnings, [])
 
     def test_validate(self):
+        os.remove(os.path.join(self.tmp_dir, 'thumbnail.png'))
+
         archive = CombineArchiveReader().run(self.OMEX_FIXTURE, self.tmp_dir)
         errors, warnings = validate(archive, self.tmp_dir)
         self.assertEqual(errors, [])
         self.assertNotEqual(warnings, [])
 
+        archive2 = copy.deepcopy(archive)
+        for content in archive.contents:
+            archive2.contents.append(content)
+        errors, warnings = validate(archive2, self.tmp_dir)
+        self.assertIn('contains repeated content items', flatten_nested_list_of_strings(errors))
+
+        archive2 = copy.deepcopy(archive)
+        archive2.contents = []
+        errors, warnings = validate(archive2, self.tmp_dir)
+        self.assertIn('does not contain content items', flatten_nested_list_of_strings(errors))
+
     def test_error_handling(self):
+        os.remove(os.path.join(self.tmp_dir, 'thumbnail.png'))
+
         archive = CombineArchive()
         errors, warnings = validate(archive, self.tmp_dir)
         self.assertEqual(len(errors), 1)
