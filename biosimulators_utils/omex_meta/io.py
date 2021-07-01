@@ -32,13 +32,14 @@ __all__ = [
 ]
 
 
-def read_omex_meta_file(filename, schema, format=OmexMetaInputFormat.rdfxml, working_dir=None):
+def read_omex_meta_file(filename, schema, format=OmexMetaInputFormat.rdfxml, archive=None, working_dir=None):
     """ Read an OMEX Meta file
 
     Args:
         filename (:obj:`str`): path to OMEX Meta file
         schema (:obj:`OmexMetaSchema`): schema to parse :obj:`filename` into
         format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
+        archive (:obj:`CombineArchive`, optional): parent COMBINE archive
         working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
 
     Returns:
@@ -53,10 +54,10 @@ def read_omex_meta_file(filename, schema, format=OmexMetaInputFormat.rdfxml, wor
     warnings = []
 
     if schema == OmexMetaSchema.biosimulations:
-        return BiosimulationsOmexMetaReader().run(filename, format=format, working_dir=working_dir)
+        return BiosimulationsOmexMetaReader().run(filename, format=format, archive=archive, working_dir=working_dir)
 
     elif schema == OmexMetaSchema.rdf_triples:
-        return TriplesOmexMetaReader().run(filename, format=format, working_dir=working_dir)
+        return TriplesOmexMetaReader().run(filename, format=format, archive=archive, working_dir=working_dir)
 
     else:
         errors.append(['Schema `{}` is not supported. The following schemas are supported:',
@@ -111,7 +112,7 @@ def read_omex_meta_files_for_archive(archive, archive_dirname, schema):
         if re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, item.format):
             temp_content, temp_errors, temp_warnings = read_omex_meta_file(
                 os.path.join(archive_dirname, item.location),
-                schema=schema, working_dir=archive_dirname)
+                schema=schema, archive=archive, working_dir=archive_dirname)
 
             if temp_errors:
                 errors.append(['OMEX Meta file `{}` is invalid.'.format(item.location), temp_errors])
@@ -128,12 +129,13 @@ class OmexMetaReader(abc.ABC):
     """ Base class for reading OMEX Meta files """
 
     @ abc.abstractmethod
-    def run(self, filename, format=OmexMetaInputFormat.rdfxml, working_dir=None):
+    def run(self, filename, format=OmexMetaInputFormat.rdfxml, archive=None, working_dir=None):
         """ Read an OMEX Meta file
 
         Args:
             filename (:obj:`str`): path to OMEX Meta file
             format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
+            archive (:obj:`CombineArchive`, optional): parent COMBINE archive
             working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
 
         Returns:
@@ -246,12 +248,13 @@ class OmexMetaWriter(abc.ABC):
 class TriplesOmexMetaReader(OmexMetaReader):
     """ Utility for reading an OMEX Meta file into a list of triples """
 
-    def run(self, filename, format=OmexMetaInputFormat.rdfxml, working_dir=None):
+    def run(self, filename, format=OmexMetaInputFormat.rdfxml, archive=None, working_dir=None):
         """ Read an OMEX Meta file into a list of triples
 
         Args:
             filename (:obj:`str`): path to OMEX Meta file
             format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
+            archive (:obj:`CombineArchive`, optional): parent COMBINE archive
             working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
 
         Returns:
@@ -312,13 +315,14 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
     """ Utility for reading the metadata about a COMBINE/OMEX archive in an OMEX Meta
     file into a dictionary with BioSimulations schema """
 
-    def run(self, filename, format=OmexMetaInputFormat.rdfxml, working_dir=None):
+    def run(self, filename, format=OmexMetaInputFormat.rdfxml, archive=None, working_dir=None):
         """ Read the metadata about a COMBINE/OMEX archive in an OMEX Meta file into a dictionary
          with BioSimulations schema
 
         Args:
             filename (:obj:`str`): path to OMEX Meta file
             format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
+            archive (:obj:`CombineArchive`, optional): parent COMBINE archive
             working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
 
         Returns:
@@ -354,7 +358,7 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
             return (el_metadatas, errors, warnings)
 
         for el_metadata in el_metadatas:
-            temp_errors, temp_warnings = validate_biosimulations_metadata(el_metadata, working_dir=working_dir)
+            temp_errors, temp_warnings = validate_biosimulations_metadata(el_metadata, archive=archive, working_dir=working_dir)
 
             if temp_errors:
                 errors.append(['The metadata for URI `{}` is invalid.'.format(

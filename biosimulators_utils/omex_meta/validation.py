@@ -6,7 +6,8 @@
 :License: MIT
 """
 
-from .data_model import BIOSIMULATIONS_PREDICATE_TYPES
+from ..combine.data_model import CombineArchiveContentFormatPattern
+from .data_model import BIOSIMULATIONS_PREDICATE_TYPES, BIOSIMULATIONS_THUMBNAIL_FORMATS
 import dateutil.parser
 import os
 import re
@@ -18,11 +19,12 @@ __all__ = [
 ]
 
 
-def validate_biosimulations_metadata(metadata, working_dir=None):
+def validate_biosimulations_metadata(metadata, archive=None, working_dir=None):
     """ Validate BioSimulations metadata for a file in a COMBINE/OMEX archive
 
     Args:
         metadata (:obj:`dict`): BioSimulations metadata
+        archive (:obj:`CombineArchive`, optional): parent COMBINE archive
         working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
 
     Returns:
@@ -72,8 +74,26 @@ def validate_biosimulations_metadata(metadata, working_dir=None):
     # thumbnail is a file; file type is checked by COMBINE validation
     if working_dir:
         for thumbnail in metadata['thumbnails']:
+            thumbnail = os.path.relpath(thumbnail, '.')
             thumbnail_filename = os.path.join(working_dir, thumbnail)
-            if not os.path.isfile(thumbnail_filename):
+            if os.path.isfile(thumbnail_filename):
+                if archive:
+                    for content in archive.contents:
+                        if (
+                            content
+                            and content.location
+                            and thumbnail == os.path.relpath(content.location, '.')
+                        ):
+                            is_valid = False
+                            for format in BIOSIMULATIONS_THUMBNAIL_FORMATS:
+                                if re.match(CombineArchiveContentFormatPattern[format.name], content.format):
+                                    is_valid = True
+                                    break
+                            if not is_valid:
+                                errors.append(['The format of thumbnail `{}` must be one of the following:'.format(thumbnail),
+                                               sorted([[format.value] for format in BIOSIMULATIONS_THUMBNAIL_FORMATS])])
+
+            else:
                 errors.append(['Thumbnail `{}` is not a file.'.format(thumbnail)])
     else:
         if metadata['thumbnails']:

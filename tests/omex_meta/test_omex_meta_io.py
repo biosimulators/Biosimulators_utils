@@ -21,8 +21,9 @@ class OmexMetaIoTestCase(unittest.TestCase):
 
     def setUp(self):
         self.dir_name = tempfile.mkdtemp()
-        with open(os.path.join(self.dir_name, 'thumbnail.png'), 'w') as file:
-            pass
+        shutil.copyfile(
+            os.path.join(self.FIXTURE_DIR, '..', 'images', 'PNG_transparency_demonstration_1.png'),
+            os.path.join(self.dir_name, 'thumbnail.png'))
 
         patcher = mock.patch('requests.get', return_value=mock.Mock(status_code=200))
         self.addCleanup(patcher.stop)

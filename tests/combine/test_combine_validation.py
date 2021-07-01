@@ -19,8 +19,9 @@ class ValidationTestCase(unittest.TestCase):
 
     def setUp(self):
         self.tmp_dir = tempfile.mkdtemp()
-        with open(os.path.join(self.tmp_dir, 'thumbnail.png'), 'w') as file:
-            pass
+        shutil.copyfile(
+            os.path.join(self.FIXTURES_DIR, 'images', 'PNG_transparency_demonstration_1.png'),
+            os.path.join(self.tmp_dir, 'thumbnail.png'))
 
     def tearDown(self):
         shutil.rmtree(self.tmp_dir)

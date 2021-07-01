@@ -1,3 +1,4 @@
+from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat
 from biosimulators_utils.omex_meta import data_model
 from biosimulators_utils.omex_meta.io import read_omex_meta_file
 from biosimulators_utils.omex_meta.validation import validate_biosimulations_metadata
@@ -11,6 +12,7 @@ import unittest
 
 
 class OmexMetaValidationTestCase(unittest.TestCase):
+    FIXTURES_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures')
     FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-meta', 'biosimulations.rdf')
 
     def setUp(self):
@@ -32,10 +34,31 @@ class OmexMetaValidationTestCase(unittest.TestCase):
             self.assertIn('is not a file', flatten_nested_list_of_strings(errors))
             self.assertEqual(warnings, [])
 
-            with open(os.path.join(self.dir_name, 'thumbnail.png'), 'w') as file:
-                pass
+            shutil.copyfile(
+                os.path.join(self.FIXTURES_DIR, 'images', 'PNG_transparency_demonstration_1.png'),
+                os.path.join(self.dir_name, 'thumbnail.png'))
             errors, warnings = validate_biosimulations_metadata(md, working_dir=self.dir_name)
             self.assertEqual(errors, [])
+            self.assertEqual(warnings, [])
+
+            shutil.copyfile(
+                os.path.join(self.FIXTURES_DIR, 'images', 'PNG_transparency_demonstration_1.png'),
+                os.path.join(self.dir_name, 'thumbnail.png'))
+            archive = CombineArchive(
+                contents=[
+                    CombineArchiveContent(
+                        location='thumbnail.png',
+                        format=CombineArchiveContentFormat.PNG.value,
+                    ),
+                ]
+            )
+            errors, warnings = validate_biosimulations_metadata(md, archive=archive, working_dir=self.dir_name)
+            self.assertEqual(errors, [])
+            self.assertEqual(warnings, [])
+
+            archive.contents[0].format = CombineArchiveContentFormat.PDF.value
+            errors, warnings = validate_biosimulations_metadata(md, archive=archive, working_dir=self.dir_name)
+            self.assertNotEqual(errors, [])
             self.assertEqual(warnings, [])
 
             md2 = copy.deepcopy(md)

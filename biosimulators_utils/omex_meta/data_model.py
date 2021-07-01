@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ..combine.data_model import CombineArchiveContentFormat
 import enum
 import rdflib.term  # noqa: F401
 
@@ -17,6 +18,7 @@ __all__ = [
     'BIOSIMULATIONS_ROOT_URI_FORMAT',
     'BIOSIMULATIONS_ROOT_URI_PATTERN',
     'BIOSIMULATIONS_PREDICATE_TYPES',
+    'BIOSIMULATIONS_THUMBNAIL_FORMATS',
 ]
 
 
@@ -322,3 +324,10 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'required': False,
     },
 }
+
+BIOSIMULATIONS_THUMBNAIL_FORMATS = [
+    CombineArchiveContentFormat.GIF,
+    CombineArchiveContentFormat.JPEG,
+    CombineArchiveContentFormat.PNG,
+    CombineArchiveContentFormat.WEBP,
+]
