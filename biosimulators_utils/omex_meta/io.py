@@ -329,7 +329,7 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
                 * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Meta file
                 * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Meta file
         """
-        metadata = None
+        el_metadatas = None
         errors = []
         warnings = []
 
@@ -337,7 +337,7 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
         errors.extend(tmp_errors)
         warnings.extend(tmp_warnings)
         if errors:
-            return (metadata, errors, warnings)
+            return (el_metadatas, errors, warnings)
 
         triples = self.get_rdf_triples(rdf)
 
@@ -345,15 +345,26 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
         errors.extend(tmp_errors)
         warnings.extend(tmp_warnings)
         if errors:
-            return (metadata, errors, warnings)
+            return (el_metadatas, errors, warnings)
 
-        metadata, tmp_errors, tmp_warnings = self.parse_triples_to_schema(triples, root_uri, working_dir=working_dir)
+        el_metadatas, tmp_errors, tmp_warnings = self.parse_triples_to_schema(triples, root_uri)
         errors.extend(tmp_errors)
         warnings.extend(tmp_warnings)
         if errors:
-            return (metadata, errors, warnings)
+            return (el_metadatas, errors, warnings)
 
-        return (metadata, errors, warnings)
+        for el_metadata in el_metadatas:
+            temp_errors, temp_warnings = validate_biosimulations_metadata(el_metadata, working_dir=working_dir)
+
+            if temp_errors:
+                errors.append(['The metadata for URI `{}` is invalid.'.format(
+                    el_metadata['uri']), temp_errors])
+
+            if temp_warnings:
+                warnings.append(['The metadata for URI `{}` may be invalid.'.format(
+                    el_metadata['uri']),  temp_warnings])
+
+        return (el_metadatas, errors, warnings)
 
     @ classmethod
     def get_combine_archive_uri(cls, triples):
@@ -385,13 +396,12 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
             return (list(root_uris)[0], [], [])
 
     @classmethod
-    def parse_triples_to_schema(cls, triples, root_uri, working_dir=None):
+    def parse_triples_to_schema(cls, triples, root_uri):
         """ Convert a graph of RDF triples into BioSimulations' metadata schema
 
         Args:
             triples (:obj:`list` of :obj:`dict`): representation of the OMEX Meta file as list of triples
             root_uri (:obj:`str`): URI used to the describe the COMBINE/OMEX archive in the list of triples
-            working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
 
         Returns:
             :obj:`list` of :obj:`object`: representation of the triples in BioSimulations' metadata schema
@@ -572,17 +582,6 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
 
         if errors:
             return (el_metadatas, errors, warnings)
-
-        for el_metadata in el_metadatas:
-            temp_errors, temp_warnings = validate_biosimulations_metadata(el_metadata, working_dir=working_dir)
-
-            if temp_errors:
-                errors.append(['The metadata for URI `{}` is invalid.'.format(
-                    el_metadata['uri']), temp_errors])
-
-            if temp_warnings:
-                warnings.append(['The metadata for URI `{}` may be invalid.'.format(
-                    el_metadata['uri']),  temp_warnings])
 
         return (el_metadatas, errors, warnings)
 
