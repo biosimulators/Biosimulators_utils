@@ -6,14 +6,17 @@
 :License: MIT
 """
 
-from .data_model import CombineArchiveBase, CombineArchive, CombineArchiveContent, CombineArchiveContentFormat  # noqa: F401
+from .data_model import (CombineArchiveBase, CombineArchive, CombineArchiveContent,  # noqa: F401
+                         CombineArchiveContentFormat, CombineArchiveContentFormatPattern)
 from ..archive.io import ArchiveReader
 from ..data_model import Person
 from ..utils.core import flatten_nested_list_of_strings
 from ..warnings import warn, BioSimulatorsWarning
 import dateutil.parser
 import libcombine
+import lxml.etree
 import os
+import re
 import zipfile
 
 __all__ = [
@@ -137,12 +140,14 @@ class CombineArchiveReader(object):
         self.errors = None
         self.warnings = None
 
-    def run(self, in_file, out_dir, try_reading_as_plain_zip_archive=True):
+    def run(self, in_file, out_dir, include_omex_metadata_files=True, try_reading_as_plain_zip_archive=True):
         """ Read an archive from a file
 
         Args:
             in_file (:obj:`str`): path to archive
             out_dir (:obj:`str`): directory where the contents of the archive should be unpacked
+            include_omex_metadata_files (:obj:`bool`, optional): whether to include the OMEX metadata
+                file as part of the contents of the archive
             try_reading_as_plain_zip_archive (:obj:`bool`, optional): whether to try reading the
                 file as a plain zip archive
 
@@ -209,6 +214,15 @@ class CombineArchiveReader(object):
         # extract files
         archive_comb.extractTo(out_dir)
 
+        # read metadata files skipped by
+        if include_omex_metadata_files:
+            for manifest_content in self.read_manifest(os.path.join(out_dir, 'manifest.xml')):
+                if (
+                    manifest_content.format and
+                    re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, manifest_content.format)
+                ):
+                    archive.contents.append(manifest_content)
+
         # raise warnings and errors
         if self.warnings:
             warn('COMBINE/OMEX archive may be invalid.\n  ' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
@@ -218,6 +232,27 @@ class CombineArchiveReader(object):
 
         # return information about archive
         return archive
+
+    def read_manifest(self, filename):
+        """ Read the contents of an OMEX manifest file
+
+        Args:
+            filename (:obj:`str`): path to OMEX manifest file
+
+        Returns:
+            :obj:`list` of :obj:`CombineArchiveContent`: contents of the OMEX manifest file
+        """
+        root = lxml.etree.parse(filename).getroot()
+        namespaces = {'omexManifest': root.nsmap[None]}
+        contents_xpaths = "/omexManifest:omexManifest/omexManifest:content"
+        contents = []
+        for contents_xml in root.xpath(contents_xpaths, namespaces=namespaces):
+            contents.append(CombineArchiveContent(
+                location=contents_xml.attrib.get('location', None),
+                format=contents_xml.attrib.get('format', None),
+                master=contents_xml.attrib.get('master', 'false') == 'true',
+            ))
+        return contents
 
     def _read_metadata(self, archive_comb, filename, obj):
         """ Read metadata about an archive or a file in an archive

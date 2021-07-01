@@ -2,6 +2,7 @@ import datetime
 import dateutil.tz
 import libcombine
 import os
+import re
 import shutil
 import tempfile
 import unittest
@@ -52,8 +53,13 @@ class ReadWriteTestCase(unittest.TestCase):
             file.write('b')
 
         io.CombineArchiveWriter().run(archive1, in_dir, archive_file)
-        archive1b = io.CombineArchiveReader().run(archive_file, out_dir)
+        archive1b = io.CombineArchiveReader().run(archive_file, out_dir, include_omex_metadata_files=False)
         self.assertTrue(archive1.is_equal(archive1b))
+
+        archive1b = io.CombineArchiveReader().run(archive_file, out_dir, include_omex_metadata_files=True)
+        metadata_contents = [content.location for content in archive1b.contents
+                             if re.match(data_model.CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format)]
+        self.assertEqual(metadata_contents, ['metadata.rdf', 'metadata_1.rdf', 'metadata_2.rdf'])
 
         self.assertEqual(sorted(os.listdir(out_dir)), sorted([
             content1.location, os.path.dirname(content2.location),
@@ -65,7 +71,7 @@ class ReadWriteTestCase(unittest.TestCase):
             self.assertEqual('b', file.read())
 
         io.CombineArchiveWriter().run(archive2, in_dir, archive_file)
-        archive2b = io.CombineArchiveReader().run(archive_file, out_dir2)
+        archive2b = io.CombineArchiveReader().run(archive_file, out_dir2, include_omex_metadata_files=False)
         self.assertTrue(archive2.is_equal(archive2b))
         self.assertEqual(sorted(os.listdir(out_dir2)), sorted([
             content1.location,

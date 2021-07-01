@@ -169,7 +169,7 @@ def validate_content(content, archive_dirname, validate_models_with_languages=Tr
     return (errors, warnings)
 
 
-def validate_omex_meta_file(filename, archive_dirname, schema=OmexMetaSchema.triples, format=OmexMetaInputFormat.rdfxml):
+def validate_omex_meta_file(filename, archive_dirname, schema=OmexMetaSchema.rdf_triples, format=OmexMetaInputFormat.rdfxml):
     """ validate an OMEX Meta file
 
     Args:
@@ -185,5 +185,5 @@ def validate_omex_meta_file(filename, archive_dirname, schema=OmexMetaSchema.tri
             * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Meta file
             * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Meta file
     """
-    _, _, errors, warnings = read_omex_meta_file(filename, schema=schema, format=format, working_dir=archive_dirname)
+    _, errors, warnings = read_omex_meta_file(filename, schema=schema, format=format, working_dir=archive_dirname)
     return (errors, warnings)

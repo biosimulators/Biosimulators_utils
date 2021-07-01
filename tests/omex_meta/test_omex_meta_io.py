@@ -59,13 +59,11 @@ class OmexMetaIoTestCase(unittest.TestCase):
         self.assertIsInstance(triples[0], data_model.Triple)
 
     def test_TriplesOmexMetaReader_run(self):
-        triples, rdf, errors, warnings = io.TriplesOmexMetaReader().run(self.FIXTURE)
-        self.assertIsInstance(rdf, pyomexmeta.RDF)
+        triples, errors, warnings = io.TriplesOmexMetaReader().run(self.FIXTURE)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        triples, rdf, errors, warnings = io.TriplesOmexMetaReader().run('undefined')
-        self.assertEqual(rdf, None)
+        triples, errors, warnings = io.TriplesOmexMetaReader().run('undefined')
         self.assertIn('is not a file', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
@@ -92,9 +90,9 @@ class OmexMetaIoTestCase(unittest.TestCase):
         self.assertEqual(warnings, [])
 
     def test_BiosimulationsOmexMetaReader_run(self):
-        metadata, rdf, errors, warnings = io.BiosimulationsOmexMetaReader().run(self.FIXTURE, working_dir=self.dir_name)
+        metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(self.FIXTURE, working_dir=self.dir_name)
         expected = [{
-            'location': '.',
+            'uri': '.',
             'title': 'Name',
             'abstract': 'Short summary',
             'keywords': ['tag 1', 'tag 2'],
@@ -186,10 +184,14 @@ class OmexMetaIoTestCase(unittest.TestCase):
             'modified': ['2021-06-18'],
             'other': [
                 {
-                    'attribute_uri': 'http://ontology.eil.utoronto.ca/icity/OM/temporalUnit',
-                    'attribute_label': 'Temporal unit',
-                    'uri': 'http://www.w3.org/2006/time#second',
-                    'label': 'second',
+                    'attribute': {
+                        'uri': 'http://ontology.eil.utoronto.ca/icity/OM/temporalUnit',
+                        'label': 'Temporal unit',
+                    },
+                    'value': {
+                        'uri': 'http://www.w3.org/2006/time#second',
+                        'label': 'second',
+                    },
                 },
             ],
         }]
@@ -200,11 +202,11 @@ class OmexMetaIoTestCase(unittest.TestCase):
         self.assertEqual(warnings, [])
 
         filename = os.path.join(self.FIXTURE_DIR, 'biosimulations-abbrev.rdf')
-        metadata2, rdf, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
+        metadata2, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
         self.assertEqual(metadata2, metadata)
 
         filename = os.path.join(self.FIXTURE_DIR, 'abbrev.rdf')
-        metadata, rdf, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
+        metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
         self.assertEqual(metadata[0]['title'], 'Name')
         self.assertEqual(metadata[0]['funders'], [
             {
@@ -215,16 +217,16 @@ class OmexMetaIoTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        md, _, errors, warnings = io.BiosimulationsOmexMetaReader().run(
+        md, errors, warnings = io.BiosimulationsOmexMetaReader().run(
             os.path.join(self.FIXTURE_DIR, 'biosimulations-with-file-annotations.rdf'),
             working_dir=self.dir_name)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
         self.assertEqual(len(md), 2)
-        self.assertEqual(set(m['location'] for m in md), set(['.', './sim.sedml/figure1']))
-        m = next(m for m in md if m['location'] == './sim.sedml/figure1')
+        self.assertEqual(set(m['uri'] for m in md), set(['.', './sim.sedml/figure1']))
+        m = next(m for m in md if m['uri'] == './sim.sedml/figure1')
         self.assertEqual(m, {
-            'location': './sim.sedml/figure1',
+            'uri': './sim.sedml/figure1',
             'title': None,
             'abstract': None,
             'keywords': [],
@@ -252,80 +254,77 @@ class OmexMetaIoTestCase(unittest.TestCase):
         })
 
         filename = os.path.join(self.FIXTURE_DIR, 'missing-required.rdf')
-        metadata, rdf, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
+        metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
         self.assertIn('is required', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         filename = os.path.join(self.FIXTURE_DIR, 'missing-label.rdf')
-        metadata, rdf, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
+        metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
         self.assertEqual(errors, [])
         self.assertIn('does not contain an rdf:label', flatten_nested_list_of_strings(warnings))
 
         filename = os.path.join(self.FIXTURE_DIR, 'missing-uri.rdf')
-        metadata, rdf, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
+        metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
         self.assertIn('is required', flatten_nested_list_of_strings(errors))
         self.assertIn('does not contain an URI', flatten_nested_list_of_strings(warnings))
 
         filename = os.path.join(self.FIXTURE_DIR, 'missing-label-2.rdf')
-        metadata, rdf, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
+        metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
         self.assertEqual(errors, [])
         self.assertIn('does not contain an rdf:label', flatten_nested_list_of_strings(warnings))
 
         filename = os.path.join(self.FIXTURE_DIR, 'too-many-objects.rdf')
-        metadata, rdf, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
+        metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
         self.assertIn('should only contain one instance of predicate', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         filename = 'does not exist'
-        metadata, rdf, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
+        metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
         self.assertEqual(metadata, None)
         self.assertIn('is not a file', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         filename = self.NO_ROOT_FIXTURE
-        metadata, rdf, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
+        metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
         self.assertEqual(metadata, None)
         self.assertIn('does not contain metadata', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
     def test_read_omex_meta_file(self):
-        triples, rdf, errors, warnings = io.read_omex_meta_file(
+        triples, errors, warnings = io.read_omex_meta_file(
             self.FIXTURE,
-            schema=data_model.OmexMetaSchema.triples)
-        self.assertIsInstance(rdf, pyomexmeta.RDF)
+            schema=data_model.OmexMetaSchema.rdf_triples)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        metadata, rdf, errors, warnings = io.read_omex_meta_file(
+        metadata, errors, warnings = io.read_omex_meta_file(
             self.FIXTURE,
             schema=data_model.OmexMetaSchema.biosimulations,
             working_dir=self.dir_name)
-        self.assertIsInstance(rdf, pyomexmeta.RDF)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        metadata, rdf, errors, warnings = io.read_omex_meta_file(
+        metadata, errors, warnings = io.read_omex_meta_file(
             self.FIXTURE,
             schema=None)
         self.assertEqual(metadata, None)
-        self.assertEqual(rdf, None)
         self.assertIn('is not supported', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
     def test_TriplesOmexMetaWriter_run(self):
-        triples, _, _, _ = io.TriplesOmexMetaReader().run(self.FIXTURE)
+        triples, _, _ = io.TriplesOmexMetaReader().run(self.FIXTURE)
 
         filename = os.path.join(self.dir_name, 'md.rdf')
         io.TriplesOmexMetaWriter().run(triples, filename, format=data_model.OmexMetaOutputFormat.rdfxml)
 
-        md, _, _, _ = io.BiosimulationsOmexMetaReader().run(self.FIXTURE)
-        md2, _, _, _ = io.BiosimulationsOmexMetaReader().run(filename)
+        md, _, _ = io.BiosimulationsOmexMetaReader().run(self.FIXTURE)
+        md2, _, _ = io.BiosimulationsOmexMetaReader().run(filename)
         for key in md[0].keys():
             if isinstance(md[0][key], list) and md[0][key]:
                 if isinstance(md[0][key][0], str):
                     md2[0][key].sort()
                     md[0][key].sort()
-                elif isinstance(md[0][key][0], dict):
+                elif isinstance(md[0][key][0], dict) and 'uri' in md[0][key][0]:
                     md2[0][key].sort(key=lambda obj: (obj['uri'], obj['label']))
                     md[0][key].sort(key=lambda obj: (obj['uri'], obj['label']))
             self.assertEqual(md2[0][key], md[0][key], key)
@@ -337,31 +336,31 @@ class OmexMetaIoTestCase(unittest.TestCase):
         filename = os.path.join(self.dir_name, 'md.xml')
         io.TriplesOmexMetaWriter().run(triples, filename, format=data_model.OmexMetaOutputFormat.rdfxml_abbrev)
 
-        md2, _, _, _ = io.BiosimulationsOmexMetaReader().run(filename)
+        md2, _, _ = io.BiosimulationsOmexMetaReader().run(filename)
         for key in md[0].keys():
             if isinstance(md[0][key], list) and md[0][key]:
                 if isinstance(md[0][key][0], str):
                     md2[0][key].sort()
                     md[0][key].sort()
-                elif isinstance(md[0][key][0], dict):
+                elif isinstance(md[0][key][0], dict) and 'uri' in md[0][key][0]:
                     md2[0][key].sort(key=lambda obj: (obj['uri'], obj['label']))
                     md[0][key].sort(key=lambda obj: (obj['uri'], obj['label']))
             self.assertEqual(md2[0][key], md[0][key], key)
         self.assertEqual(md2, md)
 
     def test_BiosimulationsOmexMetaWriter_run(self):
-        md, _, _, _ = io.BiosimulationsOmexMetaReader().run(self.FIXTURE)
+        md, _, _ = io.BiosimulationsOmexMetaReader().run(self.FIXTURE)
 
         filename = os.path.join(self.dir_name, 'md.rdf')
         io.BiosimulationsOmexMetaWriter().run(md, filename, format=data_model.OmexMetaOutputFormat.rdfxml)
 
-        md2, _, _, _ = io.BiosimulationsOmexMetaReader().run(filename)
+        md2, _, _ = io.BiosimulationsOmexMetaReader().run(filename)
         for key in md[0].keys():
             if isinstance(md[0][key], list) and md[0][key]:
                 if isinstance(md[0][key][0], str):
                     md2[0][key].sort()
                     md[0][key].sort()
-                elif isinstance(md[0][key][0], dict):
+                elif isinstance(md[0][key][0], dict) and 'uri' in md[0][key][0]:
                     md2[0][key].sort(key=lambda obj: (obj['uri'], obj['label']))
                     md[0][key].sort(key=lambda obj: (obj['uri'], obj['label']))
             self.assertEqual(md2[0][key], md[0][key], key)
@@ -370,38 +369,42 @@ class OmexMetaIoTestCase(unittest.TestCase):
         filename = os.path.join(self.dir_name, 'md.rdf')
         md[0]['title'] = None
         md[0]['other'].append({
-            'attribute_uri': 'http://www.collex.org/schema#thumbnail',
-            'attribute_label': 'Image',
-            'uri': 'https://website.com/image.png',
-            'label': 'Big image',
+            'attribute': {
+                'uri': 'http://www.collex.org/schema#thumbnail',
+                'label': 'Image',
+            },
+            'value': {
+                'uri': 'https://website.com/image.png',
+                'label': 'Big image',
+            },
         })
         io.BiosimulationsOmexMetaWriter().run(md, filename, format=data_model.OmexMetaOutputFormat.rdfxml)
 
-        md, _, _, _ = io.BiosimulationsOmexMetaReader().run(
+        md, _, _ = io.BiosimulationsOmexMetaReader().run(
             os.path.join(self.FIXTURE_DIR, 'biosimulations-with-file-annotations.rdf'))
         filename = os.path.join(self.dir_name, 'md.rdf')
         io.BiosimulationsOmexMetaWriter().run(md, filename, format=data_model.OmexMetaOutputFormat.rdfxml)
-        md2, _, _, _ = io.BiosimulationsOmexMetaReader().run(filename)
+        md2, _, _ = io.BiosimulationsOmexMetaReader().run(filename)
 
-        md.sort(key=lambda file: file['location'])
-        md2.sort(key=lambda file: file['location'])
+        md.sort(key=lambda file: file['uri'])
+        md2.sort(key=lambda file: file['uri'])
         for i in range(len(md)):
             for key in md[i].keys():
                 if isinstance(md[i][key], list) and md[i][key]:
                     if isinstance(md[i][key][0], str):
                         md2[i][key].sort()
                         md[i][key].sort()
-                    elif isinstance(md[i][key][0], dict):
+                    elif isinstance(md[i][key][0], dict) and 'uri' in md[i][key][0]:
                         md2[i][key].sort(key=lambda obj: (obj['uri'], obj['label']))
                         md[i][key].sort(key=lambda obj: (obj['uri'], obj['label']))
         self.assertEqual(md2, md)
 
     def test_write_omex_meta_file(self):
-        triples, _, _, _ = io.read_omex_meta_file(self.FIXTURE, data_model.OmexMetaSchema.triples)
+        triples, _, _ = io.read_omex_meta_file(self.FIXTURE, data_model.OmexMetaSchema.rdf_triples)
         filename = os.path.join(self.dir_name, 'md.rdf')
-        io.write_omex_meta_file(triples, data_model.OmexMetaSchema.triples, filename)
+        io.write_omex_meta_file(triples, data_model.OmexMetaSchema.rdf_triples, filename)
 
-        md, _, _, _ = io.BiosimulationsOmexMetaReader().run(self.FIXTURE)
+        md, _, _ = io.BiosimulationsOmexMetaReader().run(self.FIXTURE)
         filename = os.path.join(self.dir_name, 'md.rdf')
         io.write_omex_meta_file(md, data_model.OmexMetaSchema.biosimulations, filename)
 
@@ -430,4 +433,4 @@ class OmexMetaIoTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
         self.assertEqual(len(md), 3)
-        self.assertEqual(sorted(m['location'] for m in md), sorted(['.', '.', './sim.sedml/figure1']))
+        self.assertEqual(sorted(m['uri'] for m in md), sorted(['.', '.', './sim.sedml/figure1']))

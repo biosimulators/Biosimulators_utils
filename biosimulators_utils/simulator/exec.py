@@ -97,7 +97,8 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(
     # run image
     in_dir = tempfile.mkdtemp()
     if os.path.isfile(archive_filename):
-        shutil.copyfile(archive_filename, os.path.join(in_dir, os.path.basename(archive_filename)))
+        copy_archive_filename = os.path.join(in_dir, os.path.basename(archive_filename))
+        shutil.copyfile(archive_filename, copy_archive_filename)
 
     if not os.path.isdir(out_dir):
         os.makedirs(out_dir)
@@ -119,6 +120,7 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(
             if os.name == 'posix':
                 args.extend(['--user', str(os.getuid())])
             else:
+                shutil.rmtree(in_dir)
                 raise NotImplementedError('The current user id can only be retrieved for POSIX OSes')
         elif user_to_exec_within_container == '_SUDO_':
             args.insert(0, 'sudo')

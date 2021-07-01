@@ -35,7 +35,7 @@ def validate_biosimulations_metadata(metadata, working_dir=None):
     warnings = []
 
     # required attributes are present
-    if metadata['location'] == '.':
+    if metadata['uri'] == '.':
         for predicate_type in BIOSIMULATIONS_PREDICATE_TYPES.values():
             if predicate_type['required'] and (
                 (not predicate_type['multiple_allowed'] and metadata[predicate_type['attribute']] is None)

@@ -67,7 +67,7 @@ class OmexMetaOutputFormat(str, enum.Enum):
 class OmexMetaSchema(str, enum.Enum):
     """ Schema for OMEX Meta documents """
     biosimulations = 'BioSimulations'
-    triples = 'triples'
+    rdf_triples = 'rdf_triples'
 
 
 BIOSIMULATIONS_ROOT_URI_FORMAT = 'http://omex-libary.org/{}.omex'

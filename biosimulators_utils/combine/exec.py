@@ -127,10 +127,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         if plot_formats is None:
             plot_formats = [PlotFormat(format_value) for format_value in config.PLOT_FORMATS]
 
-        try:
-            # create temporary directory to unpack archive
-            archive_tmp_dir = tempfile.mkdtemp()
+        # create temporary directory to unpack archive
+        archive_tmp_dir = tempfile.mkdtemp()
 
+        try:
             # unpack archive and read metadata
             archive = CombineArchiveReader().run(archive_filename, archive_tmp_dir)
 
@@ -156,6 +156,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             print(get_summary_sedml_contents(archive, archive_tmp_dir))
 
         except Exception as exception:
+            shutil.rmtree(archive_tmp_dir)
+
             archive = CombineArchive()
             archive_tmp_dir = None
 
