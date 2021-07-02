@@ -573,7 +573,10 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
                         value['value']['label'] = el['value']['label']
                 if value['attribute']['label'] is None or value['value']['label'] is None:
                     msg = '({}, {}, {}) does not contain an rdf:label.'.format(
-                        root_uri, other_md['predicate'], other_md['value']['uri']
+                        root_uri, other_md['predicate'],
+                        other_md['value']['label']
+                        if other_md['value']['type'] == 'Literal'
+                        else other_md['value']['uri']
                     )
                     ignored_statements.append([msg])
                 else:
