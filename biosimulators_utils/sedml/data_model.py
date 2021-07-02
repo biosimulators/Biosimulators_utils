@@ -61,6 +61,7 @@ class ModelLanguage(str, enum.Enum):
     BNGL = 'urn:sedml:language:bngl'
     CellML = 'urn:sedml:language:cellml'
     CopasiML = 'urn:sedml:language:copasiml'
+    GINML = 'urn:sedml:language:ginml'
     HOC = 'urn:sedml:language:hoc'
     Kappa = 'urn:sedml:language:kappa'
     LEMS = 'urn:sedml:language:lems'
@@ -70,6 +71,7 @@ class ModelLanguage(str, enum.Enum):
     SBML = 'urn:sedml:language:sbml'
     Smoldyn = 'urn:sedml:language:smoldyn'
     VCML = 'urn:sedml:language:vcml'
+    ZGINML = 'urn:sedml:language:zginml'
 
 
 class ModelLanguagePattern(str, enum.Enum):
@@ -77,6 +79,7 @@ class ModelLanguagePattern(str, enum.Enum):
     BNGL = r'^urn:sedml:language:bngl(\.|$)'
     CellML = r'^urn:sedml:language:cellml(\.\d+_\d+)?$'
     CopasiML = r'^urn:sedml:language:copasiml(\.|$)'
+    GINML = r'^urn:sedml:language:ginml(\.|$)'
     HOC = r'^urn:sedml:language:hoc(\.|$)'
     Kappa = r'^urn:sedml:language:kappa(\.|$)'
     LEMS = r'^urn:sedml:language:lems(\.|$)'
@@ -86,6 +89,7 @@ class ModelLanguagePattern(str, enum.Enum):
     SBML = r'^urn:sedml:language:sbml(\.level\-\d+\.version\-\d+)?$'
     Smoldyn = r'^urn:sedml:language:smoldyn(\.|$)'
     VCML = r'^urn:sedml:language:vcml(\.|$)'
+    ZGINML = r'^urn:sedml:language:zginml(\.|$)'
 
 
 class ModelLanguageEdamId(str, enum.Enum):
@@ -93,6 +97,7 @@ class ModelLanguageEdamId(str, enum.Enum):
     BNGL = 'format_3972'
     CellML = 'format_3240'
     CopasiML = 'format_9003'
+    GINML = 'format_9009'
     HOC = 'format_9005'
     Kappa = 'format_9006'
     LEMS = 'format_9004'
@@ -102,6 +107,7 @@ class ModelLanguageEdamId(str, enum.Enum):
     SBML = 'format_2585'
     Smoldyn = 'format_9001'
     VCML = 'format_9000'
+    ZGINML = 'format_9008'
 
 
 class Symbol(str, enum.Enum):

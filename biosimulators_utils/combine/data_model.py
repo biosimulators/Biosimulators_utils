@@ -166,6 +166,7 @@ class CombineArchiveContentFormat(str, enum.Enum):
     CellML = 'http://identifiers.org/combine.specifications/cellml'
     CopasiML = 'http://purl.org/NET/mediatypes/application/x-copasi'
     GIF = 'http://purl.org/NET/mediatypes/image/gif'
+    GINML = 'http://purl.org/NET/mediatypes/application/ginml+xml'
     HOC = 'http://purl.org/NET/mediatypes/text/x-hoc'
     JPEG = 'http://purl.org/NET/mediatypes/image/jpeg'
     Kappa = 'http://purl.org/NET/mediatypes/text/x-kappa'
@@ -189,6 +190,7 @@ class CombineArchiveContentFormat(str, enum.Enum):
     TIFF = 'http://purl.org/NET/mediatypes/image/tiff'
     VCML = 'http://purl.org/NET/mediatypes/application/vcml+xml'
     WEBP = 'http://purl.org/NET/mediatypes/image/webp'
+    ZGINML = 'http://purl.org/NET/mediatypes/application/zginml+zip'
     OTHER = 'http://purl.org/NET/mediatypes/application/octet-stream'
 
 
@@ -200,6 +202,7 @@ class CombineArchiveContentFormatPattern(str, enum.Enum):
     CellML = r'^https?://identifiers\.org/combine\.specifications/cellml($|\.)'
     CopasiML = r'^https?://purl\.org/NET/mediatypes/application/x-copasi$'
     GIF = r'^https?://purl\.org/NET/mediatypes/image/gif$'
+    GINML = r'^https?://purl\.org/NET/mediatypes/application/ginml\+xml$'
     HOC = r'^https?://purl\.org/NET/mediatypes/text/x-hoc$'
     JPEG = r'^http?://purl\.org/NET/mediatypes/image/jpeg$'
     Kappa = r'^https?://purl\.org/NET/mediatypes/text/x-kappa$'
@@ -223,4 +226,5 @@ class CombineArchiveContentFormatPattern(str, enum.Enum):
     TIFF = r'^https?://purl\.org/NET/mediatypes/image/tiff$'
     VCML = r'^https?://purl\.org/NET/mediatypes/application/vcml\+xml$'
     WEBP = r'^https?://purl\.org/NET/mediatypes/image/webp$'
+    ZGINML = r'^https?://purl\.org/NET/mediatypes/application/zginml\+zip$'
     OTHER = r'^https?://purl\.org/NET/mediatypes/application/octet-stream$'
