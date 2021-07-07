@@ -751,7 +751,7 @@ def validate_model_language(language, valid_languages):
             "Model language `{}` is not supported. "
             "Models must be in {} format (e.g., `sed:model/@language` must match `{}` such as `{}`)."
         ).format(language or '',
-                 ', '.join(l.name for l in valid_languages),
+                 ', '.join(valid_language.name for valid_language in valid_languages),
                  valid_language_pattern.value,
                  valid_language.value)
         errors.append([msg])
