@@ -723,25 +723,37 @@ def validate_model(model, model_ids, working_dir, validate_models_with_languages
     return (errors, warnings)
 
 
-def validate_model_language(language, valid_language):
+def validate_model_language(language, valid_languages):
     """ Check that model is encoded in a specific language
 
     Args:
         language (:obj:`str`): model language
-        valid_language (:obj:`ModelLanguage`): regular expression pattern for valid model language
+        valid_language (:obj:`ModelLanguage` or :obj:`list` of :obj:`ModelLanguage`): valid language(s)
 
     Returns:
         nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
     """
     errors = []
 
-    valid_language_pattern = ModelLanguagePattern[valid_language.name]
+    if not isinstance(valid_languages, (list, tuple)):
+        valid_languages = [valid_languages]
 
-    if not language or not re.match(valid_language_pattern.value, language):
+    is_valid = False
+    for valid_language in valid_languages:
+        valid_language_pattern = ModelLanguagePattern[valid_language.name]
+
+        if language and re.match(valid_language_pattern.value, language):
+            is_valid = True
+            break
+
+    if not is_valid:
         msg = (
             "Model language `{}` is not supported. "
-            "Models must be in {} format (`sed:model/@language` must match `{}` such as `{}`)."
-        ).format(language or '', valid_language.name, valid_language_pattern.value, valid_language.value)
+            "Models must be in {} format (e.g., `sed:model/@language` must match `{}` such as `{}`)."
+        ).format(language or '',
+                 ', '.join(l.name for l in valid_languages),
+                 valid_language_pattern.value,
+                 valid_language.value)
         errors.append([msg])
 
     return errors

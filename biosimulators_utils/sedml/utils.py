@@ -1136,6 +1136,7 @@ def is_model_language_encoded_in_xml(language):
     return (
         re.match(ModelLanguagePattern.CellML, language)
         or re.match(ModelLanguagePattern.CopasiML, language)
+        or re.match(ModelLanguagePattern.GINML, language)
         or re.match(ModelLanguagePattern.LEMS, language)
         or re.match(ModelLanguagePattern.MorpheusML, language)
         or re.match(ModelLanguagePattern.NeuroML, language)
