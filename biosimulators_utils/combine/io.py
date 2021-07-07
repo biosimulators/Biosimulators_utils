@@ -215,11 +215,13 @@ class CombineArchiveReader(object):
         archive_comb.extractTo(out_dir)
 
         # read metadata files skipped by
+        content_locations = set(os.path.relpath(content.location, '.') for content in archive.contents)
         if include_omex_metadata_files:
             for manifest_content in self.read_manifest(os.path.join(out_dir, 'manifest.xml')):
                 if (
-                    manifest_content.format and
-                    re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, manifest_content.format)
+                    manifest_content.format
+                    and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, manifest_content.format)
+                    and os.path.relpath(manifest_content.location, '.') not in content_locations
                 ):
                     archive.contents.append(manifest_content)
 
