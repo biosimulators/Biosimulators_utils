@@ -200,18 +200,17 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
             get_parameters_variables_for_simulation(self.FBC_FIXTURE, ModelLanguage.SBML, UniformTimeCourseSimulation, None)
 
     def test_qual_steady_state(self):
-        with self.assertRaisesRegex(NotImplementedError, 'not supported'):
-            params, sim, vars = get_parameters_variables_for_simulation(
-                self.QUAL_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000450')
+        params, sim, vars = get_parameters_variables_for_simulation(
+            self.QUAL_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000659')
 
-            self.assertEqual(vars[0].id, 'level_species_erk')
-            self.assertEqual(vars[0].name, 'Level of species "erk"')
-            self.assertEqual(vars[0].symbol, None)
-            self.assertEqual(vars[0].target, "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='erk']")
-            self.assertEqual(vars[0].target_namespaces, {
-                'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
-                'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
-            })
+        self.assertEqual(vars[0].id, 'level_species_erk')
+        self.assertEqual(vars[0].name, 'Level of species "erk"')
+        self.assertEqual(vars[0].symbol, None)
+        self.assertEqual(vars[0].target, "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='erk']")
+        self.assertEqual(vars[0].target_namespaces, {
+            'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+            'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
+        })
 
     def test_qual_steady_state_with_extra_vars(self):
         params, sim, vars = get_parameters_variables_for_simulation(

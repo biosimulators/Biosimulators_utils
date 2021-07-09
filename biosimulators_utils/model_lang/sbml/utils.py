@@ -91,8 +91,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         ))
 
     elif simulation_type in [SteadyStateSimulation]:
-        if has_qual:
-            raise NotImplementedError('Steady state simulations are not supported for qual models')
+        pass
 
     else:
         raise NotImplementedError('Simulation of type `{}` are not supported'.format(simulation_type))
@@ -194,6 +193,13 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 step=1.,
                 algorithm=algorithm or Algorithm(
                     kisao_id='KISAO_0000449',
+                ),
+            )
+        elif simulation_type == SteadyStateSimulation:
+            sim = SteadyStateSimulation(
+                id='simulation',
+                algorithm=algorithm or Algorithm(
+                    kisao_id='KISAO_0000659',
                 ),
             )
         else:
