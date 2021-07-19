@@ -236,3 +236,25 @@ class ReadWriteTestCase(unittest.TestCase):
         archive = io.CombineArchiveReader().run(filename, os.path.join(self.temp_dir, 'g'))
         errors, warnings = validation.validate(archive, os.path.join(self.temp_dir, 'g'))
         self.assertEqual(errors, [])
+
+    def test_write_read_manifest(self):
+        manifest_filename = os.path.join(self.temp_dir, 'test.xml')
+        contents = [
+            data_model.CombineArchiveContent(
+                location='1.txt',
+                format='http://purl.org/NET/mediatypes/plain/text',
+                master=False,
+            ),
+            data_model.CombineArchiveContent(
+                location='2.jpg',
+                format='http://purl.org/NET/mediatypes/image/jpeg',
+                master=True,
+            ),
+        ]
+
+        io.CombineArchiveWriter().write_manifest(contents, manifest_filename)
+        contents_2 = io.CombineArchiveReader().read_manifest(manifest_filename)
+
+        archive = data_model.CombineArchive(contents=contents)
+        archive_2 = data_model.CombineArchive(contents=contents_2)
+        self.assertTrue(archive_2.is_equal(archive))

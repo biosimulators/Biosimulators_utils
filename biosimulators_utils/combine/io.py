@@ -12,11 +12,16 @@ from ..archive.io import ArchiveReader
 from ..data_model import Person
 from ..utils.core import flatten_nested_list_of_strings
 from ..warnings import warn, BioSimulatorsWarning
+import copy
+import datetime
 import dateutil.parser
+import dateutil.tz
 import libcombine
 import lxml.etree
 import os
 import re
+import shutil
+import tempfile
 import zipfile
 
 __all__ = [
@@ -88,6 +93,36 @@ class CombineArchiveWriter(object):
                  BioSimulatorsWarning)
         if self.errors:
             raise ValueError('COMBINE/OMEX archive is invalid.\n  ' + flatten_nested_list_of_strings(self.errors).replace('\n', '\n  '))
+
+    def write_manifest(self, contents, filename):
+        """ Write an OMEX manifest file
+
+        Args:
+            contents (:obj:`list` of :obj:`CombineArchiveContent`): contents of a COMBINE/OMEX archive
+            filename (:obj:`str`): path to OMEX manifest file
+        """
+        # This uses :obj:`libcombine.CombineArchive.writeToFile` because libCOMBINE doesn't provide a
+        #   method to directly write manifests
+        # Updated dates are set to work around bug with libCOMBINE
+        time = datetime.datetime(2020, 1, 1, 1, 1, 1, tzinfo=dateutil.tz.tzutc())
+        archive = CombineArchive(
+            contents=copy.deepcopy(contents),
+            updated=time,
+        )
+        for content in archive.contents:
+            content.updated = time
+
+        temp_dirname = tempfile.mkdtemp()
+        fid, archive_filename = tempfile.mkstemp()
+        os.close(fid)
+        self.run(archive, temp_dirname, archive_filename)
+
+        with zipfile.ZipFile(archive_filename, 'r') as zip_file:
+            zip_file.extract('manifest.xml', temp_dirname)
+        shutil.move(os.path.join(temp_dirname, 'manifest.xml'), filename)
+
+        os.remove(archive_filename)
+        shutil.rmtree(temp_dirname)
 
     def _write_metadata(self, obj, archive_comb, filename):
         """ Write metadata about an archive or a file in an archive
@@ -244,6 +279,8 @@ class CombineArchiveReader(object):
         Returns:
             :obj:`list` of :obj:`CombineArchiveContent`: contents of the OMEX manifest file
         """
+        # This uses :obj:`lxml.etree.parse` because libCOMBINE doesn't provide a method to
+        # directly read manifests
         root = lxml.etree.parse(filename).getroot()
         namespaces = {'omexManifest': root.nsmap[None]}
         contents_xpaths = "/omexManifest:omexManifest/omexManifest:content"
