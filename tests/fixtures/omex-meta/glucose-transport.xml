@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model metaid="GlucoseTransport" id="GlucoseTransport">
+    <listOfCompartments>
+      <compartment id="cytoplasm" metaid="cytoplasm" spatialDimensions="3" size="1" constant="true"/>
+      <compartment id="nucleus" metaid="nucleus" spatialDimensions="3" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="glucose_c" metaid="glucose_c" compartment="cytoplasm" initialConcentration="10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="glucose_n" metaid="glucose_n" compartment="nucleus" initialConcentration="100" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="kimp" metaid="kimp" value="10" constant="true"/>
+      <parameter id="kexp" metaid="kexp" value="0.1" constant="true"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="r1_imp"  metaid="r1_imp" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="glucose_c" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="glucose_n" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cytoplasm </ci>
+              <ci> kimp </ci>
+              <ci> glucose_c </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="r2_exp" metaid="r2_exp" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="glucose_n" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="glucose_c" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> nucleus </ci>
+              <ci> kexp </ci>
+              <ci> glucose_n </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

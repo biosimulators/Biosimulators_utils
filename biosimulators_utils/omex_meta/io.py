@@ -308,7 +308,9 @@ class TriplesOmexMetaWriter(OmexMetaWriter):
         else:
             graph.serialize(filename, format="xml")
             rdf = pyomexmeta.RDF.from_file(filename, 'rdfxml')
-            rdf.to_file(filename, format.value)
+            if rdf.to_file(filename, format.value) != 0:
+                raise RuntimeError('Metadata could not be saved to `{}` in `{}` format.'.format(
+                    filename, format.value))
 
 
 class BiosimulationsOmexMetaReader(OmexMetaReader):
