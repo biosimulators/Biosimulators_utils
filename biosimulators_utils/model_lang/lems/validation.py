@@ -9,8 +9,7 @@
 from ...log.data_model import StandardOutputErrorCapturerLevel
 from ...log.utils import StandardOutputErrorCapturer
 from lems.model.model import Model
-from pyneuroml.pynml import get_path_to_jnml_jar
-from pyneuroml.pynml import run_jneuroml, DEFAULTS
+from pyneuroml.pynml import get_path_to_jnml_jar, run_jneuroml, DEFAULTS
 import os
 import shutil
 import tempfile
