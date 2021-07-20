@@ -42,6 +42,8 @@ __all__ = [
     'exec_report',
     'exec_plot_2d',
     'exec_plot_3d',
+    'get_report_for_plot2d',
+    'get_report_for_plot3d',
 ]
 
 
