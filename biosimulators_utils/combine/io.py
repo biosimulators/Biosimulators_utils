@@ -12,15 +12,11 @@ from ..archive.io import ArchiveReader
 from ..data_model import Person
 from ..utils.core import flatten_nested_list_of_strings
 from ..warnings import warn, BioSimulatorsWarning
-import copy
 import dateutil.parser
 import dateutil.tz
 import libcombine
-import lxml.etree
 import os
 import re
-import shutil
-import tempfile
 import zipfile
 
 __all__ = [
