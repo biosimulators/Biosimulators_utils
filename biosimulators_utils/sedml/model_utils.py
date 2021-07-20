@@ -14,8 +14,6 @@ from .data_model import (  # noqa: F401
 from .exceptions import UnsupportedModelLanguageError
 from .io import SedmlSimulationWriter
 import copy
-import datetime
-import dateutil.tz
 import os
 import re
 import shutil
@@ -133,22 +131,14 @@ def build_combine_archive_for_model(model_filename, model_language, simulation_t
     SedmlSimulationWriter().run(sedml_doc, os.path.join(archive_dirname, 'simulation.sedml'))
 
     # form a description of the archive
-    utc_now = datetime.datetime.utcnow()
-    now = datetime.datetime(utc_now.year, utc_now.month, utc_now.day, utc_now.hour, utc_now.minute, utc_now.second,
-                            tzinfo=dateutil.tz.tzutc())
-
-    archive = CombineArchive(created=now, updated=now)
+    archive = CombineArchive()
     archive.contents.append(CombineArchiveContent(
         location=os.path.basename(model_filename),
         format=CombineArchiveContentFormat[model_language.name].value,
-        created=now,
-        updated=now,
     ))
     archive.contents.append(CombineArchiveContent(
         location='simulation.sedml',
         format=CombineArchiveContentFormat.SED_ML.value,
-        created=now,
-        updated=now,
     ))
 
     # save archive to file

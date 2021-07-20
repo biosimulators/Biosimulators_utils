@@ -13,7 +13,6 @@ from ..data_model import Person
 from ..utils.core import flatten_nested_list_of_strings
 from ..warnings import warn, BioSimulatorsWarning
 import copy
-import datetime
 import dateutil.parser
 import dateutil.tz
 import libcombine
@@ -40,8 +39,8 @@ class CombineArchiveWriter(object):
     """
 
     def __init__(self):
-        self.errors = None
-        self.warnings = None
+        self.errors = []
+        self.warnings = []
 
     def run(self, archive, in_dir, out_file):
         """ Write an archive to a file
@@ -84,7 +83,7 @@ class CombineArchiveWriter(object):
             self.errors.append([msg])
             raise Exception(msg)
 
-        errors, warnings = get_combine_errors_warnings(archive_comb)
+        errors, warnings = get_combine_errors_warnings(archive_comb.getManifest())
         self.errors.extend(errors)
         self.warnings.extend(warnings)
 
@@ -101,28 +100,28 @@ class CombineArchiveWriter(object):
             contents (:obj:`list` of :obj:`CombineArchiveContent`): contents of a COMBINE/OMEX archive
             filename (:obj:`str`): path to OMEX manifest file
         """
-        # This uses :obj:`libcombine.CombineArchive.writeToFile` because libCOMBINE doesn't provide a
-        #   method to directly write manifests
-        # Updated dates are set to work around bug with libCOMBINE
-        time = datetime.datetime(2020, 1, 1, 1, 1, 1, tzinfo=dateutil.tz.tzutc())
-        archive = CombineArchive(
-            contents=copy.deepcopy(contents),
-            updated=time,
-        )
-        for content in archive.contents:
-            content.updated = time
+        manifest = libcombine.CaOmexManifest()
+        for content in contents:
+            content_comb = manifest.createContent()
 
-        temp_dirname = tempfile.mkdtemp()
-        fid, archive_filename = tempfile.mkstemp()
-        os.close(fid)
-        self.run(archive, temp_dirname, archive_filename)
+            if content.location is not None:
+                content_comb.setLocation(content.location)
 
-        with zipfile.ZipFile(archive_filename, 'r') as zip_file:
-            zip_file.extract('manifest.xml', temp_dirname)
-        shutil.move(os.path.join(temp_dirname, 'manifest.xml'), filename)
+            if content.format is not None:
+                content_comb.setFormat(content.format)
 
-        os.remove(archive_filename)
-        shutil.rmtree(temp_dirname)
+            if content.master is not None:
+                content_comb.setMaster(content.master)
+
+        errors, warnings = get_combine_errors_warnings(manifest)
+        if warnings:
+            msg = 'COMBINE/OMEX archive may be invalid.\n  ' + flatten_nested_list_of_strings(warnings).replace('\n', '\n  ')
+            warn(msg, BioSimulatorsWarning)
+        if errors:
+            msg = 'COMBINE/OMEX archive is invalid.\n  ' + flatten_nested_list_of_strings(errors).replace('\n', '\n  ')
+            raise ValueError(msg)
+
+        libcombine.writeOMEXToFile(manifest, filename)
 
     def _write_metadata(self, obj, archive_comb, filename):
         """ Write metadata about an archive or a file in an archive
@@ -137,28 +136,41 @@ class CombineArchiveWriter(object):
         """
         desc_comb = libcombine.OmexDescription()
         desc_comb.setAbout(filename)
+        set_attributes = set()
+
         if obj.description:
+            set_attributes.add('description')
             desc_comb.setDescription(obj.description)
+
         for author in obj.authors:
+            set_attributes.add('authors')
             creator_comb = libcombine.VCard()
             if author.given_name:
                 creator_comb.setGivenName(author.given_name)
             if author.family_name:
                 creator_comb.setFamilyName(author.family_name)
             desc_comb.addCreator(creator_comb)
+
         if obj.created:
+            set_attributes.add('created')
             date_comb = libcombine.Date()
             date_comb.setDateAsString(obj.created.strftime('%Y-%m-%dT%H:%M:%SZ'))
             desc_comb.setCreated(date_comb)
+
         if obj.updated:
+            set_attributes.add('updated')
             date_comb = libcombine.Date()
             date_comb.setDateAsString(obj.updated.strftime('%Y-%m-%dT%H:%M:%SZ'))
             desc_comb.getModified().append(date_comb)
-        else:
-            msg = 'libcombine does not support undefined updated dates'
-            self.errors.append([msg])
-            raise NotImplementedError(msg)
-        archive_comb.addMetadata(filename, desc_comb)
+
+        if set_attributes:
+            if desc_comb.isEmpty():
+                msg = 'libCOMBINE requires additional metadata. Only the following attributes are set:\n  {}'.format(
+                    '\n  '.join(sorted(set_attributes)))
+                self.errors.append([msg])
+                raise ValueError(msg)
+
+            archive_comb.addMetadata(filename, desc_comb)
 
 
 class CombineArchiveReader(object):
@@ -172,8 +184,8 @@ class CombineArchiveReader(object):
     NONE_DATETIME = '2000-01-01T00:00:00Z'
 
     def __init__(self):
-        self.errors = None
-        self.warnings = None
+        self.errors = []
+        self.warnings = []
 
     def run(self, in_file, out_dir, include_omex_metadata_files=True, try_reading_as_plain_zip_archive=True):
         """ Read an archive from a file
@@ -202,7 +214,7 @@ class CombineArchiveReader(object):
 
         archive_comb = libcombine.CombineArchive()
         if archive_comb.initializeFromArchive(in_file):
-            errors, warnings = get_combine_errors_warnings(archive_comb)
+            errors, warnings = get_combine_errors_warnings(archive_comb.getManifest())
             self.errors.extend(errors)
             self.warnings.extend(warnings)
 
@@ -211,7 +223,7 @@ class CombineArchiveReader(object):
                 try:
                     archive = CombineArchiveZipReader().run(in_file, out_dir)
                     msg = '`{}` is a plain zip archive, not a COMBINE/OMEX archive.'.format(in_file)
-                    warn(msg, UserWarning)
+                    warn(msg, BioSimulatorsWarning)
                     return archive
                 except ValueError:
                     msg = "`{}` is not a valid COMBINE/OMEX archive.".format(in_file)
@@ -249,7 +261,7 @@ class CombineArchiveReader(object):
         # extract files
         archive_comb.extractTo(out_dir)
 
-        # read metadata files skipped by
+        # read metadata files skipped by libCOMBINE
         content_locations = set(os.path.relpath(content.location, '.') for content in archive.contents)
         if include_omex_metadata_files:
             for manifest_content in self.read_manifest(os.path.join(out_dir, 'manifest.xml')):
@@ -279,18 +291,31 @@ class CombineArchiveReader(object):
         Returns:
             :obj:`list` of :obj:`CombineArchiveContent`: contents of the OMEX manifest file
         """
-        # This uses :obj:`lxml.etree.parse` because libCOMBINE doesn't provide a method to
-        # directly read manifests
-        root = lxml.etree.parse(filename).getroot()
-        namespaces = {'omexManifest': root.nsmap[None]}
-        contents_xpaths = "/omexManifest:omexManifest/omexManifest:content"
+        manifest_comb = libcombine.readOMEXFromFile(filename)
+        if not isinstance(manifest_comb, libcombine.CaOmexManifest):
+            self.errors(['`{}` could not be read as an OMEX manifest file.'].format(filename))
+            return []
+
+        errors, warnings = get_combine_errors_warnings(manifest_comb)
+        self.errors.extend(errors)
+        self.warnings.extend(warnings)
+        if errors:
+            return []
+
         contents = []
-        for contents_xml in root.xpath(contents_xpaths, namespaces=namespaces):
-            contents.append(CombineArchiveContent(
-                location=contents_xml.attrib.get('location', None),
-                format=contents_xml.attrib.get('format', None),
-                master=contents_xml.attrib.get('master', 'false') == 'true',
-            ))
+        for content_comb in manifest_comb.getListOfContents():
+            content = CombineArchiveContent()
+
+            if content_comb.isSetLocation():
+                content.location = content_comb.getLocation()
+
+            if content_comb.isSetFormat():
+                content.format = content_comb.getFormat()
+
+            if content_comb.isSetMaster():
+                content.master = content_comb.getMaster()
+
+            contents.append(content)
         return contents
 
     def _read_metadata(self, archive_comb, filename, obj):
@@ -363,11 +388,11 @@ class CombineArchiveZipReader(object):
         return combine_archive
 
 
-def get_combine_errors_warnings(archive):
-    """ Get the errors and warnings of a COMBINE/OMEX archive
+def get_combine_errors_warnings(manifest):
+    """ Get the errors and warnings of an OMEX manifest
 
     Args:
-        archive (:obj:`libcombine.CombineArchive`): archive
+        manifest (:obj:`libcombine.CaOmexManifest`): manifest
 
     Returns:
         :obj:`tuple`:
@@ -378,7 +403,6 @@ def get_combine_errors_warnings(archive):
     errors = []
     warnings = []
 
-    manifest = archive.getManifest()
     log = manifest.getErrorLog()
     for i_error in range(log.getNumErrors()):
         error = log.getError(i_error)

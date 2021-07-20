@@ -29,21 +29,17 @@ class ExecCombineTestCase(unittest.TestCase):
         shutil.rmtree(self.tmp_dir)
 
     def test_1(self):
-        updated = datetime.datetime(2020, 1, 2, 1, 2, 3, tzinfo=dateutil.tz.tzutc())
         archive = CombineArchive(
             contents=[
                 CombineArchiveContent(
                     location='sim.sedml',
                     format='http://identifiers.org/combine.specifications/sed-ml',
-                    updated=updated,
                 ),
                 CombineArchiveContent(
                     location='model.xml',
                     format='http://identifiers.org/combine.specifications/sbml',
-                    updated=updated,
                 ),
             ],
-            updated=updated,
         )
 
         in_dir = os.path.join(self.tmp_dir, 'archive')
@@ -128,21 +124,17 @@ class ExecCombineTestCase(unittest.TestCase):
                          sorted(['report1.csv', 'report2.csv']))
 
     def test_2(self):
-        updated = datetime.datetime(2020, 1, 2, 1, 2, 3, tzinfo=dateutil.tz.tzutc())
         archive = CombineArchive(
             contents=[
                 CombineArchiveContent(
                     location='dir1/dir2/sim.sedml',
                     format='http://identifiers.org/combine.specifications/sed-ml',
-                    updated=updated,
                 ),
                 CombineArchiveContent(
                     location='model.xml',
                     format='http://identifiers.org/combine.specifications/sbml',
-                    updated=updated,
                 ),
             ],
-            updated=updated,
         )
 
         in_dir = os.path.join(self.tmp_dir, 'archive')
@@ -227,16 +219,13 @@ class ExecCombineTestCase(unittest.TestCase):
         self.assertIn('log.yml', os.listdir(out_dir))
 
     def test_capturer_not_available(self):
-        updated = datetime.datetime(2020, 1, 2, 1, 2, 3, tzinfo=dateutil.tz.tzutc())
         archive = CombineArchive(
             contents=[
                 CombineArchiveContent(
                     location='dir1/dir2/sim.sedml',
                     format='http://identifiers.org/combine.specifications/sed-ml',
-                    updated=updated,
                 ),
             ],
-            updated=updated,
         )
 
         in_dir = os.path.join(self.tmp_dir, 'archive')
