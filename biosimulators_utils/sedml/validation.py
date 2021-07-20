@@ -39,6 +39,7 @@ __all__ = [
     'validate_doc',
     'validate_reference',
     'validate_task',
+    'validate_repeated_task_has_one_model',
     'validate_model',
     'validate_model_language',
     'validate_model_source',
@@ -219,8 +220,10 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                         '\n  - '.join([str(order) for order in sorted(duplicate_orders)]))
                     task_errors[task]['other'].append([msg])
 
+        subtasks_cyclic = False
         try:
             networkx.algorithms.cycles.find_cycle(sub_task_graph)
+            subtasks_cyclic = True
             errors.append(['The subtasks are defined cyclically. The graph of subtasks must be acyclic.'])
         except networkx.NetworkXNoCycle:
             for task in doc.tasks:
@@ -351,6 +354,7 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
         if check_range_cycles:
             try:
                 networkx.algorithms.cycles.find_cycle(functional_range_graph)
+                subtasks_cyclic = True
                 errors.append(['The functional ranges are defined cyclically. The graph of functional ranges must be acyclic.'])
             except networkx.NetworkXNoCycle:
                 check_range_lens = True
@@ -490,6 +494,14 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
                 if all_change_warnings:
                     task_warnings[task]['other'].append(['Changes may be invalid.', all_change_warnings])
+
+        # repeated tasks involve 1 model
+        if not subtasks_cyclic:
+            for task in doc.tasks:
+                if isinstance(task, RepeatedTask):
+                    temp_errors, temp_warnings = validate_repeated_task_has_one_model(task)
+                    task_errors[task]['other'].extend(temp_errors)
+                    task_warnings[task]['other'].extend(temp_warnings)
 
         for i_task, task in enumerate(doc.tasks):
             task_id = '`' + task.id + '`' if task and task.id else str(i_task + 1)
@@ -683,6 +695,30 @@ def validate_task(task):
 
     # return errors
     return errors
+
+
+def validate_repeated_task_has_one_model(task):
+    """ Validate a that a repeated task involves a single model
+
+    Args:
+        task (:obj:`RepeatedTask`): repeated task
+
+    Returns:
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * nested :obj:`list` of :obj:`str`: nested list of warnings (e.g., required ids missing or ids not unique)
+    """
+    errors = []
+    warnings = []
+    models = get_models_referenced_by_task(task)
+    if len(models) > 1:
+        msg = (
+            'The use of multiple models with a repeated task is a developmental feature of SED-ML. '
+            'This task may not be executed consistently across simulation tools.'
+        )
+        warnings.append([msg])
+    return (errors, warnings)
 
 
 def validate_model(model, model_ids, working_dir, validate_models_with_languages=True):

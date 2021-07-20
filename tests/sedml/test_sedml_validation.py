@@ -1242,6 +1242,28 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertIn('could not be validated', flatten_nested_list_of_strings(warnings))
 
+    def test_validate_repeated_task_has_one_model(self):
+        model = data_model.Model(id='0')
+        task = data_model.RepeatedTask(
+            sub_tasks=[
+                data_model.SubTask(task=data_model.Task(model=model)),
+                data_model.SubTask(task=data_model.Task(model=model)),
+                data_model.SubTask(task=data_model.RepeatedTask(
+                    sub_tasks=[
+                        data_model.SubTask(task=data_model.Task(model=model)),
+                    ]
+                ))
+            ]
+        )
+        errors, warnings = validation.validate_repeated_task_has_one_model(task)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        task.sub_tasks[0].task.model = data_model.Model(id='1')
+        errors, warnings = validation.validate_repeated_task_has_one_model(task)
+        self.assertEqual(errors, [])
+        self.assertIn('use of multiple models', flatten_nested_list_of_strings(warnings))
+
     def test_validate_variable_xpaths(self):
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
 

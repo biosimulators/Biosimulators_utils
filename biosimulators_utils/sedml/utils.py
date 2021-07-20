@@ -900,23 +900,30 @@ def get_models_referenced_by_task(task):
         :obj:`set` of :obj:`Model`: models
     """
     if isinstance(task, Task):
-        return set([task.model])
+        if task.model:
+            return set([task.model])
+        else:
+            return set()
 
     elif isinstance(task, RepeatedTask):
         models = set()
 
-        models.update(get_models_referenced_by_range(task.range))
+        if task.range:
+            models.update(get_models_referenced_by_range(task.range))
 
         for change in task.changes:
-            models.update(get_models_referenced_by_model_change(change))
+            if change:
+                models.update(get_models_referenced_by_model_change(change))
 
         for sub_task in task.sub_tasks:
-            models.update(get_models_referenced_by_task(sub_task.task))
+            if sub_task and sub_task.task:
+                models.update(get_models_referenced_by_task(sub_task.task))
 
         if task.range:
             models.update(get_models_referenced_by_range(task.range))
         for range in task.ranges:
-            models.update(get_models_referenced_by_range(range))
+            if range:
+                models.update(get_models_referenced_by_range(range))
 
         return models
 
