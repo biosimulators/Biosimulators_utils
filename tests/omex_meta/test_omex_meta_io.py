@@ -264,10 +264,20 @@ class OmexMetaIoTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertIn('does not contain an rdf:label', flatten_nested_list_of_strings(warnings))
 
+        filename = os.path.join(self.FIXTURE_DIR, 'invalid-thumbnail-uri.rdf')
+        metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
+        self.assertIn('must begin with the URI', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
+        filename = os.path.join(self.FIXTURE_DIR, 'missing-thumbnail-uri.rdf')
+        metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
+        self.assertEqual(errors, [])
+        self.assertIn('does not contain an URI', flatten_nested_list_of_strings(warnings))
+
         filename = os.path.join(self.FIXTURE_DIR, 'missing-uri.rdf')
         metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
         self.assertIn('is required', flatten_nested_list_of_strings(errors))
-        self.assertIn('does not contain an URI', flatten_nested_list_of_strings(warnings))
+        self.assertEqual(warnings, [])
 
         filename = os.path.join(self.FIXTURE_DIR, 'missing-label-2.rdf')
         metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)

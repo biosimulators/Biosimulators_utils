@@ -165,7 +165,7 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'multiple_allowed': True,
         'has_uri': True,
         'has_label': False,
-        'required': True,
+        'required': False,
     },
     'https://dublincore.org/specifications/dublin-core/dcmi-terms/source': {
         'namespace': {
@@ -308,7 +308,7 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'multiple_allowed': False,
         'has_uri': False,
         'has_label': True,
-        'required': True,
+        'required': False,
     },
     'https://dublincore.org/specifications/dublin-core/dcmi-terms/modified': {
         'namespace': {

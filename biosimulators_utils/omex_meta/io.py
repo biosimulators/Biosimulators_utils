@@ -584,7 +584,13 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
                 else:
                     metadata['other'].append(value)
 
-            metadata['thumbnails'] = [re.sub(BIOSIMULATIONS_ROOT_URI_PATTERN[0:-1], '.', thumbnail) for thumbnail in metadata['thumbnails']]
+            for i_thumbnail, thumbnail in enumerate(metadata['thumbnails']):
+                if thumbnail.startswith(root_uri):
+                    metadata['thumbnails'][i_thumbnail] = './' + thumbnail[len(root_uri)+1:]
+                else:
+                    msg = 'Thumbnail URIs must begin with the URI of their parent archive ({}), not `{}`'.format(
+                        root_uri, thumbnail)
+                    errors.append([msg])
 
         if ignored_statements:
             warnings.append(['Some statements were ignored:', ignored_statements])
