@@ -9,11 +9,11 @@
 from ..config import get_config, Colors
 from ..log.data_model import Status, SedDocumentLog, TaskLog, ReportLog, Plot2DLog, Plot3DLog, StandardOutputErrorCapturerLevel  # noqa: F401
 from ..log.utils import init_sed_document_log, StandardOutputErrorCapturer
-from ..plot.data_model import PlotFormat
-from ..plot.io import write_plot_2d, write_plot_3d
 from ..report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat  # noqa: F401
 from ..report.io import ReportWriter
 from ..utils.core import pad_arrays_to_consistent_shapes
+from ..viz.data_model import VizFormat
+from ..viz.io import write_plot_2d, write_plot_3d
 from ..warnings import warn
 from .data_model import SedDocument, Model, Task, RepeatedTask, Output, Report, Plot2D, Plot3D, ModelAttributeChange, DataSet  # noqa: F401
 from .exceptions import SedmlExecutionError
@@ -84,7 +84,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file before
             calling :obj:`task_executer`.
         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
-        plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
+        plot_formats (:obj:`list` of :obj:`VizFormat`, optional): plot format (e.g., pdf)
         log (:obj:`SedDocumentLog`, optional): log of the document
         indent (:obj:`int`, optional): degree to indent status messages
         pretty_print_modified_xml_models (:obj:`bool`, optional): if :obj:`True`, pretty print modified XML models
@@ -108,7 +108,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         report_formats = [ReportFormat(format_value) for format_value in config.REPORT_FORMATS]
 
     if plot_formats is None:
-        plot_formats = [PlotFormat(format_value) for format_value in config.PLOT_FORMATS]
+        plot_formats = [VizFormat(format_value) for format_value in config.PLOT_FORMATS]
 
     log = log or init_sed_document_log(doc)
 
@@ -645,7 +645,7 @@ def exec_plot_2d(plot, variable_results, base_out_path, rel_out_path, formats, t
         base_out_path (:obj:`str`): base path to store the plot. Complete path is
             ``{base_out_path}/{rel_out_path}/{plot.id}.csv``
         rel_out_path (:obj:`str`, optional): path relative to :obj:`base_out_path` to store the plot
-        formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
+        formats (:obj:`list` of :obj:`VizFormat`, optional): plot format (e.g., pdf)
         task (:obj:`Task`): task
         log (:obj:`ReportLog`, optional): log of plot
 
@@ -725,7 +725,7 @@ def exec_plot_3d(plot, variable_results, base_out_path, rel_out_path, formats, t
         base_out_path (:obj:`str`): base path to store the plot. Complete path is
           ``{base_out_path}/{rel_out_path}/{plot.id}.pdf``
         rel_out_path (:obj:`str`, optional): path relative to :obj:`base_out_path` to store the plot
-        formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
+        formats (:obj:`list` of :obj:`VizFormat`, optional): plot format (e.g., pdf)
         task (:obj:`Task`): task
         log (:obj:`ReportLog`, optional): log of plot
 

@@ -11,7 +11,6 @@ from ..archive.utils import build_archive_from_paths
 from ..config import get_config
 from ..log.data_model import Status, CombineArchiveLog, StandardOutputErrorCapturerLevel  # noqa: F401
 from ..log.utils import init_combine_archive_log, get_summary_combine_archive_log, StandardOutputErrorCapturer
-from ..plot.data_model import PlotFormat  # noqa: F401
 from ..report.data_model import VariableResults, ReportFormat  # noqa: F401
 from ..sedml.data_model import (SedDocument, Task, Output, Report, DataSet, Plot2D, Curve,  # noqa: F401
                                 Plot3D, Surface, Variable)
@@ -22,6 +21,7 @@ from .data_model import CombineArchive
 from .io import CombineArchiveReader
 from .utils import get_sedml_contents, get_summary_sedml_contents
 from .validation import validate
+from ..viz.data_model import VizFormat  # noqa: F401
 import datetime
 import glob
 import os
@@ -65,7 +65,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                         rel_out_path (:obj:`str`, optional): path relative to :obj:`out_path` to store the outputs
                         apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file
                         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
-                        plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): plot format (e.g., pdf)
+                        plot_formats (:obj:`list` of :obj:`VizFormat`, optional): plot format (e.g., pdf)
                         log (:obj:`SedDocumentLog`, optional): execution status of document
                         indent (:obj:`int`, optional): degree to indent status messages
                         log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
@@ -84,7 +84,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         sed_doc_executer_supported_features (:obj:`list` of :obj:`type`, optional): list of the types of elements that the
             SED document executer supports. Default: tasks, reports, plots, data sets, curves, and surfaces.
         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
-        plot_formats (:obj:`list` of :obj:`PlotFormat`, optional): report format (e.g., pdf)
+        plot_formats (:obj:`list` of :obj:`VizFormat`, optional): report format (e.g., pdf)
         bundle_outputs (:obj:`bool`, optional): if :obj:`True`, bundle outputs into archives for reports and plots
         keep_individual_outputs (:obj:`bool`, optional): if :obj:`True`, keep individual output files
         sed_doc_executer_logged_features (:obj:`list` of :obj:`type`, optional): list of the types fo elements which that
@@ -125,7 +125,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             report_formats = [ReportFormat(format_value) for format_value in config.REPORT_FORMATS]
 
         if plot_formats is None:
-            plot_formats = [PlotFormat(format_value) for format_value in config.PLOT_FORMATS]
+            plot_formats = [VizFormat(format_value) for format_value in config.PLOT_FORMATS]
 
         # create temporary directory to unpack archive
         archive_tmp_dir = tempfile.mkdtemp()

@@ -9,10 +9,10 @@
 from ..warnings import BioSimulatorsWarning
 
 __all__ = [
-    'IllogicalPlotWarning',
+    'IllogicalVizWarning',
 ]
 
 
-class IllogicalPlotWarning(BioSimulatorsWarning):
+class IllogicalVizWarning(BioSimulatorsWarning):
     """ Warning that a plot is may be illogical (e.g., has mixed axes or scales) """
     pass  # pragma: no cover

@@ -1,7 +1,7 @@
-from biosimulators_utils.plot import io
-from biosimulators_utils.plot.data_model import PlotFormat
 from biosimulators_utils.report.data_model import DataGeneratorResults
 from biosimulators_utils.sedml.data_model import Plot2D, Curve, Plot3D, Surface, AxisScale, DataGenerator
+from biosimulators_utils.viz import io
+from biosimulators_utils.viz.data_model import VizFormat
 import numpy
 import os
 import shutil
@@ -40,7 +40,7 @@ class PlotIoTestCase(unittest.TestCase):
 
         base_path = self.dirname
         rel_path = 'path/to/sim.sedml/' + plot.id
-        format = PlotFormat.pdf
+        format = VizFormat.pdf
 
         io.write_plot_2d(plot, data_gen_results, base_path, rel_path, format=format)
 
@@ -80,7 +80,7 @@ class PlotIoTestCase(unittest.TestCase):
 
         base_path = self.dirname
         rel_path = 'path/to/sim.sedml/' + plot.id
-        format = PlotFormat.pdf
+        format = VizFormat.pdf
 
         io.write_plot_2d(plot, data_gen_results, base_path, rel_path, format=format)
 
@@ -119,7 +119,7 @@ class PlotIoTestCase(unittest.TestCase):
 
         base_path = self.dirname
         rel_path = 'path/to/sim.sedml/' + plot.id
-        format = PlotFormat.pdf
+        format = VizFormat.pdf
 
         io.write_plot_2d(plot, data_gen_results, base_path, rel_path, format=format)
 
@@ -158,7 +158,7 @@ class PlotIoTestCase(unittest.TestCase):
 
         base_path = self.dirname
         rel_path = 'path/to/sim.sedml/' + plot.id
-        format = PlotFormat.pdf
+        format = VizFormat.pdf
 
         io.write_plot_3d(plot, data_gen_results, base_path, rel_path, format=format)
 
@@ -210,7 +210,7 @@ class PlotIoTestCase(unittest.TestCase):
 
         base_path = self.dirname
         rel_path = 'path/to/sim.sedml/' + plot.id
-        format = PlotFormat.pdf
+        format = VizFormat.pdf
 
         io.write_plot_3d(plot, data_gen_results, base_path, rel_path, format=format)
 

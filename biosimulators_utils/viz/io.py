@@ -9,8 +9,8 @@
 from ..sedml.data_model import Plot2D, Plot3D  # noqa: F401
 from ..report.data_model import DataGeneratorResults  # noqa: F401
 from ..warnings import warn
-from .data_model import PlotFormat
-from .warnings import IllogicalPlotWarning
+from .data_model import VizFormat
+from .warnings import IllogicalVizWarning
 from matplotlib import cm as ColorMap
 from matplotlib import pyplot
 import matplotlib  # noqa: F401
@@ -20,7 +20,7 @@ import os
 __all__ = ['write_plot_2d', 'write_plot_3d']
 
 
-def write_plot_2d(plot, data_generator_results, base_path, rel_path, format=PlotFormat.pdf, style='seaborn-paper'):
+def write_plot_2d(plot, data_generator_results, base_path, rel_path, format=VizFormat.pdf, style='seaborn-paper'):
     """ Generate a 2D plot
 
     Args:
@@ -28,7 +28,7 @@ def write_plot_2d(plot, data_generator_results, base_path, rel_path, format=Plot
         data_generator_results (:obj:`DataGeneratorResults`): results of data generators
         base_path (:obj:`str`): base path to save plot
         rel_path (:obj:`str`): path to save results relative to :obj:`base_path`
-        format (:obj:`PlotFormat`, optional): format
+        format (:obj:`VizFormat`, optional): format
         style (:obj:`str`, optional): matplotlib style
     """
     figure = pyplot.figure()
@@ -66,25 +66,25 @@ def write_plot_2d(plot, data_generator_results, base_path, rel_path, format=Plot
             axes.set_xlabel(list(x_names)[0])
         else:
             warn('A title could not be inferred for the X axis because the X data generators have inconsistent names.',
-                 IllogicalPlotWarning)
+                 IllogicalVizWarning)
             axes.set_xlabel('X')
         if len(y_names) == 1:
             axes.set_ylabel(list(y_names)[0])
         else:
             warn('A title could not be inferred for the Y axis because the Y data generators have inconsistent names.',
-                 IllogicalPlotWarning)
+                 IllogicalVizWarning)
             axes.set_ylabel('Y')
 
         if len(x_scales) == 1:
             axes.set_xscale(list(x_scales)[0].value)
         else:
             warn('Curves have inconsistent x axis scales. All curves will be plotted in linear scale.',
-                 IllogicalPlotWarning)
+                 IllogicalVizWarning)
         if len(y_scales) == 1:
             axes.set_yscale(list(y_scales)[0].value)
         else:
             warn('Curves have inconsistent y axis scales. All curves will be plotted in linear scale.',
-                 IllogicalPlotWarning)
+                 IllogicalVizWarning)
 
         if len(plot.curves) > 1:
             axes.legend(curve_names)
@@ -95,7 +95,7 @@ def write_plot_2d(plot, data_generator_results, base_path, rel_path, format=Plot
     figure.savefig(os.path.join(base_path, rel_path + '.' + format.value))
 
 
-def write_plot_3d(plot, data_generator_results, base_path, rel_path, format=PlotFormat.pdf,
+def write_plot_3d(plot, data_generator_results, base_path, rel_path, format=VizFormat.pdf,
                   style='seaborn-paper',
                   colormaps=[ColorMap.viridis, ColorMap.plasma, ColorMap.inferno, ColorMap.magma, ColorMap.cividis]):
     """ Generate a 3D plot
@@ -105,7 +105,7 @@ def write_plot_3d(plot, data_generator_results, base_path, rel_path, format=Plot
         data_generator_results (:obj:`DataGeneratorResults`): results of data generators
         base_path (:obj:`str`): base path to save plot
         rel_path (:obj:`str`): path to save results relative to :obj:`base_path`
-        format (:obj:`PlotFormat`, optional): format
+        format (:obj:`VizFormat`, optional): format
         style (:obj:`str`, optional): matplotlib style
         colormaps (:obj:`list` of :obj:`matplotlib.colors.LinearSegmentedColormap`, optional): colormaps
     """
@@ -152,36 +152,36 @@ def write_plot_3d(plot, data_generator_results, base_path, rel_path, format=Plot
             axes.set_xlabel(list(x_names)[0])
         else:
             warn('A title could not be inferred for the X axis because the X data generators have inconsistent names.',
-                 IllogicalPlotWarning)
+                 IllogicalVizWarning)
             axes.set_xlabel('X')
         if len(y_names) == 1:
             axes.set_ylabel(list(y_names)[0])
         else:
             warn('A title could not be inferred for the Y axis because the Y data generators have inconsistent names.',
-                 IllogicalPlotWarning)
+                 IllogicalVizWarning)
             axes.set_ylabel('Y')
         if len(z_names) == 1:
             axes.set_zlabel(list(z_names)[0])
         else:
             warn('A title could not be inferred for the Z axis because the Z data generators have inconsistent names.',
-                 IllogicalPlotWarning)
+                 IllogicalVizWarning)
             axes.set_zlabel('Z')
 
         if len(x_scales) == 1:
             axes.set_xscale(list(x_scales)[0].value)
         else:
             warn('Curves have inconsistent x axis scales. All surfaces will be plotted in linear scale.',
-                 IllogicalPlotWarning)
+                 IllogicalVizWarning)
         if len(y_scales) == 1:
             axes.set_yscale(list(y_scales)[0].value)
         else:
             warn('Curves have inconsistent y axis scales. All surfaces will be plotted in linear scale.',
-                 IllogicalPlotWarning)
+                 IllogicalVizWarning)
         if len(z_scales) == 1:
             axes.set_zscale(list(z_scales)[0].value)
         else:
             warn('Curves have inconsistent z axis scales. All surfaces will be plotted in linear scale.',
-                 IllogicalPlotWarning)
+                 IllogicalVizWarning)
 
         for plotted_surface, surface_name in zip(plotted_surfaces, surface_names):
             colorbar = figure.colorbar(plotted_surface)

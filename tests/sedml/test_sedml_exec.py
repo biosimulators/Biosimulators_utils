@@ -3,7 +3,6 @@ from biosimulators_utils.log.data_model import (
     Status, CombineArchiveLog, SedDocumentLog, TaskLog, ReportLog)
 from biosimulators_utils.log import utils as log_utils
 from biosimulators_utils.log.utils import init_sed_document_log
-from biosimulators_utils.plot.data_model import PlotFormat
 from biosimulators_utils.report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat
 from biosimulators_utils.report.io import ReportReader
 from biosimulators_utils.report.warnings import RepeatDataSetLabelsWarning, CannotExportMultidimensionalTableWarning
@@ -14,6 +13,7 @@ from biosimulators_utils.sedml import utils
 from biosimulators_utils.sedml.exceptions import SedmlExecutionError
 from biosimulators_utils.sedml.warnings import (NoTasksWarning, NoOutputsWarning,
                                                 InconsistentVariableShapesWarning, SedmlFeatureNotSupportedWarning)
+from biosimulators_utils.viz.data_model import VizFormat
 from biosimulators_utils.xml.utils import get_namespaces_with_prefixes
 from lxml import etree
 from unittest import mock
@@ -1154,7 +1154,7 @@ class ExecTaskCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'results')
         with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
             _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
-                                       out_dir, plot_formats=[PlotFormat.pdf])
+                                       out_dir, plot_formats=[VizFormat.pdf])
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_2.pdf')))
@@ -1203,7 +1203,7 @@ class ExecTaskCase(unittest.TestCase):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
                 with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=([], [])):
                     exec.exec_sed_doc(execute_task, filename, working_dir,
-                                      out_dir, log=log, plot_formats=[PlotFormat.pdf])
+                                      out_dir, log=log, plot_formats=[VizFormat.pdf])
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_2.pdf')))
@@ -1250,7 +1250,7 @@ class ExecTaskCase(unittest.TestCase):
         with self.assertRaisesRegex(SedmlExecutionError, "Some generators could not be produced:"):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
                 exec.exec_sed_doc(execute_task, filename, working_dir,
-                                  out_dir, log=log, plot_formats=[PlotFormat.pdf])
+                                  out_dir, log=log, plot_formats=[VizFormat.pdf])
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_2.pdf')))
@@ -1396,7 +1396,7 @@ class ExecTaskCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'results')
         with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
             _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
-                                       out_dir, plot_formats=[PlotFormat.pdf])
+                                       out_dir, plot_formats=[VizFormat.pdf])
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_2.pdf')))
@@ -1441,7 +1441,7 @@ class ExecTaskCase(unittest.TestCase):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
                 with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=([], [])):
                     exec.exec_sed_doc(execute_task, filename, working_dir,
-                                      out_dir, log=log, plot_formats=[PlotFormat.pdf])
+                                      out_dir, log=log, plot_formats=[VizFormat.pdf])
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_2.pdf')))

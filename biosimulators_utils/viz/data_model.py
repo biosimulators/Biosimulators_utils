@@ -9,10 +9,10 @@
 import enum
 
 
-__all__ = ['PlotFormat']
+__all__ = ['VizFormat']
 
 
-class PlotFormat(str, enum.Enum):
+class VizFormat(str, enum.Enum):
     """ Format of a report """
     jpg = 'jpg'
     pdf = 'pdf'

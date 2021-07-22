@@ -4,10 +4,10 @@ from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiv
 from biosimulators_utils.combine.exceptions import CombineArchiveExecutionError, NoSedmlError
 from biosimulators_utils.combine.io import CombineArchiveWriter
 from biosimulators_utils.log import utils as log_utils
-from biosimulators_utils.plot.data_model import PlotFormat
 from biosimulators_utils.report.data_model import ReportFormat
 from biosimulators_utils.sedml.data_model import SedDocument, Task, Report
 from biosimulators_utils.sedml.io import SedmlSimulationReader
+from biosimulators_utils.viz.data_model import VizFormat
 from unittest import mock
 import builtins
 import datetime
@@ -147,7 +147,7 @@ class ExecCombineTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
         def exec_sed_doc(task_executer, filename, working_dir, base_out_dir, rel_path='.',
-                         apply_xml_model_changes=False, report_formats=[ReportFormat.csv], plot_formats=[PlotFormat.pdf],
+                         apply_xml_model_changes=False, report_formats=[ReportFormat.csv], plot_formats=[VizFormat.pdf],
                          indent=0, log=None, log_level=None):
             out_dir = os.path.join(base_out_dir, rel_path)
             if not os.path.isdir(out_dir):
