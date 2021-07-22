@@ -60,7 +60,7 @@ def does_simulator_have_capabilities_to_execute_sed_document(sed_doc, simulator_
     """ Determine if a simulator has the capabilities to execute a SED document
 
     Args:
-        sed_doc (:obj:`SedDocument): SED document
+        sed_doc (:obj:`SedDocument`): SED document
         simulator_specs (:obj:`dict` with schema ``https://api.biosimulators.org/openapi.json#/components/schemas/Simulator``):
             specifications of a simulation tool
         alg_substitution_policy (:obj:`AlgorithmSubstitutionPolicy`, optional): algorithm substitution policy

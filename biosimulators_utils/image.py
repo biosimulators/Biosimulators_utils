@@ -42,7 +42,8 @@ def get_docker_image(docker_client, tag, pull=True):
     Args:
         docker_client (:obj:`docker.client.DockerClient`): Docker client
         tag (:obj:`str`): tag (e.g., ``biosimulators/tellurium``) or
-            URL (``ghcr.io/biosimulators/tellurium`) for a Docker image of a simulator
+            URL (``ghcr.io/biosimulators/tellurium``) for a Docker image of a simulator
+
     Returns:
         :obj:`docker.models.images.Image`: Docker image
     """
