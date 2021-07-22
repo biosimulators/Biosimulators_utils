@@ -1,4 +1,5 @@
 appdirs
+bezier
 cement
 evalidate
 h5py

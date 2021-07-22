@@ -1,0 +1,780 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "width": 500,
+  "height": 500,
+  "padding": 0,
+  "autosize": "none",
+
+  "signals": [{
+      "name": "mapMaxX",
+      "value": 800
+    },
+    {
+      "name": "mapMaxY",
+      "value": 800
+    },
+    {
+      "name": "legendWidth",
+      "value": 40
+    },
+    {
+      "name": "legendPadding",
+      "value": 20
+    },
+    {
+      "name": "signalHeight",
+      "value": 42
+    },
+    {
+      "name": "signalPadding",
+      "value": 0
+    },
+    {
+      "name": "metaboliteStrokeWidthData",
+      "value": null
+    },
+    {
+      "name": "reactionStrokeWidthData",
+      "value": null
+    },
+    {
+      "name": "arrowHeadStrokeWidthData",
+      "value": null
+    },
+    {
+      "name": "metaboliteFill",
+      "value": "#e0885c"
+    },
+    {
+      "name": "metaboliteStroke",
+      "value": "#a34610"
+    },
+    {
+      "name": "metaboliteLightFill",
+      "value": "#F0C4AE"
+    },
+    {
+      "name": "metaboliteLightStroke",
+      "value": "#D1A388"
+    },
+    {
+      "name": "labelColor",
+      "value": "#333333"
+    },
+    {
+      "name": "reverseArrowHeadStrokeColor",
+      "value": "#E9E9E9"
+    },
+    {
+      "name": "reverseArrowHeadFillColor",
+      "value": "#ffffff"
+    },
+    {
+      "name": "hiddenColor",
+      "value": "#E9E9E9"
+    },
+    {
+      "name": "Metabolite_labels",
+      "value": true,
+      "bind": {
+        "input": "checkbox"
+      }
+    },
+    {
+      "name": "Reaction_labels",
+      "value": true,
+      "bind": {
+        "input": "checkbox"
+      }
+    },
+
+    {
+      "name": "mapMaxWidth",
+      "update": "width - legendWidth - legendPadding"
+    },
+    {
+      "name": "mapMaxHeight",
+      "update": "height - signalHeight - signalPadding"
+    },
+    {
+      "name": "mapSize",
+      "update": "mapMaxX / mapMaxWidth >  mapMaxY / mapMaxHeight ? [mapMaxWidth, mapMaxWidth / mapMaxX * mapMaxY] : [mapMaxHeight / mapMaxY * mapMaxX, mapMaxHeight]"
+    },
+    {
+      "name": "mapWidth",
+      "update": "mapSize[0]"
+    },
+    {
+      "name": "mapHeight",
+      "update": "mapSize[1]"
+    },
+    {
+      "name": "mapX",
+      "update": "(mapMaxWidth - mapWidth)/2"
+    },
+    {
+      "name": "mapY",
+      "update": "(mapMaxHeight - mapHeight)/2"
+    },
+
+    {
+      "name": "xrange",
+      "update": "[mapX, mapWidth + mapX]"
+    },
+    {
+      "name": "yrange",
+      "update": "[mapY, mapHeight + mapY]"
+    },
+    {
+      "name": "down",
+      "value": null,
+      "on": [{
+          "events": "touchend",
+          "update": "null"
+        },
+        {
+          "events": "mousedown, touchstart",
+          "update": "xy()"
+        }
+      ]
+    },
+    {
+      "name": "xcur",
+      "value": null,
+      "on": [{
+        "events": "mousedown, touchstart, touchend",
+        "update": "slice(xdom)"
+      }]
+    },
+    {
+      "name": "ycur",
+      "value": null,
+      "on": [{
+        "events": "mousedown, touchstart, touchend",
+        "update": "slice(ydom)"
+      }]
+    },
+    {
+      "name": "delta",
+      "value": [0, 0],
+      "on": [{
+        "events": [{
+            "source": "window",
+            "type": "mousemove",
+            "consume": true,
+            "between": [{
+              "type": "mousedown"
+            }, {
+              "source": "window",
+              "type": "mouseup"
+            }]
+          },
+          {
+            "type": "touchmove",
+            "consume": true,
+            "filter": "event.touches.length === 1"
+          }
+        ],
+        "update": "down ? [down[0]-x(), down[1]-y()] : [0,0]"
+      }]
+    },
+    {
+      "name": "anchor",
+      "value": [0, 0],
+      "on": [{
+          "events": "wheel",
+          "update": "[invert('positionXScale', x()), invert('positionYScale', y())]"
+        },
+        {
+          "events": {
+            "type": "touchstart",
+            "filter": "event.touches.length===2"
+          },
+          "update": "[(xdom[0] + xdom[1]) / 2, (ydom[0] + ydom[1]) / 2]"
+        }
+      ]
+    },
+    {
+      "name": "zoom",
+      "value": 1,
+      "on": [{
+          "events": "wheel!",
+          "force": true,
+          "update": "pow(1.001, event.deltaY * pow(16, event.deltaMode))"
+        },
+        {
+          "events": {
+            "signal": "dist2"
+          },
+          "force": true,
+          "update": "dist1 / dist2"
+        }
+      ]
+    },
+    {
+      "name": "dist1",
+      "value": 0,
+      "on": [{
+          "events": {
+            "type": "touchstart",
+            "filter": "event.touches.length===2"
+          },
+          "update": "pinchDistance(event)"
+        },
+        {
+          "events": {
+            "signal": "dist2"
+          },
+          "update": "dist2"
+        }
+      ]
+    },
+    {
+      "name": "dist2",
+      "value": 0,
+      "on": [{
+        "events": {
+          "type": "touchmove",
+          "consume": true,
+          "filter": "event.touches.length===2"
+        },
+        "update": "pinchDistance(event)"
+      }]
+    },
+
+    {
+      "name": "xdom",
+      "update": "slice([0, mapMaxX])",
+      "on": [{
+          "events": {
+            "signal": "delta"
+          },
+          "update": "[xcur[0] + span(xcur) * delta[0] / mapWidth, xcur[1] + span(xcur) * delta[0] / mapWidth]"
+        },
+        {
+          "events": {
+            "signal": "zoom"
+          },
+          "update": "[anchor[0] + (xdom[0] - anchor[0]) * zoom, anchor[0] + (xdom[1] - anchor[0]) * zoom]"
+        }
+      ]
+    },
+    {
+      "name": "ydom",
+      "update": "slice([0, mapMaxY])",
+      "on": [{
+          "events": {
+            "signal": "delta"
+          },
+          "update": "[ycur[0] + span(ycur) * delta[1] / mapHeight, ycur[1] + span(ycur) * delta[1] / mapHeight]"
+        },
+        {
+          "events": {
+            "signal": "zoom"
+          },
+          "update": "[anchor[1] + (ydom[0] - anchor[1]) * zoom, anchor[1] + (ydom[1] - anchor[1]) * zoom]"
+        }
+      ]
+    },
+    {
+      "name": "currentZoom",
+      "update": "(xrange[1] - xrange[0]) / (xdom[1] - xdom[0])"
+    },
+
+    {
+      "name": "hover",
+      "value": null,
+      "on": [{
+          "events": "*:mouseover",
+          "update": "item().datum"
+        },
+        {
+          "events": "*:mouseout",
+          "update": "null"
+        }
+      ]
+    }
+  ],
+
+  "data": [{
+      "name": "metabolites",
+      "values": null
+    },
+    {
+      "name": "reactionSegmentCoordinates",
+      "values": null
+    },
+    {
+      "name": "reactionArrowHeadCoordinates",
+      "values": null
+    },
+    {
+      "name": "reactionLabels",
+      "values": null
+    },
+    {
+      "name": "reactionFluxes",
+      "sedmlUri": ["", ""]
+    },
+    {
+      "name": "metabolitesScaled",
+      "source": "metabolites",
+      "transform": [{
+          "type": "formula",
+          "expr": "datum.biggId + ': ' + datum.name",
+          "as": "idName"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionXScale', datum.x)",
+          "as": "xScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionYScale', datum.y)",
+          "as": "yScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.size * currentZoom",
+          "as": "sizeScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "metaboliteStrokeWidthData * currentZoom",
+          "as": "strokeWidthScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "hover ? (hover.id == datum.id ? metaboliteFill : (indexof(hover.metaboliteIds, datum.id) >= 0 ? metaboliteFill : (indexof(hover.relatedMetaboliteIds, datum.id) >= 0 ? metaboliteLightFill : hiddenColor))) : metaboliteFill",
+          "as": "fill"
+        },
+        {
+          "type": "formula",
+          "expr": "hover ? (hover.id == datum.id ? metaboliteStroke : (indexof(hover.metaboliteIds, datum.id) >= 0 ? metaboliteStroke : (indexof(hover.relatedMetaboliteIds, datum.id) >= 0 ? metaboliteLightStroke : hiddenColor))) : metaboliteStroke",
+          "as": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "metaboliteLabelsVisibleScaled",
+      "source": "metabolites",
+      "transform": [{
+          "type": "filter",
+          "expr": "Metabolite_labels"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionXScale', datum.labelX)",
+          "as": "labelXScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionYScale', datum.labelY)",
+          "as": "labelYScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "8 * currentZoom",
+          "as": "fontSizeScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "hover ? (hover.id == datum.id ? labelColor : (indexof(hover.metaboliteIds, datum.id) >= 0 ? labelColor : (indexof(hover.relatedMetaboliteIds, datum.id) >= 0 ? labelColor : hiddenColor))) : labelColor",
+          "as": "fill"
+        }
+      ]
+    },
+    {
+      "name": "reactionAbsFluxes",
+      "source": "reactionFluxes",
+      "transform": [{
+        "type": "formula",
+        "expr": "datum.values[0]",
+        "as": "flux"
+      }, {
+        "type": "formula",
+        "expr": "abs(datum.flux)",
+        "as": "absFlux"
+      }]
+    },
+    {
+      "name": "reactionSegmentPathsAndFluxesScaled",
+      "source": "reactionSegmentCoordinates",
+      "transform": [{
+          "type": "lookup",
+          "from": "reactionAbsFluxes",
+          "key": "label",
+          "fields": ["biggId"],
+          "values": ["flux", "absFlux"],
+          "as": ["flux", "absFlux"]
+        },
+        {
+          "type": "formula",
+          "expr": "datum.biggId + ': ' + datum.name + ' (' + (datum.flux == 0 ? '0' : format(datum.flux / floor(log(datum.absFlux)/LN10), '.3') + ' x 10^' + toString(floor(log(datum.absFlux)/LN10))) + ')'",
+          "as": "idNameFlux"
+        },
+        {
+          "type": "formula",
+          "expr": "[datum.id]",
+          "as": "reactionIds"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionXScale', datum.x0)",
+          "as": "x0Scaled"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionYScale', datum.y0)",
+          "as": "y0Scaled"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionXScale', datum.x1)",
+          "as": "x1Scaled"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionYScale', datum.y1)",
+          "as": "y1Scaled"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionXScale', datum.x2)",
+          "as": "x2Scaled"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionYScale', datum.y2)",
+          "as": "y2Scaled"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionXScale', datum.x3)",
+          "as": "x3Scaled"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionYScale', datum.y3)",
+          "as": "y3Scaled"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.type === 'line' ? ('M' + toString(datum.x0Scaled) + ',' + toString(datum.y0Scaled) + 'L' + toString(datum.x1Scaled) + ',' + toString(datum.y1Scaled)) : ('M' + toString(datum.x0Scaled) + ',' + toString(datum.y0Scaled) + 'C' + toString(datum.x1Scaled) + ',' + toString(datum.y1Scaled) + ' ' + toString(datum.x2Scaled) + ',' + toString(datum.y2Scaled) + ' ' + toString(datum.x3Scaled) + ',' + toString(datum.y3Scaled))",
+          "as": "path"
+        },
+        {
+          "type": "formula",
+          "expr": "reactionStrokeWidthData * currentZoom",
+          "as": "strokeWidthScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "hover ? (hover.biggId == datum.biggId || indexof(hover.reactionIds, datum.id) >= 0 ? (datum.absFlux != null ? scale('reactionFluxColorScale', datum.absFlux) : hiddenColor) : hiddenColor) : (datum.absFlux != null ? scale('reactionFluxColorScale', datum.absFlux) : hiddenColor)",
+          "as": "stroke"
+        }
+      ]
+    },
+    {
+      "name": "reactionArrowHeadsAndFluxesScaled",
+      "source": "reactionArrowHeadCoordinates",
+      "transform": [{
+          "type": "lookup",
+          "from": "reactionAbsFluxes",
+          "key": "biggId",
+          "fields": ["biggId"],
+          "values": ["flux", "absFlux"],
+          "as": ["flux", "absFlux"]
+        },
+        {
+          "type": "formula",
+          "expr": "datum.biggId + ': ' + datum.name + ' (' + (datum.flux == 0 ? '0' : format(datum.flux / floor(log(datum.absFlux)/LN10), '.3') + ' x 10^' + toString(floor(log(datum.absFlux)/LN10))) + ')'",
+          "as": "idNameFlux"
+        },
+        {
+          "type": "formula",
+          "expr": "[datum.id]",
+          "as": "reactionIds"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionXScale', datum.x)",
+          "as": "xScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionYScale', datum.y)",
+          "as": "yScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "100 * currentZoom",
+          "as": "sizeScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "hover ? (hover.biggId == datum.biggId || indexof(hover.reactionIds, datum.id) >= 0 ? (((datum.start && datum.flux > 0) || (!datum.start && datum.flux < 0)) ? (datum.absFlux != null ? scale('reactionFluxColorScale', datum.absFlux) : hiddenColor) : reverseArrowHeadFillColor) : hiddenColor) : (((datum.start && datum.flux > 0) || (!datum.start && datum.flux < 0)) ? (datum.absFlux != null ? scale('reactionFluxColorScale', datum.absFlux) : hiddenColor) : reverseArrowHeadFillColor)",
+          "as": "fill"
+        },
+        {
+          "type": "formula",
+          "expr": "hover ? (hover.biggId == datum.biggId || indexof(hover.reactionIds, datum.id) >= 0 ? (((datum.start && datum.flux > 0) || (!datum.start && datum.flux < 0)) ? null : reverseArrowHeadStrokeColor) : reverseArrowHeadStrokeColor) : (((datum.start && datum.flux > 0) || (!datum.start && datum.flux < 0)) ? null : reverseArrowHeadStrokeColor)",
+          "as": "stroke"
+        },
+        {
+          "type": "formula",
+          "expr": "arrowHeadStrokeWidthData * 4 * currentZoom",
+          "as": "strokeWidthScaled"
+        }
+      ]
+    },
+    {
+      "name": "reactionLabelsVisibleScaled",
+      "source": "reactionLabels",
+      "transform": [{
+          "type": "filter",
+          "expr": "Reaction_labels"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionXScale', datum.x)",
+          "as": "xScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('positionYScale', datum.y)",
+          "as": "yScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "8 * currentZoom",
+          "as": "fontSizeScaled"
+        },
+        {
+          "type": "formula",
+          "expr": "hover ? (hover.biggId == datum.biggId || indexof(hover.reactionIds, datum.id) >= 0 ? labelColor : hiddenColor) : labelColor",
+          "as": "fill"
+        }
+      ]
+    }
+  ],
+
+  "scales": [{
+      "name": "positionXScale",
+      "type": "linear",
+      "domain": {
+        "signal": "xdom"
+      },
+      "range": {
+        "signal": "xrange"
+      },
+      "zero": false
+    },
+    {
+      "name": "positionYScale",
+      "type": "linear",
+      "domain": {
+        "signal": "ydom"
+      },
+      "range": {
+        "signal": "yrange"
+      },
+      "zero": false
+    },
+    {
+      "name": "reactionFluxColorScale",
+      "type": "quantize",
+      "domain": {
+        "data": "reactionAbsFluxes",
+        "field": "absFlux"
+      },
+      "range": {
+        "scheme": "viridis",
+        "count": 100
+      }
+    }
+  ],
+
+  "marks": [{
+      "name": "Reactions",
+      "type": "path",
+      "from": {
+        "data": "reactionSegmentPathsAndFluxesScaled"
+      },
+      "encode": {
+        "enter": {
+          "tooltip": {
+            "field": "idNameFlux"
+          }
+        },
+        "update": {
+          "path": {
+            "field": "path"
+          },
+          "stroke": {
+            "field": "stroke"
+          },
+          "strokeWidth": {
+            "field": "strokeWidthScaled"
+          }
+        }
+      }
+    },
+
+    {
+      "name": "ReactionsArrowHeads",
+      "type": "symbol",
+      "from": {
+        "data": "reactionArrowHeadsAndFluxesScaled"
+      },
+      "encode": {
+        "enter": {
+          "shape": {
+            "value": "triangle"
+          },
+          "angle": {
+            "field": "angle"
+          },
+          "tooltip": {
+            "field": "idNameFlux"
+          }
+        },
+        "update": {
+          "x": {
+            "field": "xScaled"
+          },
+          "y": {
+            "field": "yScaled"
+          },
+          "size": {
+            "field": "sizeScaled"
+          },
+          "fill": {
+            "field": "fill"
+          },
+          "stroke": {
+            "field": "stroke"
+          },
+          "strokeWidth": {
+            "field": "strokeWidthScaled"
+          }
+        }
+      }
+    },
+
+    {
+      "name": "Metabolites",
+      "type": "symbol",
+      "from": {
+        "data": "metabolitesScaled"
+      },
+      "interactive": true,
+      "encode": {
+        "enter": {
+          "shape": {
+            "value": "circle"
+          },
+          "tooltip": {
+            "field": "idName"
+          }
+        },
+        "update": {
+          "xc": {
+            "field": "xScaled"
+          },
+          "yc": {
+            "field": "yScaled"
+          },
+          "size": {
+            "field": "sizeScaled"
+          },
+          "fill": {
+            "field": "fill"
+          },
+          "stroke": {
+            "field": "stroke"
+          },
+          "strokeWidth": {
+            "field": "strokeWidthScaled"
+          }
+        }
+      }
+    },
+
+    {
+      "name": "Metabolites labels",
+      "type": "text",
+      "from": {
+        "data": "metaboliteLabelsVisibleScaled"
+      },
+      "encode": {
+        "enter": {
+          "text": {
+            "field": "biggId"
+          },
+          "align": {
+            "value": "left"
+          }
+        },
+        "update": {
+          "x": {
+            "field": "labelXScaled"
+          },
+          "y": {
+            "field": "labelYScaled"
+          },
+          "fontSize": {
+            "field": "fontSizeScaled"
+          },
+          "fill": {
+            "field": "fill"
+          }
+        }
+      }
+    },
+
+    {
+      "name": "Reaction labels",
+      "type": "text",
+      "from": {
+        "data": "reactionLabelsVisibleScaled"
+      },
+      "encode": {
+        "enter": {
+          "text": {
+            "field": "biggId"
+          },
+          "align": {
+            "value": "left"
+          }
+        },
+        "update": {
+          "x": {
+            "field": "xScaled"
+          },
+          "y": {
+            "field": "yScaled"
+          },
+          "fontSize": {
+            "field": "fontSizeScaled"
+          },
+          "fill": {
+            "field": "fill"
+          }
+        }
+      }
+    }
+  ],
+
+  "legends": [{
+    "fill": "reactionFluxColorScale",
+    "type": "gradient",
+    "title": "Fluxes",
+    "titleFontSize": 10,
+    "titlePadding": 2,
+    "titleAlign": "left",
+    "orient": "top-right",
+    "direction": "vertical"
+  }]
+}
