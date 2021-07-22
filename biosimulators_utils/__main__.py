@@ -12,6 +12,7 @@ from .utils.core import flatten_nested_list_of_strings
 from .warnings import warn, BioSimulatorsWarning
 import biosimulators_utils
 import cement
+import json
 import shutil
 import tempfile
 
@@ -303,6 +304,120 @@ class ExecuteModelingProjectController(cement.Controller):
             raise SystemExit(str(exception))
 
 
+class ConvertController(cement.Controller):
+    """ Controller for converting among formats """
+
+    class Meta:
+        label = 'convert'
+        stacked_on = 'base'
+        stacked_type = 'nested'
+        help = "Convert files among formats"
+        description = "Convert files among formats"
+        arguments = []
+
+    @cement.ex(hide=True)
+    def _default(self):
+        self._parser.print_help()
+
+
+class ConvertEscherController(cement.Controller):
+    """ Controller for converting Escher maps to Vega visualizations """
+
+    class Meta:
+        label = 'escher-to-vega'
+        stacked_on = 'convert'
+        stacked_type = 'nested'
+        help = "Convert an Escher map to Vega"
+        description = "Convert an Escher map of a metabolic network to the Vega data visualization format"
+        arguments = [
+            (
+                ['--flux-sedml-report'],
+                dict(
+                    type=str,
+                    help=(
+                        'Id of a report in a SED-ML file and the location of the SED-ML file in its parent '
+                        'COMBINE archive which can record the predicted flux of each reaction '
+                        '(e.g., `path/to/simulation.sedml/Table_1`)'
+                    ),
+                    default=None,
+                ),
+            ),
+            (
+                ['--flux-file'],
+                dict(
+                    type=str,
+                    help=(
+                        'Path to a JSON file which represents a list of dictionaries, each which have two keys '
+                        '`label` and `values` whose values are the ids of reactions and arrays of length 1 of '
+                        'their predicted fluxes'
+                    ),
+                    default=None,
+                ),
+            ),
+            (
+                ['--flux-url'],
+                dict(
+                    type=str,
+                    help=(
+                        'URL for a JSON file which represents a list of dictionaries, each which have two keys '
+                        '`label` and `values` whose values are the ids of reactions and arrays of length 1 of '
+                        'their predicted fluxes'
+                    ),
+                    default=None,
+                ),
+            ),
+            (
+                ['escher_file'],
+                dict(
+                    metavar='escher-file',
+                    type=str,
+                    help='Path to the configuration of an Escher map',
+                ),
+            ),
+            (
+                ['vega_file'],
+                dict(
+                    metavar='vega-file',
+                    type=str,
+                    help='Path to save the Escher map in Vega format',
+                ),
+            ),
+        ]
+
+    @cement.ex(hide=True)
+    def _default(self):
+        from biosimulators_utils.viz.vega.escher.core import escher_to_vega
+
+        args = self.app.pargs
+
+        n_flux_args = (
+            (args.flux_sedml_report is not None) +
+            (args.flux_file is not None) +
+            (args.flux_url is not None)
+        )
+
+        if n_flux_args == 0:
+            raise SystemExit('One of --flux-sedml-report, --flux-file, or --flux-url must be used')
+        elif n_flux_args > 1:
+            raise SystemExit('Only one of --flux-sedml-report, --flux-file, or --flux-url can be used')
+
+        if args.flux_sedml_report:
+            sedDocumentlocation, _, reportId = args.flux_sedml_report.rpartition('/')
+            reaction_fluxes_data_set = {'sedmlUri': [sedDocumentlocation, reportId]}
+
+        elif args.flux_file:
+            with open(args.flux_file, 'rb') as file:
+                reaction_fluxes_data_set = {'values': json.load(file)}
+
+        else:
+            reaction_fluxes_data_set = {'url': args.flux_url}
+
+        try:
+            escher_to_vega(reaction_fluxes_data_set, args.escher_file, args.vega_file)
+        except Exception as exception:
+            raise SystemExit(str(exception))
+
+
 class App(cement.App):
     """ Command line application """
     class Meta:
@@ -313,6 +428,8 @@ class App(cement.App):
             BuildModelingProjectController,
             ValidateModelingProjectController,
             ExecuteModelingProjectController,
+            ConvertController,
+            ConvertEscherController,
         ]
 
 

@@ -29,7 +29,7 @@ def escher_to_vega(reaction_fluxes_data_set, escher_filename, vega_filename,
             * Contain a key ``values`` whose value is a list of the predicted flux values. Each predicted flux value
               should be a dictionary with two keys
 
-                * ``label``: value should be the identifier of the corresponding reaction
+                * ``label``: value should be the BiGG identifier of the corresponding reaction
                 * ``values``: array of with a single value equal to the predicted flux
 
             * Contain a key ``url`` whose value is a URL where the predicted flux values can be retrieved in JSON
