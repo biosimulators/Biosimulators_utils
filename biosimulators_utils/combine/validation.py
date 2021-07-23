@@ -29,6 +29,7 @@ def validate(archive, archive_dirname,
              formats_to_validate=[
                  CombineArchiveContentFormat.SED_ML,
              ],
+             metadata_schema=OmexMetaSchema.rdf_triples,
              validate_models_with_languages=True):
     """ Validate a COMBINE/OMEX archive and the SED-ML and model documents it contains
 
@@ -41,6 +42,7 @@ def validate(archive, archive_dirname,
             return all SED documents, regardless of whether they have ``master="true"`` or not.
         formats_to_validate (:obj:`list` of :obj:`CombineArchiveContentFormat`, optional): list
             for formats of files to validate
+        metadata_schema (:obj:`OmexMetaSchema`, optional): expected schema for OMEX Meta file
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
 
     Returns:
@@ -115,6 +117,7 @@ def validate(archive, archive_dirname,
             content_errors, content_warnings = validate_content(
                 content, archive_dirname,
                 formats_to_validate=formats_to_validate,
+                metadata_schema=metadata_schema,
                 validate_models_with_languages=validate_models_with_languages)
             errors.extend(content_errors)
             warnings.extend(content_warnings)
@@ -156,6 +159,7 @@ def validate_content(content, archive_dirname,
                      formats_to_validate=[
                          CombineArchiveContentFormat.SED_ML,
                      ],
+                     metadata_schema=OmexMetaSchema.rdf_triples,
                      validate_models_with_languages=True):
     """ Validate an item of a COMBINE/OMEX archive
 
@@ -164,6 +168,7 @@ def validate_content(content, archive_dirname,
         archive_dirname (:obj:`str`): directory with the content of the archive
         formats_to_validate (:obj:`list` of :obj:`CombineArchiveContentFormat`, optional): list
             for formats of files to validate
+        metadata_schema (:obj:`OmexMetaSchema`, optional): expected schema for OMEX Meta file
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
 
     Returns:
@@ -197,7 +202,7 @@ def validate_content(content, archive_dirname,
         and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format)
     ):
         file_type = 'OMEX Meta'
-        errors, warnings = validate_omex_meta_file(filename, archive_dirname)
+        errors, warnings = validate_omex_meta_file(filename, archive_dirname, schema=metadata_schema)
 
     elif (
         CombineArchiveContentFormat.BMP in formats_to_validate

@@ -7,6 +7,7 @@
 """
 
 from .combine.data_model import CombineArchiveContentFormat
+from .omex_meta.data_model import OmexMetaSchema
 from .sedml.data_model import ModelLanguage, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation
 from .utils.core import flatten_nested_list_of_strings
 from .warnings import warn, BioSimulatorsWarning
@@ -171,7 +172,9 @@ class ValidateModelingProjectController(cement.Controller):
 
         errors, warnings = biosimulators_utils.combine.validation.validate(
             archive, archive_dirname,
-            formats_to_validate=list(CombineArchiveContentFormat.__members__.values()))
+            formats_to_validate=list(CombineArchiveContentFormat.__members__.values()),
+            metadata_schema=OmexMetaSchema.biosimulations,
+        )
         if warnings:
             msg = 'The COMBINE/OMEX archive may be invalid.\n  {}'.format(
                 flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
