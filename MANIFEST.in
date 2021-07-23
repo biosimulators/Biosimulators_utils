@@ -7,3 +7,11 @@ include LICENSE
 # requirements
 include requirements.txt
 include requirements.optional.txt
+
+# CellML schema
+include biosimulators_utils/model_lang/cellml/cellml1.0.rng
+include biosimulators_utils/model_lang/cellml/mathml2.rng
+
+# Vega templates
+include biosimulators_utils/viz/vega/escher/template.json
+include biosimulators_utils/viz/vega/ginml/template.json

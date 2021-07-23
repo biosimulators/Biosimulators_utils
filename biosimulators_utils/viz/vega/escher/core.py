@@ -13,6 +13,7 @@ import json
 import math
 import numpy
 import os
+import pkg_resources
 
 __all__ = ['escher_to_vega', 'read_escher_map_config']
 
@@ -276,7 +277,10 @@ def escher_to_vega(reaction_fluxes_data_set, escher_filename, vega_filename,
                 })
 
     # insert metabolite circles and reaction paths into Vega template
-    with open(os.path.join(os.path.dirname(__file__), 'template.json'), 'r') as file:
+    template_filename = pkg_resources.resource_filename(
+        'biosimulators_utils',
+        os.path.join('viz', 'vega', 'escher', 'template.json'))
+    with open(template_filename, 'r') as file:
         vega = json.load(file)
 
     vega['width'] = width + legend_padding + legend_width
