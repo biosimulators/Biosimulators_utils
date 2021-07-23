@@ -1,0 +1,366 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3.1.14. biosimulators_utils.viz package &#8212; BioSimulators utils 0.1.96 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.1.14.1.1. biosimulators_utils.viz.vega package" href="biosimulators_utils.viz.vega.html" />
+    <link rel="prev" title="3.1.13. biosimulators_utils.utils package" href="biosimulators_utils.utils.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">BioSimulators utils</a></h1>
+
+
+
+<p class="blurb">Utilities for building standardized command-line interfaces for biosimulation tools</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosimulators&repo=Biosimulators_utils&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial_cli.html">2. Tutorial for the command-line application</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="biosimulators_utils.html">3. API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="biosimulators_utils.html#subpackages">3.1. Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.archive.html">3.1.1. biosimulators_utils.archive package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.biosimulations.html">3.1.2. biosimulators_utils.biosimulations package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.combine.html">3.1.3. biosimulators_utils.combine package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.gh_action.html">3.1.4. biosimulators_utils.gh_action package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.kisao.html">3.1.5. biosimulators_utils.kisao package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.log.html">3.1.6. biosimulators_utils.log package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.model_lang.html">3.1.7. biosimulators_utils.model_lang package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.omex_meta.html">3.1.8. biosimulators_utils.omex_meta package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.report.html">3.1.9. biosimulators_utils.report package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.sedml.html">3.1.10. biosimulators_utils.sedml package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.simulator.html">3.1.11. biosimulators_utils.simulator package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.simulator_registry.html">3.1.12. biosimulators_utils.simulator_registry package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.utils.html">3.1.13. biosimulators_utils.utils package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">3.1.14. biosimulators_utils.viz package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.xml.html">3.1.15. biosimulators_utils.xml package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#submodules">3.2. Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.config">3.3. biosimulators_utils.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.data_model">3.4. biosimulators_utils.data_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.exceptions">3.5. biosimulators_utils.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.image">3.6. biosimulators_utils.image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.html#module-biosimulators_utils.warnings">3.7. biosimulators_utils.warnings module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">4. About BioSimulators utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">5. Index</a></li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://biosimulators.org">BioSimulators</a></li>
+    
+    <li class="toctree-l1"><a href="https://run.biosimulations.org">runBioSimulations</a></li>
+    
+    <li class="toctree-l1"><a href="https://biosimulations.org">BioSimulations</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="biosimulators_utils.html"><span class="section-number">3. </span>biosimulators_utils package</a><ul>
+      <li>Previous: <a href="biosimulators_utils.utils.html" title="previous chapter"><span class="section-number">3.1.13. </span>biosimulators_utils.utils package</a></li>
+      <li>Next: <a href="biosimulators_utils.viz.vega.html" title="next chapter"><span class="section-number">3.1.14.1.1. </span>biosimulators_utils.viz.vega package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-biosimulators_utils.viz">
+<span id="biosimulators-utils-viz-package"></span><h1><span class="section-number">3.1.14. </span>biosimulators_utils.viz package<a class="headerlink" href="#module-biosimulators_utils.viz" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2><span class="section-number">3.1.14.1. </span>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.viz.vega.html">3.1.14.1.1. biosimulators_utils.viz.vega package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.viz.vega.html#subpackages">3.1.14.1.1.1. Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.viz.vega.escher.html">3.1.14.1.1.1.1. biosimulators_utils.viz.vega.escher package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.viz.vega.escher.html#submodules">3.1.14.1.1.1.1.1. Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.viz.vega.escher.html#module-biosimulators_utils.viz.vega.escher.core">3.1.14.1.1.1.1.2. biosimulators_utils.viz.vega.escher.core module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.viz.vega.ginml.html">3.1.14.1.1.1.2. biosimulators_utils.viz.vega.ginml package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.viz.vega.html#submodules">3.1.14.1.1.2. Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.viz.vega.html#module-biosimulators_utils.viz.vega.utils">3.1.14.1.1.3. biosimulators_utils.viz.vega.utils module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2><span class="section-number">3.1.14.2. </span>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-biosimulators_utils.viz.data_model">
+<span id="biosimulators-utils-viz-data-model-module"></span><h2><span class="section-number">3.1.14.3. </span>biosimulators_utils.viz.data_model module<a class="headerlink" href="#module-biosimulators_utils.viz.data_model" title="Permalink to this headline">¶</a></h2>
+<p>Data model for plots</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-06</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="biosimulators_utils.viz.data_model.VizFormat">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.viz.data_model.</span></span><span class="sig-name descname"><span class="pre">VizFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/viz/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.viz.data_model.VizFormat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Format of a report</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.viz.data_model.VizFormat.jpg">
+<span class="sig-name descname"><span class="pre">jpg</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'jpg'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/viz/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.viz.data_model.VizFormat.jpg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.viz.data_model.VizFormat.pdf">
+<span class="sig-name descname"><span class="pre">pdf</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'pdf'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/viz/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.viz.data_model.VizFormat.pdf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.viz.data_model.VizFormat.png">
+<span class="sig-name descname"><span class="pre">png</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'png'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/viz/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.viz.data_model.VizFormat.png" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.viz.data_model.VizFormat.svg">
+<span class="sig-name descname"><span class="pre">svg</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'svg'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/viz/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.viz.data_model.VizFormat.svg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-biosimulators_utils.viz.io">
+<span id="biosimulators-utils-viz-io-module"></span><h2><span class="section-number">3.1.14.4. </span>biosimulators_utils.viz.io module<a class="headerlink" href="#module-biosimulators_utils.viz.io" title="Permalink to this headline">¶</a></h2>
+<p>Methods for generating SED plots</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2020-12-23</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.viz.io.write_plot_2d">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.viz.io.</span></span><span class="sig-name descname"><span class="pre">write_plot_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_generator_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">VizFormat.pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'seaborn-paper'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/viz/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.viz.io.write_plot_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a 2D plot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plot</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot2D</span></code>) – description of plot</p></li>
+<li><p><strong>data_generator_results</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">DataGeneratorResults</span></code>) – results of data generators</p></li>
+<li><p><strong>base_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – base path to save plot</p></li>
+<li><p><strong>rel_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to save results relative to <code class="xref py py-obj docutils literal notranslate"><span class="pre">base_path</span></code></p></li>
+<li><p><strong>format</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">VizFormat</span></code>, optional) – format</p></li>
+<li><p><strong>style</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – matplotlib style</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.viz.io.write_plot_3d">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.viz.io.</span></span><span class="sig-name descname"><span class="pre">write_plot_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">plot,</span> <span class="pre">data_generator_results,</span> <span class="pre">base_path,</span> <span class="pre">rel_path,</span> <span class="pre">format=VizFormat.pdf,</span> <span class="pre">style='seaborn-paper',</span> <span class="pre">colormaps=[&lt;matplotlib.colors.ListedColormap</span> <span class="pre">object&gt;,</span> <span class="pre">&lt;matplotlib.colors.ListedColormap</span> <span class="pre">object&gt;,</span> <span class="pre">&lt;matplotlib.colors.ListedColormap</span> <span class="pre">object&gt;,</span> <span class="pre">&lt;matplotlib.colors.ListedColormap</span> <span class="pre">object&gt;,</span> <span class="pre">&lt;matplotlib.colors.ListedColormap</span> <span class="pre">object&gt;]</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/viz/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.viz.io.write_plot_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a 3D plot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plot</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot3D</span></code>) – description of plot</p></li>
+<li><p><strong>data_generator_results</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">DataGeneratorResults</span></code>) – results of data generators</p></li>
+<li><p><strong>base_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – base path to save plot</p></li>
+<li><p><strong>rel_path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to save results relative to <code class="xref py py-obj docutils literal notranslate"><span class="pre">base_path</span></code></p></li>
+<li><p><strong>format</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">VizFormat</span></code>, optional) – format</p></li>
+<li><p><strong>style</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – matplotlib style</p></li>
+<li><p><strong>colormaps</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.colors.LinearSegmentedColormap</span></code>, optional) – colormaps</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-biosimulators_utils.viz.utils">
+<span id="biosimulators-utils-viz-utils-module"></span><h2><span class="section-number">3.1.14.5. </span>biosimulators_utils.viz.utils module<a class="headerlink" href="#module-biosimulators_utils.viz.utils" title="Permalink to this headline">¶</a></h2>
+<p>Utilities for visualizations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2021-07-22</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2021, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.viz.utils.cubic_bezier_angle">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.viz.utils.</span></span><span class="sig-name descname"><span class="pre">cubic_bezier_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/viz/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.viz.utils.cubic_bezier_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the angle of a point along a cubic bezier curve</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – control points</p></li>
+<li><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – position along the curve [0, 1]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>angle of the curve at point <code class="xref py py-obj docutils literal notranslate"><span class="pre">t</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.viz.utils.cubic_bezier_point">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.viz.utils.</span></span><span class="sig-name descname"><span class="pre">cubic_bezier_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/viz/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.viz.utils.cubic_bezier_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the coordinate of a point along a cubic bezier curve</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – control points</p></li>
+<li><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – position along the curve [0, 1]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>position of the curve at point <code class="xref py py-obj docutils literal notranslate"><span class="pre">t</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-biosimulators_utils.viz.warnings">
+<span id="biosimulators-utils-viz-warnings-module"></span><h2><span class="section-number">3.1.14.6. </span>biosimulators_utils.viz.warnings module<a class="headerlink" href="#module-biosimulators_utils.viz.warnings" title="Permalink to this headline">¶</a></h2>
+<p>Warnings for plots</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2021-01-20</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2021, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py" id="biosimulators_utils.viz.warnings.IllogicalVizWarning">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.viz.warnings.</span></span><span class="sig-name descname"><span class="pre">IllogicalVizWarning</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/viz/warnings.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.viz.warnings.IllogicalVizWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.warnings.BioSimulatorsWarning" title="biosimulators_utils.warnings.BioSimulatorsWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.warnings.BioSimulatorsWarning</span></code></a></p>
+<p>Warning that a plot is may be illogical (e.g., has mixed axes or scales)</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2021, BioSimulators Team.
+      
+      |
+      <a href="../_sources/source/biosimulators_utils.viz.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/biosimulators/Biosimulators_utils" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
