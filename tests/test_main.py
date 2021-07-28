@@ -178,10 +178,10 @@ class CliTestCase(unittest.TestCase):
         vega_filename = os.path.join(self.tmp_dir, 'viz.json')
 
         # data from SED-ML report
-        flux_url = 'http://site.com/flux.json'
+        data_url = 'http://site.com/flux.json'
         with biosimulators_utils.__main__.App(argv=[
             'convert', 'escher-to-vega',
-            '--flux-sedml-report', 'simulation.sedml/report_1',
+            '--data-sedml', 'simulation.sedml/report_1',
             escher_filename,
             vega_filename,
         ]) as app:
@@ -193,16 +193,16 @@ class CliTestCase(unittest.TestCase):
         self.assertEqual(reaction_data_set, {'name': 'reactionFluxes', 'sedmlUri': ['simulation.sedml', 'report_1']})
 
         # data from file
-        flux_filename = os.path.join(self.tmp_dir, 'fluxes.json')
+        data_filename = os.path.join(self.tmp_dir, 'fluxes.json')
         flux_values = dict_to_vega_dataset({
             'GND': 2.,
             'PGK': 10.,
         })
-        with open(flux_filename, 'w') as file:
+        with open(data_filename, 'w') as file:
             json.dump(flux_values, file)
         with biosimulators_utils.__main__.App(argv=[
             'convert', 'escher-to-vega',
-            '--flux-file', flux_filename,
+            '--data-file', data_filename,
             escher_filename,
             vega_filename,
         ]) as app:
@@ -214,10 +214,10 @@ class CliTestCase(unittest.TestCase):
         self.assertEqual(reaction_data_set, {'name': 'reactionFluxes', 'values': flux_values})
 
         # data at URL
-        flux_url = 'http://site.com/flux.json'
+        data_url = 'http://site.com/flux.json'
         with biosimulators_utils.__main__.App(argv=[
             'convert', 'escher-to-vega',
-            '--flux-url', flux_url,
+            '--data-url', data_url,
             escher_filename,
             vega_filename,
         ]) as app:
@@ -226,9 +226,28 @@ class CliTestCase(unittest.TestCase):
         with open(vega_filename, 'rb') as file:
             vega = json.load(file)
         reaction_data_set = next(data for data in vega['data'] if data['name'] == 'reactionFluxes')
-        self.assertEqual(reaction_data_set, {'name': 'reactionFluxes', 'url': flux_url})
+        self.assertEqual(reaction_data_set, {'name': 'reactionFluxes', 'url': data_url})
 
-    def test_convert_escher_error_handling(self):
+    def test_convert_ginml(self):
+        ginml_filename = os.path.join(os.path.dirname(__file__), 'fixtures', 'ginml', 'ginsim-35-regulatoryGraph.ginml')
+        vega_filename = os.path.join(self.tmp_dir, 'viz.json')
+
+        # data from SED-ML report
+        data_url = 'http://site.com/species-levels.json'
+        with biosimulators_utils.__main__.App(argv=[
+            'convert', 'ginml-to-vega',
+            '--data-sedml',
+            ginml_filename,
+            vega_filename,
+        ]) as app:
+            app.run()
+
+        with open(vega_filename, 'rb') as file:
+            vega = json.load(file)
+        data_set = next(data for data in vega['data'] if data['name'] == 'nodesValues')
+        self.assertEqual(data_set, {'name': 'nodesValues', 'sedmlUri': []})
+
+    def test_convert_diagram_error_handling(self):
         with self.assertRaisesRegex(SystemExit, 'must be used'):
             with biosimulators_utils.__main__.App(argv=[
                 'convert', 'escher-to-vega',
@@ -240,8 +259,8 @@ class CliTestCase(unittest.TestCase):
         with self.assertRaisesRegex(SystemExit, 'can be used'):
             with biosimulators_utils.__main__.App(argv=[
                 'convert', 'escher-to-vega',
-                '--flux-file', 'path/to/flux.json',
-                '--flux-url', 'http://site.com/flux.json',
+                '--data-file', 'path/to/flux.json',
+                '--data-url', 'http://site.com/flux.json',
                 'path/to/escher.json',
                 'path/to/vega.json',
             ]) as app:
@@ -250,7 +269,7 @@ class CliTestCase(unittest.TestCase):
         with self.assertRaisesRegex(SystemExit, 'No such file or directory'):
             with biosimulators_utils.__main__.App(argv=[
                 'convert', 'escher-to-vega',
-                '--flux-url', 'path/to/flux.json',
+                '--data-url', 'path/to/flux.json',
                 'path/to/escher.json',
                 'path/to/vega.json',
             ]) as app:

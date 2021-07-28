@@ -1,0 +1,576 @@
+{
+    "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "width": 500,
+    "height": 500,
+    "padding": 0,
+    "autosize": "none",
+    "signals": [{
+            "name": "MinTime",
+            "value": 0
+        },
+        {
+            "name": "MaxTime",
+            "value": 100
+        },
+        {
+            "name": "Paint_report",
+            "description": "Paint nodes with simulation data",
+            "value": true,
+            "bind": {
+                "input": "checkbox"
+            }
+        },
+        {
+            "name": "Report",
+            "description": "SED-ML report",
+            "value": "",
+            "bind": {
+                "input": "select",
+                "options": [],
+                "labels": []
+            }
+        },
+        {
+            "name": "Time_step",
+            "description": "Time step",
+            "value": 0,
+            "bind": {
+                "input": "range",
+                "min": 0,
+                "max": 100
+            }
+        },
+        {
+            "name": "Species_labels",
+            "value": true,
+            "bind": {
+                "input": "checkbox"
+            }
+        },
+        {
+            "name": "Regulation_labels",
+            "value": true,
+            "bind": {
+                "input": "checkbox"
+            }
+        },
+        {
+            "name": "MaxX",
+            "value": 500
+        },
+        {
+            "name": "MaxY",
+            "value": 500
+        },
+        {
+            "name": "SignalHeight",
+            "value": 50
+        },
+        {
+            "name": "SignalPadding",
+            "value": 10
+        },
+        {
+            "name": "availableHeight",
+            "update": "height - SignalHeight - SignalPadding"
+        },
+        {
+            "name": "diagramWidth",
+            "update": "width/MaxX > availableHeight/MaxY ? availableHeight/MaxY*MaxX : width"
+        },
+        {
+            "name": "diagramHeight",
+            "update": "width/MaxX > availableHeight/MaxY ? availableHeight : width/MaxX*MaxY"
+        },
+        {
+            "name": "edgeStrokeWidth",
+            "description": "Edge stroke width",
+            "value": 2
+        },
+        {
+            "name": "dataPaintedEdgeColor",
+            "value": "#e0e0e0"
+        },
+        {
+            "name": "dataPaintedNodeLabelColor",
+            "value": "#000000"
+        },
+        {
+            "name": "dataPaintedOnColor",
+            "value": "#cccccc"
+        },
+        {
+            "name": "dataPaintedOffColor",
+            "value": "#333333"
+        },
+        {
+            "name": "dataPaintedUnpredictedNodeFillColor",
+            "value": "#ffffff"
+        },
+        {
+            "name": "dataPaintedUnpredictedNodeStrokeColor",
+            "value": "#e0e0e0"
+        },
+        {
+            "name": "dataPaintedUnpredictedNodeLabelColor",
+            "value": "#cccccc"
+        },
+        {
+            "name": "hoverOpacity",
+            "value": 0.1
+        },
+        {
+            "name": "hover",
+            "value": null,
+            "on": [{
+                    "events": "*:mouseover",
+                    "update": "item().datum"
+                },
+                {
+                    "events": "*:mouseout",
+                    "update": "null"
+                }
+            ]
+        }
+    ],
+
+    "data": [{
+            "name": "nodesData",
+            "values": null
+        },
+        {
+            "name": "nodesLabelsData",
+            "values": null
+        },
+        {
+            "name": "edgesArcData",
+            "values": null
+        },
+        {
+            "name": "edgesLineData",
+            "values": null
+        },
+        {
+            "name": "edgesArcDataScaled",
+            "source": "edgesArcData",
+            "transform": [{
+                "type": "formula",
+                "expr": "'M ' + scale('x', datum.x1) + ' ' + scale('y', datum.y1) + ' A ' + scale('xy', datum.radius) + ' ' + scale('xy', datum.radius) + ' 0 1 1 ' + scale('x', datum.x2) + ' ' + scale('y', datum.y2)",
+                "as": "path"
+            }]
+        },
+        {
+            "name": "edgesLineDataScaled",
+            "source": "edgesLineData",
+            "transform": [{
+                "type": "formula",
+                "expr": "'M ' + scale('x', datum.x1) + ' ' + scale('y', datum.y1) + ' L ' + scale('x', datum.x2) + ' ' + scale('y', datum.y2)",
+                "as": "path"
+            }]
+        },
+        {
+            "name": "edgeEndCoordinatesData",
+            "values": null
+        },
+        {
+            "name": "edgesLabelsData",
+            "values": null
+        },
+        {
+            "name": "edgesLabelsDataVisible",
+            "source": "edgesLabelsData",
+            "transform": [{
+                "type": "filter",
+                "expr": "Regulation_labels"
+            }]
+        },
+        {
+            "name": "nodesValues",
+            "values": []
+        },
+        {
+            "name": "nodesValueAtTimeStep",
+            "source": "nodesValues",
+            "transform": [{
+                    "type": "filter",
+                    "expr": "substring(datum.outputId, lastindexof(datum.outputId, '/') + 1) === Report"
+                },
+                {
+                    "type": "flatten",
+                    "fields": ["data"],
+                    "as": ["data"]
+                },
+                {
+                    "type": "formula",
+                    "expr": "datum.data.id",
+                    "as": "id"
+                },
+                {
+                    "type": "formula",
+                    "expr": "datum.data.label",
+                    "as": "label"
+                },
+                {
+                    "type": "formula",
+                    "expr": "datum.data.name",
+                    "as": "name"
+                },
+                {
+                    "type": "formula",
+                    "expr": "datum.data.values",
+                    "as": "values"
+                },
+                {
+                    "type": "formula",
+                    "expr": "datum.values[Time_step - MinTime] === 1 ? 'On' : 'Off'",
+                    "as": "value"
+                },
+                {
+                    "type": "project",
+                    "fields": [
+                        "id",
+                        "label",
+                        "name",
+                        "value"
+                    ],
+                    "as": [
+                        "id",
+                        "label",
+                        "name",
+                        "value"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "nodesDataAndValueAtTimeStep",
+            "source": "nodesData",
+            "transform": [{
+                "type": "lookup",
+                "from": "nodesValueAtTimeStep",
+                "key": "label",
+                "fields": [
+                    "name"
+                ],
+                "values": [
+                    "value"
+                ],
+                "as": [
+                    "value"
+                ]
+            }]
+        },
+        {
+            "name": "nodesLabelsDataAndValueAtTimeStep",
+            "source": "nodesLabelsData",
+            "transform": [{
+                    "type": "lookup",
+                    "from": "nodesValueAtTimeStep",
+                    "key": "label",
+                    "fields": [
+                        "name"
+                    ],
+                    "values": [
+                        "value"
+                    ],
+                    "as": [
+                        "value"
+                    ]
+                },
+                {
+                    "type": "filter",
+                    "expr": "Species_labels"
+                }
+            ]
+        }
+    ],
+    "scales": [{
+            "name": "x",
+            "type": "linear",
+            "domain": [
+                0,
+                {
+                    "signal": "MaxX"
+                }
+            ],
+            "range": [{
+                    "signal": "width/2 - diagramWidth/2"
+                },
+                {
+                    "signal": "width/2 + diagramWidth/2"
+                }
+            ]
+        },
+        {
+            "name": "y",
+            "type": "linear",
+            "domain": [
+                0,
+                {
+                    "signal": "MaxY"
+                }
+            ],
+            "range": [{
+                    "signal": "availableHeight/2 - diagramHeight/2"
+                },
+                {
+                    "signal": "availableHeight/2 + diagramHeight/2"
+                }
+            ]
+        },
+        {
+            "name": "xy",
+            "type": "linear",
+            "domain": [
+                0,
+                {
+                    "signal": "MaxX"
+                }
+            ],
+            "range": [
+                0,
+                {
+                    "signal": "diagramWidth"
+                }
+            ]
+        },
+        {
+            "name": "color",
+            "type": "ordinal",
+            "domain": ["Off", "On"],
+            "range": {
+                "scheme": [{
+                        "signal": "dataPaintedOffColor"
+                    },
+                    {
+                        "signal": "dataPaintedOnColor"
+                    }
+                ]
+            }
+        }
+    ],
+    "marks": [{
+            "name": "EdgeLines",
+            "type": "path",
+            "from": {
+                "data": "edgesLineDataScaled"
+            },
+            "encode": {
+                "enter": {
+                    "path": {
+                        "field": "path"
+                    },
+                    "tooltip": {
+                        "field": "name"
+                    }
+                },
+                "update": {
+                    "stroke": {
+                        "signal": "Paint_report ? dataPaintedEdgeColor : datum.line_color"
+                    },
+                    "opacity": {
+                        "signal": "hover == null || ('name' in hover && hover.name == datum.name) ? 1.0 : hoverOpacity"
+                    },
+                    "strokeWidth": {
+                        "signal": "edgeStrokeWidth"
+                    }
+                }
+            }
+        },
+        {
+            "name": "EdgeArcs",
+            "type": "path",
+            "from": {
+                "data": "edgesArcDataScaled"
+            },
+            "encode": {
+                "enter": {
+                    "path": {
+                        "field": "path"
+                    },
+                    "tooltip": {
+                        "field": "name"
+                    }
+                },
+                "update": {
+                    "stroke": {
+                        "signal": "Paint_report ? dataPaintedEdgeColor : datum.line_color"
+                    },
+                    "opacity": {
+                        "signal": "hover == null || ('name' in hover && hover.name == datum.name) ? 1.0 : hoverOpacity"
+                    },
+                    "strokeWidth": {
+                        "signal": "edgeStrokeWidth"
+                    }
+                }
+            }
+        },
+        {
+            "name": "edgeEnds",
+            "type": "symbol",
+            "from": {
+                "data": "edgeEndCoordinatesData"
+            },
+            "encode": {
+                "enter": {
+                    "x": {
+                        "field": "x",
+                        "scale": "x"
+                    },
+                    "y": {
+                        "field": "y",
+                        "scale": "y"
+                    },
+                    "shape": {
+                        "field": "edge_end_shape"
+                    },
+                    "angle": {
+                        "field": "edge_end_angle"
+                    },
+                    "strokeWidth": {
+                        "field": "stroke_width"
+                    },
+                    "tooltip": {
+                        "field": "name"
+                    }
+                },
+                "update": {
+                    "stroke": {
+                        "signal": "Paint_report ? dataPaintedEdgeColor : datum.line_color"
+                    },
+                    "fill": {
+                        "signal": "Paint_report ? dataPaintedEdgeColor : datum.line_color"
+                    },
+                    "opacity": {
+                        "signal": "hover == null || ('name' in hover && hover.name == datum.name) ? 1.0 : hoverOpacity"
+                    }
+                }
+            }
+        },
+        {
+            "name": "Nodes",
+            "type": "rect",
+            "from": {
+                "data": "nodesDataAndValueAtTimeStep"
+            },
+            "encode": {
+                "enter": {
+                    "x": {
+                        "field": "x_value",
+                        "scale": "x"
+                    },
+                    "y": {
+                        "field": "y_value",
+                        "scale": "y"
+                    },
+                    "x2": {
+                        "signal": "datum.x_value + datum.node_width",
+                        "scale": "x"
+                    },
+                    "y2": {
+                        "signal": "datum.y_value + datum.node_height",
+                        "scale": "y"
+                    },
+                    "tooltip": {
+                        "field": "name"
+                    }
+                },
+                "update": {
+                    "fill": {
+                        "signal": "Paint_report ? (datum.value == null ? dataPaintedUnpredictedNodeFillColor : (datum.value === 'On' ? dataPaintedOnColor : dataPaintedOffColor)) : datum.fill_color"
+                    },
+                    "stroke": {
+                        "signal": "Paint_report ? (datum.value == null ? dataPaintedUnpredictedNodeStrokeColor : (datum.value === 'On' ? dataPaintedOnColor : dataPaintedOffColor)) : datum.text_color"
+                    },
+                    "opacity": {
+                        "signal": "hover == null || ('id' in hover && hover.id == datum.id) ? 1.0 : hoverOpacity"
+                    }
+                }
+            }
+        },
+        {
+            "name": "edgesLabels",
+            "type": "text",
+            "from": {
+                "data": "edgesLabelsDataVisible"
+            },
+            "encode": {
+                "enter": {
+                    "x": {
+                        "field": "x",
+                        "scale": "x"
+                    },
+                    "y": {
+                        "field": "y",
+                        "scale": "y"
+                    },
+                    "text": {
+                        "field": "name"
+                    },
+                    "align": {
+                        "value": "center"
+                    },
+                    "tooltip": {
+                        "field": "name"
+                    }
+                },
+                "update": {
+                    "fill": {
+                        "signal": "Paint_report ? dataPaintedEdgeColor : datum.line_color"
+                    },
+                    "opacity": {
+                        "signal": "hover == null || ('name' in hover && hover.name == datum.name) ? 1.0 : hoverOpacity"
+                    }
+                }
+            }
+        },
+        {
+            "name": "nodesLabels",
+            "type": "text",
+            "from": {
+                "data": "nodesLabelsDataAndValueAtTimeStep"
+            },
+            "encode": {
+                "enter": {
+                    "x": {
+                        "field": "x",
+                        "scale": "x"
+                    },
+                    "y": {
+                        "field": "y",
+                        "scale": "y"
+                    },
+                    "text": {
+                        "field": "id"
+                    },
+                    "align": {
+                        "value": "center"
+                    },
+                    "fontWeight": {
+                        "value": "bold"
+                    },
+                    "tooltip": {
+                        "field": "name"
+                    }
+                },
+                "update": {
+                    "fill": {
+                        "signal": "Paint_report ? (datum.value == null ? dataPaintedUnpredictedNodeLabelColor : (datum.value === 'On' ? dataPaintedOffColor : dataPaintedOnColor)) : datum.text_color"
+                    },
+                    "opacity": {
+                        "signal": "hover == null || ('id' in hover && hover.id == datum.id) ? 1.0 : hoverOpacity"
+                    }
+                }
+            }
+        }
+    ],
+    "legends": [{
+        "fill": "color",
+        "title": "Activity",
+        "titleFontSize": 10,
+        "titlePadding": 2,
+        "titleAlign": "left",
+        "orient": "top-right",
+        "direction": "vertical"
+    }]
+}

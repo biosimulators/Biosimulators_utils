@@ -76,12 +76,12 @@ BIOSIMULATIONS_ROOT_URI_FORMAT = 'http://omex-libary.org/{}.omex'
 BIOSIMULATIONS_ROOT_URI_PATTERN = r'^http://omex-libary\.org/.*?\.omex$'
 
 BIOSIMULATIONS_PREDICATE_TYPES = {
-    'https://dublincore.org/specifications/dublin-core/dcmi-terms/title': {
+    'http://dublincore.org/specifications/dublin-core/dcmi-terms/title': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
         },
-        'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/title',
+        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/title',
         'attribute': 'title',
         'label': 'title',
         'multiple_allowed': False,
@@ -89,18 +89,18 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': True,
     },
-    'https://dublincore.org/specifications/dublin-core/dcmi-terms/abstract': {
+    'http://dublincore.org/specifications/dublin-core/dcmi-terms/abstract': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
         },
-        'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/abstract',
+        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/abstract',
         'attribute': 'abstract',
         'label': 'Abstract',
         'multiple_allowed': False,
         'has_uri': False,
         'has_label': True,
-        'required': True,
+        'required': False,
     },
     'http://prismstandard.org/namespaces/basic/2.0/keyword': {
         'namespace': {
@@ -115,12 +115,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
-    'https://dublincore.org/specifications/dublin-core/dcmi-terms/description': {
+    'http://dublincore.org/specifications/dublin-core/dcmi-terms/description': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
         },
-        'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/description',
+        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/description',
         'attribute': 'description',
         'label': 'Description',
         'multiple_allowed': False,
@@ -167,12 +167,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': False,
         'required': False,
     },
-    'https://dublincore.org/specifications/dublin-core/dcmi-terms/source': {
+    'http://dublincore.org/specifications/dublin-core/dcmi-terms/source': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
         },
-        'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/source',
+        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/source',
         'attribute': 'sources',
         'label': 'Sources',
         'multiple_allowed': True,
@@ -219,12 +219,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
-    'https://dublincore.org/specifications/dublin-core/dcmi-terms/creator': {
+    'http://dublincore.org/specifications/dublin-core/dcmi-terms/creator': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
         },
-        'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/creator',
+        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/creator',
         'attribute': 'creators',
         'label': 'Creators',
         'multiple_allowed': True,
@@ -232,12 +232,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': True,
     },
-    'https://dublincore.org/specifications/dublin-core/dcmi-terms/contributor': {
+    'http://dublincore.org/specifications/dublin-core/dcmi-terms/contributor': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
         },
-        'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/contributor',
+        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/contributor',
         'attribute': 'contributors',
         'label': 'Contributors',
         'multiple_allowed': True,
@@ -271,12 +271,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
-    'https://dublincore.org/specifications/dublin-core/dcmi-terms/license': {
+    'http://dublincore.org/specifications/dublin-core/dcmi-terms/license': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
         },
-        'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/license',
+        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/license',
         'attribute': 'license',
         'label': 'License',
         'multiple_allowed': False,
@@ -297,12 +297,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
-    'https://dublincore.org/specifications/dublin-core/dcmi-terms/created': {
+    'http://dublincore.org/specifications/dublin-core/dcmi-terms/created': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
         },
-        'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/created',
+        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/created',
         'attribute': 'created',
         'label': 'Created',
         'multiple_allowed': False,
@@ -310,12 +310,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
-    'https://dublincore.org/specifications/dublin-core/dcmi-terms/modified': {
+    'http://dublincore.org/specifications/dublin-core/dcmi-terms/modified': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
         },
-        'uri': 'https://dublincore.org/specifications/dublin-core/dcmi-terms/modified',
+        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/modified',
         'attribute': 'modified',
         'label': 'Modified',
         'multiple_allowed': True,

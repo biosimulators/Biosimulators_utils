@@ -324,7 +324,7 @@ class ConvertController(cement.Controller):
 
 
 class ConvertEscherController(cement.Controller):
-    """ Controller for converting Escher maps to Vega visualizations """
+    """ Controller for converting Escher maps to Vega data visualizations """
 
     class Meta:
         label = 'escher-to-vega'
@@ -334,7 +334,7 @@ class ConvertEscherController(cement.Controller):
         description = "Convert an Escher map of a metabolic network to the Vega data visualization format"
         arguments = [
             (
-                ['--flux-sedml-report'],
+                ['--data-sedml'],
                 dict(
                     type=str,
                     help=(
@@ -346,7 +346,7 @@ class ConvertEscherController(cement.Controller):
                 ),
             ),
             (
-                ['--flux-file'],
+                ['--data-file'],
                 dict(
                     type=str,
                     help=(
@@ -358,7 +358,7 @@ class ConvertEscherController(cement.Controller):
                 ),
             ),
             (
-                ['--flux-url'],
+                ['--data-url'],
                 dict(
                     type=str,
                     help=(
@@ -382,7 +382,7 @@ class ConvertEscherController(cement.Controller):
                 dict(
                     metavar='vega-file',
                     type=str,
-                    help='Path to save the Escher map in Vega format',
+                    help='Path to save the diagram in Vega format',
                 ),
             ),
         ]
@@ -390,35 +390,105 @@ class ConvertEscherController(cement.Controller):
     @cement.ex(hide=True)
     def _default(self):
         from biosimulators_utils.viz.vega.escher.core import escher_to_vega
+        _convert_diagram(self.app.pargs, 'escher_file', escher_to_vega)
 
-        args = self.app.pargs
 
-        n_flux_args = (
-            (args.flux_sedml_report is not None) +
-            (args.flux_file is not None) +
-            (args.flux_url is not None)
-        )
+class ConvertGinmlController(cement.Controller):
+    """ Controller for converting GINML activity flow diagrams to Vega data visualizations """
 
-        if n_flux_args == 0:
-            raise SystemExit('One of --flux-sedml-report, --flux-file, or --flux-url must be used')
-        elif n_flux_args > 1:
-            raise SystemExit('Only one of --flux-sedml-report, --flux-file, or --flux-url can be used')
+    class Meta:
+        label = 'ginml-to-vega'
+        stacked_on = 'convert'
+        stacked_type = 'nested'
+        help = "Convert a GINML activity flow diagram to Vega"
+        description = "Convert a GINML activity flow diagram to the Vega data visualization format"
+        arguments = [
+            (
+                ['--data-sedml'],
+                dict(
+                    action='store_true',
+                    help=(
+                        'Set to indicate that the predicted value of each node should be read from the reports of '
+                        'the SED-ML files in a COMBINE archive'
+                    ),
+                ),
+            ),
+            (
+                ['--data-file'],
+                dict(
+                    type=str,
+                    help=(
+                        'Path to a JSON file which represents a list of dictionaries, each which have two keys '
+                        '`label` and `values` whose values are the ids of nodes and arrays of their predicted values'
+                    ),
+                    default=None,
+                ),
+            ),
+            (
+                ['--data-url'],
+                dict(
+                    type=str,
+                    help=(
+                        'URL for a JSON file which represents a list of dictionaries, each which have two keys '
+                        '`label` and `values` whose values are the ids of nodes and arrays of their predicted values'
+                    ),
+                    default=None,
+                ),
+            ),
+            (
+                ['ginml_file'],
+                dict(
+                    metavar='ginml-file',
+                    type=str,
+                    help='Path to the GINML file',
+                ),
+            ),
+            (
+                ['vega_file'],
+                dict(
+                    metavar='vega-file',
+                    type=str,
+                    help='Path to save the diagram in Vega format',
+                ),
+            ),
+        ]
 
-        if args.flux_sedml_report:
-            sedDocumentlocation, _, reportId = args.flux_sedml_report.rpartition('/')
-            reaction_fluxes_data_set = {'sedmlUri': [sedDocumentlocation, reportId]}
+    @cement.ex(hide=True)
+    def _default(self):
+        from biosimulators_utils.viz.vega.ginml.core import ginml_to_vega
+        _convert_diagram(self.app.pargs, 'ginml_file', ginml_to_vega)
 
-        elif args.flux_file:
-            with open(args.flux_file, 'rb') as file:
-                reaction_fluxes_data_set = {'values': json.load(file)}
 
+def _convert_diagram(args, diagram_file_attr, converter):
+    n_data_args = (
+        (args.data_sedml not in [None, False]) +
+        (args.data_file is not None) +
+        (args.data_url is not None)
+    )
+
+    if n_data_args == 0:
+        raise SystemExit('One of --data-sedml, --data-file, or --data-url must be used')
+    elif n_data_args > 1:
+        raise SystemExit('Only one of --data-sedml, --data-file, or --data-url can be used')
+
+    if args.data_sedml:
+        if isinstance(args.data_sedml, bool):
+            data_set = {'sedmlUri': []}
         else:
-            reaction_fluxes_data_set = {'url': args.flux_url}
+            sedDocumentlocation, _, reportId = args.data_sedml.rpartition('/')
+            data_set = {'sedmlUri': [sedDocumentlocation, reportId]}
 
-        try:
-            escher_to_vega(reaction_fluxes_data_set, args.escher_file, args.vega_file)
-        except Exception as exception:
-            raise SystemExit(str(exception))
+    elif args.data_file:
+        with open(args.data_file, 'rb') as file:
+            data_set = {'values': json.load(file)}
+
+    else:
+        data_set = {'url': args.data_url}
+
+    try:
+        converter(data_set, getattr(args, diagram_file_attr), args.vega_file)
+    except Exception as exception:
+        raise SystemExit(str(exception))
 
 
 class App(cement.App):
@@ -433,6 +503,7 @@ class App(cement.App):
             ExecuteModelingProjectController,
             ConvertController,
             ConvertEscherController,
+            ConvertGinmlController,
         ]
 
 
