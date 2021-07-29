@@ -73,6 +73,12 @@ To use BioSimulators utils to validate models encoded in Smoldyn, install BioSim
 
     pip install biosimulators-utils[smoldyn]
 
+To use BioSimulators utils to convert Escher metabolic maps to Vega flux data visualizations, install BioSimulators utils with the ``escher`` option:
+
+.. code-block:: text
+
+    pip install biosimulators-utils[escher]
+
 To use BioSimulators utils to execute containerized simulation tools, install BioSimulators utils with the ``containers`` option:
 
 .. code-block:: text

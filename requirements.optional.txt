@@ -18,6 +18,9 @@ python_libsbml
 [smoldyn]
 smoldyn >= 2.66
 
+[escher]
+bezier
+
 [containers]
 docker >= 4.4
 
