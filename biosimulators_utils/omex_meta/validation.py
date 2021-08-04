@@ -7,11 +7,11 @@
 """
 
 from ..combine.data_model import CombineArchiveContentFormatPattern
+from ..utils.identifiers_org import validate_identifiers_org_uri, InvalidIdentifiersOrgUri
 from .data_model import BIOSIMULATIONS_PREDICATE_TYPES, BIOSIMULATIONS_THUMBNAIL_FORMATS
 import dateutil.parser
 import os
 import re
-import requests
 import validators
 
 __all__ = [
@@ -61,15 +61,15 @@ def validate_biosimulations_metadata(metadata, archive=None, working_dir=None):
                         errors.append(['URI `{}` of attribute `{}` ({}) is not a valid URL.'.format(
                             object['uri'], predicate_type['attribute'], predicate_type['uri'])])
                     else:
-                        match = re.match(r'^https?://identifiers\.org/(.*?)$', object['uri'])
+                        match = re.match(r'^https?://identifiers\.org/(([^/:]+/[^/:]+|[^/:]+)[/:](.+))$', object['uri'])
                         if match:
-                            response = requests.get('https://resolver.api.identifiers.org/' + match.group(1))
-                            if response.status_code == 400:
-                                errors.append(['URI `{}` of attribute `{}` ({}) is not a valid identifier.'.format(
-                                    object['uri'], predicate_type['attribute'], predicate_type['uri'])])
-                            elif not response.ok:
-                                warnings.append(['URI `{}` of attribute `{}` ({}) could not be validated.'.format(
-                                    object['uri'], predicate_type['attribute'], predicate_type['uri'])])
+                            try:
+                                validate_identifiers_org_uri(object['uri'])
+                            except InvalidIdentifiersOrgUri as exception:
+                                msg = (
+                                    'URI `{}` of attribute `{}` ({}) is not a valid Identifiers.org identifier.'
+                                ).format(object['uri'], predicate_type['attribute'], predicate_type['uri'])
+                                errors.append([msg, [[str(exception)]]])
 
     # thumbnail is a file; file type is checked by COMBINE validation
     if working_dir:

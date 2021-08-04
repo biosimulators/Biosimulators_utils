@@ -19,6 +19,8 @@ python_libsedml >= 2.0.16
 pyyaml
 rdflib
 requests
+requests_cache
+setuptools
 simplejson
 termcolor
 validators
