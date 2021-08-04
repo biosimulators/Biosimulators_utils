@@ -1,5 +1,5 @@
 [bngl]
-bionetgen >= 0.3.1, <= 0.3.1
+bionetgen >= 0.3.8
 
 [cellml]
 libcellml

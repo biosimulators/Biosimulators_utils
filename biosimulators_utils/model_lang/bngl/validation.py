@@ -59,11 +59,9 @@ def validate_model(filename, name=None):
 def read_model(bngl_filename, filename):
     model = None
     errors = []
-    cur_dir = os.getcwd()  # todo: remove once fixed in bionetgen
     with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.c, relay=False) as captured:
         try:
             model = bionetgen.bngmodel(bngl_filename)
         except Exception as exception:
             errors.append(['`{}` is not a valid BNGL or BGNL XML file.'.format(filename or ''), [[str(exception)]]])
-        os.chdir(cur_dir)  # todo: remove once fixed in bionetgen
     return model, errors, captured.get_text()
