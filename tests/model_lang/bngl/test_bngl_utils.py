@@ -1,6 +1,8 @@
 from biosimulators_utils.model_lang.bngl.utils import get_parameters_variables_for_simulation
 from biosimulators_utils.sedml.data_model import (ModelLanguage, SteadyStateSimulation,
-                                                  OneStepSimulation, UniformTimeCourseSimulation, Symbol,
+                                                  OneStepSimulation, UniformTimeCourseSimulation,
+                                                  Algorithm, AlgorithmParameterChange,
+                                                  Symbol,
                                                   ModelAttributeChange, Variable)
 from unittest import mock
 import os
@@ -9,6 +11,7 @@ import unittest
 
 class BgnlUtilsTestCase(unittest.TestCase):
     FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'valid.bngl')
+    NO_ACTIONS_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'no-actions.bngl')
     COMP_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'LR_comp.bngl')
     INVALID_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'invalid.bngl')
 
@@ -55,6 +58,23 @@ class BgnlUtilsTestCase(unittest.TestCase):
         )))
 
         self.assertIsInstance(sim, UniformTimeCourseSimulation)
+        expected_sim = UniformTimeCourseSimulation(
+            id='simulation_0',
+            initial_time=0.,
+            output_start_time=0.,
+            output_end_time=1000000.,
+            number_of_steps=1000,
+            algorithm=Algorithm(
+                kisao_id='KISAO_0000029',
+                changes=[
+                    AlgorithmParameterChange(
+                        kisao_id='KISAO_0000488',
+                        new_value='2',
+                    )
+                ]
+            )
+        )
+        self.assertTrue(sim.is_equal(expected_sim))
 
         self.assertTrue(vars[0].is_equal(Variable(
             id='time',
@@ -72,6 +92,13 @@ class BgnlUtilsTestCase(unittest.TestCase):
             target='species.GeneA_00().count',
         )))
         self.assertEqual(len(vars), 17)
+
+    @unittest.expectedFailure  # 'See https://github.com/RuleWorld/PyBioNetGen/issues/17'
+    def test_get_parameters_variables_for_simulation_no_actions(self):
+        params, sim, vars = get_parameters_variables_for_simulation(
+            self.NO_ACTIONS_FIXTURE_FILENAME, None, OneStepSimulation, None)
+        params, sim, vars = get_parameters_variables_for_simulation(
+            self.NO_ACTIONS_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
     def test_get_parameters_variables_for_simulation_compartmentalized(self):
         params, sim, vars = get_parameters_variables_for_simulation(self.COMP_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)

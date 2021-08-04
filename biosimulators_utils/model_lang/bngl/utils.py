@@ -9,9 +9,10 @@
 from ...sedml.data_model import (  # noqa: F401
     ModelAttributeChange, Variable, Symbol,
     Simulation, OneStepSimulation, UniformTimeCourseSimulation,
-    Algorithm,
+    Algorithm, AlgorithmParameterChange,
     )
 from ...utils.core import flatten_nested_list_of_strings
+from ...warnings import warn, BioSimulatorsWarning
 from .validation import validate_model
 import os
 import re
@@ -99,25 +100,122 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             ))
 
     # simulation
-    if simulation_type == OneStepSimulation:
-        sim = OneStepSimulation(
-            id='simulation',
-            step=1.,
-            algorithm=algorithm or Algorithm(
-                kisao_id='KISAO_0000019',
-            )
-        )
-    else:
+    sims = []
+    for i_action, action in enumerate(model.actions.items.values()):
+        args = {key: val for key, val in action.args}
+
+        initial_time = args.get('t_start', '0.')
+        output_end_time = args.get('t_end', None)
+        number_of_steps = args.get('n_steps', args.get('n_output_steps', '1'))
+        seed = args.get('seed', None)
+        a_tol = args.get('atol', None)
+        r_tol = args.get('rtol', None)
+        stop_if = args.get('stop_if', None)
+
+        if action.name == 'simulate':
+            method = args.get('method', None)
+            if method[0] == '"' and method[-1] == '"':
+                method = method[1:-1]
+
+        elif action.name == 'simulate_ode':
+            method = 'ode'
+
+        elif action.name == 'simulate_ssa':
+            method = 'ssa'
+
+        elif action.name == 'simulate_pla':
+            method = 'pla'
+
+        elif action.name == 'simulate_nf':
+            method = 'nf'
+
+        # elif action.name == 'parameter_scan':
+        # elif action.name == 'bifurcate':
+
+        else:
+            continue
+
+        warnings = []
+        if 'sample_times' in args:
+            warnings.append('Sample times cannot be translated into SED-ML.')
+        if 'output_step_interval' in args:
+            warnings.append('Output step interval cannot be translated into SED-ML.')
+        if 'max_sim_steps' in args:
+            warnings.append('Maximum simulation steps cannot be translated into SED-ML.')
+        if output_end_time is None:
+            warnings.append('Output end time must be set.')
+        if warnings:
+            warn('Skipping action {}:\n  {}'.format(i_action + 1, '\n  '.join(warnings)), BioSimulatorsWarning)
+            continue
+
+        if method == 'ode':
+            algorithm_kisao_id = 'KISAO_0000019'
+        elif method == 'ssa':
+            algorithm_kisao_id = 'KISAO_0000029'
+        elif method == 'pla':
+            algorithm_kisao_id = 'KISAO_0000524'
+        elif method == 'nf':
+            algorithm_kisao_id = 'KISAO_0000263'
+
         sim = UniformTimeCourseSimulation(
-            id='simulation',
-            initial_time=0.,
-            output_start_time=0.,
-            output_end_time=1.,
-            number_of_steps=10,
-            algorithm=algorithm or Algorithm(
-                kisao_id='KISAO_0000019',
+            id='simulation_{}'.format(i_action),
+            initial_time=float(initial_time),
+            output_start_time=float(initial_time),
+            output_end_time=float(output_end_time),
+            number_of_steps=int(number_of_steps),
+            algorithm=Algorithm(
+                kisao_id=algorithm_kisao_id,
             )
         )
+
+        if seed is not None:
+            sim.algorithm.changes.append(AlgorithmParameterChange(
+                kisao_id='KISAO_0000488', new_value=seed))
+        if a_tol is not None:
+            sim.algorithm.changes.append(AlgorithmParameterChange(
+                kisao_id='KISAO_0000211', new_value=a_tol))
+        if r_tol is not None:
+            sim.algorithm.changes.append(AlgorithmParameterChange(
+                kisao_id='KISAO_0000209', new_value=r_tol))
+        if stop_if is not None:
+            if stop_if[0] == '"' and stop_if[-1] == '"':
+                stop_if = stop_if[1:-1]
+            sim.algorithm.changes.append(AlgorithmParameterChange(
+                kisao_id='KISAO_0000525', new_value=stop_if))
+
+        sims.append(sim)
+
+    if len(sims) > 1:
+        sim = sims[0]
+        warn('Only the first action was translated to SED-ML.', BioSimulatorsWarning)
+
+    elif len(sims) == 1:
+        sim = sims[0]
+
+    elif len(sims) == 0:
+        if simulation_type == OneStepSimulation:
+            sims = [
+                OneStepSimulation(
+                    id='simulation',
+                    step=1.,
+                    algorithm=algorithm or Algorithm(
+                        kisao_id='KISAO_0000019',
+                    )
+                )
+            ]
+        else:
+            sims = [
+                UniformTimeCourseSimulation(
+                    id='simulation',
+                    initial_time=0.,
+                    output_start_time=0.,
+                    output_end_time=1.,
+                    number_of_steps=10,
+                    algorithm=algorithm or Algorithm(
+                        kisao_id='KISAO_0000019',
+                    )
+                )
+            ]
 
     # observables
     vars = []

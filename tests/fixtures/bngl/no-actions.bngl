@@ -58,14 +58,3 @@ begin reaction rules
     B() -> 0 k
 end reaction rules
 end model
-
-#ACTIONS
-simulate_ssa({t_start=>0,t_end=>1000000,n_steps=>1000,seed=>2});
-simulate_ode({t_start=>0,t_end=>1000000,n_steps=>1000,atol=>1e-6,rtol=>1e-8});
-simulate_pla({t_start=>0,t_end=>1000000,n_steps=>1000});
-simulate_nf({t_start=>0,t_end=>1000000,stop_if=>"x"});
-simulate({t_start=>0,sample_times=>[0,1000000],output_step_interval=>1,max_sim_steps=>1,method=>"ssa"});
-#visualize({type=>"contactmap"})
-#visualize({type=>"ruleviz_pattern"})
-#visualize({type=>"ruleviz_operation"})
-setModelName("model name")
