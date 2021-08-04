@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3.1.13. biosimulators_utils.utils package &#8212; BioSimulators utils 0.1.99 documentation</title>
+    <title>3.1.13. biosimulators_utils.utils package &#8212; BioSimulators utils 0.1.100 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -374,8 +374,277 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-biosimulators_utils.utils.identifiers_org">
+<span id="biosimulators-utils-utils-identifiers-org-module"></span><h2><span class="section-number">3.1.13.3. </span>biosimulators_utils.utils.identifiers_org module<a class="headerlink" href="#module-biosimulators_utils.utils.identifiers_org" title="Permalink to this headline">¶</a></h2>
+<p>Utilities for working with Identifiers.org</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2021-08-04</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2021, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.utils.identifiers_org.</span></span><span class="sig-name descname"><span class="pre">IdentifiersOrgCountry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry.code">
+<span class="sig-name descname"><span class="pre">code</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry.code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.utils.identifiers_org.</span></span><span class="sig-name descname"><span class="pre">IdentifiersOrgInstitution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home_url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ror_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry" title="biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry"><span class="pre">biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry</span></a></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.country">
+<span class="sig-name descname"><span class="pre">country</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry" title="biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry"><span class="pre">biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry</span></a></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.country" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.home_url">
+<span class="sig-name descname"><span class="pre">home_url</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.home_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.ror_id">
+<span class="sig-name descname"><span class="pre">ror_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution.ror_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.utils.identifiers_org.</span></span><span class="sig-name descname"><span class="pre">IdentifiersOrgNamespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mir_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">re.Pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedded_in_lui</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deprecated</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deprecated_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modified</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.created">
+<span class="sig-name descname"><span class="pre">created</span></span><em class="property"><span class="pre">:</span> <span class="pre">datetime.datetime</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.created" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.deprecated">
+<span class="sig-name descname"><span class="pre">deprecated</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.deprecated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.deprecated_date">
+<span class="sig-name descname"><span class="pre">deprecated_date</span></span><em class="property"><span class="pre">:</span> <span class="pre">datetime.datetime</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.deprecated_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.embedded_in_lui">
+<span class="sig-name descname"><span class="pre">embedded_in_lui</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.embedded_in_lui" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.mir_id">
+<span class="sig-name descname"><span class="pre">mir_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.mir_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.modified">
+<span class="sig-name descname"><span class="pre">modified</span></span><em class="property"><span class="pre">:</span> <span class="pre">datetime.datetime</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.modified" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.pattern">
+<span class="sig-name descname"><span class="pre">pattern</span></span><em class="property"><span class="pre">:</span> <span class="pre">re.Pattern</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.pattern" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.prefix">
+<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.resources">
+<span class="sig-name descname"><span class="pre">resources</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.resources" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.sample_id">
+<span class="sig-name descname"><span class="pre">sample_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace.sample_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.utils.identifiers_org.</span></span><span class="sig-name descname"><span class="pre">IdentifiersOrgNamespaceResource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mir_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_pattern</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">official</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">provider_code</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home_url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">institution</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution" title="biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution"><span class="pre">biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">country</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry" title="biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry"><span class="pre">biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">deprecated</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deprecated_date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.country">
+<span class="sig-name descname"><span class="pre">country</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry" title="biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry"><span class="pre">biosimulators_utils.utils.identifiers_org.IdentifiersOrgCountry</span></a></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.country" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.deprecated">
+<span class="sig-name descname"><span class="pre">deprecated</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.deprecated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.deprecated_date">
+<span class="sig-name descname"><span class="pre">deprecated_date</span></span><em class="property"><span class="pre">:</span> <span class="pre">datetime.datetime</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.deprecated_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.home_url">
+<span class="sig-name descname"><span class="pre">home_url</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.home_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.institution">
+<span class="sig-name descname"><span class="pre">institution</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution" title="biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution"><span class="pre">biosimulators_utils.utils.identifiers_org.IdentifiersOrgInstitution</span></a></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.institution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.mir_id">
+<span class="sig-name descname"><span class="pre">mir_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.mir_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.official">
+<span class="sig-name descname"><span class="pre">official</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.official" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.provider_code">
+<span class="sig-name descname"><span class="pre">provider_code</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.provider_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.sample_id">
+<span class="sig-name descname"><span class="pre">sample_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.sample_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.url_pattern">
+<span class="sig-name descname"><span class="pre">url_pattern</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespaceResource.url_pattern" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.InvalidIdentifiersOrgUri">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.utils.identifiers_org.</span></span><span class="sig-name descname"><span class="pre">InvalidIdentifiersOrgUri</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.InvalidIdentifiersOrgUri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>An invalid Identifers.org URI</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.get_identifiers_org_namespace">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.utils.identifiers_org.</span></span><span class="sig-name descname"><span class="pre">get_identifiers_org_namespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.get_identifiers_org_namespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an Identifiers.org namespace</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prefix</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – prefix (e.g., <code class="docutils literal notranslate"><span class="pre">biosimulators</span></code>) or <code class="docutils literal notranslate"><span class="pre">/</span></code>-separated tuple of a
+provider code and prefix (e.g, <code class="docutils literal notranslate"><span class="pre">icahn/biosimulators</span></code>)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>namespace</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace" title="biosimulators_utils.utils.identifiers_org.IdentifiersOrgNamespace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IdentifiersOrgNamespace</span></code></a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#biosimulators_utils.utils.identifiers_org.InvalidIdentifiersOrgUri" title="biosimulators_utils.utils.identifiers_org.InvalidIdentifiersOrgUri"><strong>InvalidIdentifiersOrgUri</strong></a> – if the prefix is not defined</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.get_identifiers_org_namespaces">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.utils.identifiers_org.</span></span><span class="sig-name descname"><span class="pre">get_identifiers_org_namespaces</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.get_identifiers_org_namespaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the namespaces registered with <a class="reference external" href="https://identifiers.org/">Identifiers.org</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>dictionary that maps the prefix of each Identifiers.org namespace or</dt><dd><p>a tuple of its provider code and its prefix to its attributes</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.utils.identifiers_org.validate_identifiers_org_uri">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.utils.identifiers_org.</span></span><span class="sig-name descname"><span class="pre">validate_identifiers_org_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/utils/identifiers_org.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.utils.identifiers_org.validate_identifiers_org_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether a URI is a validate for one of the namespaces registered with Identifiers.org</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#biosimulators_utils.utils.identifiers_org.InvalidIdentifiersOrgUri" title="biosimulators_utils.utils.identifiers_org.InvalidIdentifiersOrgUri"><strong>InvalidIdentifiersOrgUri</strong></a> – if the URI is not a valid with one of the namespaces registered with Identifiers.org</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-biosimulators_utils.utils.logging">
-<span id="biosimulators-utils-utils-logging-module"></span><h2><span class="section-number">3.1.13.3. </span>biosimulators_utils.utils.logging module<a class="headerlink" href="#module-biosimulators_utils.utils.logging" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-utils-logging-module"></span><h2><span class="section-number">3.1.13.4. </span>biosimulators_utils.utils.logging module<a class="headerlink" href="#module-biosimulators_utils.utils.logging" title="Permalink to this headline">¶</a></h2>
 <p>Utilities for logging</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
