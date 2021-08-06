@@ -71,6 +71,7 @@ class ModelLanguage(str, enum.Enum):
     SBML = 'urn:sedml:language:sbml'
     Smoldyn = 'urn:sedml:language:smoldyn'
     VCML = 'urn:sedml:language:vcml'
+    XPP = 'urn:sedml:language:xpp'
     ZGINML = 'urn:sedml:language:zginml'
 
 
@@ -89,6 +90,7 @@ class ModelLanguagePattern(str, enum.Enum):
     SBML = r'^urn:sedml:language:sbml(\.level\-\d+\.version\-\d+)?$'
     Smoldyn = r'^urn:sedml:language:smoldyn(\.|$)'
     VCML = r'^urn:sedml:language:vcml(\.|$)'
+    XPPL = r'^urn:sedml:language:xpp(\.|$)'
     ZGINML = r'^urn:sedml:language:zginml(\.|$)'
 
 
