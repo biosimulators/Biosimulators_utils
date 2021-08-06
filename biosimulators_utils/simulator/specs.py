@@ -162,7 +162,7 @@ def does_algorithm_implementation_have_capabilities_to_execute_sed_model_languag
     """
     model_language_edam_id = None
     for model_language_pattern in ModelLanguagePattern.__members__.values():
-        if re.match(model_language_pattern.value, model_language):
+        if model_language and re.match(model_language_pattern.value, model_language):
             model_language_edam_id = ModelLanguageEdamId[model_language_pattern.name].value
             break
     if not model_language_edam_id:

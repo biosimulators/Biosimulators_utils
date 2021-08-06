@@ -1141,14 +1141,16 @@ def is_model_language_encoded_in_xml(language):
         :obj:`bool`: :obj:`True`, if the model language is encoded in XML
     """
     return (
-        re.match(ModelLanguagePattern.CellML, language)
-        or re.match(ModelLanguagePattern.CopasiML, language)
-        or re.match(ModelLanguagePattern.GINML, language)
-        or re.match(ModelLanguagePattern.LEMS, language)
-        or re.match(ModelLanguagePattern.MorpheusML, language)
-        or re.match(ModelLanguagePattern.NeuroML, language)
-        or re.match(ModelLanguagePattern.SBML, language)
-        or re.match(ModelLanguagePattern.VCML, language)
+        language and (
+            re.match(ModelLanguagePattern.CellML, language)
+            or re.match(ModelLanguagePattern.CopasiML, language)
+            or re.match(ModelLanguagePattern.GINML, language)
+            or re.match(ModelLanguagePattern.LEMS, language)
+            or re.match(ModelLanguagePattern.MorpheusML, language)
+            or re.match(ModelLanguagePattern.NeuroML, language)
+            or re.match(ModelLanguagePattern.SBML, language)
+            or re.match(ModelLanguagePattern.VCML, language)
+        )
     )
 
 

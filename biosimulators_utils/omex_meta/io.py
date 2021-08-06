@@ -109,7 +109,7 @@ def read_omex_meta_files_for_archive(archive, archive_dirname, schema):
     warnings = []
 
     for item in archive.contents:
-        if re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, item.format):
+        if item.format and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, item.format):
             temp_content, temp_errors, temp_warnings = read_omex_meta_file(
                 os.path.join(archive_dirname, item.location),
                 schema=schema, archive=archive, working_dir=archive_dirname)

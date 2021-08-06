@@ -184,6 +184,7 @@ def validate_content(content, archive_dirname,
 
     if (
         CombineArchiveContentFormat.SED_ML in formats_to_validate
+        and content.format
         and re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format)
     ):
         file_type = 'SED-ML'
@@ -199,6 +200,7 @@ def validate_content(content, archive_dirname,
 
     elif (
         CombineArchiveContentFormat.OMEX_METADATA in formats_to_validate
+        and content.format
         and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format)
     ):
         file_type = 'OMEX Meta'
@@ -206,36 +208,42 @@ def validate_content(content, archive_dirname,
 
     elif (
         CombineArchiveContentFormat.BMP in formats_to_validate
+        and content.format
         and re.match(CombineArchiveContentFormatPattern.BMP.value, content.format)
     ):
         if imghdr.what(filename) != 'bmp':
             errors.append(['`{}` is not a valid BMP image.'.format(content.location)])
     elif (
         CombineArchiveContentFormat.GIF in formats_to_validate
+        and content.format
         and re.match(CombineArchiveContentFormatPattern.GIF.value, content.format)
     ):
         if imghdr.what(filename) != 'gif':
             errors.append(['`{}` is not a valid GIF image.'.format(content.location)])
     elif (
         CombineArchiveContentFormat.JPEG in formats_to_validate
+        and content.format
         and re.match(CombineArchiveContentFormatPattern.JPEG.value, content.format)
     ):
         if imghdr.what(filename) != 'jpeg':
             errors.append(['`{}` is not a valid JPEG image.'.format(content.location)])
     elif (
         CombineArchiveContentFormat.PNG in formats_to_validate
+        and content.format
         and re.match(CombineArchiveContentFormatPattern.PNG.value, content.format)
     ):
         if imghdr.what(filename) != 'png':
             errors.append(['`{}` is not a valid PNG image.'.format(content.location)])
     elif (
         CombineArchiveContentFormat.TIFF in formats_to_validate
+        and content.format
         and re.match(CombineArchiveContentFormatPattern.TIFF.value, content.format)
     ):
         if imghdr.what(filename) != 'tiff':
             errors.append(['`{}` is not a valid TIFF image.'.format(content.location)])
     elif (
         CombineArchiveContentFormat.WEBP in formats_to_validate
+        and content.format
         and re.match(CombineArchiveContentFormatPattern.WEBP.value, content.format)
     ):
         if imghdr.what(filename) != 'webp':

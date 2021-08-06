@@ -86,7 +86,7 @@ def validate_biosimulations_metadata(metadata, archive=None, working_dir=None):
                         ):
                             is_valid = False
                             for format in BIOSIMULATIONS_THUMBNAIL_FORMATS:
-                                if re.match(CombineArchiveContentFormatPattern[format.name], content.format):
+                                if content.format and re.match(CombineArchiveContentFormatPattern[format.name], content.format):
                                     is_valid = True
                                     break
                             if not is_valid:
