@@ -26,8 +26,8 @@ class CellmlUtilsTestCase(unittest.TestCase):
             get_parameters_variables_for_simulation(self.V1_FIXTURE_FILENAME, None, SteadyStateSimulation, None)
 
     def test_get_parameters_variables_for_simulation_version_1(self):
-        params, sim, vars = get_parameters_variables_for_simulation(self.V1_FIXTURE_FILENAME, None, OneStepSimulation, None)
-        params, sim, vars = get_parameters_variables_for_simulation(self.V1_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+        params, sims, vars = get_parameters_variables_for_simulation(self.V1_FIXTURE_FILENAME, None, OneStepSimulation, None)
+        params, sims, vars = get_parameters_variables_for_simulation(self.V1_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertEqual(len(params), 13)
         self.assertEqual(len(vars), 54)
@@ -49,6 +49,9 @@ class CellmlUtilsTestCase(unittest.TestCase):
             new_value='96.5',
         )))
 
+        self.assertEqual(len(sims), 1)
+
+        sim = sims[0]
         self.assertIsInstance(sim, UniformTimeCourseSimulation)
 
         self.assertTrue(vars[0].is_equal(Variable(
@@ -63,8 +66,8 @@ class CellmlUtilsTestCase(unittest.TestCase):
         )))
 
     def test_get_parameters_variables_for_simulation_version_2(self):
-        params, sim, vars = get_parameters_variables_for_simulation(self.V2_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
-        params, sim, vars = get_parameters_variables_for_simulation(self.V2_FIXTURE_FILENAME, None, OneStepSimulation, None)
+        params, sims, vars = get_parameters_variables_for_simulation(self.V2_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+        params, sims, vars = get_parameters_variables_for_simulation(self.V2_FIXTURE_FILENAME, None, OneStepSimulation, None)
 
         self.assertEqual(len(params), 1)
         self.assertEqual(len(vars), 3)
@@ -86,6 +89,9 @@ class CellmlUtilsTestCase(unittest.TestCase):
             new_value='0',
         )))
 
+        self.assertEqual(len(sims), 1)
+
+        sim = sims[0]
         self.assertIsInstance(sim, OneStepSimulation)
 
         self.assertTrue(vars[0].is_equal(Variable(

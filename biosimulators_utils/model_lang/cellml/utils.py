@@ -21,7 +21,7 @@ import types  # noqa: F401
 __all__ = ['get_parameters_variables_for_simulation']
 
 
-def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm=None,
+def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
                                             include_compartment_sizes_in_simulation_variables=False,
                                             include_model_parameters_in_simulation_variables=False):
     """ Get the possible observables for a simulation of a model
@@ -30,7 +30,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         model_filename (:obj:`str`): path to model file
         model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:cellml``)
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
-        algorithm (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
+        algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
         include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
             non-constant SBML compartments with assignment rules among the returned SED variables
@@ -39,7 +39,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
-        :obj:`Simulation`: simulation of the model
+        :obj:`list` of :obj:`Simulation`: simulation of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
     """
     # check model file exists
@@ -62,25 +62,25 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         default_ns.startswith('http://www.cellml.org/cellml/1.0')
         or default_ns.startswith('http://www.cellml.org/cellml/1.1')
     ):
-        return get_parameters_variables_for_simulation_version_1(model, root, simulation_type, algorithm=algorithm)
+        return get_parameters_variables_for_simulation_version_1(model, root, simulation_type, algorithm_kisao_id=algorithm_kisao_id)
 
     else:
-        return get_parameters_variables_for_simulation_version_2(model, root, simulation_type, algorithm=algorithm)
+        return get_parameters_variables_for_simulation_version_2(model, root, simulation_type, algorithm_kisao_id=algorithm_kisao_id)
 
 
-def get_parameters_variables_for_simulation_version_1(model, xml_root, simulation_type, algorithm=None):
+def get_parameters_variables_for_simulation_version_1(model, xml_root, simulation_type, algorithm_kisao_id=None):
     """ Get the possible observables for a simulation of a model
 
     Args:
         model (:obj:`None`): model
         xml_root (:obj:`lxml.etree._Element`): element tree for model
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
-        algorithm (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
+        algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
-        :obj:`Simulation`: simulation of the model
+        :obj:`list` of :obj:`Simulation`: simulation of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
     """
     params = []
@@ -91,16 +91,16 @@ def get_parameters_variables_for_simulation_version_1(model, xml_root, simulatio
             output_start_time=0.,
             output_end_time=1.,
             number_of_steps=0.,
-            algorithm=algorithm or Algorithm(
-                kisao_id='KISAO_0000019',
+            algorithm=Algorithm(
+                kisao_id=algorithm_kisao_id or 'KISAO_0000019',
             ),
         )
     else:
         sim = OneStepSimulation(
             id='simulation',
             step=1.,
-            algorithm=algorithm or Algorithm(
-                kisao_id='KISAO_0000019',
+            algorithm=Algorithm(
+                kisao_id=algorithm_kisao_id or 'KISAO_0000019',
             ),
         )
 
@@ -136,22 +136,22 @@ def get_parameters_variables_for_simulation_version_1(model, xml_root, simulatio
                     component_name, variable_name),
                 target_namespaces=namespaces,
             ))
-    return params, sim, vars
+    return params, [sim], vars
 
 
-def get_parameters_variables_for_simulation_version_2(model, xml_root, simulation_type, algorithm=None):
+def get_parameters_variables_for_simulation_version_2(model, xml_root, simulation_type, algorithm_kisao_id=None):
     """ Get the possible observables for a simulation of a model
 
     Args:
         model (:obj:`libcellml.model.Model`): model
         xml_root (:obj:`lxml.etree._Element`): element tree for model
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
-        algorithm (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
+        algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
-        :obj:`Simulation`: simulation of the model
+        :obj:`list` of :obj:`Simulation`: simulation of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
     """
     namespaces = {
@@ -166,16 +166,16 @@ def get_parameters_variables_for_simulation_version_2(model, xml_root, simulatio
             output_start_time=0.,
             output_end_time=1.,
             number_of_steps=0.,
-            algorithm=algorithm or Algorithm(
-                kisao_id='KISAO_0000019',
+            algorithm=Algorithm(
+                kisao_id=algorithm_kisao_id or 'KISAO_0000019',
             ),
         )
     else:
         sim = OneStepSimulation(
             id='simulation',
             step=1.,
-            algorithm=algorithm or Algorithm(
-                kisao_id='KISAO_0000019',
+            algorithm=Algorithm(
+                kisao_id=algorithm_kisao_id or 'KISAO_0000019',
             ),
         )
     vars = []
@@ -209,4 +209,4 @@ def get_parameters_variables_for_simulation_version_2(model, xml_root, simulatio
                     component_name, variable_name),
                 target_namespaces=namespaces,
             ))
-    return params, sim, vars
+    return params, [sim], vars

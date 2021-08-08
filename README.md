@@ -14,7 +14,11 @@ Command-line application and high-level utilities for reading, writing, validati
 * pip
 
 ### Optional requirements
-* Docker: required to execute containerized simulation tools
+
+* [Docker](https://www.docker.com/): required to execute containerized simulation tools
+* [Java](https://www.java.com/): required to parse and validate NeuroML/LEMS files
+* [Perl](https://www.perl.org/): required to parse and validate BioNetGen files
+* [XPP](http://www.math.pitt.edu/~bard/xpp/xpp.html): required to parse and validate XPP files
 
 ### Install latest release from PyPI
 ```

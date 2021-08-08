@@ -18,7 +18,7 @@ import types  # noqa: F401
 __all__ = ['get_parameters_variables_for_simulation']
 
 
-def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm=None,
+def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
                                             include_compartment_sizes_in_simulation_variables=False,
                                             include_model_parameters_in_simulation_variables=False):
     """ Get the possible observables for a simulation of a model
@@ -27,7 +27,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         model_filename (:obj:`str`): path to model file
         model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:sbml``)
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
-        algorithm (:obj:`str`): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
+        algorithm_kisao_id (:obj:`str`): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
         include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
             non-constant SBML compartments with assignment rules among the returned SED variables
@@ -36,7 +36,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
-        :obj:`Simulation`: simulation of the model
+        :obj:`list` of :obj:`Simulation`: simulation of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
     """
     # check model file exists and is valid
@@ -72,8 +72,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         output_start_time=smoldyn_model.start,
         output_end_time=smoldyn_model.stop,
         number_of_steps=int((smoldyn_model.stop - smoldyn_model.start) / smoldyn_model.dt),
-        algorithm=algorithm or Algorithm(
-            kisao_id='KISAO_0000057',
+        algorithm=Algorithm(
+            kisao_id=algorithm_kisao_id or 'KISAO_0000057',
         ),
     )
 
@@ -102,4 +102,4 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 target="molcountonsurf {} {}".format(species, surface),
             ))
 
-    return (params, sim, vars)
+    return (params, [sim], vars)

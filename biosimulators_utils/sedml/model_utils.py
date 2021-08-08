@@ -24,7 +24,8 @@ import types  # noqa: F401
 __all__ = ['get_parameters_variables_for_simulation', 'build_combine_archive_for_model']
 
 
-def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm=None, **model_language_options):
+def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
+                                            **model_language_options):
     """ Get the possible observables for a simulation of a model
 
     This method supports the following formats
@@ -37,13 +38,13 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         model_filename (:obj:`str`): path to model file
         model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:sbml``)
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
-        algorithm (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
+        algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
         **model_language_options: additional options to pass to the methods for individual model formats
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
-        :obj:`Simulation`: simulation of the model
+        :obj:`list` of :obj:`Simulation`: simulation of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
 
     Raises:
@@ -67,12 +68,15 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
     elif model_language and re.match(ModelLanguagePattern.Smoldyn.value, model_language):
         from biosimulators_utils.model_lang.smoldyn.utils import get_parameters_variables_for_simulation
 
+    elif model_language and re.match(ModelLanguagePattern.XPP.value, model_language):
+        from biosimulators_utils.model_lang.xpp.utils import get_parameters_variables_for_simulation
+
     else:
         raise UnsupportedModelLanguageError(
             'Models of language `{}` are not supported'.format(model_language))
 
     return get_parameters_variables_for_simulation(
-        model_filename, model_language, simulation_type, algorithm=algorithm,
+        model_filename, model_language, simulation_type, algorithm_kisao_id=algorithm_kisao_id,
         **model_language_options,
     )
 
@@ -88,7 +92,7 @@ def build_combine_archive_for_model(model_filename, model_language, simulation_t
     """
 
     # make a SED-ML document for the model
-    params, sim, vars = get_parameters_variables_for_simulation(model_filename, model_language, simulation_type)
+    params, sims, vars = get_parameters_variables_for_simulation(model_filename, model_language, simulation_type)
 
     sedml_doc = SedDocument()
     model = Model(
@@ -98,31 +102,37 @@ def build_combine_archive_for_model(model_filename, model_language, simulation_t
         changes=params,
     )
     sedml_doc.models.append(model)
-    sedml_doc.simulations.append(sim)
-    task = Task(
-        id='task',
-        model=model,
-        simulation=sim,
-    )
-    sedml_doc.tasks.append(task)
-    report = Report(id='report')
-    sedml_doc.outputs.append(report)
-    for var in vars:
-        var = copy.copy(var)
-        var.task = task
-        data_gen = DataGenerator(
-            id='data_generator_' + var.id,
-            name=var.name,
-            variables=[var],
-            math=var.id,
+    for i_sim, sim in enumerate(sims):
+        sedml_doc.simulations.append(sim)
+
+        task = Task(
+            id='task_{}'.format(i_sim),
+            model=model,
+            simulation=sim,
         )
-        sedml_doc.data_generators.append(data_gen)
-        report.data_sets.append(DataSet(
-            id='data_set_' + var.id,
-            label=var.id,
-            name=var.name,
-            data_generator=data_gen,
-        ))
+        sedml_doc.tasks.append(task)
+
+        report = Report(
+            id='report_{}'.format(i_sim),
+        )
+        sedml_doc.outputs.append(report)
+        for var in vars:
+            var = copy.copy(var)
+            var.id = '{}_{}'.format(var.id, i_sim)
+            var.task = task
+            data_gen = DataGenerator(
+                id='data_generator_{}_{}'.format(i_sim, var.id),
+                name=var.name,
+                variables=[var],
+                math=var.id,
+            )
+            sedml_doc.data_generators.append(data_gen)
+            report.data_sets.append(DataSet(
+                id='data_set_{}_{}'.format(i_sim, var.id),
+                label=var.id,
+                name=var.name,
+                data_generator=data_gen,
+            ))
 
     # make temporary directory for archive
     archive_dirname = tempfile.mkdtemp()

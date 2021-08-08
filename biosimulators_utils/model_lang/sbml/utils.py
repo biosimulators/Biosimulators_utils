@@ -19,7 +19,7 @@ import types  # noqa: F401
 __all__ = ['get_parameters_variables_for_simulation']
 
 
-def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm=None,
+def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
                                             include_compartment_sizes_in_simulation_variables=False,
                                             include_model_parameters_in_simulation_variables=False,
                                             validate=True, validate_consistency=True):
@@ -29,7 +29,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         model_filename (:obj:`str`): path to model file
         model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:sbml``)
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
-        algorithm (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
+        algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
         include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
             non-constant SBML compartments with assignment rules among the returned SED variables
@@ -40,7 +40,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
-        :obj:`Simulation`: simulation of the model
+        :obj:`list` of :obj:`Simulation`: simulation of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
     """
     # check model file exists
@@ -100,8 +100,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
     if has_fbc:
         sim = SteadyStateSimulation(
             id='simulation',
-            algorithm=algorithm or Algorithm(
-                kisao_id='KISAO_0000437',
+            algorithm=Algorithm(
+                kisao_id=algorithm_kisao_id or 'KISAO_0000437',
             ),
         )
 
@@ -110,16 +110,16 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         has_flux = False
         has_flux_bounds = False
 
-        if algorithm in ['KISAO_0000437', 'KISAO_0000527', 'KISAO_0000528', 'KISAO_0000554']:
+        if algorithm_kisao_id in ['KISAO_0000437', 'KISAO_0000527', 'KISAO_0000528', 'KISAO_0000554']:
             # FBA, gFBA, pFBA
             has_flux = True
 
-        elif algorithm in ['KISAO_0000526']:
+        elif algorithm_kisao_id in ['KISAO_0000526']:
             # FVA
             has_flux_bounds = True
 
         else:
-            raise NotImplementedError('Algorithm with KiSAO id `{}` is not supported'.format(algorithm))
+            raise NotImplementedError('Algorithm with KiSAO id `{}` is not supported'.format(algorithm_kisao_id))
 
         namespaces = {
             'sbml': model.getURI(),
@@ -191,15 +191,15 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         if simulation_type == OneStepSimulation:
             sim = OneStepSimulation(
                 step=1.,
-                algorithm=algorithm or Algorithm(
-                    kisao_id='KISAO_0000449',
+                algorithm=Algorithm(
+                    kisao_id=algorithm_kisao_id or 'KISAO_0000449',
                 ),
             )
         elif simulation_type == SteadyStateSimulation:
             sim = SteadyStateSimulation(
                 id='simulation',
-                algorithm=algorithm or Algorithm(
-                    kisao_id='KISAO_0000659',
+                algorithm=Algorithm(
+                    kisao_id=algorithm_kisao_id or 'KISAO_0000659',
                 ),
             )
         else:
@@ -209,8 +209,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 output_start_time=0.,
                 output_end_time=10.,
                 number_of_steps=10,
-                algorithm=algorithm or Algorithm(
-                    kisao_id='KISAO_0000449',
+                algorithm=Algorithm(
+                    kisao_id=algorithm_kisao_id or 'KISAO_0000449',
                 ),
             )
 
@@ -277,15 +277,15 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             sim = OneStepSimulation(
                 id='simulation',
                 step=1.,
-                algorithm=algorithm or Algorithm(
-                    kisao_id='KISAO_0000019',
+                algorithm=Algorithm(
+                    kisao_id=algorithm_kisao_id or 'KISAO_0000019',
                 ),
             )
         elif simulation_type == SteadyStateSimulation:
             sim = SteadyStateSimulation(
                 id='simulation',
-                algorithm=algorithm or Algorithm(
-                    kisao_id='KISAO_0000408',
+                algorithm=Algorithm(
+                    kisao_id=algorithm_kisao_id or 'KISAO_0000408',
                 ),
             )
         else:
@@ -295,8 +295,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 output_start_time=0.,
                 output_end_time=1.,
                 number_of_steps=10,
-                algorithm=algorithm or Algorithm(
-                    kisao_id='KISAO_0000019',
+                algorithm=Algorithm(
+                    kisao_id=algorithm_kisao_id or 'KISAO_0000019',
                 ),
             )
 
@@ -430,4 +430,4 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                         )
                         vars.append(var)
 
-    return (params, sim, vars)
+    return (params, [sim], vars)

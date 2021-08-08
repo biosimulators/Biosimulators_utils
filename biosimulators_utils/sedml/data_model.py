@@ -90,7 +90,7 @@ class ModelLanguagePattern(str, enum.Enum):
     SBML = r'^urn:sedml:language:sbml(\.level\-\d+\.version\-\d+)?$'
     Smoldyn = r'^urn:sedml:language:smoldyn(\.|$)'
     VCML = r'^urn:sedml:language:vcml(\.|$)'
-    XPPL = r'^urn:sedml:language:xpp(\.|$)'
+    XPP = r'^urn:sedml:language:xpp(\.|$)'
     ZGINML = r'^urn:sedml:language:zginml(\.|$)'
 
 

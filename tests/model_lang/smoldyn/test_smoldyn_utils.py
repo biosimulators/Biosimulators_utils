@@ -23,7 +23,7 @@ class SmoldynUtilsTestCase(unittest.TestCase):
             get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, SteadyStateSimulation, None)
 
     def test_get_parameters_variables_for_simulation(self):
-        params, sim, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+        params, sims, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='number_dimensions',
@@ -38,6 +38,9 @@ class SmoldynUtilsTestCase(unittest.TestCase):
             new_value='0 100 r',
         )))
 
+        self.assertEqual(len(sims), 1)
+
+        sim = sims[0]
         self.assertEqual(sim.initial_time, 0.0)
         self.assertEqual(sim.output_start_time, 0.0)
         self.assertEqual(sim.output_end_time, 100.0)
@@ -60,7 +63,7 @@ class SmoldynUtilsTestCase(unittest.TestCase):
             target='molcount green',
         )))
 
-        params, sim, vars = get_parameters_variables_for_simulation(self.COMP_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+        params, sims, vars = get_parameters_variables_for_simulation(self.COMP_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertTrue(vars[0].is_equal(Variable(
             id='time',

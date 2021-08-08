@@ -914,6 +914,17 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn("statement not recognized", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
+        # XPP
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'xpp', 'wilson-cowan.ode')
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.XPP)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'xpp', 'wilson-cowan-invalid.ode')
+        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.XPP)
+        self.assertIn("ERROR compiling U'", flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
     def test_validate_model_changes_warning_handling(self):
         model = data_model.Model(
             source=os.path.join('..', 'fixtures', 'BIOMD0000000297.xml'),

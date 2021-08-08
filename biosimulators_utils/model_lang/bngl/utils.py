@@ -21,7 +21,7 @@ import types  # noqa: F401
 __all__ = ['get_parameters_variables_for_simulation']
 
 
-def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm=None,
+def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
                                             include_compartment_sizes_in_simulation_variables=False,
                                             include_model_parameters_in_simulation_variables=False):
     """ Get the possible observables for a simulation of a model
@@ -30,7 +30,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         model_filename (:obj:`str`): path to model file
         model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:bngl``)
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
-        algorithm (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
+        algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
         include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
             non-constant SBML compartments with assignment rules among the returned SED variables
@@ -39,7 +39,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
-        :obj:`Simulation`: simulation of the model
+        :obj:`list` of :obj:`Simulation`: simulations of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
     """
     # check model file exists and is valid
@@ -185,37 +185,30 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
         sims.append(sim)
 
-    if len(sims) > 1:
-        sim = sims[0]
-        warn('Only the first action was translated to SED-ML.', BioSimulatorsWarning)
-
-    elif len(sims) == 1:
-        sim = sims[0]
-
-    elif len(sims) == 0:
+    if len(sims) == 0:
         if simulation_type == OneStepSimulation:
-            sims = [
+            sims.append(
                 OneStepSimulation(
                     id='simulation',
                     step=1.,
-                    algorithm=algorithm or Algorithm(
-                        kisao_id='KISAO_0000019',
+                    algorithm=Algorithm(
+                        kisao_id=algorithm_kisao_id or 'KISAO_0000019',
                     )
                 )
-            ]
+            )
         else:
-            sims = [
+            sims.append(
                 UniformTimeCourseSimulation(
                     id='simulation',
                     initial_time=0.,
                     output_start_time=0.,
                     output_end_time=1.,
                     number_of_steps=10,
-                    algorithm=algorithm or Algorithm(
-                        kisao_id='KISAO_0000019',
+                    algorithm=Algorithm(
+                        kisao_id=algorithm_kisao_id or 'KISAO_0000019',
                     )
                 )
-            ]
+            )
 
     # observables
     vars = []
@@ -260,7 +253,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                             target='molecules.{}.count'.format(pattern),
                         ))
 
-    return (params, sim, vars)
+    return (params, sims, vars)
 
 
 def escape_id(id):

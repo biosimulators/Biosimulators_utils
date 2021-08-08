@@ -29,8 +29,8 @@ class BgnlUtilsTestCase(unittest.TestCase):
             get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, SteadyStateSimulation, None)
 
     def test_get_parameters_variables_for_simulation(self):
-        params, sim, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, OneStepSimulation, None)
-        params, sim, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+        params, sims, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, OneStepSimulation, None)
+        params, sims, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='value_parameter_k_1',
@@ -57,7 +57,8 @@ class BgnlUtilsTestCase(unittest.TestCase):
             new_value='(0.5*(Atot^2))/(10+(Atot^2))',
         )))
 
-        self.assertIsInstance(sim, UniformTimeCourseSimulation)
+        self.assertEqual(len(sims), 4)
+        self.assertIsInstance(sims[0], UniformTimeCourseSimulation)
         expected_sim = UniformTimeCourseSimulation(
             id='simulation_0',
             initial_time=0.,
@@ -74,7 +75,7 @@ class BgnlUtilsTestCase(unittest.TestCase):
                 ]
             )
         )
-        self.assertTrue(sim.is_equal(expected_sim))
+        self.assertTrue(sims[0].is_equal(expected_sim))
 
         self.assertTrue(vars[0].is_equal(Variable(
             id='time',
@@ -95,13 +96,13 @@ class BgnlUtilsTestCase(unittest.TestCase):
 
     @unittest.expectedFailure  # 'See https://github.com/RuleWorld/PyBioNetGen/issues/17'
     def test_get_parameters_variables_for_simulation_no_actions(self):
-        params, sim, vars = get_parameters_variables_for_simulation(
+        params, sims, vars = get_parameters_variables_for_simulation(
             self.NO_ACTIONS_FIXTURE_FILENAME, None, OneStepSimulation, None)
-        params, sim, vars = get_parameters_variables_for_simulation(
+        params, sims, vars = get_parameters_variables_for_simulation(
             self.NO_ACTIONS_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
     def test_get_parameters_variables_for_simulation_compartmentalized(self):
-        params, sim, vars = get_parameters_variables_for_simulation(self.COMP_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+        params, sims, vars = get_parameters_variables_for_simulation(self.COMP_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='value_parameter_NaV',

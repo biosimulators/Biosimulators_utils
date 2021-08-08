@@ -22,7 +22,7 @@ class ModelUtilsTestCase(unittest.TestCase):
     def test_get_parameters_variables_for_simulation(self):
         # BNGL
         filename = os.path.join(self.FIXTURES_DIRNAME, 'bngl', 'valid.bngl')
-        params, sim, vars = model_utils.get_parameters_variables_for_simulation(
+        params, sims, vars = model_utils.get_parameters_variables_for_simulation(
             filename, ModelLanguage.BNGL, UniformTimeCourseSimulation, None)
         self.assertTrue(vars[0].is_equal(Variable(
             id='time',
@@ -32,7 +32,7 @@ class ModelUtilsTestCase(unittest.TestCase):
 
         # CellML
         filename = os.path.join(self.FIXTURES_DIRNAME, 'cellml', 'albrecht_colegrove_friel_2002.xml')
-        params, sim, vars = model_utils.get_parameters_variables_for_simulation(
+        params, sims, vars = model_utils.get_parameters_variables_for_simulation(
             filename, ModelLanguage.CellML, UniformTimeCourseSimulation, None)
         self.assertTrue(vars[0].is_equal(Variable(
             id='value_component_environment_variable_time',
@@ -47,7 +47,7 @@ class ModelUtilsTestCase(unittest.TestCase):
 
         # SBML
         filename = os.path.join(self.FIXTURES_DIRNAME, 'BIOMD0000000297.xml')
-        params, sim, vars = model_utils.get_parameters_variables_for_simulation(
+        params, sims, vars = model_utils.get_parameters_variables_for_simulation(
             filename, ModelLanguage.SBML, UniformTimeCourseSimulation, 'KISAO_0000019')
         self.assertTrue(vars[0].is_equal(Variable(
             id='time',
@@ -57,13 +57,24 @@ class ModelUtilsTestCase(unittest.TestCase):
 
         # Smoldyn
         filename = os.path.join(self.FIXTURES_DIRNAME, 'smoldyn', 'bounce1.txt')
-        params, sim, vars = model_utils.get_parameters_variables_for_simulation(
+        params, sims, vars = model_utils.get_parameters_variables_for_simulation(
             filename, ModelLanguage.Smoldyn, UniformTimeCourseSimulation, None)
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='number_dimensions',
             name='Number of dimensions',
             target='dim',
             new_value='1',
+        )))
+
+        # XPP
+        filename = os.path.join(self.FIXTURES_DIRNAME, 'xpp', 'wilson-cowan.ode')
+        params, sims, vars = model_utils.get_parameters_variables_for_simulation(
+            filename, ModelLanguage.XPP, UniformTimeCourseSimulation, None)
+        self.assertTrue(params[0].is_equal(ModelAttributeChange(
+            id='parameter_aee',
+            name='Value of parameter "aee"',
+            target='parameters.aee',
+            new_value='10.0',
         )))
 
     def test_get_parameters_variables_for_simulation_error_handling(self):
