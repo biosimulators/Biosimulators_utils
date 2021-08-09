@@ -86,7 +86,7 @@ class InvalidIdentifiersOrgUri(Exception):
     pass
 
 
-@functools.cache
+@functools.lru_cache(maxsize=None)
 def get_identifiers_org_namespaces():
     """ Get the namespaces registered with `Identifiers.org <https://identifiers.org/>`_.
 
