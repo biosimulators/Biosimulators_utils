@@ -14,6 +14,7 @@ import functools
 import os.path
 import re
 import requests_cache
+import typing
 
 __all__ = [
     'IdentifiersOrgCountry',
@@ -73,7 +74,7 @@ class IdentifiersOrgNamespace(object):
     pattern: re.Pattern
     embedded_in_lui: bool
     sample_id: str
-    resources: list[IdentifiersOrgNamespaceResource]
+    resources: typing.List[IdentifiersOrgNamespaceResource]
     deprecated: bool
     deprecated_date: datetime.datetime
     created: datetime.datetime
