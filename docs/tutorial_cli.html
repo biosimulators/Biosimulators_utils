@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2. Tutorial for the command-line application &#8212; BioSimulators utils 0.1.102 documentation</title>
+    <title>2. Tutorial for the command-line application &#8212; BioSimulators utils 0.1.103 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -52,9 +52,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">2. Tutorial for the command-line application</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#convert-an-escher-metabolic-map-to-a-vega-data-visualization">2.1. Convert an Escher metabolic map to a Vega data visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#convert-a-ginml-activity-flow-diagram-to-a-vega-data-visualization">2.2. Convert a GINML activity flow diagram to a Vega data visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#validate-a-modeling-project">2.3. Validate a modeling project</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#execute-a-modeling-project-with-a-standardized-simulation-tool-from-the-biosimulators-registry">2.4. Execute a modeling project with a standardized simulation tool from the BioSimulators registry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#additional-documentation">2.5. Additional documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#convert-a-sbgn-process-description-map-to-a-vega-data-visualization">2.3. Convert a SBGN process description map to a Vega data visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validate-a-modeling-project">2.4. Validate a modeling project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#execute-a-modeling-project-with-a-standardized-simulation-tool-from-the-biosimulators-registry">2.5. Execute a modeling project with a standardized simulation tool from the BioSimulators registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-documentation">2.6. Additional documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="source/biosimulators_utils.html">3. API documentation</a></li>
@@ -118,7 +119,7 @@
 <li><p>Add the SED-ML file and the model(s) involved in the file to a COMBINE archive. Add the SED-ML file and each model file to the manifest of the archive.</p></li>
 <li><p>Use this package to convert an Escher map for the model to the <a class="reference external" href="https://vega.github.io/vega/">Vega</a> data visualization format. The value of the <code class="docutils literal notranslate"><span class="pre">--data-sedml</span></code> argument should be a combination of the location of the SED-ML file in the archive and the id of the report for the predicted fluxes.</p>
 <blockquote>
-<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>biosimulators-utils convert \
+<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>biosimulators-utils convert escher-to-vega \
     --data-sedml location/of/simulation.sedml/id_of_report \
     path/to/config-of-escher-map.json \
     path/to/save-vega.json
@@ -138,7 +139,7 @@
 <li><p>Add the SED-ML file and the model(s) involved in the file to a COMBINE archive. Add the SED-ML file and each model file to the manifest of the archive.</p></li>
 <li><p>Use this package to convert a GINML diagram for the model to the <a class="reference external" href="https://vega.github.io/vega/">Vega</a> data visualization format. The <code class="docutils literal notranslate"><span class="pre">--data-sedml</span></code> argument should be set to indicate the predicted species levels should be pulled from the reports of the SED-ML files in the COMBINE/OMEX archive.</p>
 <blockquote>
-<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>biosimulators-utils convert \
+<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>biosimulators-utils convert ginml-to-vega \
     --data-sedml \
     path/to/config-of-diagram.ginml \
     path/to/save-vega.json
@@ -150,22 +151,42 @@
 </ol>
 <p>An example COMBINE/OMEX archive with a GINML diagram converted to Vega is available <a class="reference external" href="https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/sbml-qual">here</a>.</p>
 </div>
+<div class="section" id="convert-a-sbgn-process-description-map-to-a-vega-data-visualization">
+<h2><span class="section-number">2.3. </span>Convert a SBGN process description map to a Vega data visualization<a class="headerlink" href="#convert-a-sbgn-process-description-map-to-a-vega-data-visualization" title="Permalink to this headline">¶</a></h2>
+<p>The following steps can be used to use a <a class="reference external" href="https://sbgn.github.io/">Systems Biology Graphical Notation</a> (SBGN) process description map to visualize the results of a dynamic simulation captured by a SED-ML report in a SED-ML document in a COMBINE/OMEX archive.</p>
+<ol class="arabic">
+<li><p>Define a SED-ML document for the simulation. The document should include a dynamic simulation (e.g., ODE, SSA) and a report with a dataset for the predicted dynamics of each glyph. The <code class="docutils literal notranslate"><span class="pre">label</span></code> of each dataset should be the SBGN <code class="docutils literal notranslate"><span class="pre">label</span></code> of the corresponding glyph. Save the SED-ML document to a file.</p></li>
+<li><p>Add the SED-ML file and the model(s) involved in the file to a COMBINE archive. Add the SED-ML file and each model file to the manifest of the archive.</p></li>
+<li><p>Use this package to convert a SBGN process description map for the model to the <a class="reference external" href="https://vega.github.io/vega/">Vega</a> data visualization format. The value of the <code class="docutils literal notranslate"><span class="pre">--data-sedml</span></code> argument should be a combination of the location of the SED-ML file in the archive and the id of the report for the predicted dynamics of the glyphs.</p>
+<blockquote>
+<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>biosimulators-utils convert sbgn-to-vega \
+    --data-sedml location/of/simulation.sedml/id_of_report \
+    path/to/config-of-sbgn-map.sbgn \
+    path/to/save-vega.json
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Add the Vega file to the COMBINE/OMEX archive and its manifest with the format <code class="docutils literal notranslate"><span class="pre">http://purl.org/NET/mediatypes/application/vega+json</span></code>.</p></li>
+</ol>
+<p>Example COMBINE/OMEX archives with SBGN maps converted to Vega are available <a class="reference external" href="https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/">here</a>.</p>
+</div>
 <div class="section" id="validate-a-modeling-project">
-<h2><span class="section-number">2.3. </span>Validate a modeling project<a class="headerlink" href="#validate-a-modeling-project" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.4. </span>Validate a modeling project<a class="headerlink" href="#validate-a-modeling-project" title="Permalink to this headline">¶</a></h2>
 <p>The following command can be used to validate a COMBINE/OMEX archive and get a summary of the contents of the archive. Note, BioSimulators utils must be installed with the <code class="docutils literal notranslate"><span class="pre">sbml</span></code> option to validate COMBINE/OMEX archives that include models encoded in the SMBL format.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>biosimulators-utils validate /path/to/project.omex
 </pre></div>
 </div>
 </div>
 <div class="section" id="execute-a-modeling-project-with-a-standardized-simulation-tool-from-the-biosimulators-registry">
-<h2><span class="section-number">2.4. </span>Execute a modeling project with a standardized simulation tool from the BioSimulators registry<a class="headerlink" href="#execute-a-modeling-project-with-a-standardized-simulation-tool-from-the-biosimulators-registry" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.5. </span>Execute a modeling project with a standardized simulation tool from the BioSimulators registry<a class="headerlink" href="#execute-a-modeling-project-with-a-standardized-simulation-tool-from-the-biosimulators-registry" title="Permalink to this headline">¶</a></h2>
 <p>The following command can be used to use a standardized simulation from the <a class="reference external" href="https://biosimulators.org">BioSimulators registry</a>, such as tellurium, to execute a COMBINE/OMEX archive and save its outputs (reports and plots) to a directory. Please see the BioSimulators registry for a list of the available simulation tools. Note, this requires Docker and the installing BioSimulators utils with the <code class="docutils literal notranslate"><span class="pre">containers</span></code> option.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>biosimulators-utils exec -i /path/to/project.omex -o /path/to/save/outputs ghcr.io/biosimulators/tellurium:latest
 </pre></div>
 </div>
 </div>
 <div class="section" id="additional-documentation">
-<h2><span class="section-number">2.5. </span>Additional documentation<a class="headerlink" href="#additional-documentation" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.6. </span>Additional documentation<a class="headerlink" href="#additional-documentation" title="Permalink to this headline">¶</a></h2>
 <p>The command-line program is documented inline. To view the documentation, execute the command-line program the <code class="docutils literal notranslate"><span class="pre">--help</span></code> option.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>biosimulators-utils --help
 </pre></div>
