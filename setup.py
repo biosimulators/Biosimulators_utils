@@ -19,10 +19,8 @@ name = 'biosimulators_utils'
 dirname = os.path.dirname(__file__)
 package_data = {
     name: [
-        os.path.join('model_lang', 'cellml', 'cellml1.0.rng'),
-        os.path.join('model_lang', 'cellml', 'mathml2.rng'),
-        os.path.join('viz', 'vega', 'escher', 'template.json'),
-        os.path.join('viz', 'vega', 'ginml', 'template.json'),
+        os.path.join('model_lang', 'cellml', '*.rng'),
+        os.path.join('viz', 'vega', '**', '*.json'),
     ],
 }
 
