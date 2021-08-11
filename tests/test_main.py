@@ -173,7 +173,7 @@ class CliTestCase(unittest.TestCase):
         with biosimulators_utils.__main__.App(argv=['convert']) as app:
             app.run()
 
-    def test_convert_escher(self):
+    def test_convert_escher_to_vega(self):
         escher_filename = os.path.join(os.path.dirname(__file__), 'fixtures', 'escher', 'e_coli_core.Core metabolism.json')
         vega_filename = os.path.join(self.tmp_dir, 'viz.json')
 
@@ -228,12 +228,11 @@ class CliTestCase(unittest.TestCase):
         reaction_data_set = next(data for data in vega['data'] if data['name'] == 'reactionFluxes')
         self.assertEqual(reaction_data_set, {'name': 'reactionFluxes', 'url': data_url})
 
-    def test_convert_ginml(self):
+    def test_convert_ginml_to_vega(self):
         ginml_filename = os.path.join(os.path.dirname(__file__), 'fixtures', 'ginml', 'ginsim-35-regulatoryGraph.ginml')
         vega_filename = os.path.join(self.tmp_dir, 'viz.json')
 
         # data from SED-ML report
-        data_url = 'http://site.com/species-levels.json'
         with biosimulators_utils.__main__.App(argv=[
             'convert', 'ginml-to-vega',
             '--data-sedml',
@@ -246,6 +245,24 @@ class CliTestCase(unittest.TestCase):
             vega = json.load(file)
         data_set = next(data for data in vega['data'] if data['name'] == 'nodesValues')
         self.assertEqual(data_set, {'name': 'nodesValues', 'sedmlUri': []})
+
+    def test_convert_sbgn_to_vega(self):
+        sbgn_filename = os.path.join(os.path.dirname(__file__), 'fixtures', 'sbgn', 'Repressilator_PD_v6_color-modified.sbgn')
+        vega_filename = os.path.join(self.tmp_dir, 'viz.json')
+
+        # data from SED-ML report
+        with biosimulators_utils.__main__.App(argv=[
+            'convert', 'sbgn-to-vega',
+            '--data-sedml', 'simulation.sedml/report',
+            sbgn_filename,
+            vega_filename,
+        ]) as app:
+            app.run()
+
+        with open(vega_filename, 'rb') as file:
+            vega = json.load(file)
+        data_set = next(data for data in vega['data'] if data['name'] == 'glyphsValues')
+        self.assertEqual(data_set, {'name': 'glyphsValues', 'sedmlUri': ['simulation.sedml', 'report']})
 
     def test_convert_diagram_error_handling(self):
         with self.assertRaisesRegex(SystemExit, 'must be used'):

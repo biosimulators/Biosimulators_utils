@@ -12,7 +12,7 @@ The following steps can be used to use an `Escher <https://escher.github.io/>`_ 
 
     .. code-block:: text
 
-        biosimulators-utils convert \
+        biosimulators-utils convert escher-to-vega \
             --data-sedml location/of/simulation.sedml/id_of_report \
             path/to/config-of-escher-map.json \
             path/to/save-vega.json
@@ -33,7 +33,7 @@ Convert a GINML activity flow diagram to a Vega data visualization
 
     .. code-block:: text
 
-        biosimulators-utils convert \
+        biosimulators-utils convert ginml-to-vega \
             --data-sedml \
             path/to/config-of-diagram.ginml \
             path/to/save-vega.json
@@ -41,6 +41,27 @@ Convert a GINML activity flow diagram to a Vega data visualization
 #. Add the Vega file to the COMBINE/OMEX archive and its manifest with the format ``http://purl.org/NET/mediatypes/application/vega+json``.
 
 An example COMBINE/OMEX archive with a GINML diagram converted to Vega is available `here <https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/sbml-qual>`_.
+
+
+Convert a SBGN process description map to a Vega data visualization
+-------------------------------------------------------------------
+
+The following steps can be used to use a `Systems Biology Graphical Notation <https://sbgn.github.io/>`_ (SBGN) process description map to visualize the results of a dynamic simulation captured by a SED-ML report in a SED-ML document in a COMBINE/OMEX archive.
+
+#. Define a SED-ML document for the simulation. The document should include a dynamic simulation (e.g., ODE, SSA) and a report with a dataset for the predicted dynamics of each glyph. The ``label`` of each dataset should be the SBGN ``label`` of the corresponding glyph. Save the SED-ML document to a file.
+#. Add the SED-ML file and the model(s) involved in the file to a COMBINE archive. Add the SED-ML file and each model file to the manifest of the archive.
+#. Use this package to convert a SBGN process description map for the model to the `Vega <https://vega.github.io/vega/>`_ data visualization format. The value of the ``--data-sedml`` argument should be a combination of the location of the SED-ML file in the archive and the id of the report for the predicted dynamics of the glyphs.
+
+    .. code-block:: text
+
+        biosimulators-utils convert sbgn-to-vega \
+            --data-sedml location/of/simulation.sedml/id_of_report \
+            path/to/config-of-sbgn-map.sbgn \
+            path/to/save-vega.json
+
+#. Add the Vega file to the COMBINE/OMEX archive and its manifest with the format ``http://purl.org/NET/mediatypes/application/vega+json``.
+
+Example COMBINE/OMEX archives with SBGN maps converted to Vega are available `here <https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/>`_.
 
 
 Validate a modeling project

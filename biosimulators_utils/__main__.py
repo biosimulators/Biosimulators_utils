@@ -459,6 +459,76 @@ class ConvertGinmlController(cement.Controller):
         _convert_diagram(self.app.pargs, 'ginml_file', ginml_to_vega)
 
 
+class ConvertSbgnController(cement.Controller):
+    """ Controller for converting SBGN process description maps to Vega data visualizations """
+
+    class Meta:
+        label = 'sbgn-to-vega'
+        stacked_on = 'convert'
+        stacked_type = 'nested'
+        help = "Convert a SBGN process description map to Vega"
+        description = "Convert a SBGN process description map to the Vega data visualization format"
+        arguments = [
+            (
+                ['--data-sedml'],
+                dict(
+                    type=str,
+                    help=(
+                        'Id of a report in a SED-ML file and the location of the SED-ML file in its parent '
+                        'COMBINE archive which can record the predicted concentration of each glyph '
+                        '(e.g., `path/to/simulation.sedml/Table_1`)'
+                    ),
+                    default=None,
+                ),
+            ),
+            (
+                ['--data-file'],
+                dict(
+                    type=str,
+                    help=(
+                        'Path to a JSON file which represents a list of dictionaries, each which have two keys '
+                        '`label` and `values` whose values are the labels of glyphs and arrays of their predicted '
+                        'concentrations'
+                    ),
+                    default=None,
+                ),
+            ),
+            (
+                ['--data-url'],
+                dict(
+                    type=str,
+                    help=(
+                        'URL for a JSON file which represents a list of dictionaries, each which have two keys '
+                        '`label` and `values` whose values are the labels of glyphs and arrays of their predicted '
+                        'concentrations'
+                    ),
+                    default=None,
+                ),
+            ),
+            (
+                ['sbgn_file'],
+                dict(
+                    metavar='sbgn-file',
+                    type=str,
+                    help='Path to the SBGN file',
+                ),
+            ),
+            (
+                ['vega_file'],
+                dict(
+                    metavar='vega-file',
+                    type=str,
+                    help='Path to save the diagram in Vega format',
+                ),
+            ),
+        ]
+
+    @cement.ex(hide=True)
+    def _default(self):
+        from biosimulators_utils.viz.vega.sbgn.core import sbgn_pd_map_to_vega
+        _convert_diagram(self.app.pargs, 'sbgn_file', sbgn_pd_map_to_vega)
+
+
 def _convert_diagram(args, diagram_file_attr, converter):
     n_data_args = (
         (args.data_sedml not in [None, False]) +
@@ -504,6 +574,7 @@ class App(cement.App):
             ConvertController,
             ConvertEscherController,
             ConvertGinmlController,
+            ConvertSbgnController,
         ]
 
 

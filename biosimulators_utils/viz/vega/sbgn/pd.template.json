@@ -1,0 +1,728 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "width": 500,
+  "height": 500,
+  "padding": 0,
+  "autosize": "none",
+  "signals": [
+    {
+      "name": "soureAndSinkPath",
+      "value": "M -0.75, a 0.75,0.75 0 1,0 1.5,0 a 0.75,0.75 0 1,0 -1.5, 0 M 1,-1 L -1,1"
+    },
+    {
+      "name": "macromoleculeColor",
+      "value": "#2196f3"
+    },
+    {
+      "name": "nucleicAcidFeatureColor",
+      "value": "#ff9800"
+    },
+    {
+      "name": "processColor",
+      "value": "#000000"
+    },
+    {
+      "name": "sourceSinkColor",
+      "value": "#CCCCCC"
+    },
+    {
+      "name": "strokeWidth",
+      "description": "stroke width",
+      "value": 2
+    },
+    {
+      "name": "filledUnpaintedGlyphOpacity",
+      "value": 0.25
+    },
+    {
+      "name": "filledPaintedGlyphOpacity",
+      "value": 0.5
+    },
+    {
+      "name": "cornerRadius",
+      "value": 5
+    },
+    {
+      "name": "sbgnWidth",
+      "value": null
+    },
+    {
+      "name": "sbgnHeight",
+      "value": null
+    },
+    {
+      "name": "Paint_report",
+      "description": "Paint glyphs with data",
+      "value": true,
+      "bind": {
+        "input": "checkbox"
+      }
+    },
+    {
+      "name": "OutputStartTime",
+      "value": 0
+    },
+    {
+      "name": "OutputEndTime",
+      "value": 10
+    },
+    {
+      "name": "NumberOfSteps",
+      "value": 10
+    },
+    {
+      "name": "Time_step",
+      "description": "Time step",
+      "value": 0,
+      "bind": {
+        "input": "range",
+        "min": 0,
+        "max": 100,
+        "step": 1
+      }
+    },
+    {
+      "name": "CurTime",
+      "update": "OutputStartTime + (OutputEndTime - OutputStartTime) / NumberOfSteps * Time_step"
+    },
+    {
+      "name": "Glyph_labels",
+      "value": true,
+      "bind": {
+        "input": "checkbox"
+      }
+    },
+    {
+      "name": "colorScaleWidth",
+      "value": 65
+    },
+    {
+      "name": "colorScalePadding",
+      "value": 20
+    },
+    {
+      "name": "signalHeight",
+      "value": 20
+    },
+    {
+      "name": "signalPadding",
+      "value": 10
+    },
+    {
+      "name": "timeHeight",
+      "value": 12
+    },
+    {
+      "name": "timePadding",
+      "value": 10
+    },
+    {
+      "name": "mapMaxWidth",
+      "update": "width - colorScalePadding - colorScaleWidth"
+    },
+    {
+      "name": "mapMaxHeight",
+      "update": "height - signalPadding - signalHeight"
+    },
+    {
+      "name": "sbgnScale",
+      "update": "min(mapMaxWidth / sbgnWidth, mapMaxHeight / sbgnHeight)"
+    },
+    {
+      "name": "mapWidth",
+      "update": "sbgnScale * sbgnWidth"
+    },
+    {
+      "name": "mapHeight",
+      "update": "sbgnScale * sbgnHeight"
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "domain": [
+        0,
+        {
+          "signal": "sbgnWidth"
+        }
+      ],
+      "range": [
+        {
+          "signal": "width / 2 - (mapWidth + colorScalePadding + colorScaleWidth) / 2"
+        },
+        {
+          "signal": "width / 2 - (mapWidth + colorScalePadding + colorScaleWidth) / 2 + mapWidth"
+        }
+      ]
+    },
+    {
+      "name": "y",
+      "domain": [
+        0,
+        {
+          "signal": "sbgnHeight"
+        }
+      ],
+      "range": [
+        {
+          "signal": "mapHeight / 2 - mapHeight / 2"
+        },
+        {
+          "signal": "mapHeight / 2 + mapHeight / 2"
+        }
+      ]
+    },
+    {
+      "name": "color",
+      "type": "linear",
+      "domain": {
+        "data": "glyphsFlattenedValues",
+        "field": "value"
+      },
+      "range": {
+        "scheme": "viridis"
+      }
+    }
+  ],
+  "data": [
+    {
+      "name": "glyphsData",
+      "values": null
+    },
+    {
+      "name": "glyphsValues",
+      "url": "",
+      "format": {
+        "type": "json",
+        "property": "data"
+      }
+    },
+    {
+      "name": "glyphsFlattenedValues",
+      "source": "glyphsValues",
+      "transform": [
+        {
+          "type": "flatten",
+          "fields": [
+            "values"
+          ],
+          "as": [
+            "values"
+          ]
+        },
+        {
+          "type": "project",
+          "fields": [
+            "values"
+          ],
+          "as": [
+            "value"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "glyphsDataTransformed",
+      "source": "glyphsData",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "scale('x', datum.x)",
+          "as": "x"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('y', datum.y)",
+          "as": "y"
+        },
+        {
+          "type": "formula",
+          "expr": "sbgnScale * datum.width",
+          "as": "width"
+        },
+        {
+          "type": "formula",
+          "expr": "sbgnScale * datum.height",
+          "as": "height"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.x + datum.width / 2",
+          "as": "centerX"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.y + datum.height / 2",
+          "as": "centerY"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.width * datum.height",
+          "as": "size"
+        }
+      ]
+    },
+    {
+      "name": "glyphsCurValues",
+      "source": "glyphsValues",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "datum.values[Time_step]",
+          "as": "value"
+        },
+        {
+          "type": "project",
+          "fields": [
+            "label",
+            "value"
+          ],
+          "as": [
+            "label",
+            "value"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "glyphsDataTransformedAndCurValues",
+      "source": "glyphsDataTransformed",
+      "transform": [
+        {
+          "type": "lookup",
+          "from": "glyphsCurValues",
+          "key": "label",
+          "fields": [
+            "label"
+          ],
+          "values": [
+            "value"
+          ],
+          "as": [
+            "value"
+          ]
+        },
+        {
+          "type": "project",
+          "fields": [
+            "label",
+            "class",
+            "x",
+            "y",
+            "centerX",
+            "centerY",
+            "width",
+            "height",
+            "size",
+            "value"
+          ],
+          "as": [
+            "label",
+            "class",
+            "x",
+            "y",
+            "centerX",
+            "centerY",
+            "width",
+            "height",
+            "size",
+            "value"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sourceAndSinkGlyphsData",
+      "source": "glyphsDataTransformedAndCurValues",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "datum.class === 'source and sink'"
+        }
+      ]
+    },
+    {
+      "name": "processGlyphsData",
+      "source": "glyphsDataTransformedAndCurValues",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "datum.class === 'process'"
+        }
+      ]
+    },
+    {
+      "name": "macromoleculeGlyphsData",
+      "source": "glyphsDataTransformedAndCurValues",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "datum.class === 'macromolecule'"
+        }
+      ]
+    },
+    {
+      "name": "nucleicAcidFeatureGlyphsData",
+      "source": "glyphsDataTransformedAndCurValues",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "datum.class === 'nucleic acid feature'"
+        }
+      ]
+    },
+    {
+      "name": "arcsData",
+      "values": null
+    },
+    {
+      "name": "arcsDataTransformed",
+      "source": "arcsData",
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "scale('x', datum.x1)",
+          "as": "x1"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('y', datum.y1)",
+          "as": "y1"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('x', datum.x2)",
+          "as": "x2"
+        },
+        {
+          "type": "formula",
+          "expr": "scale('y', datum.y2)",
+          "as": "y2"
+        },
+        {
+          "type": "formula",
+          "expr": "atan2(datum.y2 - datum.y1, datum.x2 - datum.x1) * 180 / PI + 90",
+          "as": "angle2"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.x2 + (datum.class === 'inhibition' ? sbgnScale * 5 * sin(datum.angle2 * PI/180) : 0)",
+          "as": "endX"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.y2 + (datum.class === 'inhibition' ? sbgnScale * -5 * cos(datum.angle2 * PI/180) : 0)",
+          "as": "endY"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.class === 'inhibition' ? 'stroke' : 'triangle'",
+          "as": "shape"
+        },
+        {
+          "type": "formula",
+          "expr": "100 * pow(sbgnScale, 2)",
+          "as": "size"
+        },
+        {
+          "type": "formula",
+          "expr": "strokeWidth * (datum.class == 'inhibition' ? 1.5 : 1)",
+          "as": "strokeWidth"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.class == 'production' ? '#FFFFFF' : '#000000'",
+          "as": "fill"
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "name": "Source and sink glyphs",
+      "type": "symbol",
+      "from": {
+        "data": "sourceAndSinkGlyphsData"
+      },
+      "encode": {
+        "enter": {
+          "shape": {
+            "signal": "soureAndSinkPath"
+          },
+          "x": {
+            "field": "centerX"
+          },
+          "y": {
+            "field": "centerY"
+          },
+          "size": {
+            "field": "size"
+          },
+          "stroke": {
+            "signal": "sourceSinkColor"
+          },
+          "strokeWidth": {
+            "signal": "strokeWidth"
+          },
+          "fill": {
+            "value": null
+          }
+        }
+      }
+    },
+    {
+      "name": "Process glyphs",
+      "type": "rect",
+      "from": {
+        "data": "processGlyphsData"
+      },
+      "encode": {
+        "enter": {
+          "xc": {
+            "field": "centerX"
+          },
+          "yc": {
+            "field": "centerY"
+          },
+          "width": {
+            "field": "width"
+          },
+          "height": {
+            "field": "height"
+          },
+          "stroke": {
+            "signal": "processColor"
+          },
+          "strokeWidth": {
+            "signal": "strokeWidth"
+          },
+          "fill": {
+            "signal": "processColor"
+          },
+          "fillOpacity": {
+            "signal": "filledUnpaintedGlyphOpacity"
+          }
+        }
+      }
+    },
+    {
+      "name": "Macromolecule glyphs",
+      "type": "path",
+      "from": {
+        "data": "macromoleculeGlyphsData"
+      },
+      "encode": {
+        "enter": {
+          "path": {
+            "signal": "'M 0,' + cornerRadius + ' a ' + cornerRadius + ',' + cornerRadius + ' 0 0,1 ' + cornerRadius + ',-' + cornerRadius + ' h ' + (datum.width - 2 * cornerRadius) + ' a ' + cornerRadius + ',' + cornerRadius + ' 0 0,1 ' + cornerRadius + ',' + cornerRadius + ' v ' + (datum.height - 2 * cornerRadius) + ' a ' + cornerRadius + ',' + cornerRadius + ' 0 0,1 -' + cornerRadius + ',' + cornerRadius + ' h -' + (datum.width - 2 * cornerRadius) + ' a ' + cornerRadius + ',' + cornerRadius + ' 0 0,1 -' + cornerRadius + ',-' + cornerRadius + ' z'"
+          },
+          "x": {
+            "field": "x"
+          },
+          "y": {
+            "field": "y"
+          },
+          "width": {
+            "field": "width"
+          },
+          "height": {
+            "field": "height"
+          },
+          "strokeWidth": {
+            "signal": "strokeWidth"
+          }
+        },
+        "update": {
+          "stroke": {
+            "signal": "Paint_report ? scale('color', datum.value) : macromoleculeColor"
+          },
+          "fill": {
+            "signal": "Paint_report ? scale('color', datum.value) : macromoleculeColor"
+          },
+          "fillOpacity": {
+            "signal": "Paint_report ? filledPaintedGlyphOpacity : filledUnpaintedGlyphOpacity"
+          }
+        }
+      }
+    },
+    {
+      "name": "Nucleic acid feature glyphs",
+      "type": "path",
+      "from": {
+        "data": "nucleicAcidFeatureGlyphsData"
+      },
+      "encode": {
+        "enter": {
+          "path": {
+            "signal": "'M 0,0 h ' + datum.width + ' v ' + (datum.height - cornerRadius) + ' a ' + cornerRadius + ',' + cornerRadius + ' 0 0,1 -' + cornerRadius + ',' + cornerRadius + ' h -' + (datum.width - 2 * cornerRadius) + ' a ' + cornerRadius + ',' + cornerRadius + ' 0 0,1 -' + cornerRadius + ',-' + cornerRadius + ' z'"
+          },
+          "x": {
+            "field": "x"
+          },
+          "y": {
+            "field": "y"
+          },
+          "strokeWidth": {
+            "signal": "strokeWidth"
+          }
+        },
+        "update": {
+          "stroke": {
+            "signal": "Paint_report ? scale('color', datum.value) : nucleicAcidFeatureColor"
+          },
+          "fill": {
+            "signal": "Paint_report ? scale('color', datum.value) : nucleicAcidFeatureColor"
+          },
+          "fillOpacity": {
+            "signal": "Paint_report ? filledPaintedGlyphOpacity : filledUnpaintedGlyphOpacity"
+          }
+        }
+      }
+    },
+    {
+      "name": "Arcs",
+      "type": "path",
+      "from": {
+        "data": "arcsDataTransformed"
+      },
+      "encode": {
+        "enter": {
+          "path": {
+            "signal": "'M ' + datum.x1 + ',' + datum.y1 + ' L ' + datum.x2 + ',' + datum.y2"
+          },
+          "stroke": {
+            "value": "#000000"
+          }
+        },
+        "update": {
+          "strokeWidth": {
+            "signal": "strokeWidth"
+          }
+        }
+      }
+    },
+    {
+      "name": "Arc ends",
+      "type": "symbol",
+      "from": {
+        "data": "arcsDataTransformed"
+      },
+      "encode": {
+        "enter": {
+          "x": {
+            "signal": "datum.endX - sqrt(datum.size / 2) * sin(datum.angle2 / 180 * PI)"
+          },
+          "y": {
+            "signal": "datum.endY + sqrt(datum.size / 2) * cos(datum.angle2 / 180 * PI)"
+          },
+          "size": {
+            "field": "size"
+          },
+          "shape": {
+            "field": "shape"
+          },
+          "angle": {
+            "field": "angle2"
+          },
+          "strokeWidth": {
+            "field": "strokeWidth"
+          },
+          "fill": {
+            "field": "fill"
+          },
+          "stroke": {
+            "value": "#000000"
+          }
+        }
+      }
+    },
+    {
+      "name": "Glyph labels",
+      "type": "text",
+      "from": {
+        "data": "glyphsDataTransformedAndCurValues"
+      },
+      "encode": {
+        "enter": {
+          "x": {
+            "field": "centerX"
+          },
+          "y": {
+            "field": "centerY"
+          },
+          "align": {
+            "value": "center"
+          },
+          "baseline": {
+            "value": "middle"
+          },
+          "fontSize": {
+            "value": 12
+          }
+        },
+        "update": {
+          "text": [
+            {
+              "test": "Glyph_labels",
+              "field": "label"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Current time",
+      "type": "text",
+      "encode": {
+        "enter": {
+          "fontSize": {
+            "value": 12
+          },
+          "fill": {
+            "value": "#000000"
+          },
+          "fontWeight": {
+            "value": "bold"
+          },
+          "align": {
+            "value": "left"
+          },
+          "baseline": {
+            "value": "top"
+          }
+        },
+        "update": {
+          "x": {
+            "signal": "width / 2 - (mapWidth + colorScalePadding + colorScaleWidth) / 2 + mapWidth + colorScalePadding"
+          },
+          "y": {
+            "signal": "mapHeight / 2 - mapHeight / 2"
+          },
+          "text": {
+            "signal": "'Time: ' + CurTime"
+          }
+        }
+      }
+    }
+  ],
+  "legends": [
+    {
+      "fill": "color",
+      "title": "Conc.",
+      "titleFontSize": 12,
+      "titlePadding": 2,
+      "titleAlign": "left",
+      "orient": "none",
+      "legendX": {
+        "signal": "width / 2 - (mapWidth + colorScalePadding + colorScaleWidth) / 2 + mapWidth + colorScalePadding"
+      },
+      "legendY": {
+        "signal": "mapHeight / 2 - mapHeight / 2 + timeHeight + timePadding"
+      },
+      "gradientLength": {
+        "signal": "mapHeight - timeHeight - timePadding - 12 - 2"
+      },
+      "direction": "vertical"
+    }
+  ]
+}
