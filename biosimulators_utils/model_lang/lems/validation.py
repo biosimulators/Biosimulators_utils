@@ -38,7 +38,7 @@ def validate_model(filename, name=None):
         try:
             validate_neuroml2_lems_file(filename)
         except SystemExit:
-            errors.append(['`{}` is not valid LEMS file.'.format(filename), [[captured.get_text() or '']]])
+            errors.append(['`{}` is not a valid LEMS file.'.format(filename), [[captured.get_text() or '']]])
             return (errors, warnings, model)
 
     core_types_dir = tempfile.mkdtemp()
