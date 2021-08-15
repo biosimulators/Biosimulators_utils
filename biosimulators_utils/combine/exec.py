@@ -40,7 +40,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                                report_formats=None, plot_formats=None,
                                bundle_outputs=None, keep_individual_outputs=None,
                                sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
-                               log_level=StandardOutputErrorCapturerLevel.c):
+                               log_level=StandardOutputErrorCapturerLevel.c,
+                               raise_exceptions=True):
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
 
     Args:
@@ -93,6 +94,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         sed_doc_executer_logged_features (:obj:`list` of :obj:`type`, optional): list of the types fo elements which that
             the SED document executer logs. Default: tasks, reports, plots, data sets, curves, and surfaces.
         log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
+        raise_exceptions (:obj:`bool`, optional): whether to raise exceptions
 
     Returns:
         :obj:`tuple`:
@@ -179,7 +181,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             log.finalize()
             log.export()
 
-            raise
+            if raise_exceptions:
+                raise
+            else:
+                return (None, log)
 
         if return_results:
             results = SedDocumentResults()
@@ -221,7 +226,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                         log_level=log_level,
                         indent=1)
                     if return_results:
-                        results[os.path.relpath(content.location, '.')] = doc_results
+                        results[content.location] = doc_results
                     doc_log.status = Status.SUCCEEDED
                 except Exception as exception:
                     exceptions.append(exception)
@@ -292,7 +297,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
     log.export()
 
     # raise exceptions
-    if exceptions:
+    if raise_exceptions and exceptions:
         msg = 'The COMBINE/OMEX did not execute successfully:\n\n  {}'.format(
             '\n\n  '.join(str(exceptions).replace('\n', '\n  ') for exceptions in exceptions))
         raise CombineArchiveExecutionError(msg)
