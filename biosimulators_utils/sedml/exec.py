@@ -48,7 +48,7 @@ __all__ = [
 
 
 def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=None,
-                 apply_xml_model_changes=False, report_formats=None, plot_formats=None,
+                 apply_xml_model_changes=False, return_results=False, report_formats=None, plot_formats=None,
                  log=None, indent=0, pretty_print_modified_xml_models=False,
                  log_level=StandardOutputErrorCapturerLevel.c):
     """ Execute the tasks specified in a SED document and generate the specified outputs
@@ -83,6 +83,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         rel_out_path (:obj:`str`, optional): path relative to :obj:`base_out_path` to store the outputs
         apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file before
             calling :obj:`task_executer`.
+        return_results (:obj:`bool`, optional): whether to return a data structure with the result of each output of each SED-ML
+            file
         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
         plot_formats (:obj:`list` of :obj:`VizFormat`, optional): plot format (e.g., pdf)
         log (:obj:`SedDocumentLog`, optional): log of the document
@@ -124,7 +126,11 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     # TODO: initialize reports with their eventual shapes; this requires individual simulation tools to pass
     # information about the shape of their output to this method
     variable_results = VariableResults()
-    report_results = ReportResults()
+
+    if return_results:
+        report_results = ReportResults()
+    else:
+        report_results = None
 
     print('{}Found {} tasks and {} outputs:\n{}Tasks:\n{}{}\n{}Outputs:\n{}{}'.format(
         ' ' * 2 * indent,
@@ -230,7 +236,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                         continue
 
                     if isinstance(output, Report):
-                        report_results[output.id], output_status, output_exception, task_contributes_to_report = exec_report(
+                        output_result, output_status, output_exception, task_contributes_to_report = exec_report(
                             output, variable_results,
                             base_out_path, rel_out_path, report_formats,
                             task,
@@ -249,12 +255,14 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                         # save data as report
                         if config.SAVE_PLOT_DATA:
                             report = get_report_for_plot2d(output)
-                            report_results[output.id], _, _, _ = exec_report(
+                            output_result, _, _, _ = exec_report(
                                 report, variable_results,
                                 base_out_path, rel_out_path, report_formats,
                                 task,
                                 log=None,
                                 type=output.__class__)
+                        else:
+                            output_result = None
 
                     elif isinstance(output, Plot3D):
                         output_status, output_exception, task_contributes_to_plot = exec_plot_3d(
@@ -267,16 +275,21 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                         # save as report
                         if config.SAVE_PLOT_DATA:
                             report = get_report_for_plot3d(output)
-                            report_results[output.id], _, _, _ = exec_report(
+                            output_result, _, _, _ = exec_report(
                                 report, variable_results,
                                 base_out_path, rel_out_path, report_formats,
                                 task,
                                 log=None,
                                 type=output.__class__)
+                        else:
+                            output_result = None
 
                     else:
                         # unreachable because the above cases cover all types of outputs
                         raise NotImplementedError('Outputs of type {} are not supported.'.format(output.__class__.__name__))
+
+                    if return_results and output_result is not None:
+                        report_results[output.id] = output_result
 
                 except Exception as exception:
                     output_status = Status.FAILED

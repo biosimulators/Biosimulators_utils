@@ -204,7 +204,7 @@ class ExecTaskCase(unittest.TestCase):
         with mock.patch('requests.get', return_value=mock.Mock(raise_for_status=lambda: None, content=b'')):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
                 output_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir,
-                                                      out_dir, report_formats=[ReportFormat.csv], plot_formats=[])
+                                                      out_dir, return_results=True, report_formats=[ReportFormat.csv], plot_formats=[])
 
         expected_output_results = ReportResults({
             doc.outputs[0].id: DataSetResults({
@@ -248,7 +248,9 @@ class ExecTaskCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
         shutil.rmtree(out_dir)
         with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-            exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[])
+            results, _ = exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir,
+                                           return_results=False, report_formats=[ReportFormat.h5], plot_formats=[])
+        self.assertEqual(results, None)
 
         report_ids = ReportReader().get_ids(out_dir, format=ReportFormat.h5, type=data_model.Report)
         self.assertEqual(set(report_ids), set([doc.outputs[0].id, doc.outputs[1].id, doc.outputs[2].id, doc.outputs[3].id]))
@@ -556,12 +558,14 @@ class ExecTaskCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'results')
 
         with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-            report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=False)
+            report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir,
+                                                  apply_xml_model_changes=False, return_results=True)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id], numpy.array((1., )))
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id], numpy.array((2., )))
 
         with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-            report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir, apply_xml_model_changes=True)
+            report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir,
+                                                  apply_xml_model_changes=True, return_results=True)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id], numpy.array((2.5, )))
         expected_value = 0.2 * 2.5 + 2.0 * 3.1 * 4.0
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id], numpy.array((expected_value)))
@@ -942,7 +946,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-            report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+            report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir, return_results=True)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id], numpy.array((1.)))
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id], numpy.array((1., 2.)))
 
@@ -965,7 +969,8 @@ class ExecTaskCase(unittest.TestCase):
             exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
 
         with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-            report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir, report_formats=[ReportFormat.h5])
+            report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir,
+                                                  return_results=True, report_formats=[ReportFormat.h5])
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id],
                                    numpy.array((1.,)))
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id],
@@ -1741,6 +1746,7 @@ class ExecTaskCase(unittest.TestCase):
             return results, log
 
         results, _ = exec.exec_sed_doc(task_executer, doc, self.tmp_dir, self.tmp_dir, apply_xml_model_changes=True,
+                                       return_results=True,
                                        report_formats=[ReportFormat.h5])
         self.assertEqual(set(results.keys()), set(['report']))
         self.assertEqual(set(results['report'].keys()), set(['data_set_x', 'data_set_y']))

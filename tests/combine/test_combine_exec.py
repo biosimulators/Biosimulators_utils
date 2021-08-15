@@ -4,7 +4,7 @@ from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiv
 from biosimulators_utils.combine.exceptions import CombineArchiveExecutionError, NoSedmlError
 from biosimulators_utils.combine.io import CombineArchiveWriter
 from biosimulators_utils.log import utils as log_utils
-from biosimulators_utils.report.data_model import ReportFormat
+from biosimulators_utils.report.data_model import ReportFormat, ReportResults, SedDocumentResults
 from biosimulators_utils.sedml.data_model import SedDocument, Task, Report
 from biosimulators_utils.sedml.io import SedmlSimulationReader
 from biosimulators_utils.viz.data_model import VizFormat
@@ -52,7 +52,8 @@ class ExecCombineTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
         def exec_sed_doc(task_executer, filename, working_dir, base_out_dir,
-                         rel_path, apply_xml_model_changes=False, report_formats=None, plot_formats=None,
+                         rel_path, apply_xml_model_changes=False,
+                         return_results=False, report_formats=None, plot_formats=None,
                          indent=0, log=None, log_level=None):
             out_dir = os.path.join(base_out_dir, rel_path)
             if not os.path.isdir(out_dir):
@@ -63,6 +64,10 @@ class ExecCombineTestCase(unittest.TestCase):
                 file.write('DEF')
             with open(os.path.join(base_out_dir, 'reports.h5'), 'w') as file:
                 file.write('DEF')
+            return ReportResults({
+                'report1': 'ABC',
+                'report2': 'DEF',
+            }), None
 
         with mock.patch('biosimulators_utils.sedml.exec.exec_sed_doc', side_effect=exec_sed_doc):
             sed_doc = SedDocument(
@@ -71,10 +76,25 @@ class ExecCombineTestCase(unittest.TestCase):
             )
             with mock.patch.object(SedmlSimulationReader, 'run', return_value=sed_doc):
                 sed_doc_executer = functools.partial(exec_sed_doc, sed_task_executer)
-                exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
-                                                report_formats=[ReportFormat.h5, ReportFormat.csv],
-                                                plot_formats=[],
-                                                bundle_outputs=True, keep_individual_outputs=True)
+
+                results, _ = exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
+                                                             return_results=False,
+                                                             report_formats=[ReportFormat.h5, ReportFormat.csv],
+                                                             plot_formats=[],
+                                                             bundle_outputs=True, keep_individual_outputs=True)
+                self.assertEqual(results, None)
+
+                results, _ = exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
+                                                             return_results=True,
+                                                             report_formats=[ReportFormat.h5, ReportFormat.csv],
+                                                             plot_formats=[],
+                                                             bundle_outputs=True, keep_individual_outputs=True)
+                self.assertEqual(results, SedDocumentResults({
+                    'sim.sedml': ReportResults({
+                        'report1': 'ABC',
+                        'report2': 'DEF',
+                    })
+                }))
 
         self.assertEqual(sorted(os.listdir(out_dir)), sorted(['reports.h5', 'reports.zip', 'sim.sedml', 'log.yml']))
         self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'sim.sedml'))),
@@ -95,7 +115,8 @@ class ExecCombineTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'outputs-with-error')
 
         def exec_sed_doc(task_executer, filename, working_dir, base_out_dir,
-                         rel_path, apply_xml_model_changes=False, report_formats=None, plot_formats=None,
+                         rel_path, apply_xml_model_changes=False,
+                         return_results=False, report_formats=None, plot_formats=None,
                          indent=0, log=None, log_level=None):
             out_dir = os.path.join(base_out_dir, rel_path)
             if not os.path.isdir(out_dir):
@@ -147,7 +168,8 @@ class ExecCombineTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
         def exec_sed_doc(task_executer, filename, working_dir, base_out_dir, rel_path='.',
-                         apply_xml_model_changes=False, report_formats=[ReportFormat.csv], plot_formats=[VizFormat.pdf],
+                         apply_xml_model_changes=False,
+                         return_results=False, report_formats=[ReportFormat.csv], plot_formats=[VizFormat.pdf],
                          indent=0, log=None, log_level=None):
             out_dir = os.path.join(base_out_dir, rel_path)
             if not os.path.isdir(out_dir):
@@ -160,6 +182,7 @@ class ExecCombineTestCase(unittest.TestCase):
                 file.write('GHI')
             with open(os.path.join(out_dir, 'plot2.pdf'), 'w') as file:
                 file.write('JKL')
+            return None, None
 
         with mock.patch('biosimulators_utils.sedml.exec.exec_sed_doc', side_effect=exec_sed_doc):
             with mock.patch.object(SedmlSimulationReader, 'run', return_value=SedDocument()):
@@ -238,13 +261,15 @@ class ExecCombineTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'outputs')
 
         def exec_sed_doc(task_executer, filename, working_dir, base_out_dir, rel_path='.',
-                         apply_xml_model_changes=False, report_formats=[ReportFormat.csv], plot_formats=None,
+                         apply_xml_model_changes=False,
+                         return_results=False, report_formats=[ReportFormat.csv], plot_formats=None,
                          indent=0, log=None, log_level=None):
             out_dir = os.path.join(base_out_dir, rel_path)
             if not os.path.isdir(out_dir):
                 os.makedirs(out_dir)
             with open(os.path.join(out_dir, 'report1.csv'), 'w') as file:
                 file.write('ABC')
+            return None, None
 
         builtin_import = builtins.__import__
 
@@ -259,8 +284,8 @@ class ExecCombineTestCase(unittest.TestCase):
             with mock.patch('biosimulators_utils.sedml.exec.exec_sed_doc', side_effect=exec_sed_doc):
                 with mock.patch.object(SedmlSimulationReader, 'run', return_value=SedDocument()):
                     sed_doc_executer = functools.partial(exec_sed_doc, sed_task_executer)
-                    log = exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
-                                                          bundle_outputs=True, keep_individual_outputs=True)
+                    _, log = exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
+                                                             bundle_outputs=True, keep_individual_outputs=True)
         self.assertNotEqual(log.output, None)
         for doc_log in log.sed_documents.values():
             self.assertNotEqual(doc_log.output, None)
@@ -269,9 +294,10 @@ class ExecCombineTestCase(unittest.TestCase):
 
     def test_exec_sedml_docs_in_archive_error_handling(self):
         def exec_sed_doc(task_executer, filename, working_dir, base_out_dir,
-                         rel_path, apply_xml_model_changes=False, report_formats=None, plot_formats=None,
+                         rel_path, apply_xml_model_changes=False,
+                         return_results=False, report_formats=None, plot_formats=None,
                          indent=0, log=None, log_level=None):
-            pass
+            return None, None
 
         def sed_task_executer(task, variables):
             pass
@@ -284,14 +310,16 @@ class ExecCombineTestCase(unittest.TestCase):
         exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
 
         # invalid archive
-        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml-validation', 'invalid-omex-manifest-missing-attribute.omex')
+        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml-validation',
+                                        'invalid-omex-manifest-missing-attribute.omex')
         with self.assertRaisesRegex(ValueError, re.compile('archive is invalid.\n  - ', re.MULTILINE)):
             exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
         with self.assertRaisesRegex(ValueError, 'must have the required attributes'):
             exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
 
         # invalid SED-ML file in archive
-        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml-validation', 'invalid-sedml-missing-attribute.omex')
+        archive_filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures',
+                                        'sedml-validation', 'invalid-sedml-missing-attribute.omex')
         with self.assertRaisesRegex(ValueError, re.compile('archive is invalid.\n  - ', re.MULTILINE)):
             exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, self.tmp_dir)
         with self.assertRaisesRegex(ValueError, 'must have the required attributes'):

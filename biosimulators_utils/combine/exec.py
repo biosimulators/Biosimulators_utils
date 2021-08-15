@@ -11,7 +11,7 @@ from ..archive.utils import build_archive_from_paths
 from ..config import get_config
 from ..log.data_model import Status, CombineArchiveLog, StandardOutputErrorCapturerLevel  # noqa: F401
 from ..log.utils import init_combine_archive_log, get_summary_combine_archive_log, StandardOutputErrorCapturer
-from ..report.data_model import VariableResults, ReportFormat  # noqa: F401
+from ..report.data_model import VariableResults, ReportFormat, SedDocumentResults  # noqa: F401
 from ..sedml.data_model import (SedDocument, Task, Output, Report, DataSet, Plot2D, Curve,  # noqa: F401
                                 Plot3D, Surface, Variable)
 from ..utils.core import flatten_nested_list_of_strings
@@ -36,6 +36,7 @@ __all__ = [
 
 def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, apply_xml_model_changes=False,
                                sed_doc_executer_supported_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
+                               return_results=False,
                                report_formats=None, plot_formats=None,
                                bundle_outputs=None, keep_individual_outputs=None,
                                sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
@@ -83,6 +84,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             calling :obj:`task_executer`.
         sed_doc_executer_supported_features (:obj:`list` of :obj:`type`, optional): list of the types of elements that the
             SED document executer supports. Default: tasks, reports, plots, data sets, curves, and surfaces.
+        return_results (:obj:`bool`, optional): whether to return a data structure with the result of each output of each SED-ML
+            file
         report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
         plot_formats (:obj:`list` of :obj:`VizFormat`, optional): report format (e.g., pdf)
         bundle_outputs (:obj:`bool`, optional): if :obj:`True`, bundle outputs into archives for reports and plots
@@ -92,7 +95,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
 
     Returns:
-        :obj:`CombineArchiveLog`: log
+        :obj:`tuple`:
+
+            * :obj:`SedDocumentResults`: results
+            * :obj:`CombineArchiveLog`: log
     """
     with StandardOutputErrorCapturer(relay=True, level=log_level) as archive_captured:
         config = get_config()
@@ -175,6 +181,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
 
             raise
 
+        if return_results:
+            results = SedDocumentResults()
+        else:
+            results = None
         log = init_combine_archive_log(archive, archive_tmp_dir,
                                        supported_features=supported_features,
                                        logged_features=logged_features)
@@ -198,16 +208,20 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                 doc_start_time = datetime.datetime.now()
                 try:
                     working_dir = os.path.dirname(content_filename)
-                    sed_doc_executer(content_filename,
-                                     working_dir,
-                                     out_dir,
-                                     os.path.relpath(content_filename, archive_tmp_dir),
-                                     apply_xml_model_changes=apply_xml_model_changes,
-                                     report_formats=report_formats,
-                                     plot_formats=plot_formats,
-                                     log=doc_log,
-                                     log_level=log_level,
-                                     indent=1)
+                    doc_results, _ = sed_doc_executer(
+                        content_filename,
+                        working_dir,
+                        out_dir,
+                        os.path.relpath(content_filename, archive_tmp_dir),
+                        apply_xml_model_changes=apply_xml_model_changes,
+                        return_results=return_results,
+                        report_formats=report_formats,
+                        plot_formats=plot_formats,
+                        log=doc_log,
+                        log_level=log_level,
+                        indent=1)
+                    if return_results:
+                        results[os.path.relpath(content.location, '.')] = doc_results
                     doc_log.status = Status.SUCCEEDED
                 except Exception as exception:
                     exceptions.append(exception)
@@ -283,5 +297,5 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             '\n\n  '.join(str(exceptions).replace('\n', '\n  ') for exceptions in exceptions))
         raise CombineArchiveExecutionError(msg)
 
-    # return log
-    return log
+    # return results and log
+    return (results, log)

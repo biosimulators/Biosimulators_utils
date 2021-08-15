@@ -9,7 +9,14 @@
 import enum
 
 
-__all__ = ['VariableResults', 'DataGeneratorResults', 'DataSetResults', 'ReportResults', 'ReportFormat']
+__all__ = [
+    'VariableResults',
+    'DataGeneratorResults',
+    'DataSetResults',
+    'ReportResults',
+    'ReportFormat',
+    'SedDocumentResults',
+]
 
 
 class VariableResults(dict):
@@ -68,3 +75,12 @@ class ReportFormat(str, enum.Enum):
     hdf5 = 'h5'
     tsv = 'tsv'
     xlsx = 'xlsx'
+
+
+class SedDocumentResults(dict):
+    """ Dictionary that maps the locations of SED-ML documents (e.g., :obj:`SedDocument`) to their results (:obj:`ReportResults`)
+
+    * Keys (:obj:`str`): locations of SED documents (e.g., :obj:`SedDocument`)
+    * Values (:obj:`ReportResults`): result of each document
+    """
+    pass
