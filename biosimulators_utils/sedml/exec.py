@@ -110,7 +110,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         report_formats = [ReportFormat(format_value) for format_value in config.REPORT_FORMATS]
 
     if plot_formats is None:
-        plot_formats = [VizFormat(format_value) for format_value in config.PLOT_FORMATS]
+        plot_formats = [VizFormat(format_value) for format_value in config.VIZ_FORMATS]
 
     log = log or init_sed_document_log(doc)
 

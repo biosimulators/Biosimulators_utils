@@ -20,7 +20,7 @@ class Config(object):
         ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
         SAVE_PLOT_DATA (:obj:`bool`): whether to save data for plots alongside data for reports in CSV/HDF5 files
         REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
-        PLOT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate plots in
+        VIZ_FORMATS (:obj:`list` of :obj:`str`): default formats to generate plots in
         H5_REPORTS_PATH (:obj:`str`): path to save reports in HDF5 format relative to base output directory
         REPORTS_PATH (:obj:`str`): path to save zip archive of reports relative to base output directory
         PLOTS_PATH (:obj:`str`): path to save zip archive of plots relative to base output directory
@@ -31,7 +31,7 @@ class Config(object):
         VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
     """
 
-    def __init__(self, ALGORITHM_SUBSTITUTION_POLICY, SAVE_PLOT_DATA, REPORT_FORMATS, PLOT_FORMATS,
+    def __init__(self, ALGORITHM_SUBSTITUTION_POLICY, SAVE_PLOT_DATA, REPORT_FORMATS, VIZ_FORMATS,
                  H5_REPORTS_PATH, REPORTS_PATH, PLOTS_PATH, BUNDLE_OUTPUTS, KEEP_INDIVIDUAL_OUTPUTS,
                  LOG_PATH, BIOSIMULATORS_API_ENDPOINT, VERBOSE):
         """
@@ -39,7 +39,7 @@ class Config(object):
             ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
             SAVE_PLOT_DATA (:obj:`bool`): whether to save data for plots alongside data for reports in CSV/HDF5 files
             REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
-            PLOT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate plots in
+            VIZ_FORMATS (:obj:`list` of :obj:`str`): default formats to generate plots in
             H5_REPORTS_PATH (:obj:`str`): path to save reports in HDF5 format relative to base output directory
             REPORTS_PATH (:obj:`str`): path to save zip archive of reports relative to base output directory
             PLOTS_PATH (:obj:`str`): path to save zip archive of plots relative to base output directory
@@ -52,7 +52,7 @@ class Config(object):
         self.ALGORITHM_SUBSTITUTION_POLICY = ALGORITHM_SUBSTITUTION_POLICY
         self.SAVE_PLOT_DATA = SAVE_PLOT_DATA
         self.REPORT_FORMATS = REPORT_FORMATS
-        self.PLOT_FORMATS = PLOT_FORMATS
+        self.VIZ_FORMATS = VIZ_FORMATS
         self.H5_REPORTS_PATH = H5_REPORTS_PATH
         self.REPORTS_PATH = REPORTS_PATH
         self.PLOTS_PATH = PLOTS_PATH
@@ -75,17 +75,17 @@ def get_config():
     else:
         report_formats = []
 
-    plot_formats = os.environ.get('PLOT_FORMATS', 'pdf').strip()
-    if plot_formats:
-        plot_formats = [format.strip().lower() for format in plot_formats.split(',')]
+    viz_formats = os.environ.get('VIZ_FORMATS', 'pdf').strip()
+    if viz_formats:
+        viz_formats = [format.strip().lower() for format in viz_formats.split(',')]
     else:
-        plot_formats = []
+        viz_formats = []
 
     return Config(
         ALGORITHM_SUBSTITUTION_POLICY=os.environ.get('ALGORITHM_SUBSTITUTION_POLICY', 'SIMILAR_VARIABLES'),
         SAVE_PLOT_DATA=os.environ.get('SAVE_PLOT_DATA', '1').lower() in ['1', 'true'],
         REPORT_FORMATS=report_formats,
-        PLOT_FORMATS=plot_formats,
+        VIZ_FORMATS=viz_formats,
         H5_REPORTS_PATH=os.environ.get('H5_REPORTS_PATH', 'reports.h5'),
         REPORTS_PATH=os.environ.get('REPORTS_PATH', 'reports.zip'),
         PLOTS_PATH=os.environ.get('PLOTS_PATH', 'plots.zip'),

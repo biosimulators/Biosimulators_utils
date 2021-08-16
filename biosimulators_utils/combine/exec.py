@@ -133,7 +133,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             report_formats = [ReportFormat(format_value) for format_value in config.REPORT_FORMATS]
 
         if plot_formats is None:
-            plot_formats = [VizFormat(format_value) for format_value in config.PLOT_FORMATS]
+            plot_formats = [VizFormat(format_value) for format_value in config.VIZ_FORMATS]
 
         # create temporary directory to unpack archive
         archive_tmp_dir = tempfile.mkdtemp()

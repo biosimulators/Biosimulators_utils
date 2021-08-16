@@ -8,15 +8,15 @@ import unittest
 
 class ConfigTestCase(unittest.TestCase):
     def test_get_config(self):
-        with mock.patch.dict(os.environ, {'REPORT_FORMATS': '', 'PLOT_FORMATS': ''}):
+        with mock.patch.dict(os.environ, {'REPORT_FORMATS': '', 'VIZ_FORMATS': ''}):
             config = get_config()
         self.assertEqual(config.REPORT_FORMATS, [])
-        self.assertEqual(config.PLOT_FORMATS, [])
+        self.assertEqual(config.VIZ_FORMATS, [])
 
-        with mock.patch.dict(os.environ, {'REPORT_FORMATS': 'h5', 'PLOT_FORMATS': 'pdf'}):
+        with mock.patch.dict(os.environ, {'REPORT_FORMATS': 'h5', 'VIZ_FORMATS': 'pdf'}):
             config = get_config()
         self.assertEqual(config.REPORT_FORMATS, [ReportFormat.h5])
-        self.assertEqual(config.PLOT_FORMATS, [VizFormat.pdf])
+        self.assertEqual(config.VIZ_FORMATS, [VizFormat.pdf])
 
     def test_get_app_dirs(self):
         self.assertIn('BioSimulatorsUtils', get_app_dirs().user_data_dir)
