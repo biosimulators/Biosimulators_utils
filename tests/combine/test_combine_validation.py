@@ -1,7 +1,8 @@
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat
 from biosimulators_utils.combine.io import CombineArchiveReader
 from biosimulators_utils.combine.validation import validate, validate_format, validate_content, validate_omex_meta_file
-from biosimulators_utils.sedml.io import SedmlSimulationReader
+from biosimulators_utils.sedml.data_model import SedDocument, Model, ModelLanguage
+from biosimulators_utils.sedml.io import SedmlSimulationReader, SedmlSimulationWriter
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
 from unittest import mock
 import copy
@@ -15,7 +16,7 @@ import unittest
 class ValidationTestCase(unittest.TestCase):
     FIXTURES_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures')
     OMEX_FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex')
-    OMEX_META_FIXTURES_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-meta')
+    OMEX_META_FIXTURES_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-metadata')
 
     def setUp(self):
         self.tmp_dir = tempfile.mkdtemp()
@@ -217,3 +218,121 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(len(warnings), 1)
         self.assertIn('may be invalid', flatten_nested_list_of_strings(warnings))
         self.assertIn('my warning', flatten_nested_list_of_strings(warnings))
+
+    def test_no_validation(self):
+        archive_dirname = os.path.join(self.tmp_dir, 'archive')
+        os.mkdir(archive_dirname)
+
+        # OMEX manifests
+        archive = CombineArchive()
+
+        errors, warnings = validate(archive, archive_dirname)
+        self.assertIn('must have at least one content', flatten_nested_list_of_strings(errors))
+        self.assertNotEqual(warnings, [])
+
+        with mock.patch.dict('os.environ', {'VALIDATE_OMEX_MANIFESTS': '0'}):
+            errors, warnings = validate(archive, archive_dirname)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        # SED-ML
+        archive = CombineArchive()
+        archive.contents.append(CombineArchiveContent(
+            location='simulation.sedml',
+            format=CombineArchiveContentFormat.SED_ML.value,
+        ))
+
+        sedml_filename = os.path.join(archive_dirname, 'simulation.sedml')
+        with open(sedml_filename, 'w') as file:
+            file.write('invalid')
+
+        errors, warnings = validate(archive, archive_dirname)
+        self.assertIn('Missing XML declaration', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
+        with mock.patch.dict('os.environ', {
+            'VALIDATE_OMEX_MANIFESTS': '0',
+            'VALIDATE_SEDML': '0',
+        }):
+            errors, warnings = validate(archive, archive_dirname)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        os.remove(sedml_filename)
+
+        # models
+        archive = CombineArchive()
+        archive.contents.append(CombineArchiveContent(
+            location='simulation.sedml',
+            format=CombineArchiveContentFormat.SED_ML.value,
+        ))
+
+        model_filename = os.path.join(archive_dirname, 'model.xml')
+        shutil.copyfile(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.xml'), model_filename)
+
+        sed_doc = SedDocument()
+        sed_doc.models.append(Model(id='model', source=model_filename, language=ModelLanguage.SBML.value))
+
+        sedml_filename = os.path.join(archive_dirname, 'simulation.sedml')
+        SedmlSimulationWriter().run(sed_doc, sedml_filename)
+
+        with open(model_filename, 'w') as file:
+            file.write('invalid')
+
+        errors, warnings = validate(archive, archive_dirname)
+        self.assertIn('Missing XML declaration', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
+        with mock.patch.dict('os.environ', {
+            'VALIDATE_OMEX_MANIFESTS': '0',
+            'VALIDATE_SEDML_MODELS': '0',
+        }):
+            errors, warnings = validate(archive, archive_dirname)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        os.remove(sedml_filename)
+        os.remove(model_filename)
+
+        # images
+        archive = CombineArchive()
+        archive.contents.append(CombineArchiveContent(
+            location='image.png',
+            format=CombineArchiveContentFormat.PNG.value,
+        ))
+
+        errors, warnings = validate(archive, archive_dirname, formats_to_validate=[CombineArchiveContentFormat.PNG])
+        self.assertIn('The PNG file at location `image.png` is invalid.', flatten_nested_list_of_strings(errors))
+        self.assertNotEqual(warnings, [])
+
+        with mock.patch.dict('os.environ', {
+            'VALIDATE_OMEX_MANIFESTS': '0',
+            'VALIDATE_IMAGES': '0',
+        }):
+            errors, warnings = validate(archive, archive_dirname, formats_to_validate=[CombineArchiveContentFormat.PNG])
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        # OMEX metadata
+        archive = CombineArchive()
+        archive.contents.append(CombineArchiveContent(
+            location='metadata.rdf',
+            format=CombineArchiveContentFormat.OMEX_METADATA.value,
+        ))
+
+        metadata_file = os.path.join(archive_dirname, 'metadata.rdf')
+        shutil.copyfile(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-metadata', 'invalid.rdf'), metadata_file)
+
+        errors, warnings = validate(archive, archive_dirname, formats_to_validate=[CombineArchiveContentFormat.OMEX_METADATA])
+        self.assertIn('The OMEX Metadata file at location `metadata.rdf` is invalid.', flatten_nested_list_of_strings(errors))
+        self.assertNotEqual(warnings, [])
+
+        with mock.patch.dict('os.environ', {
+            'VALIDATE_OMEX_MANIFESTS': '0',
+            'VALIDATE_OMEX_METADATA': '0',
+        }):
+            errors, warnings = validate(archive, archive_dirname, formats_to_validate=[CombineArchiveContentFormat.OMEX_METADATA])
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        os.remove(metadata_file)

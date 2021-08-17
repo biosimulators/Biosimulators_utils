@@ -11,13 +11,13 @@ import unittest
 
 
 class OmexMetaIoTestCase(unittest.TestCase):
-    FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-meta')
-    FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-meta', 'biosimulations.rdf')
-    WARNING_FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-meta', 'warning.rdf')
-    INVALID_FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-meta', 'invalid.rdf')
-    NO_ROOT_FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-meta', 'no-root.rdf')
+    FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-metadata')
+    FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-metadata', 'biosimulations.rdf')
+    WARNING_FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-metadata', 'warning.rdf')
+    INVALID_FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-metadata', 'invalid.rdf')
+    NO_ROOT_FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-metadata', 'no-root.rdf')
     MULTIPLE_ROOTS_FIXTURE = os.path.join(
-        os.path.dirname(__file__), '..', 'fixtures', 'omex-meta', 'multiple-roots.rdf')
+        os.path.dirname(__file__), '..', 'fixtures', 'omex-metadata', 'multiple-roots.rdf')
 
     def setUp(self):
         self.dir_name = tempfile.mkdtemp()

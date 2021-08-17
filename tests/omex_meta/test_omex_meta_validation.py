@@ -12,7 +12,7 @@ import unittest
 
 class OmexMetaValidationTestCase(unittest.TestCase):
     FIXTURES_DIR = os.path.join(os.path.dirname(__file__), '..', 'fixtures')
-    FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-meta', 'biosimulations.rdf')
+    FIXTURE = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'omex-metadata', 'biosimulations.rdf')
 
     def setUp(self):
         self.dir_name = tempfile.mkdtemp()

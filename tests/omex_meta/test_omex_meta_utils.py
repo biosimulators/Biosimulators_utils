@@ -16,7 +16,7 @@ class OmexMetaUtilsTestCase(unittest.TestCase):
         shutil.rmtree(self.temp_dirname)
 
     def test_build_omex_meta_file_for_model(self):
-        model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-meta', 'demo1.xml')
+        model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-metadata', 'demo1.xml')
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
         metadata_format = OmexMetaOutputFormat.rdfxml_abbrev
 
@@ -53,7 +53,7 @@ class OmexMetaUtilsTestCase(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'could not be read'):
             _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format.value)
 
-        model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-meta', 'simple-regulation.xml')
+        model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-metadata', 'simple-regulation.xml')
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
         metadata_format = OmexMetaOutputFormat.rdfxml_abbrev
         with self.assertRaisesRegex(RuntimeError, 'could not be generated'):

@@ -1,4 +1,4 @@
-""" Data model for working with OMEX Meta
+""" Data model for working with OMEX Metadata
 
 :Author: Jonathan Karr <karr@mssm.edu>
 :Date: 2021-06-23
@@ -44,7 +44,7 @@ class Triple(object):
 
 
 class OmexMetaInputFormat(str, enum.Enum):
-    """ An format for reading an OMEX Meta file """
+    """ An format for reading an OMEX Metadata file """
     ntriples = 'ntriples'
     nquads = 'nquads'
     rdfa = 'rdfa'
@@ -53,7 +53,7 @@ class OmexMetaInputFormat(str, enum.Enum):
 
 
 class OmexMetaOutputFormat(str, enum.Enum):
-    """ An format for writing an OMEX Meta file """
+    """ An format for writing an OMEX Metadata file """
     dot = 'dot'
     json = 'json'
     json_triples = 'json-triples'
@@ -67,7 +67,7 @@ class OmexMetaOutputFormat(str, enum.Enum):
 
 
 class OmexMetaSchema(str, enum.Enum):
-    """ Schema for OMEX Meta documents """
+    """ Schema for OMEX Metadata documents """
     biosimulations = 'BioSimulations'
     rdf_triples = 'rdf_triples'
 

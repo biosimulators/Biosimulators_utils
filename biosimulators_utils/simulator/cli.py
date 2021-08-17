@@ -78,11 +78,11 @@ def build_cli(cli_name=None, cli_version=None,
 
     if environment_variables:
         description_value += ('\n\nIn addition to the command-line arguments outlined below, '
-                              '{} also supports the following environment variables:\n'
+                              '{} also supports the following environment variables:'
                               ).format(simulator_name)
 
         for env_var in sorted(environment_variables, key=lambda var: var.name):
-            description_value += "\n  '{}': {}".format(env_var.name, env_var.description)
+            description_value += "\n\n  '{}': {}".format(env_var.name, env_var.description)
             if env_var.options:
                 option_values = ["'" + val + "'" for val in sorted(env_var.options)]
                 description_value += "\n    Options: {}".format(', '.join(option_values))

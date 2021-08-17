@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ..config import get_config
 from ..omex_meta.data_model import OmexMetaInputFormat, OmexMetaSchema
 from ..omex_meta.io import read_omex_meta_file
 from ..sedml.io import SedmlSimulationReader
@@ -42,7 +43,7 @@ def validate(archive, archive_dirname,
             return all SED documents, regardless of whether they have ``master="true"`` or not.
         formats_to_validate (:obj:`list` of :obj:`CombineArchiveContentFormat`, optional): list
             for formats of files to validate
-        metadata_schema (:obj:`OmexMetaSchema`, optional): expected schema for OMEX Meta file
+        metadata_schema (:obj:`OmexMetaSchema`, optional): expected schema for OMEX Metadata file
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
 
     Returns:
@@ -51,69 +52,72 @@ def validate(archive, archive_dirname,
             * nested :obj:`list` of :obj:`str`: nested list of errors with the archive
             * nested :obj:`list` of :obj:`str`: nested list of warnings with the archive
     """
+    config = get_config()
+
     errors = []
     warnings = []
 
-    if not archive.contents:
-        errors.append(['Archive must have at least one content element.'])
+    if config.VALIDATE_OMEX_MANIFESTS:
+        if not archive.contents:
+            errors.append(['Archive must have at least one content element.'])
 
-    # check that locations are listed once per manifest
-    locations = set(['manifest.xml'])
-    duplicate_locations = set()
-    for content in archive.contents:
-        if content and content.location:
-            location = os.path.relpath(content.location, '.')
-            if content.location in locations:
-                duplicate_locations.add(location)
+        # check that locations are listed once per manifest
+        locations = set(['manifest.xml'])
+        duplicate_locations = set()
+        for content in archive.contents:
+            if content and content.location:
+                location = os.path.relpath(content.location, '.')
+                if content.location in locations:
+                    duplicate_locations.add(location)
+                else:
+                    locations.add(location)
+        if duplicate_locations:
+            errors.append(['The manifest contains repeated content items for these locations:', [
+                [location] for location in sorted(duplicate_locations)]])
+
+        # check that all files in the archive are in the manifest
+        missing_locations = []
+        for dirname, _, filenames in os.walk(archive_dirname):
+            for filename in filenames:
+                location = os.path.relpath(os.path.join(dirname, filename), archive_dirname)
+                if location not in locations:
+                    missing_locations.append(location)
+        if missing_locations:
+            errors.append(['The manifest does not contain content items for these locations:', [
+                [location] for location in sorted(missing_locations)]])
+
+        # check for errors with the content elements of the archive
+        for i_content, content in enumerate(archive.contents):
+            content_errors = []
+
+            if isinstance(content, CombineArchiveContent):
+                if content.location:
+                    if not os.path.isfile(os.path.join(archive_dirname, content.location)):
+                        content_errors.append(['Location is not a file.'])
+
+                else:
+                    content_errors.append(['Content element must have a location (e.g., `{}`).'.format(
+                        'key-experiment/simulation.sedml')])
+
+                content_errors.extend(validate_format(content.format))
+
             else:
-                locations.add(location)
-    if duplicate_locations:
-        errors.append(['The manifest contains repeated content items for these locations:', [
-            [location] for location in sorted(duplicate_locations)]])
+                content_errors.append(['Contents element must be an instance of `CombineArchiveContent`.'])
 
-    # check that all files in the archive are in the manifest
-    missing_locations = []
-    for dirname, _, filenames in os.walk(archive_dirname):
-        for filename in filenames:
-            location = os.path.relpath(os.path.join(dirname, filename), archive_dirname)
-            if location not in locations:
-                missing_locations.append(location)
-    if missing_locations:
-        errors.append(['The manifest does not contain content items for these locations:', [
-            [location] for location in sorted(missing_locations)]])
+            if content_errors:
+                content_id = '`' + content.location + '`' if getattr(content, 'location', None) else str(i_content + 1)
+                errors.append(['Content element {} is invalid.'.format(content_id), content_errors])
 
-    # check for errors with the content elements of the archive
-    for i_content, content in enumerate(archive.contents):
-        content_errors = []
-
-        if isinstance(content, CombineArchiveContent):
-            if content.location:
-                if not os.path.isfile(os.path.join(archive_dirname, content.location)):
-                    content_errors.append(['Location is not a file.'])
-
-            else:
-                content_errors.append(['Content element must have a location (e.g., `{}`).'.format(
-                    'key-experiment/simulation.sedml')])
-
-            content_errors.extend(validate_format(content.format))
-
-        else:
-            content_errors.append(['Contents element must be an instance of `CombineArchiveContent`.'])
-
-        if content_errors:
-            content_id = '`' + content.location + '`' if getattr(content, 'location', None) else str(i_content + 1)
-            errors.append(['Content element {} is invalid.'.format(content_id), content_errors])
-
-    # check if the archive has at least one SED-ML file that should be executed
-    sedml_contents = get_sedml_contents(archive,
-                                        include_all_sed_docs_when_no_sed_doc_is_master=include_all_sed_docs_when_no_sed_doc_is_master,
-                                        always_include_all_sed_docs=always_include_all_sed_docs)
-    if not sedml_contents:
-        warnings.append(['The archive does not contain any SED-ML files that should be executed.'])
+        # check if the archive has at least one SED-ML file that should be executed
+        sedml_contents = get_sedml_contents(archive,
+                                            include_all_sed_docs_when_no_sed_doc_is_master=include_all_sed_docs_when_no_sed_doc_is_master,
+                                            always_include_all_sed_docs=always_include_all_sed_docs)
+        if config.VALIDATE_OMEX_MANIFESTS and not sedml_contents:
+            warnings.append(['The archive does not contain any SED-ML files that should be executed.'])
 
     # validate files
     for content in archive.contents:
-        if isinstance(content, CombineArchiveContent) and content.format:
+        if isinstance(content, CombineArchiveContent) and content.location and content.format:
             content_errors, content_warnings = validate_content(
                 content, archive_dirname,
                 formats_to_validate=formats_to_validate,
@@ -168,7 +172,7 @@ def validate_content(content, archive_dirname,
         archive_dirname (:obj:`str`): directory with the content of the archive
         formats_to_validate (:obj:`list` of :obj:`CombineArchiveContentFormat`, optional): list
             for formats of files to validate
-        metadata_schema (:obj:`OmexMetaSchema`, optional): expected schema for OMEX Meta file
+        metadata_schema (:obj:`OmexMetaSchema`, optional): expected schema for OMEX Metadata file
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
 
     Returns:
@@ -177,77 +181,97 @@ def validate_content(content, archive_dirname,
             * nested :obj:`list` of :obj:`str`: nested list of errors with the archive
             * nested :obj:`list` of :obj:`str`: nested list of warnings with the archive
     """
-    errors = []
-    warnings = []
+    config = get_config()
+
     filename = os.path.join(archive_dirname, content.location)
     file_type = None
 
-    if (
-        CombineArchiveContentFormat.SED_ML in formats_to_validate
-        and content.format
-        and re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format)
-    ):
-        file_type = 'SED-ML'
-        reader = SedmlSimulationReader()
-        try:
-            reader.run(filename, validate_models_with_languages=validate_models_with_languages)
-        except Exception:
-            if not reader.errors:
-                raise
+    errors = []
+    warnings = []
 
-        errors = reader.errors or []
-        warnings = reader.warnings or []
+    # validate SED-ML files and models referenced by SED-ML files
+    if config.VALIDATE_SEDML:
+        if (
+            CombineArchiveContentFormat.SED_ML in formats_to_validate
+            and content.format
+            and re.match(CombineArchiveContentFormatPattern.SED_ML.value, content.format)
+        ):
+            file_type = 'SED-ML'
+            reader = SedmlSimulationReader()
+            try:
+                reader.run(filename, validate_models_with_languages=validate_models_with_languages and config.VALIDATE_SEDML_MODELS)
+            except Exception:
+                if not reader.errors:
+                    raise
 
-    elif (
-        CombineArchiveContentFormat.OMEX_METADATA in formats_to_validate
-        and content.format
-        and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format)
-    ):
-        file_type = 'OMEX Meta'
-        errors, warnings = validate_omex_meta_file(filename, archive_dirname, schema=metadata_schema)
+            errors = reader.errors or []
+            warnings = reader.warnings or []
 
-    elif (
-        CombineArchiveContentFormat.BMP in formats_to_validate
-        and content.format
-        and re.match(CombineArchiveContentFormatPattern.BMP.value, content.format)
-    ):
-        if imghdr.what(filename) != 'bmp':
-            errors.append(['`{}` is not a valid BMP image.'.format(content.location)])
-    elif (
-        CombineArchiveContentFormat.GIF in formats_to_validate
-        and content.format
-        and re.match(CombineArchiveContentFormatPattern.GIF.value, content.format)
-    ):
-        if imghdr.what(filename) != 'gif':
-            errors.append(['`{}` is not a valid GIF image.'.format(content.location)])
-    elif (
-        CombineArchiveContentFormat.JPEG in formats_to_validate
-        and content.format
-        and re.match(CombineArchiveContentFormatPattern.JPEG.value, content.format)
-    ):
-        if imghdr.what(filename) != 'jpeg':
-            errors.append(['`{}` is not a valid JPEG image.'.format(content.location)])
-    elif (
-        CombineArchiveContentFormat.PNG in formats_to_validate
-        and content.format
-        and re.match(CombineArchiveContentFormatPattern.PNG.value, content.format)
-    ):
-        if imghdr.what(filename) != 'png':
-            errors.append(['`{}` is not a valid PNG image.'.format(content.location)])
-    elif (
-        CombineArchiveContentFormat.TIFF in formats_to_validate
-        and content.format
-        and re.match(CombineArchiveContentFormatPattern.TIFF.value, content.format)
-    ):
-        if imghdr.what(filename) != 'tiff':
-            errors.append(['`{}` is not a valid TIFF image.'.format(content.location)])
-    elif (
-        CombineArchiveContentFormat.WEBP in formats_to_validate
-        and content.format
-        and re.match(CombineArchiveContentFormatPattern.WEBP.value, content.format)
-    ):
-        if imghdr.what(filename) != 'webp':
-            errors.append(['`{}` is not a valid WEBP image.'.format(content.location)])
+    # validate OMEX metadata files
+    if config.VALIDATE_OMEX_METADATA:
+        if (
+            CombineArchiveContentFormat.OMEX_METADATA in formats_to_validate
+            and content.format
+            and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format)
+        ):
+            file_type = 'OMEX Metadata'
+            errors, warnings = validate_omex_meta_file(filename, archive_dirname, schema=metadata_schema)
+
+    # validate images
+    if config.VALIDATE_IMAGES:
+        if (
+            CombineArchiveContentFormat.BMP in formats_to_validate
+            and content.format
+            and re.match(CombineArchiveContentFormatPattern.BMP.value, content.format)
+        ):
+            file_type = CombineArchiveContentFormat.BMP.name
+            if not (os.path.isfile(filename) and imghdr.what(filename) == 'bmp'):
+                errors.append(['`{}` is not a valid BMP image.'.format(content.location)])
+
+        elif (
+            CombineArchiveContentFormat.GIF in formats_to_validate
+            and content.format
+            and re.match(CombineArchiveContentFormatPattern.GIF.value, content.format)
+        ):
+            file_type = CombineArchiveContentFormat.GIF.name
+            if not (os.path.isfile(filename) and imghdr.what(filename) == 'gif'):
+                errors.append(['`{}` is not a valid GIF image.'.format(content.location)])
+
+        elif (
+            CombineArchiveContentFormat.JPEG in formats_to_validate
+            and content.format
+            and re.match(CombineArchiveContentFormatPattern.JPEG.value, content.format)
+        ):
+            file_type = CombineArchiveContentFormat.JPEG.name
+            if not (os.path.isfile(filename) and imghdr.what(filename) == 'jpeg'):
+                errors.append(['`{}` is not a valid JPEG image.'.format(content.location)])
+
+        elif (
+            CombineArchiveContentFormat.PNG in formats_to_validate
+            and content.format
+            and re.match(CombineArchiveContentFormatPattern.PNG.value, content.format)
+        ):
+            file_type = CombineArchiveContentFormat.PNG.name
+            if not (os.path.isfile(filename) and imghdr.what(filename) == 'png'):
+                errors.append(['`{}` is not a valid PNG image.'.format(content.location)])
+
+        elif (
+            CombineArchiveContentFormat.TIFF in formats_to_validate
+            and content.format
+            and re.match(CombineArchiveContentFormatPattern.TIFF.value, content.format)
+        ):
+            file_type = CombineArchiveContentFormat.TIFF.name
+            if not (os.path.isfile(filename) and imghdr.what(filename) == 'tiff'):
+                errors.append(['`{}` is not a valid TIFF image.'.format(content.location)])
+
+        elif (
+            CombineArchiveContentFormat.WEBP in formats_to_validate
+            and content.format
+            and re.match(CombineArchiveContentFormatPattern.WEBP.value, content.format)
+        ):
+            file_type = CombineArchiveContentFormat.WEBP.name
+            if not (os.path.isfile(filename) and imghdr.what(filename) == 'webp'):
+                errors.append(['`{}` is not a valid WEBP image.'.format(content.location)])
 
     if errors:
         errors = [[
@@ -264,20 +288,20 @@ def validate_content(content, archive_dirname,
 
 
 def validate_omex_meta_file(filename, archive_dirname, schema=OmexMetaSchema.rdf_triples, format=OmexMetaInputFormat.rdfxml):
-    """ validate an OMEX Meta file
+    """ validate an OMEX Metadata file
 
     Args:
         filename (:obj:`str`): path to file
         archive_dirname (:obj:`str`): directory with the content of the archive
-        schema (:obj:`OmexMetaSchema`, optional): expected schema for OMEX Meta file
+        schema (:obj:`OmexMetaSchema`, optional): expected schema for OMEX Metadata file
         format (:obj:`OmexMetaInputFormat`, optional): format of the file; must be one of the formats
             supported by pyomexmeta such as ``rdfxml`` or ``turtle``
 
     Returns:
         :obj:`tuple`:
 
-            * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Meta file
-            * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Meta file
+            * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Metadata file
+            * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Metadata file
     """
     _, errors, warnings = read_omex_meta_file(filename, schema=schema, format=format, working_dir=archive_dirname)
     return (errors, warnings)

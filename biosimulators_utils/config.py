@@ -17,6 +17,11 @@ class Config(object):
     """ Configuration
 
     Attributes:
+        VALIDATE_OMEX_MANIFESTS (:obj:`bool`): whether to validate OMEX manifests during the validation of COMBINE/OMEX archives
+        VALIDATE_SEDML (:obj:`bool`): whether to validate SED-ML files during the validation of COMBINE/OMEX archives
+        VALIDATE_SEDML_MODELS (:obj:`bool`): whether to validate models referenced by SED-ML files during the validation of COMBINE/OMEX archives
+        VALIDATE_OMEX_METADATA (:obj:`bool`): whether to validate OMEX metadata (RDF files) during the validation of COMBINE/OMEX archives
+        VALIDATE_IMAGES (:obj:`bool`): whether to validate the images in COMBINE/OMEX archives during their validation
         ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
         SAVE_PLOT_DATA (:obj:`bool`): whether to save data for plots alongside data for reports in CSV/HDF5 files
         REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
@@ -31,11 +36,18 @@ class Config(object):
         VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
     """
 
-    def __init__(self, ALGORITHM_SUBSTITUTION_POLICY, SAVE_PLOT_DATA, REPORT_FORMATS, VIZ_FORMATS,
+    def __init__(self,
+                 VALIDATE_OMEX_MANIFESTS, VALIDATE_SEDML, VALIDATE_SEDML_MODELS, VALIDATE_OMEX_METADATA, VALIDATE_IMAGES,
+                 ALGORITHM_SUBSTITUTION_POLICY, SAVE_PLOT_DATA, REPORT_FORMATS, VIZ_FORMATS,
                  H5_REPORTS_PATH, REPORTS_PATH, PLOTS_PATH, BUNDLE_OUTPUTS, KEEP_INDIVIDUAL_OUTPUTS,
                  LOG_PATH, BIOSIMULATORS_API_ENDPOINT, VERBOSE):
         """
         Args:
+            VALIDATE_OMEX_MANIFESTS (:obj:`bool`): whether to validate OMEX manifests during the execution of COMBINE/OMEX archives
+            VALIDATE_SEDML (:obj:`bool`): whether to validate SED-ML files during the execution of COMBINE/OMEX archives
+            VALIDATE_SEDML_MODELS (:obj:`bool`): whether to validate models referenced by SED-ML files during the execution of COMBINE/OMEX archives
+            VALIDATE_OMEX_METADATA (:obj:`bool`): whether to validate OMEX metadata (RDF files) during the execution of COMBINE/OMEX archives
+            VALIDATE_IMAGES (:obj:`bool`): whether to validate the images in COMBINE/OMEX archives during their execution
             ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
             SAVE_PLOT_DATA (:obj:`bool`): whether to save data for plots alongside data for reports in CSV/HDF5 files
             REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
@@ -49,6 +61,11 @@ class Config(object):
             BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
             VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
         """
+        self.VALIDATE_OMEX_MANIFESTS = VALIDATE_OMEX_MANIFESTS
+        self.VALIDATE_SEDML = VALIDATE_SEDML
+        self.VALIDATE_SEDML_MODELS = VALIDATE_SEDML_MODELS
+        self.VALIDATE_OMEX_METADATA = VALIDATE_OMEX_METADATA
+        self.VALIDATE_IMAGES = VALIDATE_IMAGES
         self.ALGORITHM_SUBSTITUTION_POLICY = ALGORITHM_SUBSTITUTION_POLICY
         self.SAVE_PLOT_DATA = SAVE_PLOT_DATA
         self.REPORT_FORMATS = REPORT_FORMATS
@@ -82,6 +99,11 @@ def get_config():
         viz_formats = []
 
     return Config(
+        VALIDATE_OMEX_MANIFESTS=os.environ.get('VALIDATE_OMEX_MANIFESTS', '1').lower() in ['1', 'true'],
+        VALIDATE_SEDML=os.environ.get('VALIDATE_SEDML', '1').lower() in ['1', 'true'],
+        VALIDATE_SEDML_MODELS=os.environ.get('VALIDATE_SEDML_MODELS', '1').lower() in ['1', 'true'],
+        VALIDATE_OMEX_METADATA=os.environ.get('VALIDATE_OMEX_METADATA', '1').lower() in ['1', 'true'],
+        VALIDATE_IMAGES=os.environ.get('VALIDATE_IMAGES', '1').lower() in ['1', 'true'],
         ALGORITHM_SUBSTITUTION_POLICY=os.environ.get('ALGORITHM_SUBSTITUTION_POLICY', 'SIMILAR_VARIABLES'),
         SAVE_PLOT_DATA=os.environ.get('SAVE_PLOT_DATA', '1').lower() in ['1', 'true'],
         REPORT_FORMATS=report_formats,

@@ -21,6 +21,48 @@ with mock.patch.dict('os.environ', {}):
     config = get_config()
 
 ENVIRONMENT_VARIABLES = {
+    # validation
+    'VALIDATE_OMEX_MANIFESTS': EnvironmentVariable(
+        name='VALIDATE_OMEX_MANIFESTS',
+        description='Whether to validate OMEX manifests during the validation of COMBINE/OMEX archives.',
+        options=['0', '1'],
+        default='1' if config.VALIDATE_OMEX_MANIFESTS else '0',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
+    'VALIDATE_SEDML': EnvironmentVariable(
+        name='VALIDATE_SEDML',
+        description='Whether to validate SED-ML files during the validation of COMBINE/OMEX archives.',
+        options=['0', '1'],
+        default='1' if config.VALIDATE_SEDML else '0',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
+    'VALIDATE_SEDML_MODELS': EnvironmentVariable(
+        name='VALIDATE_SEDML_MODELS',
+        description='Whether to validate models referenced by SED-ML files during the validation of COMBINE/OMEX archives.',
+        options=['0', '1'],
+        default='1' if config.VALIDATE_SEDML_MODELS else '0',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
+    'VALIDATE_OMEX_METADATA': EnvironmentVariable(
+        name='VALIDATE_OMEX_METADATA',
+        description='Whether to validate OMEX metadata (RDF files) during the validation of COMBINE/OMEX archives.',
+        options=['0', '1'],
+        default='1' if config.VALIDATE_OMEX_METADATA else '0',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
+    'VALIDATE_IMAGES': EnvironmentVariable(
+        name='VALIDATE_IMAGES',
+        description='Whether to validate the images in COMBINE/OMEX archives during their validation.',
+        options=['0', '1'],
+        default='1' if config.VALIDATE_IMAGES else '0',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
+    # algorithm substitution
     'ALGORITHM_SUBSTITUTION_POLICY': EnvironmentVariable(
         name='ALGORITHM_SUBSTITUTION_POLICY',
         description='Policy for substituting alternative algorithms.',
@@ -36,7 +78,7 @@ ENVIRONMENT_VARIABLES = {
         description='Comma-separated list of formats to save each SED-ML report.',
         options=sorted(ReportFormat.__members__.keys()),
         default=', '.join(config.REPORT_FORMATS),
-        more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
     ),
 
     'SAVE_PLOT_DATA': EnvironmentVariable(
@@ -44,7 +86,7 @@ ENVIRONMENT_VARIABLES = {
         description='Whether to save the data for each SED-ML plot similar to a SED-ML report.',
         options=['0', '1'],
         default='1' if config.SAVE_PLOT_DATA else '0',
-        more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
     ),
 
     'H5_REPORTS_PATH': EnvironmentVariable(
@@ -55,7 +97,7 @@ ENVIRONMENT_VARIABLES = {
         ),
         options=None,
         default=config.H5_REPORTS_PATH,
-        more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
     ),
 
     'REPORTS_PATH': EnvironmentVariable(
@@ -66,7 +108,7 @@ ENVIRONMENT_VARIABLES = {
         ),
         options=None,
         default=config.REPORTS_PATH,
-        more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
     ),
 
     # plots
@@ -75,7 +117,7 @@ ENVIRONMENT_VARIABLES = {
         description='Comma-separated list of formats to save each SED-ML plot.',
         options=sorted(VizFormat.__members__.keys()),
         default=', '.join(config.VIZ_FORMATS),
-        more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
     ),
 
     'PLOTS_PATH': EnvironmentVariable(
@@ -85,7 +127,7 @@ ENVIRONMENT_VARIABLES = {
         ),
         options=None,
         default=config.PLOTS_PATH,
-        more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
     ),
 
     # bundling plots and reports
@@ -97,7 +139,7 @@ ENVIRONMENT_VARIABLES = {
         ),
         options=['0', '1'],
         default='1' if config.BUNDLE_OUTPUTS else '0',
-        more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
     ),
 
     'KEEP_INDIVIDUAL_OUTPUTS': EnvironmentVariable(
@@ -108,7 +150,7 @@ ENVIRONMENT_VARIABLES = {
         ),
         options=['0', '1'],
         default='1' if config.KEEP_INDIVIDUAL_OUTPUTS else '0',
-        more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
     ),
 
     # logs
@@ -120,7 +162,7 @@ ENVIRONMENT_VARIABLES = {
         ),
         options=None,
         default=config.LOG_PATH,
-        more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
     ),
 
     'VERBOSE': EnvironmentVariable(
