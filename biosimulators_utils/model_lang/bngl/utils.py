@@ -101,7 +101,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     # simulation
     sims = []
-    for i_action, action in enumerate(model.actions.items.values()):
+    print(model.actions.items)
+    for i_action, action in enumerate(model.actions.items):
         args = {key: val for key, val in action.args}
 
         initial_time = args.get('t_start', '0.')

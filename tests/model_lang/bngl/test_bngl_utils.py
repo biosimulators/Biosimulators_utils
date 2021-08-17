@@ -94,7 +94,6 @@ class BgnlUtilsTestCase(unittest.TestCase):
         )))
         self.assertEqual(len(vars), 17)
 
-    @unittest.expectedFailure  # 'See https://github.com/RuleWorld/PyBioNetGen/issues/17'
     def test_get_parameters_variables_for_simulation_no_actions(self):
         params, sims, vars = get_parameters_variables_for_simulation(
             self.NO_ACTIONS_FIXTURE_FILENAME, None, OneStepSimulation, None)
