@@ -101,7 +101,6 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     # simulation
     sims = []
-    print(model.actions.items)
     for i_action, action in enumerate(model.actions.items):
         args = {key: val for key, val in action.args}
 
