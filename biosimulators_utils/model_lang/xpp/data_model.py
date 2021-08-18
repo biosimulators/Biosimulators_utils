@@ -72,7 +72,7 @@ SIMULATION_METHOD_KISAO_MAP = {
         }
     },
     'qualrk': {
-        'kisao_id': 'KISAO_0000086',
+        'kisao_id': 'KISAO_0000672',
         'parameters': {
             'toler': 'KISAO_0000597',
             'dtmin': 'KISAO_0000485',

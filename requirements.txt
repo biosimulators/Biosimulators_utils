@@ -2,7 +2,7 @@ appdirs
 cement
 evalidate
 h5py
-kisao >= 2.25
+kisao >= 2.26
 lxml
 matplotlib
 mpmath
