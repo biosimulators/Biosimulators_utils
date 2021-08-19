@@ -171,5 +171,14 @@ ENVIRONMENT_VARIABLES = {
         options=['0', '1'],
         default='1' if config.VERBOSE else '0',
         more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
-    )
+    ),
+
+    # debugging
+    'DEBUG': EnvironmentVariable(
+        name='DEBUG',
+        description='Whether to raise exceptions rather than capturing them.',
+        options=['0', '1'],
+        default='1' if config.DEBUG else '0',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
 }

@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ..config import get_config
 from .._version import __version__ as biosimulators_utils_version
 from .data_model import EnvironmentVariable  # noqa: F401
 from .environ import ENVIRONMENT_VARIABLES
@@ -149,6 +150,8 @@ def build_cli(cli_name=None, cli_version=None,
             try:
                 combine_archive_executer(args.archive, args.out_dir)
             except Exception as exception:
+                if get_config().DEBUG:
+                    raise
                 raise SystemExit(termcolor.colored(str(exception), 'red')) from exception
 
     class App(cement.App):

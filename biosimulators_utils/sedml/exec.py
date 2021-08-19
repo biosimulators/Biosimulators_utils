@@ -209,6 +209,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                     original_model.source = original_model_sources[original_model.id]
                     original_model.changes = original_model_changes[original_model.id]
             except Exception as exception:
+                if config.DEBUG:
+                    raise
                 exceptions.append(exception)
                 task_status = Status.FAILED
                 task_exception = exception
@@ -292,6 +294,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                         report_results[output.id] = output_result
 
                 except Exception as exception:
+                    if config.DEBUG:
+                        raise
                     output_status = Status.FAILED
                     output_exception = exception
 

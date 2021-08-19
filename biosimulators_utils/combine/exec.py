@@ -181,7 +181,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             log.finalize()
             log.export()
 
-            if raise_exceptions:
+            if config.DEBUG or raise_exceptions:
                 raise
             else:
                 return (None, log)
@@ -229,6 +229,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                         results[content.location] = doc_results
                     doc_log.status = Status.SUCCEEDED
                 except Exception as exception:
+                    if config.DEBUG:
+                        raise
                     exceptions.append(exception)
                     doc_log.status = Status.FAILED
                     doc_log.exception = exception

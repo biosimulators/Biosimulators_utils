@@ -34,13 +34,14 @@ class Config(object):
         LOG_PATH (:obj:`str`): path to save the execution status of a COMBINE/OMEX archive
         BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
         VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
+        DEBUG (:obj:`bool`): whether to raise exceptions rather than capturing them
     """
 
     def __init__(self,
                  VALIDATE_OMEX_MANIFESTS, VALIDATE_SEDML, VALIDATE_SEDML_MODELS, VALIDATE_OMEX_METADATA, VALIDATE_IMAGES,
                  ALGORITHM_SUBSTITUTION_POLICY, SAVE_PLOT_DATA, REPORT_FORMATS, VIZ_FORMATS,
                  H5_REPORTS_PATH, REPORTS_PATH, PLOTS_PATH, BUNDLE_OUTPUTS, KEEP_INDIVIDUAL_OUTPUTS,
-                 LOG_PATH, BIOSIMULATORS_API_ENDPOINT, VERBOSE):
+                 LOG_PATH, BIOSIMULATORS_API_ENDPOINT, VERBOSE, DEBUG):
         """
         Args:
             VALIDATE_OMEX_MANIFESTS (:obj:`bool`): whether to validate OMEX manifests during the execution of COMBINE/OMEX archives
@@ -60,6 +61,7 @@ class Config(object):
             LOG_PATH (:obj:`str`): path to save the execution status of a COMBINE/OMEX archive
             BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
             VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
+            DEBUG (:obj:`bool`): whether to raise exceptions rather than capturing them
         """
         self.VALIDATE_OMEX_MANIFESTS = VALIDATE_OMEX_MANIFESTS
         self.VALIDATE_SEDML = VALIDATE_SEDML
@@ -78,6 +80,7 @@ class Config(object):
         self.LOG_PATH = LOG_PATH
         self.BIOSIMULATORS_API_ENDPOINT = BIOSIMULATORS_API_ENDPOINT
         self.VERBOSE = VERBOSE
+        self.DEBUG = DEBUG
 
 
 def get_config():
@@ -116,6 +119,7 @@ def get_config():
         LOG_PATH=os.environ.get('LOG_PATH', 'log.yml'),
         BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', 'https://api.biosimulators.org/'),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
+        DEBUG=os.environ.get('DEBUG', '1').lower() in ['1', 'true'],
     )
 
 
