@@ -114,11 +114,13 @@ class Log(object):
     def export(self):
         """ Write to a file """
         if self.out_dir:
-            path = os.path.join(self.out_dir, get_config().LOG_PATH)
-            if not os.path.isdir(self.out_dir):
-                os.makedirs(self.out_dir)
-            with open(path, 'w') as file:
-                file.write(yaml.dump(self.to_json()))
+            log_path = get_config().LOG_PATH
+            if log_path:
+                path = os.path.join(self.out_dir, log_path)
+                if not os.path.isdir(self.out_dir):
+                    os.makedirs(self.out_dir)
+                with open(path, 'w') as file:
+                    file.write(yaml.dump(self.to_json()))
         elif self.parent:
             self.parent.export()
 
