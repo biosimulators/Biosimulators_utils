@@ -119,7 +119,7 @@ def get_config():
         LOG_PATH=os.environ.get('LOG_PATH', 'log.yml'),
         BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', 'https://api.biosimulators.org/'),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
-        DEBUG=os.environ.get('DEBUG', '1').lower() in ['1', 'true'],
+        DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
     )
 
 
