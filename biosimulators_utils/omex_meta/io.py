@@ -174,9 +174,8 @@ class OmexMetaReader(abc.ABC):
             rdf = pyomexmeta.RDF.from_file(filename, format.value)
             stdout = captured.get_text().strip()
         if stdout:
-            errors_warnings = re.split(r'((^|\n)\[[\d :\-]+\] \x1b\[31m\x1b\[1m (error|warning)) *: *', stdout)
+            errors_warnings = re.split(r'((^|\n)librdf (error|warning)) *-? *', stdout)
             for type, message in zip(errors_warnings[3::4], errors_warnings[4::4]):
-                message.replace('\x1b[m', '')
                 message = message.strip()
                 if 'error' in type:
                     rdf = None
@@ -197,7 +196,7 @@ class OmexMetaReader(abc.ABC):
             * :obj:`list` of :obj:`Triple`: representation of the OMEX Metadata file as list of triples
         """
         query = "SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate ?object }"
-        plain_triples = json.loads(rdf.query_results_as_string(query, 'json'))['results']['bindings']
+        plain_triples = json.loads(rdf.query(query, 'json'))['results']['bindings']
         triples = []
         for plain_triple in plain_triples:
             subject = cls.make_rdf_node(plain_triple['subject'])

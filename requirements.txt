@@ -12,7 +12,7 @@ numpy
 openpyxl
 pandas
 pronto >= 2.4
-pyomexmeta >= 1.2.12
+pyomexmeta
 python_dateutil
 python_libcombine >= 0.2.11
 python_libsedml >= 2.0.16

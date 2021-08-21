@@ -44,14 +44,14 @@ class OmexMetaIoTestCase(unittest.TestCase):
         self.assertEqual(warnings, [])
 
         rdf, errors, warnings = io.OmexMetaReader.read_rdf(self.INVALID_FIXTURE)
-        self.assertTrue(rdf is None)
+        self.assertEqual(rdf, None)
         self.assertIn('multiple object node elements', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        # rdf, errors, warnings = io.OmexMetaReader.read_rdf(self.WARNING_FIXTURE)
-        # self.assertIsInstance(rdf, pyomexmeta.RDF)
-        # self.assertEqual(errors, [])
-        # self.assertIn('Unsupported version', flatten_nested_list_of_strings(warnings))
+        rdf, errors, warnings = io.OmexMetaReader.read_rdf(self.WARNING_FIXTURE)
+        self.assertIsInstance(rdf, pyomexmeta.RDF)
+        self.assertEqual(errors, [])
+        self.assertIn('Unsupported version', flatten_nested_list_of_strings(warnings))
 
     def test_get_rdf_triples(self):
         rdf, errors, warnings = io.OmexMetaReader.read_rdf(self.FIXTURE)
