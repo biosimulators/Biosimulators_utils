@@ -282,12 +282,14 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
         _stderr (:obj:`io.IOBase`): overridden stderr
     """
 
-    def __init__(self, level=StandardOutputErrorCapturerLevel.c, relay=False, disabled=False):
+    def __init__(self, level=StandardOutputErrorCapturerLevel.c, relay=False, termination_delay=0.01, disabled=False):
         """
         Args:
             level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which stdout/stderr should be captured
             relay (:obj:`bool`): if :obj:`True`, collect the standard output/error streams and continue to pass
                 them along. if :obj:`False`, collect the stream, squash them, and do not pass them along.
+            termination_delay (:obj:`float`, optional): The number of seconds to wait before terminating
+                the output relay process.
             disabled (:obj:`bool`, optional): whether to capture standard output and error
         """
         self.level = level
@@ -295,7 +297,7 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
         self.disabled = disabled
         if not self.disabled:
             if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
-                self._captured = capturer.CaptureOutput(merged=True, relay=relay)
+                self._captured = capturer.CaptureOutput(merged=True, relay=relay, termination_delay=termination_delay)
             else:
                 self._log = ''
         else:

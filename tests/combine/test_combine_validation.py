@@ -109,13 +109,13 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'warning.rdf'),
                                                    archive_dirname=self.tmp_dir)
-        self.assertEqual(errors, [])
-        self.assertIn("Unsupported version '1.1'", flatten_nested_list_of_strings(warnings))
+        self.assertIn("Unsupported version '1.2'", flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
 
         errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'invalid.rdf'),
                                                    archive_dirname=self.tmp_dir)
-        self.assertEqual(len(errors), 1)
-        self.assertIn("has multiple object node elements", flatten_nested_list_of_strings(errors))
+        self.assertEqual(len(errors), 4)
+        self.assertIn("XML parser error", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'malformed.rdf'),

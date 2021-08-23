@@ -7,8 +7,6 @@
 """
 
 from ..combine.data_model import CombineArchive, CombineArchiveContentFormatPattern  # noqa: F401
-from ..log.data_model import StandardOutputErrorCapturerLevel
-from ..log.utils import StandardOutputErrorCapturer
 from .data_model import (Triple, OmexMetaInputFormat, OmexMetaOutputFormat, OmexMetaSchema,
                          BIOSIMULATIONS_ROOT_URI_FORMAT,
                          BIOSIMULATIONS_ROOT_URI_PATTERN,
@@ -20,6 +18,7 @@ import os
 import pyomexmeta
 import rdflib
 import re
+import tempfile
 
 __all__ = [
     'read_omex_meta_file',
@@ -170,18 +169,52 @@ class OmexMetaReader(abc.ABC):
             errors.append(['`{}` is not a file.'.format(filename)])
             return (rdf, errors, warnings)
 
-        with StandardOutputErrorCapturer(relay=False, level=StandardOutputErrorCapturerLevel.c) as captured:
-            rdf = pyomexmeta.RDF.from_file(filename, format.value)
-            stdout = captured.get_text().strip()
-        if stdout:
-            errors_warnings = re.split(r'((^|\n)librdf (error|warning)) *-? *', stdout)
-            for type, message in zip(errors_warnings[3::4], errors_warnings[4::4]):
-                message = message.strip()
-                if 'error' in type:
-                    rdf = None
-                    errors.append([message])
-                else:
-                    warnings.append([message])
+        pyomexmeta_log_level = pyomexmeta.Logger.get_level()
+        pyomexmeta.Logger.clear()
+        pyomexmeta.Logger.set_level(pyomexmeta.eLogLevel.warn)
+
+        with open(filename, 'rb') as file:
+            line = file.readline()
+
+        temp_filename = None
+        if line.startswith(b'<?xml ') and b'?>' in line:
+            decl, sep, after_decl = line.partition(b'?>')
+            if b' version="1.1"' in decl or b" version='1.1'" in decl:
+                decl = decl.replace(b' version="1.1"', b' version="1.0"').replace(b" version='1.1'", b" version='1.0'")
+                line = decl + sep + after_decl
+
+                with open(filename, 'rb') as file:
+                    lines = file.readlines()
+
+                lines[0] = line
+
+                temp_fid, temp_filename = tempfile.mkstemp()
+                os.close(temp_fid)
+                with open(temp_filename, 'wb') as file:
+                    for line in lines:
+                        file.write(line)
+
+                filename = temp_filename
+
+        rdf = pyomexmeta.RDF.from_file(filename, format.value)
+
+        if temp_filename:
+            os.remove(temp_filename)
+
+        pyomexmeta.Logger.set_level(pyomexmeta_log_level)
+
+        logger = pyomexmeta.Logger()
+        num_messages = len(logger)
+        for i_message in range(num_messages):
+            message = logger[i_message]
+            type = message.get_level()
+            message = message.get_message()
+
+            if type in ['warn', 'warning']:
+                warnings.append([message])
+            else:
+                rdf = None
+                errors.append([message])
 
         return (rdf, errors, warnings)
 
@@ -196,7 +229,7 @@ class OmexMetaReader(abc.ABC):
             * :obj:`list` of :obj:`Triple`: representation of the OMEX Metadata file as list of triples
         """
         query = "SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate ?object }"
-        plain_triples = json.loads(rdf.query(query, 'json'))['results']['bindings']
+        plain_triples = json.loads(rdf.query_results_as_string(query, 'json'))['results']['bindings']
         triples = []
         for plain_triple in plain_triples:
             subject = cls.make_rdf_node(plain_triple['subject'])
@@ -306,7 +339,8 @@ class TriplesOmexMetaWriter(OmexMetaWriter):
             graph.serialize(filename, format="turtle")
 
         else:
-            graph.serialize(filename, format="xml")
+            graph.serialize(filename, format="xml", version="1.0")
+
             rdf = pyomexmeta.RDF.from_file(filename, 'rdfxml')
             if rdf.to_file(filename, format.value) != 0:
                 raise RuntimeError('Metadata could not be saved to `{}` in `{}` format.'.format(

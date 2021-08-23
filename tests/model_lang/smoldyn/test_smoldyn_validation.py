@@ -13,7 +13,7 @@ class SmoldynValidationTestCase(unittest.TestCase):
         self.assertEqual(warnings, [])
 
         errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid.txt'))
-        self.assertIn("statement not recognized", flatten_nested_list_of_strings(errors))
+        self.assertIn("not a valid Smoldyn", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'not a file.txt'))

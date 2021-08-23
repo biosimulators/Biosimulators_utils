@@ -911,7 +911,7 @@ class ValidationTestCase(unittest.TestCase):
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'smoldyn', 'invalid.txt')
         errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.Smoldyn)
-        self.assertIn("statement not recognized", flatten_nested_list_of_strings(errors))
+        self.assertIn("not a valid Smoldyn", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         # XPP
