@@ -14,6 +14,7 @@ from .data_model import DataSetResults, ReportFormat
 from .warnings import (RepeatDataSetLabelsWarning, MissingReportMetadataWarning, MissingDataWarning,
                        ExtraDataWarning, CannotExportMultidimensionalTableWarning)
 import enum
+import functools
 import glob
 import h5py
 import numpy
@@ -118,6 +119,8 @@ class ReportWriter(object):
             if not os.path.isdir(base_path):
                 os.makedirs(base_path)
 
+            rel_path = '/'.join(rel_path.split(os.path.sep))
+
             with h5py.File(filename, 'a') as file:
                 try:
                     file[rel_path]
@@ -139,7 +142,7 @@ class ReportWriter(object):
                 data_set.attrs['sedmlDataSetDataTypes'] = data_set_data_types
                 data_set.attrs['sedmlDataSetShapes'] = data_set_shapes
 
-                group_ids = rel_path.split(os.path.sep)[0:-1]
+                group_ids = rel_path.split('/')[0:-1]
                 for i_group in range(len(group_ids)):
                     uri = '/'.join(group_ids[0:i_group + 1])
                     group = file[uri]
@@ -232,6 +235,8 @@ class ReportReader(object):
         elif format == ReportFormat.h5:
             filename = os.path.join(base_path, get_config().H5_REPORTS_PATH)
 
+            rel_path = '/'.join(rel_path.split(os.path.sep))
+
             with h5py.File(filename, 'r') as file:
                 data_set = file[rel_path]
                 data_set_results = data_set[:]
@@ -316,22 +321,22 @@ class ReportReader(object):
             filename = os.path.join(base_path, get_config().H5_REPORTS_PATH)
             with h5py.File(filename, 'r') as file:
                 report_ids = []
-
-                def append_report_id(name, object, type=type):
-                    if isinstance(object, h5py.Dataset):
-                        data_set_type = object.attrs.get('_type', None)
-                        if (
-                            data_set_type and
-                            (
-                                Hdf5DataSetType[data_set_type].value == type
-                                or issubclass(Hdf5DataSetType[data_set_type].value, type)
-                            )
-                        ):
-                            report_ids.append(name)
-
-                file.visititems(append_report_id)
+                file.visititems(functools.partial(self.append_report_id, type, report_ids))
 
             return report_ids
 
         else:
             raise NotImplementedError('Report format {} is not supported'.format(format))
+
+    @staticmethod
+    def append_report_id(type, report_ids, name, object):
+        if isinstance(object, h5py.Dataset):
+            data_set_type = object.attrs.get('_type', None)
+            if (
+                data_set_type and
+                (
+                    Hdf5DataSetType[data_set_type].value == type
+                    or issubclass(Hdf5DataSetType[data_set_type].value, type)
+                )
+            ):
+                report_ids.append(name)
