@@ -62,6 +62,9 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         raise UnsupportedModelLanguageError(
             'Models of language `{}` are not supported'.format(model_language))
 
+    elif model_language and re.match(ModelLanguagePattern.RBA.value, model_language):
+        from biosimulators_utils.model_lang.rba.utils import get_parameters_variables_for_simulation
+
     elif model_language and re.match(ModelLanguagePattern.SBML.value, model_language):
         from biosimulators_utils.model_lang.sbml.utils import get_parameters_variables_for_simulation
 

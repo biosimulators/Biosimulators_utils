@@ -1,6 +1,7 @@
 from biosimulators_utils.combine.io import CombineArchiveReader
 from biosimulators_utils.sedml import model_utils
-from biosimulators_utils.sedml.data_model import ModelLanguage, Variable, Symbol, UniformTimeCourseSimulation, ModelAttributeChange
+from biosimulators_utils.sedml.data_model import (
+    ModelLanguage, Variable, Symbol, SteadyStateSimulation, UniformTimeCourseSimulation, ModelAttributeChange)
 from biosimulators_utils.sedml.exceptions import UnsupportedModelLanguageError
 from biosimulators_utils.sedml.io import SedmlSimulationReader
 from unittest import mock
@@ -43,6 +44,16 @@ class ModelUtilsTestCase(unittest.TestCase):
                 "/cellml:variable[@name='time']"
             ),
             target_namespaces={'cellml': 'http://www.cellml.org/cellml/1.0#'},
+        )))
+
+        # RBA
+        filename = os.path.join(self.FIXTURES_DIRNAME, 'rba', 'Escherichia-coli-K12-WT.zip')
+        params, sims, vars = model_utils.get_parameters_variables_for_simulation(
+            filename, ModelLanguage.RBA, SteadyStateSimulation, None)
+        self.assertTrue(vars[0].is_equal(Variable(
+            id='variable_objective',
+            name='Value of objective',
+            target='objective',
         )))
 
         # SBML

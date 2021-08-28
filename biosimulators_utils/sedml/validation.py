@@ -876,6 +876,9 @@ def validate_model_with_language(source, language, name=None):
     elif language and re.match(ModelLanguagePattern.NeuroML, language):
         from ..model_lang.neuroml.validation import validate_model
 
+    elif language and re.match(ModelLanguagePattern.RBA, language):
+        from ..model_lang.rba.validation import validate_model
+
     elif language and re.match(ModelLanguagePattern.SBML, language):
         from ..model_lang.sbml.validation import validate_model
 
