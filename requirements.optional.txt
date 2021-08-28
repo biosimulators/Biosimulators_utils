@@ -14,8 +14,8 @@ pint
 [neuroml]
 libneuroml
 
-[rba]
-rba
+# [rba]
+# rba
 
 [sbml]
 python_libsbml

@@ -14,6 +14,7 @@ Optional requirements
 * `Docker <https://www.docker.com/>`_: required to execute containerized simulation tools
 * `Java <https://www.java.com/>`_: required to parse and validate NeuroML/LEMS files
 * `Perl <https://www.perl.org/>`_: required to parse and validate BioNetGen files
+* `RBApy <https://sysbioinra.github.io/RBApy/>`_: required to parse and validate RBA files
 * `XPP <http://www.math.pitt.edu/~bard/xpp/xpp.html>`_: required to parse and validate XPP files
 
 
