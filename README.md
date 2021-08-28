@@ -78,7 +78,7 @@ pip install biosimulators-utils[logging]
 ```
 
 ## API documentation
-API documentation is available [here](https://biosimulators.github.io/Biosimulators_utils/).
+API documentation is available [here](https://docs.biosimulators.org/Biosimulators_utils/).
 
 ## License
 This package is released under the [MIT license](LICENSE).
