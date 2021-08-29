@@ -188,7 +188,7 @@ def escher_to_vega(reaction_fluxes_data_set, escher_filename, vega_filename,
                     x0, y0 = cubic_bezier_point(points, t)
                     angle = cubic_bezier_angle(points, t) - 90.
                 else:
-                    segment_len = math.sqrt((from_node['x'] - to_node['x']) ** 2 (from_node['y'] - to_node['y']) ** 2)
+                    segment_len = math.sqrt((from_node['x'] - to_node['x']) ** 2 + (from_node['y'] - to_node['y']) ** 2)
                     angle = math.atan2(from_node['y'] - to_node['y'], from_node['x'] - to_node['x'])
                     t = min(1., arrow_head_gap / segment_len)
                     x0 = from_node["x"] * (1 - t) + to_node["x"] * t
@@ -222,7 +222,7 @@ def escher_to_vega(reaction_fluxes_data_set, escher_filename, vega_filename,
                     x3, y3 = cubic_bezier_point(points, t)
                     angle = cubic_bezier_angle(points, t) + 90.
                 else:
-                    segment_len = math.sqrt((from_node['x'] - to_node['x']) ** 2 (from_node['y'] - to_node['y']) ** 2)
+                    segment_len = math.sqrt((from_node['x'] - to_node['x']) ** 2 + (from_node['y'] - to_node['y']) ** 2)
                     angle = math.atan2(to_node['y'] - from_node['y'], to_node['x'] - from_node['x'])
                     t = max(0., 1. - arrow_head_gap / segment_len)
                     x3 = from_node["x"] * (1 - t) + to_node["x"] * t

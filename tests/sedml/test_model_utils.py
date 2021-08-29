@@ -51,7 +51,7 @@ class ModelUtilsTestCase(unittest.TestCase):
         params, sims, vars = model_utils.get_parameters_variables_for_simulation(
             filename, ModelLanguage.RBA, SteadyStateSimulation, None)
         self.assertTrue(vars[0].is_equal(Variable(
-            id='variable_objective',
+            id='objective',
             name='Value of objective',
             target='objective',
         )))
