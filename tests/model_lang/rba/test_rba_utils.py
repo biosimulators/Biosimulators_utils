@@ -26,17 +26,17 @@ class RbaUtilsTestCase(unittest.TestCase):
 
         self.assertEqual(len(vars), 15766)
 
-        self.assertEqual(vars[0].id, 'variable_objective')
+        self.assertEqual(vars[0].id, 'objective')
         self.assertEqual(vars[0].name, 'Value of objective')
         self.assertEqual(vars[0].target, 'objective')
 
-        var = next(var for var in vars if var.id == 'variable_variable_M_pqq_p')
-        self.assertEqual(var.name, 'Primal of variable "M_pqq_p"')
-        self.assertEqual(var.target, 'variables.M_pqq_p')
+        var = next(var for var in vars if var.id == 'M_pqq_p')
+        self.assertEqual(var.name, 'Dual of constraint "M_pqq_p"')
+        self.assertEqual(var.target, 'constraints.M_pqq_p')
 
-        var = next(var for var in vars if var.id == 'variable_constraint_test_process_2_machinery')
-        self.assertEqual(var.name, 'Dual of constraint "test_process_2_machinery"')
-        self.assertEqual(var.target, 'constraints.test_process_2_machinery')
+        var = next(var for var in vars if var.id == 'test_process_2_machinery')
+        self.assertEqual(var.name, 'Primal of variable "test_process_2_machinery"')
+        self.assertEqual(var.target, 'variables.test_process_2_machinery')
 
     def test_get_parameters_variables_for_simulation_error_handling(self):
         with self.assertRaises(ValueError):

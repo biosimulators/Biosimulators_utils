@@ -40,9 +40,12 @@ class BaseController(cement.Controller):
 BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES = [
     ModelLanguage.BNGL,
     ModelLanguage.CellML,
+    # ModelLanguage.ZGINML,
     # ModelLanguage.LEMS,
+    ModelLanguage.RBA,
     ModelLanguage.SBML,
     ModelLanguage.Smoldyn,
+    ModelLanguage.XPP,
 ]
 
 BUILD_COMBINE_ARCHIVE_SIMULATION_TYPES = [

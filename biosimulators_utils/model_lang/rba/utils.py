@@ -72,25 +72,32 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
     vars = []
 
     vars.append(Variable(
-        id='variable_objective',
+        id='objective',
         name='Value of objective',
         target='objective',
     ))
 
     constraint_matrix = rba.ConstraintMatrix(model)
 
-    for row_name in constraint_matrix.row_names:
+    if set(constraint_matrix.col_names).intersection(set(constraint_matrix.row_names)):
+        variable_prefix = 'primal_'
+        constraint_prefix = 'dual_'
+    else:
+        variable_prefix = ''
+        constraint_prefix = ''
+
+    for name in constraint_matrix.col_names:
         vars.append(Variable(
-            id='variable_variable_{}'.format(row_name),
-            name='Primal of variable "{}"'.format(row_name),
-            target='variables.{}'.format(row_name),
+            id=variable_prefix + name,
+            name='Primal of variable "{}"'.format(name),
+            target='variables.{}'.format(name),
         ))
 
-    for col_name in constraint_matrix.col_names:
+    for name in constraint_matrix.row_names:
         vars.append(Variable(
-            id='variable_constraint_{}'.format(col_name),
-            name='Dual of constraint "{}"'.format(col_name),
-            target='constraints.{}'.format(col_name),
+            id=constraint_prefix + name,
+            name='Dual of constraint "{}"'.format(name),
+            target='constraints.{}'.format(name),
         ))
 
     return (params, [sim], vars)

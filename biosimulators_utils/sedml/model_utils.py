@@ -108,30 +108,35 @@ def build_combine_archive_for_model(model_filename, model_language, simulation_t
     for i_sim, sim in enumerate(sims):
         sedml_doc.simulations.append(sim)
 
+        if len(sims) > 1:
+            sim_suffix = '_' + str(i_sim)
+        else:
+            sim_suffix = ''
+
         task = Task(
-            id='task_{}'.format(i_sim),
+            id='task' + sim_suffix,
             model=model,
             simulation=sim,
         )
         sedml_doc.tasks.append(task)
 
         report = Report(
-            id='report_{}'.format(i_sim),
+            id='report' + sim_suffix,
         )
         sedml_doc.outputs.append(report)
         for var in vars:
             var = copy.copy(var)
-            var.id = '{}_{}'.format(var.id, i_sim)
+            var.id = '{}{}'.format(var.id, sim_suffix)
             var.task = task
             data_gen = DataGenerator(
-                id='data_generator_{}_{}'.format(i_sim, var.id),
+                id='data_generator{}_{}'.format(sim_suffix, var.id),
                 name=var.name,
                 variables=[var],
                 math=var.id,
             )
             sedml_doc.data_generators.append(data_gen)
             report.data_sets.append(DataSet(
-                id='data_set_{}_{}'.format(i_sim, var.id),
+                id='data_set{}_{}'.format(sim_suffix, var.id),
                 label=var.id,
                 name=var.name,
                 data_generator=data_gen,
