@@ -1848,3 +1848,104 @@ class ExecTaskCase(unittest.TestCase):
         self.assertEqual(log.output, None)
 
         importlib.reload(log_utils)
+
+    def test_exec_without_log(self):
+        doc = data_model.SedDocument()
+
+        doc.models.append(data_model.Model(
+            id='model1',
+            source='model1.xml',
+            language=data_model.ModelLanguage.SBML.value,
+        ))
+
+        doc.simulations.append(data_model.UniformTimeCourseSimulation(
+            id='time_course_sim',
+            initial_time=10.,
+            output_start_time=20.,
+            output_end_time=30.,
+            number_of_steps=5,
+            algorithm=data_model.Algorithm(kisao_id='KISAO_0000019'),
+        ))
+
+        doc.tasks.append(data_model.Task(
+            id='task_time_course',
+            model=doc.models[0],
+            simulation=doc.simulations[0],
+        ))
+
+        doc.data_generators.append(data_model.DataGenerator(
+            id='data_gen_1',
+            variables=[
+                data_model.Variable(
+                    id='data_gen_1_var_1',
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:speces[@id='var_1']/@concentration",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2'},
+                    task=doc.tasks[0],
+                ),
+            ],
+            math='data_gen_1_var_1',
+        ))
+
+        doc.outputs.append(data_model.Report(
+            id='report_1',
+            data_sets=[
+                data_model.DataSet(
+                    id='dataset_1',
+                    label='dataset_1',
+                    data_generator=doc.data_generators[0],
+                ),
+            ],
+        ))
+
+        filename = os.path.join(self.tmp_dir, 'test.sedml')
+        io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
+
+        def exec_task(task, variables, log=None, config=None):
+            results = VariableResults()
+            results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
+            return results, log
+
+        working_dir = os.path.dirname(filename)
+        with open(os.path.join(working_dir, doc.models[0].source), 'w'):
+            pass
+
+        config = get_config()
+        config.REPORT_FORMATS = [ReportFormat.h5]
+        config.VIZ_FORMATS = []
+        config.COLLECT_SED_DOCUMENT_RESULTS = True
+
+        out_dir = os.path.join(self.tmp_dir, 'results')
+        with mock.patch('requests.get', return_value=mock.Mock(raise_for_status=lambda: None, content=b'')):
+            with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
+                output_results, log = exec.exec_sed_doc(exec_task, filename, working_dir, out_dir, config=config)
+
+        expected_output_results = ReportResults({
+            doc.outputs[0].id: DataSetResults({
+                'dataset_1': numpy.array((1., 2.)),
+            }),
+        })
+        self.assertEqual(sorted(output_results.keys()), sorted(expected_output_results.keys()))
+        for report_id, data_set_results in output_results.items():
+            self.assertEqual(sorted(output_results[report_id].keys()), sorted(expected_output_results[report_id].keys()))
+            for data_set_id in data_set_results.keys():
+                numpy.testing.assert_allclose(
+                    output_results[report_id][data_set_id],
+                    expected_output_results[report_id][data_set_id])
+
+        data_set_results = ReportReader().run(doc.outputs[0], out_dir, doc.outputs[0].id, format=ReportFormat.h5)
+        for data_set in doc.outputs[0].data_sets:
+            numpy.testing.assert_allclose(
+                output_results[doc.outputs[0].id][data_set.id],
+                data_set_results[data_set.id])
+
+        self.assertNotEqual(log, None)
+
+        # don't collect results
+        config.REPORT_FORMATS = []
+        config.COLLECT_SED_DOCUMENT_RESULTS = False
+        config.LOG = False
+        with mock.patch('requests.get', return_value=mock.Mock(raise_for_status=lambda: None, content=b'')):
+            with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
+                output_results, log = exec.exec_sed_doc(exec_task, filename, working_dir, out_dir, config=config)
+        self.assertEqual(output_results, None)
+        self.assertEqual(log, None)

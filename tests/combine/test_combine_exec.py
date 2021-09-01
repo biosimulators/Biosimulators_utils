@@ -5,17 +5,21 @@ from biosimulators_utils.combine.exceptions import CombineArchiveExecutionError,
 from biosimulators_utils.combine.io import CombineArchiveWriter
 from biosimulators_utils.config import get_config
 from biosimulators_utils.log import utils as log_utils
-from biosimulators_utils.report.data_model import ReportFormat, ReportResults, SedDocumentResults
-from biosimulators_utils.sedml.data_model import SedDocument, Task, Report
-from biosimulators_utils.sedml.io import SedmlSimulationReader
+from biosimulators_utils.report.data_model import ReportFormat, ReportResults, SedDocumentResults, VariableResults
+from biosimulators_utils.sedml.data_model import (SedDocument, Task, Report, Model,
+                                                  ModelLanguage, UniformTimeCourseSimulation, Algorithm, Variable, DataGenerator, DataSet)
+from biosimulators_utils.sedml import exec as sedml_exec
+from biosimulators_utils.sedml.io import SedmlSimulationReader, SedmlSimulationWriter
 from biosimulators_utils.viz.data_model import VizFormat
 from unittest import mock
 import builtins
 import datetime
 import dateutil.tz
-import os
 import functools
 import importlib
+import numpy
+import numpy.testing
+import os
 import re
 import shutil
 import tempfile
@@ -281,6 +285,7 @@ class ExecCombineTestCase(unittest.TestCase):
         config.VIZ_FORMATS = []
         config.BUNDLE_OUTPUTS = True
         config.KEEP_INDIVIDUAL_OUTPUTS = True
+
         def exec_sed_doc(task_executer, filename, working_dir, base_out_dir, rel_path='.',
                          apply_xml_model_changes=False,
                          indent=0, log=None, log_level=None, config=config):
@@ -313,6 +318,141 @@ class ExecCombineTestCase(unittest.TestCase):
             self.assertNotEqual(doc_log.output, None)
 
         importlib.reload(log_utils)
+
+    def test_exec_sedml_docs_in_archive_without_log(self):
+        archive = CombineArchive(
+            contents=[
+                CombineArchiveContent(
+                    location='sim.sedml',
+                    format='http://identifiers.org/combine.specifications/sed-ml',
+                ),
+                CombineArchiveContent(
+                    location='model.xml',
+                    format='http://identifiers.org/combine.specifications/sbml',
+                ),
+            ],
+        )
+
+        sed_doc = SedDocument()
+        model = Model(id='model_1', source='model.xml', language=ModelLanguage.SBML.value)
+        sed_doc.models.append(model)
+        sim = UniformTimeCourseSimulation(id='sim_1', initial_time=0., output_start_time=0., output_end_time=10., number_of_points=10,
+                                          algorithm=Algorithm(kisao_id='KISAO_0000019'))
+        sed_doc.simulations.append(sim)
+        task = Task(id='task_1', model=model, simulation=sim)
+        sed_doc.tasks.append(task)
+        sed_doc.data_generators.append(DataGenerator(
+            id='data_gen_1',
+            variables=[
+                Variable(
+                    id='var_1',
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
+                    task=task
+                )],
+            math='var_1',
+        ))
+        sed_doc.data_generators.append(DataGenerator(
+            id='data_gen_2',
+            variables=[
+                Variable(
+                    id='var_2',
+                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Clb']",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
+                    task=task
+                )],
+            math='var_2',
+        ))
+        report = Report(id='output_1')
+        sed_doc.outputs.append(report)
+        report.data_sets.append(DataSet(id='data_set_1', label='data_set_1', data_generator=sed_doc.data_generators[0]))
+        report.data_sets.append(DataSet(id='data_set_2', label='data_set_2', data_generator=sed_doc.data_generators[1]))
+
+        archive_dirname = os.path.join(self.tmp_dir, 'archive')
+        os.makedirs(archive_dirname)
+
+        shutil.copyfile(
+            os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.xml'),
+            os.path.join(archive_dirname, 'model.xml'))
+        SedmlSimulationWriter().run(sed_doc, os.path.join(archive_dirname, 'sim.sedml'))
+
+        archive_filename = os.path.join(self.tmp_dir, 'archive.omex')
+        CombineArchiveWriter().run(archive, archive_dirname, archive_filename)
+
+        def sed_task_executer(task, variables, log=None, config=None):
+            if log:
+                log.algorithm = task.simulation.algorithm.kisao_id
+                log.simulator_details = {
+                    'attrib': 'value',
+                }
+
+            return VariableResults({
+                'var_1': numpy.linspace(0., 10., task.simulation.number_of_points + 1),
+                'var_2': numpy.linspace(10., 20., task.simulation.number_of_points + 1),
+            }), log
+
+        def sed_task_executer_error(task, variables, log=None, config=None):
+            raise ValueError('Big error')
+
+        out_dir = os.path.join(self.tmp_dir, 'outputs')
+
+        config = get_config()
+        config.REPORT_FORMATS = []
+        config.VIZ_FORMATS = []
+        config.COLLECT_COMBINE_ARCHIVE_RESULTS = True
+        config.LOG = True
+
+        # with log
+        sed_doc_executer = functools.partial(sedml_exec.exec_sed_doc, sed_task_executer)
+        results, log = exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
+                                                       apply_xml_model_changes=False,
+                                                       config=config)
+        self.assertEqual(set(results.keys()), set(['sim.sedml']))
+        self.assertEqual(set(results['sim.sedml'].keys()), set(['output_1']))
+        self.assertEqual(set(results['sim.sedml']['output_1'].keys()), set(['data_set_1', 'data_set_2']))
+        numpy.testing.assert_allclose(results['sim.sedml']['output_1']['data_set_1'], numpy.linspace(0., 10., 11))
+        numpy.testing.assert_allclose(results['sim.sedml']['output_1']['data_set_2'], numpy.linspace(10., 20., 11))
+        self.assertEqual(log.exception, None)
+        self.assertEqual(log.sed_documents['sim.sedml'].tasks['task_1'].algorithm, task.simulation.algorithm.kisao_id)
+        self.assertEqual(log.sed_documents['sim.sedml'].tasks['task_1'].simulator_details, {'attrib': 'value'})
+
+        sed_doc_executer = functools.partial(sedml_exec.exec_sed_doc, sed_task_executer_error)
+        results, log = exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
+                                                       apply_xml_model_changes=False,
+                                                       config=config)
+        self.assertIsInstance(log.exception, CombineArchiveExecutionError)
+
+        config.DEBUG = True
+        sed_doc_executer = functools.partial(sedml_exec.exec_sed_doc, sed_task_executer_error)
+        with self.assertRaisesRegex(ValueError, 'Big error'):
+            exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
+                                            apply_xml_model_changes=False,
+                                            config=config)
+
+        # without log
+        config.COLLECT_COMBINE_ARCHIVE_RESULTS = False
+        config.LOG = False
+        config.DEBUG = False
+
+        sed_doc_executer = functools.partial(sedml_exec.exec_sed_doc, sed_task_executer)
+        results, log = exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
+                                                       apply_xml_model_changes=False,
+                                                       config=config)
+        self.assertEqual(results, None)
+        self.assertEqual(log, None)
+
+        sed_doc_executer = functools.partial(sedml_exec.exec_sed_doc, sed_task_executer_error)
+        with self.assertRaisesRegex(CombineArchiveExecutionError, 'Big error'):
+            exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
+                                            apply_xml_model_changes=False,
+                                            config=config)
+
+        config.DEBUG = True
+        sed_doc_executer = functools.partial(sedml_exec.exec_sed_doc, sed_task_executer_error)
+        with self.assertRaisesRegex(ValueError, 'Big error'):
+            exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
+                                            apply_xml_model_changes=False,
+                                            config=config)
 
     def test_exec_sedml_docs_in_archive_error_handling(self):
         def exec_sed_doc(task_executer, filename, working_dir, base_out_dir,

@@ -299,16 +299,21 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         log.export()
 
     # raise exceptions
-    if exceptions and (config.LOG or config.DEBUG):
+    if exceptions:
         msg = 'The COMBINE/OMEX did not execute successfully:\n\n  {}'.format(
             '\n\n  '.join(str(exceptions).replace('\n', '\n  ') for exceptions in exceptions))
         exception = CombineArchiveExecutionError(msg)
 
-        if log_level:
+        if config.LOG:
             log.exception = exception
+            log.export()
 
-        if config.DEBUG:
+        if config.DEBUG or not config.LOG:
             raise exception
+
+    # flush log
+    if config.LOG:
+        log.export()
 
     # return results and log
     return (results, log)
