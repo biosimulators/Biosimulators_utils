@@ -344,14 +344,14 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
         Returns:
             :obj:`str`: captured standard output/error
         """
-        if not self.disabled:
+        if self.disabled:
+            return None
+        else:
             if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
                 bytes = self._captured.get_bytes()
                 return bytes.decode(errors='ignore')
             else:
                 return self._log
-        else:
-            return None
 
 
 def get_summary_combine_archive_log(log):

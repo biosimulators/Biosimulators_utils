@@ -147,12 +147,17 @@ def build_cli(cli_name=None, cli_version=None,
         @cement.ex(hide=True)
         def _default(self):
             args = self.app.pargs
+            config = get_config()
+            config.LOG = True
             try:
-                combine_archive_executer(args.archive, args.out_dir)
+                _, log = combine_archive_executer(args.archive, args.out_dir, config=config)
             except Exception as exception:
-                if get_config().DEBUG:
+                if config.DEBUG:
                     raise
                 raise SystemExit(termcolor.colored(str(exception), 'red')) from exception
+
+            if log and log.exception:
+                raise SystemExit(termcolor.colored(str(log.exception), 'red')) from log.exception
 
     class App(cement.App):
         """ Command line application """

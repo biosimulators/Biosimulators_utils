@@ -62,6 +62,14 @@ ENVIRONMENT_VARIABLES = {
         more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
     ),
 
+    'VALIDATE_RESULTS': EnvironmentVariable(
+        name='VALIDATE_RESULTS',
+        description='Whether to validate the results of simulations following their execution.',
+        options=['0', '1'],
+        default='1' if config.VALIDATE_RESULTS else '0',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
     # algorithm substitution
     'ALGORITHM_SUBSTITUTION_POLICY': EnvironmentVariable(
         name='ALGORITHM_SUBSTITUTION_POLICY',
@@ -73,6 +81,22 @@ ENVIRONMENT_VARIABLES = {
     ),
 
     # reports
+    'COLLECT_COMBINE_ARCHIVE_RESULTS': EnvironmentVariable(
+        name='COLLECT_COMBINE_ARCHIVE_RESULTS',
+        description='Whether to assemble an in memory data structure with all of the simulation results of COMBINE/OMEX archives.',
+        options=['0', '1'],
+        default='1' if config.COLLECT_SED_DOCUMENT_RESULTS else '0',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
+    'COLLECT_SED_DOCUMENT_RESULTS': EnvironmentVariable(
+        name='COLLECT_SED_DOCUMENT_RESULTS',
+        description='Whether to assemble an in memory data structure with all of the simulation results of SED documents.',
+        options=['0', '1'],
+        default='1' if config.COLLECT_SED_DOCUMENT_RESULTS else '0',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
     'REPORT_FORMATS': EnvironmentVariable(
         name='REPORT_FORMATS',
         description='Comma-separated list of formats to save each SED-ML report.',

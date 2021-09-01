@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..config import get_config, Colors
+from ..config import get_config, Config, Colors  # noqa: F401
 from ..log.data_model import Status, SedDocumentLog, TaskLog, ReportLog, Plot2DLog, Plot3DLog, StandardOutputErrorCapturerLevel  # noqa: F401
 from ..log.utils import init_sed_document_log, StandardOutputErrorCapturer
 from ..report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat  # noqa: F401
@@ -48,22 +48,24 @@ __all__ = [
 
 
 def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=None,
-                 apply_xml_model_changes=False, return_results=False, report_formats=None, plot_formats=None,
+                 apply_xml_model_changes=False,
                  log=None, indent=0, pretty_print_modified_xml_models=False,
-                 log_level=StandardOutputErrorCapturerLevel.c):
+                 log_level=StandardOutputErrorCapturerLevel.c,
+                 config=None):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
         task_executer (:obj:`types.FunctionType`): function to execute each task in the SED-ML file.
             The function must implement the following interface::
 
-                def exec_task(task, variables, log=None):
+                def exec_task(task, variables, log=None, config=None):
                     ''' Execute a simulation and return its results
 
                     Args:
                        task (:obj:`Task`): task
                        variables (:obj:`list` of :obj:`Variable`): variables that should be recorded
                        log (:obj:`TaskLog`, optional): log for the task
+                       config (:obj:`Config`, optional): BioSimulators common configuration
 
                     Returns:
                        :obj:`VariableResults`: results of variables
@@ -83,14 +85,11 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         rel_out_path (:obj:`str`, optional): path relative to :obj:`base_out_path` to store the outputs
         apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file before
             calling :obj:`task_executer`.
-        return_results (:obj:`bool`, optional): whether to return a data structure with the result of each output of each SED-ML
-            file
-        report_formats (:obj:`list` of :obj:`ReportFormat`, optional): report format (e.g., csv or h5)
-        plot_formats (:obj:`list` of :obj:`VizFormat`, optional): plot format (e.g., pdf)
         log (:obj:`SedDocumentLog`, optional): log of the document
         indent (:obj:`int`, optional): degree to indent status messages
         pretty_print_modified_xml_models (:obj:`bool`, optional): if :obj:`True`, pretty print modified XML models
         log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
+        config (:obj:`Config`): configuration
 
     Returns:
         :obj:`tuple`:
@@ -98,7 +97,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             * :obj:`ReportResults`: results of each report
             * :obj:`SedDocumentLog`: log of the document
     """
-    config = get_config()
+    if not config:
+        config = get_config()
 
     # process arguments
     if not isinstance(doc, SedDocument):
@@ -106,13 +106,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     else:
         doc = copy.deepcopy(doc)
 
-    if report_formats is None:
-        report_formats = [ReportFormat(format_value) for format_value in config.REPORT_FORMATS]
-
-    if plot_formats is None:
-        plot_formats = [VizFormat(format_value) for format_value in config.VIZ_FORMATS]
-
-    log = log or init_sed_document_log(doc)
+    if config.LOG and not log:
+        log = init_sed_document_log(doc)
 
     verbose = config.VERBOSE
 
@@ -127,7 +122,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     # information about the shape of their output to this method
     variable_results = VariableResults()
 
-    if return_results:
+    if config.COLLECT_SED_DOCUMENT_RESULTS:
         report_results = ReportResults()
     else:
         report_results = None
@@ -146,14 +141,17 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     for i_task, task in enumerate(doc.tasks):
         print('{}Executing task {}: `{}`'.format(' ' * 2 * indent, i_task + 1, task.id))
 
-        task_log = log.tasks[task.id]
-        task_log.status = Status.RUNNING
-        task_log.export()
+        if config.LOG:
+            task_log = log.tasks[task.id]
+            task_log.status = Status.RUNNING
+            task_log.export()
+        else:
+            task_log = None
 
         # Execute task
         print('{}Executing simulation ...'.format(' ' * 2 * (indent + 1)), end='')
         sys.stdout.flush()
-        with StandardOutputErrorCapturer(relay=verbose, level=log_level) as captured:
+        with StandardOutputErrorCapturer(relay=verbose, level=log_level, disabled=not config.LOG) as captured:
             start_time = datetime.datetime.now()
             try:
                 # get model and apply changes
@@ -183,13 +181,14 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
 
                 # execute task
                 if isinstance(task, Task):
-                    task_var_results = exec_task(task, task_executer, task_vars, doc, log=task_log)
+                    task_var_results = exec_task(task, task_executer, task_vars, doc, log=task_log, config=config)
 
                 elif isinstance(task, RepeatedTask):
                     task_var_results = exec_repeated_task(task, task_executer, task_vars, doc,
                                                           apply_xml_model_changes=apply_xml_model_changes,
                                                           model_etrees=model_etrees,
-                                                          pretty_print_modified_xml_models=pretty_print_modified_xml_models)
+                                                          pretty_print_modified_xml_models=pretty_print_modified_xml_models,
+                                                          config=config)
 
                 else:  # pragma: no cover: already validated by :obj:`get_models_referenced_by_task`
                     raise NotImplementedError('Tasks of type {} are not supported.'.format(task.__class__.__name__))
@@ -215,7 +214,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                 task_status = Status.FAILED
                 task_exception = exception
 
-        if task_log:
+        if config.LOG:
             task_log.status = task_status
             task_log.exception = task_exception
             task_log.output = captured.get_text()
@@ -226,13 +225,15 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         # generate outputs
         print('{}Generating {} outputs ...'.format(' ' * 2 * (indent + 1), len(doc.outputs)))
         task_contributes_to_output = False
+        report_formats = [ReportFormat(format_value) for format_value in config.REPORT_FORMATS]
+        viz_formats = [VizFormat(format_value) for format_value in config.VIZ_FORMATS]
         for i_output, output in enumerate(doc.outputs):
             print('{}Generating output {}: `{}` ...'.format(' ' * 2 * (indent + 2), i_output + 1, output.id), end='')
             sys.stdout.flush()
             start_time = datetime.datetime.now()
-            with StandardOutputErrorCapturer(relay=verbose, level=log_level) as captured:
+            with StandardOutputErrorCapturer(relay=verbose, level=log_level, disabled=not config.LOG) as captured:
                 try:
-                    if log.outputs[output.id].status == Status.SUCCEEDED:
+                    if config.LOG and log.outputs[output.id].status == Status.SUCCEEDED:
                         output_status = log.outputs[output.id].status
                         print(' ' + termcolor.colored(output_status.value.lower(), Colors[output_status.value.lower()].value))
                         continue
@@ -241,17 +242,17 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                         output_result, output_status, output_exception, task_contributes_to_report = exec_report(
                             output, variable_results,
                             base_out_path, rel_out_path, report_formats,
-                            task,
-                            log=log.outputs[output.id],
+                            task=task,
+                            log=log.outputs[output.id] if config.LOG else None,
                             type=Report)
                         task_contributes_to_output = task_contributes_to_output or task_contributes_to_report
 
                     elif isinstance(output, Plot2D):
                         output_status, output_exception, task_contributes_to_plot = exec_plot_2d(
                             output, variable_results,
-                            base_out_path, rel_out_path, plot_formats,
-                            task,
-                            log.outputs[output.id])
+                            base_out_path, rel_out_path, viz_formats,
+                            task=task,
+                            log=log.outputs[output.id] if config.LOG else None)
                         task_contributes_to_output = task_contributes_to_output or task_contributes_to_plot
 
                         # save data as report
@@ -269,9 +270,9 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                     elif isinstance(output, Plot3D):
                         output_status, output_exception, task_contributes_to_plot = exec_plot_3d(
                             output, variable_results,
-                            base_out_path, rel_out_path, plot_formats,
-                            task,
-                            log.outputs[output.id])
+                            base_out_path, rel_out_path, viz_formats,
+                            task=task,
+                            log=log.outputs[output.id] if config.LOG else None)
                         task_contributes_to_output = task_contributes_to_output or task_contributes_to_plot
 
                         # save as report
@@ -290,7 +291,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                         # unreachable because the above cases cover all types of outputs
                         raise NotImplementedError('Outputs of type {} are not supported.'.format(output.__class__.__name__))
 
-                    if return_results and output_result is not None:
+                    if config.COLLECT_SED_DOCUMENT_RESULTS and output_result is not None:
                         report_results[output.id] = output_result
 
                 except Exception as exception:
@@ -299,11 +300,12 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                     output_status = Status.FAILED
                     output_exception = exception
 
-            log.outputs[output.id].status = output_status
-            log.outputs[output.id].exception = output_exception
-            log.outputs[output.id].output = captured.get_text()
-            log.outputs[output.id].duration = (datetime.datetime.now() - start_time).total_seconds()
-            log.outputs[output.id].export()
+            if config.LOG:
+                log.outputs[output.id].status = output_status
+                log.outputs[output.id].exception = output_exception
+                log.outputs[output.id].output = captured.get_text()
+                log.outputs[output.id].duration = (datetime.datetime.now() - start_time).total_seconds()
+                log.outputs[output.id].export()
 
             if output_exception:
                 exceptions.append(output_exception)
@@ -314,36 +316,38 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             warn('Task {} does not contribute to any outputs.'.format(task.id), NoOutputsWarning)
 
     # finalize the status of the outputs
-    for output_log in log.outputs.values():
-        output_log.finalize()
+    if config.LOG:
+        for output_log in log.outputs.values():
+            output_log.finalize()
 
     # summarize execution
-    task_status_count = {
-        Status.SUCCEEDED: 0,
-        Status.SKIPPED: 0,
-        Status.FAILED: 0,
-    }
-    for task_log in log.tasks.values():
-        task_status_count[task_log.status] += 1
+    if config.LOG:
+        task_status_count = {
+            Status.SUCCEEDED: 0,
+            Status.SKIPPED: 0,
+            Status.FAILED: 0,
+        }
+        for task_log in log.tasks.values():
+            task_status_count[task_log.status] += 1
 
-    output_status_count = {
-        Status.SUCCEEDED: 0,
-        Status.SKIPPED: 0,
-        Status.FAILED: 0,
-    }
-    for output_log in log.outputs.values():
-        output_status_count[output_log.status] += 1
+        output_status_count = {
+            Status.SUCCEEDED: 0,
+            Status.SKIPPED: 0,
+            Status.FAILED: 0,
+        }
+        for output_log in log.outputs.values():
+            output_status_count[output_log.status] += 1
 
-    print('')
-    print('{}Executed {} tasks and {} outputs:'.format(' ' * 2 * indent, len(doc.tasks), len(doc.outputs)))
-    print('{}  Tasks:'.format(' ' * 2 * indent))
-    print('{}    Succeeded: {}'.format(' ' * 2 * indent, task_status_count[Status.SUCCEEDED]))
-    print('{}    Skipped: {}'.format(' ' * 2 * indent, task_status_count[Status.SKIPPED]))
-    print('{}    Failed: {}'.format(' ' * 2 * indent, task_status_count[Status.FAILED]))
-    print('{}  Outputs:'.format(' ' * 2 * indent))
-    print('{}    Succeeded: {}'.format(' ' * 2 * indent, output_status_count[Status.SUCCEEDED]))
-    print('{}    Skipped: {}'.format(' ' * 2 * indent, output_status_count[Status.SKIPPED]))
-    print('{}    Failed: {}'.format(' ' * 2 * indent, output_status_count[Status.FAILED]))
+        print('')
+        print('{}Executed {} tasks and {} outputs:'.format(' ' * 2 * indent, len(doc.tasks), len(doc.outputs)))
+        print('{}  Tasks:'.format(' ' * 2 * indent))
+        print('{}    Succeeded: {}'.format(' ' * 2 * indent, task_status_count[Status.SUCCEEDED]))
+        print('{}    Skipped: {}'.format(' ' * 2 * indent, task_status_count[Status.SKIPPED]))
+        print('{}    Failed: {}'.format(' ' * 2 * indent, task_status_count[Status.FAILED]))
+        print('{}  Outputs:'.format(' ' * 2 * indent))
+        print('{}    Succeeded: {}'.format(' ' * 2 * indent, output_status_count[Status.SUCCEEDED]))
+        print('{}    Skipped: {}'.format(' ' * 2 * indent, output_status_count[Status.SKIPPED]))
+        print('{}    Failed: {}'.format(' ' * 2 * indent, output_status_count[Status.FAILED]))
 
     # raise exceptions
     if exceptions:
@@ -355,7 +359,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     return report_results, log
 
 
-def exec_task(task, task_executer, task_vars, doc, log=None):
+def exec_task(task, task_executer, task_vars, doc, log=None, config=None):
     """ Execute a basic SED task
 
     Args:
@@ -363,13 +367,14 @@ def exec_task(task, task_executer, task_vars, doc, log=None):
         task_executer (:obj:`types.FunctionType`): function to execute each task in the SED-ML file.
             The function must implement the following interface::
 
-                def exec_task(task, variables, log=None):
+                def exec_task(task, variables, log=None, config=None):
                     ''' Execute a simulation and return its results
 
                     Args:
                         task (:obj:`Task`): task
                         variables (:obj:`list` of :obj:`Variable`): variables that should be recorded
                         log (:obj:`TaskLog`, optional): log for the task
+                        config (:obj:`Config`, optional): BioSimulators common configuration
 
                     Returns:
                         :obj:`tuple`:
@@ -382,12 +387,13 @@ def exec_task(task, task_executer, task_vars, doc, log=None):
         task_vars (:obj:`list` of :obj:`Variable`): variables that task must record
         doc (:obj:`SedDocument` or :obj:`str`): SED document or a path to SED-ML file which defines a SED document
         log (:obj:`TaskLog`, optional): log
+        config (:obj:`Config`, optional): BioSimulators common configuration
 
     Returns:
         :obj:`VariableResults`: results of the variables
     """
     # execute task
-    task_variable_results, _ = task_executer(task, task_vars, log=log)
+    task_variable_results, _ = task_executer(task, task_vars, log=log, config=config)
 
     # check that the expected variables were recorded
     variable_results = VariableResults()
@@ -399,7 +405,7 @@ def exec_task(task, task_executer, task_vars, doc, log=None):
 
 
 def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_changes=False, model_etrees=None,
-                       pretty_print_modified_xml_models=False):
+                       pretty_print_modified_xml_models=False, config=None):
     """ Execute a repeated SED task
 
     Args:
@@ -407,13 +413,14 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
         task_executer (:obj:`types.FunctionType`): function to execute each task in the SED-ML file.
             The function must implement the following interface::
 
-                def exec_task(task, variables, log=None):
+                def exec_task(task, variables, log=None, config=None):
                     ''' Execute a simulation and return its results
 
                     Args:
                        task (:obj:`Task`): task
                        variables (:obj:`list` of :obj:`Variable`): variables that should be recorded
                        log (:obj:`TaskLog`, optional): log for the task
+                       config (:obj:`Config`, optional): BioSimulators common configuration
 
                     Returns:
                        :obj:`VariableResults`: results of variables
@@ -426,6 +433,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
             calling :obj:`task_executer`.
         model_etrees (:obj:`dict` of :obj:`str` to :obj:`etree._Element`)
         pretty_print_modified_xml_models (:obj:`bool`, optional): if :obj:`True`, pretty print modified XML models
+        config (:obj:`Config`, optional): BioSimulators common configuration
 
     Returns:
         :obj:`VariableResults`: results of the variables
@@ -534,7 +542,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                                                  standalone=False,
                                                  pretty_print=pretty_print_modified_xml_models)
 
-                sub_task_var_results = exec_task(sub_task.task, task_executer, task_vars, doc)
+                sub_task_var_results = exec_task(sub_task.task, task_executer, task_vars, doc, config=config)
 
                 if apply_xml_model_changes and is_model_language_encoded_in_xml(model.language):
                     os.remove(model.source)
@@ -544,7 +552,8 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                 sub_task_var_results = exec_repeated_task(sub_task.task, task_executer, task_vars, doc,
                                                           apply_xml_model_changes=apply_xml_model_changes,
                                                           model_etrees=model_etrees,
-                                                          pretty_print_modified_xml_models=pretty_print_modified_xml_models)
+                                                          pretty_print_modified_xml_models=pretty_print_modified_xml_models,
+                                                          config=config)
 
             else:  # pragma: no cover: already validated by :obj:`get_first_last_models_executed_by_task`
                 raise NotImplementedError('Tasks of type {} are not supported.'.format(sub_task.task.__class__.__name__))
@@ -700,7 +709,8 @@ def exec_plot_2d(plot, variable_results, base_out_path, rel_out_path, formats, t
         else:
             curve_status = Status.QUEUED
 
-        log.curves[curve.id] = curve_status
+        if log:
+            log.curves[curve.id] = curve_status
 
         if curve_status == Status.FAILED:
             failed = True
@@ -782,7 +792,8 @@ def exec_plot_3d(plot, variable_results, base_out_path, rel_out_path, formats, t
         else:
             surface_status = Status.QUEUED
 
-        log.surfaces[surface.id] = surface_status
+        if log:
+            log.surfaces[surface.id] = surface_status
 
         if surface_status == Status.FAILED:
             failed = True

@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..config import get_config
+from ..config import get_config, Config  # noqa: F401
 from kisao import AlgorithmSubstitutionPolicy, ALGORITHM_SUBSTITUTION_POLICY_LEVELS
 
 __all__ = [
@@ -14,9 +14,12 @@ __all__ = [
 ]
 
 
-def get_algorithm_substitution_policy():
+def get_algorithm_substitution_policy(config=None):
     """ Get the current algorithm substitution policy based on the value of the ``ALGORITHM_SUBSTITUTION_POLICY``
     environment variable.
+
+    Args:
+        config (:obj:`Config`, optional): config
 
     Returns:
         :obj:`AlgorithmSubstitutionPolicy`: policy
@@ -24,7 +27,9 @@ def get_algorithm_substitution_policy():
     Raises:
         :obj:`ValueError`: if the value of ``ALGORITHM_SUBSTITUTION_POLICY`` is not the name of a recognized policy
     """
-    policy_name = get_config().ALGORITHM_SUBSTITUTION_POLICY
+    if not config:
+        config = get_config()
+    policy_name = config.ALGORITHM_SUBSTITUTION_POLICY
     policy = AlgorithmSubstitutionPolicy.__members__.get(policy_name, None)
     if policy is None:
         msg = (

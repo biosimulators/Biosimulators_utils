@@ -1,3 +1,4 @@
+from biosimulators_utils.log.data_model import CombineArchiveLog
 from biosimulators_utils.simulator.cli import build_cli
 from biosimulators_utils.simulator.environ import ENVIRONMENT_VARIABLES
 import capturer
@@ -7,11 +8,12 @@ import unittest
 
 class CliTestCase(unittest.TestCase):
     def setUp(self):
-        def exec_sedml_docs_in_combine_archive(archive_filename, outputs_dirname):
+        def exec_sedml_docs_in_combine_archive(archive_filename, outputs_dirname, config=None):
             if archive_filename:
                 print(archive_filename)
             if outputs_dirname:
                 raise Exception(outputs_dirname)
+            return None, CombineArchiveLog()
         self.App = build_cli('test-simulator', '4.5.6',
                              'Test Simulator', '1.2.3', 'https://test-simulator.org',
                              exec_sedml_docs_in_combine_archive,

@@ -186,7 +186,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
 
-        def execute_task(task, variables, log):
+        def exec_task(task, variables, log=None, config=None):
             results = VariableResults()
             if task.id == 'task_1_ss':
                 results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
@@ -203,8 +203,13 @@ class ExecTaskCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'results')
         with mock.patch('requests.get', return_value=mock.Mock(raise_for_status=lambda: None, content=b'')):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-                output_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir,
-                                                      out_dir, return_results=True, report_formats=[ReportFormat.csv], plot_formats=[])
+                config = get_config()
+                config.REPORT_FORMATS = [ReportFormat.csv]
+                config.VIZ_FORMATS = []
+                config.COLLECT_SED_DOCUMENT_RESULTS = True
+
+                output_results, _ = exec.exec_sed_doc(exec_task, filename, working_dir,
+                                                      out_dir, config=config)
 
         expected_output_results = ReportResults({
             doc.outputs[0].id: DataSetResults({
@@ -248,8 +253,12 @@ class ExecTaskCase(unittest.TestCase):
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
         shutil.rmtree(out_dir)
         with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-            results, _ = exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir,
-                                           return_results=False, report_formats=[ReportFormat.h5], plot_formats=[])
+            config = get_config()
+            config.REPORT_FORMATS = [ReportFormat.h5]
+            config.VIZ_FORMATS = []
+            config.COLLECT_SED_DOCUMENT_RESULTS = False
+
+            results, _ = exec.exec_sed_doc(exec_task, filename, os.path.dirname(filename), out_dir, config=config)
         self.assertEqual(results, None)
 
         report_ids = ReportReader().get_ids(out_dir, format=ReportFormat.h5, type=data_model.Report)
@@ -303,8 +312,10 @@ class ExecTaskCase(unittest.TestCase):
         log.outputs['report_3'].parent = log
         log.outputs['report_4'].parent = log
         with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-            exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir, report_formats=[ReportFormat.h5], plot_formats=[],
-                              log=log)
+            config = get_config()
+            config.REPORT_FORMATS = [ReportFormat.h5]
+            config.VIZ_FORMATS = []
+            exec.exec_sed_doc(exec_task, filename, os.path.dirname(filename), out_dir, log=log, config=config)
 
         expected_log = {
             'location': None,
@@ -544,7 +555,7 @@ class ExecTaskCase(unittest.TestCase):
             os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-three-species.xml'),
             os.path.join(working_dir, 'model1.xml'))
 
-        def execute_task(task, variables, log):
+        def exec_task(task, variables, log=None, config=None):
             et = etree.parse(task.model.source)
 
             results = VariableResults()
@@ -557,15 +568,18 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
 
+        config = get_config()
+        config.COLLECT_SED_DOCUMENT_RESULTS = True
+
         with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-            report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir,
-                                                  apply_xml_model_changes=False, return_results=True)
+            report_results, _ = exec.exec_sed_doc(exec_task, filename, working_dir, out_dir,
+                                                  apply_xml_model_changes=False, config=config)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id], numpy.array((1., )))
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id], numpy.array((2., )))
 
         with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-            report_results, _ = exec.exec_sed_doc(execute_task, filename, working_dir, out_dir,
-                                                  apply_xml_model_changes=True, return_results=True)
+            report_results, _ = exec.exec_sed_doc(exec_task, filename, working_dir, out_dir,
+                                                  apply_xml_model_changes=True, config=config)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id], numpy.array((2.5, )))
         expected_value = 0.2 * 2.5 + 2.0 * 3.1 * 4.0
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id], numpy.array((expected_value)))
@@ -577,12 +591,12 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename)
 
-        def execute_task(task, variables, log):
+        def exec_task(task, variables, log=None, config=None):
             return VariableResults(), log
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarns(NoTasksWarning):
-            exec.exec_sed_doc(execute_task, filename, os.path.dirname(filename), out_dir)
+            exec.exec_sed_doc(exec_task, filename, os.path.dirname(filename), out_dir)
 
         # no outputs
         doc = data_model.SedDocument()
@@ -637,7 +651,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
 
-        def execute_task(task, variables, log):
+        def exec_task(task, variables, log=None, config=None):
             if task.id == 'task1':
                 return VariableResults({'data_gen_1_var_1': numpy.array(1.)}), log
             else:
@@ -650,7 +664,7 @@ class ExecTaskCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarns(NoOutputsWarning):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-                exec.exec_sed_doc(execute_task, filename, working_dir, out_dir)
+                exec.exec_sed_doc(exec_task, filename, working_dir, out_dir)
 
     def test_errors(self):
         # unsupported type of task
@@ -706,7 +720,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
 
-        def execute_task(task, variables, log):
+        def exec_task(task, variables, log=None, config=None):
             return VariableResults(), log
 
         working_dir = os.path.dirname(filename)
@@ -721,7 +735,7 @@ class ExecTaskCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(SedmlExecutionError, 'not supported'):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-                exec.exec_sed_doc(execute_task, doc, '.', out_dir)
+                exec.exec_sed_doc(exec_task, doc, '.', out_dir)
 
         # error: unsupported data generators
         doc = data_model.SedDocument()
@@ -772,7 +786,7 @@ class ExecTaskCase(unittest.TestCase):
             ],
         ))
 
-        def execute_task(task, variables, log):
+        def exec_task(task, variables, log=None, config=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[0].variables[1].id] = numpy.array((1.,))
@@ -783,7 +797,7 @@ class ExecTaskCase(unittest.TestCase):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results')
-        exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+        exec.exec_sed_doc(exec_task, doc, working_dir, out_dir)
 
         # error: inconsistent math
         doc.data_generators = [
@@ -813,7 +827,7 @@ class ExecTaskCase(unittest.TestCase):
             )
         ]
 
-        def execute_task(task, variables, log):
+        def exec_task(task, variables, log=None, config=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             return results, log
@@ -824,7 +838,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertRaisesRegex(SedmlExecutionError, 'could not be evaluated'):
-            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir)
 
         # error: variables have inconsistent shapes
         doc.data_generators = [
@@ -861,7 +875,7 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
-        def execute_task(task, variables, log):
+        def exec_task(task, variables, log=None, config=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[0].variables[1].id] = numpy.array((1., 2.))
@@ -873,7 +887,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarnsRegex(InconsistentVariableShapesWarning, 'do not have consistent shapes'):
-            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir)
 
         # error: data generators have inconsistent shapes
         doc.data_generators = [
@@ -933,7 +947,7 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
-        def execute_task(task, variables, log):
+        def exec_task(task, variables, log=None, config=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[1].variables[0].id] = numpy.array((1., 2.))
@@ -945,8 +959,10 @@ class ExecTaskCase(unittest.TestCase):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results')
+        config = get_config()
+        config.COLLECT_SED_DOCUMENT_RESULTS = True
         with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-            report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir, return_results=True)
+            report_results, _ = exec.exec_sed_doc(exec_task, doc, working_dir, out_dir, config=config)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id], numpy.array((1.)))
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id], numpy.array((1., 2.)))
 
@@ -964,13 +980,16 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results2')
         with self.assertWarnsRegex(CannotExportMultidimensionalTableWarning, 'Multidimensional reports cannot be exported to CSV'):
-            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir)
         with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir)
 
         with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-            report_results, _ = exec.exec_sed_doc(execute_task, doc, working_dir, out_dir,
-                                                  return_results=True, report_formats=[ReportFormat.h5])
+            config = get_config()
+            config.REPORT_FORMATS = [ReportFormat.h5]
+            config.VIZ_FORMATS = []
+            config.COLLECT_SED_DOCUMENT_RESULTS = True
+            report_results, _ = exec.exec_sed_doc(exec_task, doc, working_dir, out_dir, config=config)
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[0].id],
                                    numpy.array((1.,)))
         numpy.testing.assert_equal(report_results[doc.outputs[0].id][doc.outputs[0].data_sets[1].id],
@@ -1024,7 +1043,7 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
-        def execute_task(task, variables, log):
+        def exec_task(task, variables, log=None, config=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
             results[doc.data_generators[1].variables[0].id] = numpy.array((2., 3.))
@@ -1036,7 +1055,7 @@ class ExecTaskCase(unittest.TestCase):
 
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarnsRegex(RepeatDataSetLabelsWarning, 'should have unique labels'):
-            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir)
+            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir)
 
         # error: unsupported outputs
         doc.outputs = [
@@ -1053,7 +1072,7 @@ class ExecTaskCase(unittest.TestCase):
         for output in doc.outputs:
             log.outputs[output.id] = ReportLog(parent=log)
         with self.assertRaisesRegex(SedmlExecutionError, 'are not supported'):
-            exec.exec_sed_doc(execute_task, doc, working_dir, out_dir, log=log)
+            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir, log=log)
 
     def test_2d_plot(self):
         doc = data_model.SedDocument()
@@ -1146,7 +1165,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
 
-        def execute_task(task, variables, log=None):
+        def exec_task(task, variables, log=None, config=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.linspace(0., 10., 10 + 1)
             results[doc.data_generators[1].variables[0].id] = 2 * results[doc.data_generators[0].variables[0].id]
@@ -1157,9 +1176,11 @@ class ExecTaskCase(unittest.TestCase):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results')
+        config = get_config()
+        config.VIZ_FORMATS = [VizFormat.pdf]
         with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-            _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
-                                       out_dir, plot_formats=[VizFormat.pdf])
+            _, log = exec.exec_sed_doc(exec_task, filename, working_dir,
+                                       out_dir, config=config)
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_2.pdf')))
@@ -1204,11 +1225,15 @@ class ExecTaskCase(unittest.TestCase):
         doc.data_generators[0].math = 'time * var'
         io.SedmlSimulationWriter().run(doc, filename, validate_semantics=False, validate_models_with_languages=False)
         log = init_sed_document_log(doc)
+
+        config = get_config()
+        config.VIZ_FORMATS = [VizFormat.pdf]
+
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
                 with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=([], [])):
-                    exec.exec_sed_doc(execute_task, filename, working_dir,
-                                      out_dir, log=log, plot_formats=[VizFormat.pdf])
+                    exec.exec_sed_doc(exec_task, filename, working_dir,
+                                      out_dir, log=log, config=config)
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_2.pdf')))
@@ -1243,7 +1268,7 @@ class ExecTaskCase(unittest.TestCase):
         )
 
         # error with a task
-        def execute_task(task, variables, log=None):
+        def exec_task(task, variables, log=None, config=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = None
             results[doc.data_generators[1].variables[0].id] = 2 * numpy.linspace(0., 10., 10 + 1)
@@ -1252,10 +1277,14 @@ class ExecTaskCase(unittest.TestCase):
         doc.data_generators[0].math = 'time'
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
         log = init_sed_document_log(doc)
+
+        config = get_config()
+        config.VIZ_FORMATS = [VizFormat.pdf]
+
         with self.assertRaisesRegex(SedmlExecutionError, "Some generators could not be produced:"):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-                exec.exec_sed_doc(execute_task, filename, working_dir,
-                                  out_dir, log=log, plot_formats=[VizFormat.pdf])
+                exec.exec_sed_doc(exec_task, filename, working_dir,
+                                  out_dir, log=log, config=config)
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_2d_2.pdf')))
@@ -1386,7 +1415,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
 
-        def execute_task(task, variables, log=None):
+        def exec_task(task, variables, log=None, config=None):
             results = VariableResults()
             x = numpy.arange(-5, 5, 0.25)
             x, _ = numpy.meshgrid(x, x)
@@ -1399,9 +1428,13 @@ class ExecTaskCase(unittest.TestCase):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results')
+
+        config = get_config()
+        config.VIZ_FORMATS = [VizFormat.pdf]
+
         with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-            _, log = exec.exec_sed_doc(execute_task, filename, working_dir,
-                                       out_dir, plot_formats=[VizFormat.pdf])
+            _, log = exec.exec_sed_doc(exec_task, filename, working_dir,
+                                       out_dir, config=config)
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_2.pdf')))
@@ -1442,11 +1475,15 @@ class ExecTaskCase(unittest.TestCase):
         doc.data_generators[0].math = 'time * var'
         io.SedmlSimulationWriter().run(doc, filename, validate_semantics=False, validate_models_with_languages=False)
         log = init_sed_document_log(doc)
+
+        config = get_config()
+        config.VIZ_FORMATS = [VizFormat.pdf]
+
         with self.assertRaisesRegex(SedmlExecutionError, "name 'var' is not defined"):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
                 with mock.patch('biosimulators_utils.sedml.validation.validate_calculation', return_value=([], [])):
-                    exec.exec_sed_doc(execute_task, filename, working_dir,
-                                      out_dir, log=log, plot_formats=[VizFormat.pdf])
+                    exec.exec_sed_doc(exec_task, filename, working_dir,
+                                      out_dir, log=log, config=config)
 
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_1.pdf')))
         self.assertTrue(os.path.isfile(os.path.join(out_dir, 'plot_3d_2.pdf')))
@@ -1619,7 +1656,7 @@ class ExecTaskCase(unittest.TestCase):
             model2.id: etree.parse(model_filename2),
         }
 
-        def task_executer(task, variables, log=None):
+        def task_executer(task, variables, log=None, config=None):
             et = etree.parse(task.model.source)
 
             if task.id == task1.id:
@@ -1738,16 +1775,19 @@ class ExecTaskCase(unittest.TestCase):
             file.write('  <variable id="z" value="3" />')
             file.write('</model>')
 
-        def task_executer(task, variables, log=None):
+        def task_executer(task, variables, log=None, config=None):
             results = VariableResults({
                 'x': numpy.linspace(10., 15., 6),
                 'y': numpy.linspace(20., 25., 6),
             })
             return results, log
 
+        config = get_config()
+        config.REPORT_FORMATS = [ReportFormat.h5]
+        config.VIZ_FORMATS = []
+        config.COLLECT_SED_DOCUMENT_RESULTS = True
         results, _ = exec.exec_sed_doc(task_executer, doc, self.tmp_dir, self.tmp_dir, apply_xml_model_changes=True,
-                                       return_results=True,
-                                       report_formats=[ReportFormat.h5])
+                                       config=config)
         self.assertEqual(set(results.keys()), set(['report']))
         self.assertEqual(set(results['report'].keys()), set(['data_set_x', 'data_set_y']))
         numpy.testing.assert_allclose(results['report']['data_set_x'], [[numpy.linspace(10., 15., 6)]] * 3)
@@ -1783,7 +1823,7 @@ class ExecTaskCase(unittest.TestCase):
             file.write('  <variable id="x" value="1" />')
             file.write('</model>')
 
-        def task_executer(task, variables, log=None):
+        def task_executer(task, variables, log=None, config=None):
             results = VariableResults({
                 'x': numpy.linspace(10., 15., 6),
             })

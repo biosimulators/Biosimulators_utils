@@ -22,7 +22,12 @@ class Config(object):
         VALIDATE_SEDML_MODELS (:obj:`bool`): whether to validate models referenced by SED-ML files during the validation of COMBINE/OMEX archives
         VALIDATE_OMEX_METADATA (:obj:`bool`): whether to validate OMEX metadata (RDF files) during the validation of COMBINE/OMEX archives
         VALIDATE_IMAGES (:obj:`bool`): whether to validate the images in COMBINE/OMEX archives during their validation
+        VALIDATE_RESULTS (:obj:`bool`): whether to validate the results of simulations following their execution
         ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
+        COLLECT_COMBINE_ARCHIVE_RESULTS (:obj:`bool`): whether to assemble an in memory data structure with all of the simulation results
+            of COMBINE/OMEX archives
+        COLLECT_SED_DOCUMENT_RESULTS (:obj:`bool`): whether to assemble an in memory data structure with all of the simulation results
+            of SED documents
         SAVE_PLOT_DATA (:obj:`bool`): whether to save data for plots alongside data for reports in CSV/HDF5 files
         REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
         VIZ_FORMATS (:obj:`list` of :obj:`str`): default formats to generate plots in
@@ -31,17 +36,20 @@ class Config(object):
         PLOTS_PATH (:obj:`str`): path to save zip archive of plots relative to base output directory
         BUNDLE_OUTPUTS (:obj:`bool`): indicates whether bundles of report and plot outputs should be produced
         KEEP_INDIVIDUAL_OUTPUTS (:obj:`bool`): indicates whether the individual output files should be kept
-        LOG_PATH (:obj:`str`): path to save the execution status of a COMBINE/OMEX archive
+        LOG (:obj:`bool`): whether to log the execution of a COMBINE/OMEX archive
+        LOG_PATH (:obj:`str`): path to save the execution log of a COMBINE/OMEX archive
         BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
         VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
         DEBUG (:obj:`bool`): whether to raise exceptions rather than capturing them
     """
 
     def __init__(self,
-                 VALIDATE_OMEX_MANIFESTS, VALIDATE_SEDML, VALIDATE_SEDML_MODELS, VALIDATE_OMEX_METADATA, VALIDATE_IMAGES,
-                 ALGORITHM_SUBSTITUTION_POLICY, SAVE_PLOT_DATA, REPORT_FORMATS, VIZ_FORMATS,
+                 VALIDATE_OMEX_MANIFESTS, VALIDATE_SEDML, VALIDATE_SEDML_MODELS, VALIDATE_OMEX_METADATA, VALIDATE_IMAGES, VALIDATE_RESULTS,
+                 ALGORITHM_SUBSTITUTION_POLICY,
+                 COLLECT_COMBINE_ARCHIVE_RESULTS, COLLECT_SED_DOCUMENT_RESULTS,
+                 SAVE_PLOT_DATA, REPORT_FORMATS, VIZ_FORMATS,
                  H5_REPORTS_PATH, REPORTS_PATH, PLOTS_PATH, BUNDLE_OUTPUTS, KEEP_INDIVIDUAL_OUTPUTS,
-                 LOG_PATH, BIOSIMULATORS_API_ENDPOINT, VERBOSE, DEBUG):
+                 LOG, LOG_PATH, BIOSIMULATORS_API_ENDPOINT, VERBOSE, DEBUG):
         """
         Args:
             VALIDATE_OMEX_MANIFESTS (:obj:`bool`): whether to validate OMEX manifests during the execution of COMBINE/OMEX archives
@@ -49,7 +57,12 @@ class Config(object):
             VALIDATE_SEDML_MODELS (:obj:`bool`): whether to validate models referenced by SED-ML files during the execution of COMBINE/OMEX archives
             VALIDATE_OMEX_METADATA (:obj:`bool`): whether to validate OMEX metadata (RDF files) during the execution of COMBINE/OMEX archives
             VALIDATE_IMAGES (:obj:`bool`): whether to validate the images in COMBINE/OMEX archives during their execution
+            VALIDATE_RESULTS (:obj:`bool`): whether to validate the results of simulations following their execution
             ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
+            COLLECT_COMBINE_ARCHIVE_RESULTS (:obj:`bool`): whether to assemble an in memory data structure with all of the simulation results
+                of COMBINE/OMEX archives
+            COLLECT_SED_DOCUMENT_RESULTS (:obj:`bool`): whether to assemble an in memory data structure with all of the simulation results
+                of SED documents
             SAVE_PLOT_DATA (:obj:`bool`): whether to save data for plots alongside data for reports in CSV/HDF5 files
             REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
             VIZ_FORMATS (:obj:`list` of :obj:`str`): default formats to generate plots in
@@ -58,6 +71,7 @@ class Config(object):
             PLOTS_PATH (:obj:`str`): path to save zip archive of plots relative to base output directory
             BUNDLE_OUTPUTS (:obj:`bool`): indicates whether bundles of report and plot outputs should be produced
             KEEP_INDIVIDUAL_OUTPUTS (:obj:`bool`): indicates whether the individual output files should be kept
+            LOG (:obj:`bool`): whether to log the execution of a COMBINE/OMEX archive
             LOG_PATH (:obj:`str`): path to save the execution status of a COMBINE/OMEX archive
             BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
             VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
@@ -68,7 +82,10 @@ class Config(object):
         self.VALIDATE_SEDML_MODELS = VALIDATE_SEDML_MODELS
         self.VALIDATE_OMEX_METADATA = VALIDATE_OMEX_METADATA
         self.VALIDATE_IMAGES = VALIDATE_IMAGES
+        self.VALIDATE_RESULTS = VALIDATE_RESULTS
         self.ALGORITHM_SUBSTITUTION_POLICY = ALGORITHM_SUBSTITUTION_POLICY
+        self.COLLECT_COMBINE_ARCHIVE_RESULTS = COLLECT_COMBINE_ARCHIVE_RESULTS
+        self.COLLECT_SED_DOCUMENT_RESULTS = COLLECT_SED_DOCUMENT_RESULTS
         self.SAVE_PLOT_DATA = SAVE_PLOT_DATA
         self.REPORT_FORMATS = REPORT_FORMATS
         self.VIZ_FORMATS = VIZ_FORMATS
@@ -77,6 +94,7 @@ class Config(object):
         self.PLOTS_PATH = PLOTS_PATH
         self.BUNDLE_OUTPUTS = BUNDLE_OUTPUTS
         self.KEEP_INDIVIDUAL_OUTPUTS = KEEP_INDIVIDUAL_OUTPUTS
+        self.LOG = LOG
         self.LOG_PATH = LOG_PATH
         self.BIOSIMULATORS_API_ENDPOINT = BIOSIMULATORS_API_ENDPOINT
         self.VERBOSE = VERBOSE
@@ -107,7 +125,10 @@ def get_config():
         VALIDATE_SEDML_MODELS=os.environ.get('VALIDATE_SEDML_MODELS', '1').lower() in ['1', 'true'],
         VALIDATE_OMEX_METADATA=os.environ.get('VALIDATE_OMEX_METADATA', '1').lower() in ['1', 'true'],
         VALIDATE_IMAGES=os.environ.get('VALIDATE_IMAGES', '1').lower() in ['1', 'true'],
+        VALIDATE_RESULTS=os.environ.get('VALIDATE_RESULTS', '1').lower() in ['1', 'true'],
         ALGORITHM_SUBSTITUTION_POLICY=os.environ.get('ALGORITHM_SUBSTITUTION_POLICY', 'SIMILAR_VARIABLES'),
+        COLLECT_COMBINE_ARCHIVE_RESULTS=os.environ.get('COLLECT_COMBINE_ARCHIVE_RESULTS', '0').lower() in ['1', 'true'],
+        COLLECT_SED_DOCUMENT_RESULTS=os.environ.get('COLLECT_SED_DOCUMENT_RESULTS', '0').lower() in ['1', 'true'],
         SAVE_PLOT_DATA=os.environ.get('SAVE_PLOT_DATA', '1').lower() in ['1', 'true'],
         REPORT_FORMATS=report_formats,
         VIZ_FORMATS=viz_formats,
@@ -116,6 +137,7 @@ def get_config():
         PLOTS_PATH=os.environ.get('PLOTS_PATH', 'plots.zip'),
         BUNDLE_OUTPUTS=os.environ.get('BUNDLE_OUTPUTS', '1').lower() in ['1', 'true'],
         KEEP_INDIVIDUAL_OUTPUTS=os.environ.get('KEEP_INDIVIDUAL_OUTPUTS', '1').lower() in ['1', 'true'],
+        LOG=os.environ.get('LOG', '1').lower() in ['1', 'true'],
         LOG_PATH=os.environ.get('LOG_PATH', 'log.yml'),
         BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', 'https://api.biosimulators.org/'),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
