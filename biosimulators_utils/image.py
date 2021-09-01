@@ -103,7 +103,10 @@ def tag_and_push_docker_image(docker_client, image, tag):
 
 
 def convert_docker_image_to_singularity(docker_image, singularity_filename=None):
-    """ Convert a Docker image to a Singularity image
+    """ Convert a locally cached Docker image to a Singularity image.
+
+    Remotely published Docker images (e.g., images published to Docker Hub, GitHub Container Registry, etc.)
+    should first be pulled (e.g., using :obj:`pull_docker_image` or ``docker pull {image}``).
 
     Args:
         docker_image (:obj:`str`)
@@ -112,7 +115,10 @@ def convert_docker_image_to_singularity(docker_image, singularity_filename=None)
     Returns:
         :obj:`str`: path where Singularity image was saved
     """
-    cmd = ['singularity', 'pull']
+    cmd = ['singularity', 'build']
+
+    if ':' not in docker_image:
+        docker_image += ':latest'
 
     if not singularity_filename:
         singularity_filename = os.path.join(
@@ -124,7 +130,7 @@ def convert_docker_image_to_singularity(docker_image, singularity_filename=None)
 
     cmd.append(singularity_filename)
 
-    cmd.append('docker://' + docker_image)
+    cmd.append('docker-daemon://' + docker_image)
 
     if not os.path.isfile(singularity_filename):
         subprocess.check_call(cmd)

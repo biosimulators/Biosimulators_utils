@@ -53,6 +53,12 @@ class ImageTestCase(unittest.TestCase):
                 image.tag_and_push_docker_image(docker_client, img, 'hello-world-2')
 
     def test_convert_docker_image_to_singularity(self):
+        docker_client = image.login_to_docker_registry(
+            'docker.io',
+            os.getenv("DOCKER_HUB_USERNAME"),
+            os.getenv("DOCKER_HUB_TOKEN"))
+        image.pull_docker_image(docker_client, 'hello-world')
+
         filename = image.convert_docker_image_to_singularity('hello-world')
         os.remove(filename)
 
