@@ -1286,10 +1286,11 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertIn('use of multiple models', flatten_nested_list_of_strings(warnings))
 
-    def test_validate_variable_xpaths(self):
+    def test_validate_target_xpaths(self):
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
 
         model_source = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000297.xml')
+        model_etree = etree.parse(model_source)
 
         variables = [
             data_model.Variable(target_namespaces=namespaces,
@@ -1309,21 +1310,21 @@ class ValidationTestCase(unittest.TestCase):
             data_model.Variable(target_namespaces=namespaces,
                                 target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='BUD']/@value"),
         ]
-        validation.validate_variable_xpaths(variables, model_source)
+        validation.validate_target_xpaths(variables, model_etree)
 
         variables = [
             data_model.Variable(target_namespaces=namespaces,
                                 target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='not_exist']"),
         ]
         with self.assertRaises(ValueError):
-            validation.validate_variable_xpaths(variables, model_source)
+            validation.validate_target_xpaths(variables, model_etree)
 
         variables = [
             data_model.Variable(target_namespaces=namespaces,
                                 target='/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species'),
         ]
         with self.assertRaises(ValueError):
-            validation.validate_variable_xpaths(variables, model_source)
+            validation.validate_target_xpaths(variables, model_etree)
 
     def test_validate_target(self):
         self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model',

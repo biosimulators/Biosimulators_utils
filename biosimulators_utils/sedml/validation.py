@@ -54,7 +54,7 @@ __all__ = [
     'validate_data_generator',
     'validate_data_generator_variables',
     'validate_target',
-    'validate_variable_xpaths',
+    'validate_target_xpaths',
     'validate_calculation',
 ]
 
@@ -1500,7 +1500,7 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
                     else:
                         xpath = target
 
-                    objs = eval_xpath(model_etree, xpath, namespaces)
+                    objs = eval_xpath(model_etree, xpath, namespaces)  # TODO
 
                     if not objs:
                         errors.append(['XPath `{}` does not match any elements of model `{}`.'.format(xpath, model_id or '')])
@@ -1523,13 +1523,13 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
     return errors, warnings
 
 
-def validate_variable_xpaths(variables, model_source, attr='id'):
-    """ Validate that the target of each variable matches one object in
-    an XML-encoded model
+def validate_target_xpaths(targets, model_etree, attr='id'):
+    """ Validate that the target of each model change or variable matches one object in
+    an XML-encoded model and, optionally, return the value of one of its attributes
 
     Args:
-        variables (:obj:`list` of :obj:`Variable`): variables
-        model_source (:obj:`str`): path to XML model file
+        targets (:obj:`list` of :obj:`TargetGroupMixin`): model changes or variables
+        model_source (:obj:`lxml.etree._ElementTree`): element tree for the XML model document
         attr (:obj:`str`, optional): attribute to get values of
 
     Returns:
@@ -1537,13 +1537,13 @@ def validate_variable_xpaths(variables, model_source, attr='id'):
             value of the attribute of the object in the XML file that matches the XPath
     """
     x_path_attrs = {}
-    for variable in variables:
-        if variable.target:
-            x_path = variable.target
+    for target in targets:
+        if target.target:
+            x_path = target.target
             if '/@' in x_path:
                 x_path, _, _ = x_path.rpartition('/@')
-            x_path_attrs[variable.target] = validate_xpaths_ref_to_unique_objects(
-                model_source, [x_path], variable.target_namespaces, attr=attr)[x_path]
+            x_path_attrs[target.target] = validate_xpaths_ref_to_unique_objects(
+                model_etree, [x_path], target.target_namespaces, attr=attr)[x_path]
     return x_path_attrs
 
 

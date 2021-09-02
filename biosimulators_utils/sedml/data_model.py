@@ -19,6 +19,7 @@ __all__ = [
     'Symbol',
     'SedBase',
     'SedIdGroupMixin',
+    'TargetGroupMixin',
     'SedDocument',
     'Simulation',
     'SteadyStateSimulation',
@@ -139,7 +140,7 @@ class SedBase(abc.ABC):
         """ Determine if simulations are equal
 
         Args:
-            other (:obj:`Simulation`): another content item
+            other (:obj:`SedBase`): another content item
 
         Returns:
             :obj:`bool`: :obj:`True`, if two simulations are equal
@@ -168,7 +169,7 @@ class SedIdGroupMixin(abc.ABC):
         """ Determine if simulations are equal
 
         Args:
-            other (:obj:`Simulation`): another content item
+            other (:obj:`SedIdGroupMixin`): another content item
 
         Returns:
             :obj:`bool`: :obj:`True`, if two simulations are equal
@@ -176,6 +177,37 @@ class SedIdGroupMixin(abc.ABC):
         return self.__class__ == other.__class__ \
             and self.id == other.id \
             and self.name == other.name
+
+
+class TargetGroupMixin(abc.ABC):
+    """ Object with an id and optional name
+
+    Attributes:
+        target (:obj:`str`): id
+        target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
+    """
+
+    def __init__(self, target=None, target_namespaces=None):
+        """
+        Args:
+            target (:obj:`str`): id
+            target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
+        """
+        self.target = target
+        self.target_namespaces = target_namespaces or {}
+
+    def is_equal(self, other):
+        """ Determine if simulations are equal
+
+        Args:
+            other (:obj:`TargetGroupMixin`): another content item
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two simulations are equal
+        """
+        return self.__class__ == other.__class__ \
+            and self.target == other.target \
+            and self.target_namespaces == other.target_namespaces
 
 
 class SedDocument(SedBase):
@@ -235,7 +267,7 @@ class SedDocument(SedBase):
         """ Determine if SED-ML documents are equal
 
         Args:
-            other (:obj:`Simulation`): another SED-ML document
+            other (:obj:`SedDocument`): another SED-ML document
 
         Returns:
             :obj:`bool`: :obj:`True`, if two SED-ML documents are equal
@@ -548,7 +580,7 @@ class Model(SedBase, SedIdGroupMixin):
             and are_lists_equal(self.changes, other.changes)
 
 
-class ModelChange(SedBase, SedIdGroupMixin):
+class ModelChange(SedBase, SedIdGroupMixin, TargetGroupMixin):
     """ A change to a model
 
     Attributes:
@@ -568,8 +600,7 @@ class ModelChange(SedBase, SedIdGroupMixin):
         """
         SedBase.__init__(self)
         SedIdGroupMixin.__init__(self, id=id, name=name)
-        self.target = target
-        self.target_namespaces = target_namespaces or {}
+        TargetGroupMixin.__init__(self, target=target, target_namespaces=target_namespaces)
 
     def is_equal(self, other):
         """ Determine if model changes are equal
@@ -582,8 +613,7 @@ class ModelChange(SedBase, SedIdGroupMixin):
         """
         return SedBase.is_equal(self, other) \
             and SedIdGroupMixin.is_equal(self, other) \
-            and self.target == other.target \
-            and self.target_namespaces == other.target_namespaces
+            and TargetGroupMixin.is_equal(self, other)
 
 
 class ModelAttributeChange(ModelChange):
@@ -761,7 +791,7 @@ class Calculation(SedBase):
         """ Determine if model changes are equal
 
         Args:
-            other (:obj:`ComputeModelChange`): another content item
+            other (:obj:`Calculation`): another content item
 
         Returns:
             :obj:`bool`: :obj:`True`, if two model changes are equal
@@ -1066,7 +1096,7 @@ class SubTask(SedBase):
         """ Determine if repeated tasks are equal
 
         Args:
-            other (:obj:`RepeatedTask`): another content item
+            other (:obj:`SubTask`): another content item
 
         Returns:
             :obj:`bool`: :obj:`True`, if two repeated tasks are equal
@@ -1343,8 +1373,7 @@ class Variable(SedBase, SedIdGroupMixin):
         """
         SedBase.__init__(self)
         SedIdGroupMixin.__init__(self, id=id, name=name)
-        self.target = target
-        self.target_namespaces = target_namespaces or {}
+        TargetGroupMixin.__init__(self, target=target, target_namespaces=target_namespaces)
         self.symbol = symbol
         self.task = task
         self.model = model
@@ -1370,8 +1399,7 @@ class Variable(SedBase, SedIdGroupMixin):
         """
         return SedBase.is_equal(self, other) \
             and SedIdGroupMixin.is_equal(self, other) \
-            and self.target == other.target \
-            and self.target_namespaces == other.target_namespaces \
+            and TargetGroupMixin.is_equal(self, other) \
             and self.symbol == other.symbol \
             and ((self.task is None and self.task == other.task)
                  or (self.task is not None and other.task is not None and self.task.id == other.task.id)) \

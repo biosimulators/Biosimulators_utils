@@ -58,14 +58,18 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         task_executer (:obj:`types.FunctionType`): function to execute each task in the SED-ML file.
             The function must implement the following interface::
 
-                def exec_task(task, variables, log=None, config=None):
+                def exec_task(task, variables, preprocessed_task=None, log=None, config=None, **simulator_config):
                     ''' Execute a simulation and return its results
 
                     Args:
-                       task (:obj:`Task`): task
-                       variables (:obj:`list` of :obj:`Variable`): variables that should be recorded
-                       log (:obj:`TaskLog`, optional): log for the task
-                       config (:obj:`Config`, optional): BioSimulators common configuration
+                        task (:obj:`Task`): task
+                        variables (:obj:`list` of :obj:`Variable`): variables that should be recorded
+                        preprocessed_task (:obj:`object`, optional): preprocessed information about the task, including possible
+                            model changes and variables. This can be used to avoid repeatedly executing the same initialization
+                            for repeated calls to this method.
+                        log (:obj:`TaskLog`, optional): log for the task
+                        config (:obj:`Config`, optional): BioSimulators common configuration
+                        **simulator_config (:obj:`dict`, optional): optional simulator-specific configuration
 
                     Returns:
                        :obj:`VariableResults`: results of variables
@@ -367,14 +371,18 @@ def exec_task(task, task_executer, task_vars, doc, log=None, config=None):
         task_executer (:obj:`types.FunctionType`): function to execute each task in the SED-ML file.
             The function must implement the following interface::
 
-                def exec_task(task, variables, log=None, config=None):
+                def exec_task(task, variables, preprocessed_task=None, log=None, config=None, **simulator_config):
                     ''' Execute a simulation and return its results
 
                     Args:
                         task (:obj:`Task`): task
                         variables (:obj:`list` of :obj:`Variable`): variables that should be recorded
+                        preprocessed_task (:obj:`object`, optional): preprocessed information about the task, including possible
+                            model changes and variables. This can be used to avoid repeatedly executing the same initialization
+                            for repeated calls to this method.
                         log (:obj:`TaskLog`, optional): log for the task
                         config (:obj:`Config`, optional): BioSimulators common configuration
+                        **simulator_config (:obj:`dict`, optional): optional simulator-specific configuration
 
                     Returns:
                         :obj:`tuple`:
@@ -413,14 +421,18 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
         task_executer (:obj:`types.FunctionType`): function to execute each task in the SED-ML file.
             The function must implement the following interface::
 
-                def exec_task(task, variables, log=None, config=None):
+                def exec_task(task, variables, preprocessed_task=None, log=None, config=None, **simulator_config):
                     ''' Execute a simulation and return its results
 
                     Args:
                        task (:obj:`Task`): task
                        variables (:obj:`list` of :obj:`Variable`): variables that should be recorded
+                       preprocessed_task (:obj:`object`, optional): preprocessed information about the task, including possible
+                            model changes and variables. This can be used to avoid repeatedly executing the same initialization
+                            for repeated calls to this method.
                        log (:obj:`TaskLog`, optional): log for the task
                        config (:obj:`Config`, optional): BioSimulators common configuration
+                       **simulator_config (:obj:`dict`, optional): optional simulator-specific configuration
 
                     Returns:
                        :obj:`VariableResults`: results of variables

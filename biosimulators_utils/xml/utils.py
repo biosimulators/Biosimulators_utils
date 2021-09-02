@@ -76,11 +76,11 @@ def get_namespaces_for_xml_element(element_tree):
     return namespaces
 
 
-def get_attributes_of_xpaths(filename, x_paths, namespaces, attr='id'):
+def get_attributes_of_xpaths(etree, x_paths, namespaces, attr='id'):
     """ Determine the values of the attributes of the objects that match each XPath
 
     Args:
-        filename (:obj:`str`): path to XML file
+        etree (:obj:`lxml.etree._ElementTree`): element tree for XML document
         x_paths (:obj:`list` of `str`): XPaths
         namespaces (:obj:`dict`): dictionary that maps the prefixes of namespaces to their URIs
         attr (:obj:`str` or :obj:`dict`, optional): attribute to get values of
@@ -89,9 +89,6 @@ def get_attributes_of_xpaths(filename, x_paths, namespaces, attr='id'):
         :obj:`dict` of :obj:`str` to :obj:`list` of :obj:`str`: dictionary that maps each XPath to the
             values of the attribute of the objects in the XML file that match the XPath
     """
-    # read XML file
-    etree = lxml.etree.parse(filename)
-
     # get namespaces
     if isinstance(attr, dict):
         attr = '{{{}}}{}'.format(attr['namespace']['uri'], attr['name'])
@@ -110,11 +107,11 @@ def get_attributes_of_xpaths(filename, x_paths, namespaces, attr='id'):
     return x_path_attrs
 
 
-def validate_xpaths_ref_to_unique_objects(filename, x_paths, namespaces, attr='id'):
+def validate_xpaths_ref_to_unique_objects(etree, x_paths, namespaces, attr='id'):
     """ Validate that each of a list of XPaths matches a single object in an XML file.
 
     Args:
-        filename (:obj:`str`): path to XML file
+        etree (:obj:`lxml.etree._ElementTree`): element tree for XML document
         x_paths (:obj:`list` of `str`): XPaths
         namespaces (:obj:`dict`): dictionary that maps the prefixes of namespaces to their URIs
         attr (:obj:`str` or :obj:`dict`, optional): attribute to get values of
@@ -126,7 +123,7 @@ def validate_xpaths_ref_to_unique_objects(filename, x_paths, namespaces, attr='i
     Raises:
         :obj:`ValueError`: if one or more XPaths matches 0 or multiple objects
     """
-    x_path_attr_vals = get_attributes_of_xpaths(filename, x_paths, namespaces, attr=attr)
+    x_path_attr_vals = get_attributes_of_xpaths(etree, x_paths, namespaces, attr=attr)
 
     errors = []
 
