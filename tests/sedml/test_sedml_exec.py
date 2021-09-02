@@ -979,10 +979,12 @@ class ExecTaskCase(unittest.TestCase):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results2')
+        config = get_config()
+        config.REPORT_FORMATS = [ReportFormat.h5, ReportFormat.csv]
         with self.assertWarnsRegex(CannotExportMultidimensionalTableWarning, 'Multidimensional reports cannot be exported to CSV'):
-            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir)
+            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir, config=config)
         with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
-            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir)
+            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir, config=config)
 
         with self.assertWarnsRegex(UserWarning, 'do not have consistent shapes'):
             config = get_config()
@@ -1054,8 +1056,10 @@ class ExecTaskCase(unittest.TestCase):
             pass
 
         out_dir = os.path.join(self.tmp_dir, 'results')
+        config = get_config()
+        config.REPORT_FORMATS = [ReportFormat.h5, ReportFormat.csv]
         with self.assertWarnsRegex(RepeatDataSetLabelsWarning, 'should have unique labels'):
-            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir)
+            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir, config=config)
 
         # error: unsupported outputs
         doc.outputs = [

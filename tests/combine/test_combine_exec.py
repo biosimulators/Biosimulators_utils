@@ -204,8 +204,9 @@ class ExecCombineTestCase(unittest.TestCase):
             with mock.patch.object(SedmlSimulationReader, 'run', return_value=SedDocument()):
                 sed_doc_executer = functools.partial(exec_sed_doc, sed_task_executer)
                 config = get_config()
+                config.REPORT_FORMATS = [ReportFormat.h5, ReportFormat.csv]
                 config.BUNDLE_OUTPUTS = True
-                config.KEEP_INDIVIDUAL_OUTPUTS = True
+                config.KEEP_INDIVIDUAL_OUTPUTS = True                
                 exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, config=config)
 
         self.assertEqual(sorted(os.listdir(out_dir)), sorted(['reports.zip', 'plots.zip', 'dir1', 'log.yml']))
@@ -248,6 +249,7 @@ class ExecCombineTestCase(unittest.TestCase):
             with mock.patch.object(SedmlSimulationReader, 'run', return_value=SedDocument()):
                 sed_doc_executer = functools.partial(exec_sed_doc, sed_task_executer)
                 config = get_config()
+                config.REPORT_FORMATS = [ReportFormat.h5, ReportFormat.csv]
                 config.BUNDLE_OUTPUTS = False
                 config.KEEP_INDIVIDUAL_OUTPUTS = False
                 exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, config=config)

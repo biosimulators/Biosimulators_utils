@@ -240,14 +240,14 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             print('Bundling outputs ...')
 
             # bundle CSV files of reports into zip archive
-            report_formats = [ReportFormat(format_value) for format_value in config.REPORT_FORMATS]
+            report_formats = config.REPORT_FORMATS
             archive_paths = [os.path.join(out_dir, '**', '*.' + format.value) for format in report_formats if format != ReportFormat.h5]
             archive = build_archive_from_paths(archive_paths, out_dir)
             if archive.files:
                 ArchiveWriter().run(archive, os.path.join(out_dir, config.REPORTS_PATH))
 
             # bundle PDF files of plots into zip archive
-            viz_formats = [VizFormat(format_value) for format_value in config.VIZ_FORMATS]
+            viz_formats = config.VIZ_FORMATS
             archive_paths = [os.path.join(out_dir, '**', '*.' + format.value) for format in viz_formats]
             archive = build_archive_from_paths(archive_paths, out_dir)
             if archive.files:
@@ -257,8 +257,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         print('Cleaning up ...')
         if not config.KEEP_INDIVIDUAL_OUTPUTS:
 
-            report_formats = [ReportFormat(format_value) for format_value in config.REPORT_FORMATS]
-            viz_formats = [VizFormat(format_value) for format_value in config.VIZ_FORMATS]
+            report_formats = config.REPORT_FORMATS
+            viz_formats = config.VIZ_FORMATS
             path_patterns = (
                 [os.path.join(out_dir, '**', '*.' + format.value) for format in report_formats if format != ReportFormat.h5]
                 + [os.path.join(out_dir, '**', '*.' + format.value) for format in viz_formats]

@@ -12,7 +12,7 @@ from ..log.utils import init_sed_document_log, StandardOutputErrorCapturer
 from ..report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat  # noqa: F401
 from ..report.io import ReportWriter
 from ..utils.core import pad_arrays_to_consistent_shapes
-from ..viz.data_model import VizFormat
+from ..viz.data_model import VizFormat  # noqa: F401
 from ..viz.io import write_plot_2d, write_plot_3d
 from ..warnings import warn
 from .data_model import SedDocument, Model, Task, RepeatedTask, Output, Report, Plot2D, Plot3D, ModelAttributeChange, DataSet  # noqa: F401
@@ -225,8 +225,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         # generate outputs
         print('{}Generating {} outputs ...'.format(' ' * 2 * (indent + 1), len(doc.outputs)))
         task_contributes_to_output = False
-        report_formats = [ReportFormat(format_value) for format_value in config.REPORT_FORMATS]
-        viz_formats = [VizFormat(format_value) for format_value in config.VIZ_FORMATS]
+        report_formats = config.REPORT_FORMATS
+        viz_formats = config.VIZ_FORMATS
         for i_output, output in enumerate(doc.outputs):
             print('{}Generating output {}: `{}` ...'.format(' ' * 2 * (indent + 2), i_output + 1, output.id), end='')
             sys.stdout.flush()

@@ -6,11 +6,21 @@
 :License: MIT
 """
 
+from .report.data_model import ReportFormat  # noqa: F401
+from .viz.data_model import VizFormat  # noqa: F401
+from kisao import AlgorithmSubstitutionPolicy  # noqa: F401
 import appdirs
 import enum
 import os
 
 __all__ = ['Config', 'get_config', 'Colors', 'get_app_dirs']
+
+DEFAULT_ALGORITHM_SUBSTITUTION_POLICY = AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES
+DEFAULT_H5_REPORTS_PATH = 'reports.h5'
+DEFAULT_REPORTS_PATH = 'reports.zip'
+DEFAULT_PLOTS_PATH = 'plots.zip'
+DEFAULT_LOG_PATH = 'log.yml'
+DEFAULT_BIOSIMULATORS_API_ENDPOINT = 'https://api.biosimulators.org/'
 
 
 class Config(object):
@@ -23,14 +33,14 @@ class Config(object):
         VALIDATE_OMEX_METADATA (:obj:`bool`): whether to validate OMEX metadata (RDF files) during the validation of COMBINE/OMEX archives
         VALIDATE_IMAGES (:obj:`bool`): whether to validate the images in COMBINE/OMEX archives during their validation
         VALIDATE_RESULTS (:obj:`bool`): whether to validate the results of simulations following their execution
-        ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`): algorithm substition policy
+        ALGORITHM_SUBSTITUTION_POLICY (:obj:`AlgorithmSubstitutionPolicy`): algorithm substition policy
         COLLECT_COMBINE_ARCHIVE_RESULTS (:obj:`bool`): whether to assemble an in memory data structure with all of the simulation results
             of COMBINE/OMEX archives
         COLLECT_SED_DOCUMENT_RESULTS (:obj:`bool`): whether to assemble an in memory data structure with all of the simulation results
             of SED documents
         SAVE_PLOT_DATA (:obj:`bool`): whether to save data for plots alongside data for reports in CSV/HDF5 files
-        REPORT_FORMATS (:obj:`list` of :obj:`str`): default formats to generate reports in
-        VIZ_FORMATS (:obj:`list` of :obj:`str`): default formats to generate plots in
+        REPORT_FORMATS (:obj:`list` of :obj:`ReportFormat`): default formats to generate reports in
+        VIZ_FORMATS (:obj:`list` of :obj:`VizFormat`): default formats to generate plots in
         H5_REPORTS_PATH (:obj:`str`): path to save reports in HDF5 format relative to base output directory
         REPORTS_PATH (:obj:`str`): path to save zip archive of reports relative to base output directory
         PLOTS_PATH (:obj:`str`): path to save zip archive of plots relative to base output directory
@@ -44,12 +54,28 @@ class Config(object):
     """
 
     def __init__(self,
-                 VALIDATE_OMEX_MANIFESTS, VALIDATE_SEDML, VALIDATE_SEDML_MODELS, VALIDATE_OMEX_METADATA, VALIDATE_IMAGES, VALIDATE_RESULTS,
-                 ALGORITHM_SUBSTITUTION_POLICY,
-                 COLLECT_COMBINE_ARCHIVE_RESULTS, COLLECT_SED_DOCUMENT_RESULTS,
-                 SAVE_PLOT_DATA, REPORT_FORMATS, VIZ_FORMATS,
-                 H5_REPORTS_PATH, REPORTS_PATH, PLOTS_PATH, BUNDLE_OUTPUTS, KEEP_INDIVIDUAL_OUTPUTS,
-                 LOG, LOG_PATH, BIOSIMULATORS_API_ENDPOINT, VERBOSE, DEBUG):
+                 VALIDATE_OMEX_MANIFESTS=True,
+                 VALIDATE_SEDML=True,
+                 VALIDATE_SEDML_MODELS=True,
+                 VALIDATE_OMEX_METADATA=True,
+                 VALIDATE_IMAGES=True,
+                 VALIDATE_RESULTS=True,
+                 ALGORITHM_SUBSTITUTION_POLICY=DEFAULT_ALGORITHM_SUBSTITUTION_POLICY,
+                 COLLECT_COMBINE_ARCHIVE_RESULTS=False,
+                 COLLECT_SED_DOCUMENT_RESULTS=False,
+                 SAVE_PLOT_DATA=True,
+                 REPORT_FORMATS=[ReportFormat.h5.name],
+                 VIZ_FORMATS=[VizFormat.pdf.name],
+                 H5_REPORTS_PATH=DEFAULT_H5_REPORTS_PATH,
+                 REPORTS_PATH=DEFAULT_REPORTS_PATH,
+                 PLOTS_PATH=DEFAULT_PLOTS_PATH,
+                 BUNDLE_OUTPUTS=True,
+                 KEEP_INDIVIDUAL_OUTPUTS=True,
+                 LOG=True,
+                 LOG_PATH=DEFAULT_LOG_PATH,
+                 BIOSIMULATORS_API_ENDPOINT=DEFAULT_BIOSIMULATORS_API_ENDPOINT,
+                 VERBOSE=False,
+                 DEBUG=False):
         """
         Args:
             VALIDATE_OMEX_MANIFESTS (:obj:`bool`): whether to validate OMEX manifests during the execution of COMBINE/OMEX archives
@@ -107,15 +133,15 @@ def get_config():
     Returns:
         :obj:`Config`: configuration
     """
-    report_formats = os.environ.get('REPORT_FORMATS', 'csv, h5').strip()
+    report_formats = os.environ.get('REPORT_FORMATS', 'h5').strip()
     if report_formats:
-        report_formats = [format.strip().lower() for format in report_formats.split(',')]
+        report_formats = [ReportFormat(format.strip().lower()) for format in report_formats.split(',')]
     else:
         report_formats = []
 
     viz_formats = os.environ.get('VIZ_FORMATS', 'pdf').strip()
     if viz_formats:
-        viz_formats = [format.strip().lower() for format in viz_formats.split(',')]
+        viz_formats = [VizFormat(format.strip().lower()) for format in viz_formats.split(',')]
     else:
         viz_formats = []
 
@@ -126,20 +152,21 @@ def get_config():
         VALIDATE_OMEX_METADATA=os.environ.get('VALIDATE_OMEX_METADATA', '1').lower() in ['1', 'true'],
         VALIDATE_IMAGES=os.environ.get('VALIDATE_IMAGES', '1').lower() in ['1', 'true'],
         VALIDATE_RESULTS=os.environ.get('VALIDATE_RESULTS', '1').lower() in ['1', 'true'],
-        ALGORITHM_SUBSTITUTION_POLICY=os.environ.get('ALGORITHM_SUBSTITUTION_POLICY', 'SIMILAR_VARIABLES'),
+        ALGORITHM_SUBSTITUTION_POLICY=AlgorithmSubstitutionPolicy(os.environ.get(
+            'ALGORITHM_SUBSTITUTION_POLICY', DEFAULT_ALGORITHM_SUBSTITUTION_POLICY)),
         COLLECT_COMBINE_ARCHIVE_RESULTS=os.environ.get('COLLECT_COMBINE_ARCHIVE_RESULTS', '0').lower() in ['1', 'true'],
         COLLECT_SED_DOCUMENT_RESULTS=os.environ.get('COLLECT_SED_DOCUMENT_RESULTS', '0').lower() in ['1', 'true'],
         SAVE_PLOT_DATA=os.environ.get('SAVE_PLOT_DATA', '1').lower() in ['1', 'true'],
         REPORT_FORMATS=report_formats,
         VIZ_FORMATS=viz_formats,
-        H5_REPORTS_PATH=os.environ.get('H5_REPORTS_PATH', 'reports.h5'),
-        REPORTS_PATH=os.environ.get('REPORTS_PATH', 'reports.zip'),
-        PLOTS_PATH=os.environ.get('PLOTS_PATH', 'plots.zip'),
+        H5_REPORTS_PATH=os.environ.get('H5_REPORTS_PATH', DEFAULT_H5_REPORTS_PATH),
+        REPORTS_PATH=os.environ.get('REPORTS_PATH', DEFAULT_REPORTS_PATH),
+        PLOTS_PATH=os.environ.get('PLOTS_PATH', DEFAULT_PLOTS_PATH),
         BUNDLE_OUTPUTS=os.environ.get('BUNDLE_OUTPUTS', '1').lower() in ['1', 'true'],
         KEEP_INDIVIDUAL_OUTPUTS=os.environ.get('KEEP_INDIVIDUAL_OUTPUTS', '1').lower() in ['1', 'true'],
         LOG=os.environ.get('LOG', '1').lower() in ['1', 'true'],
-        LOG_PATH=os.environ.get('LOG_PATH', 'log.yml'),
-        BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', 'https://api.biosimulators.org/'),
+        LOG_PATH=os.environ.get('LOG_PATH', DEFAULT_LOG_PATH),
+        BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', DEFAULT_BIOSIMULATORS_API_ENDPOINT),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
     )
