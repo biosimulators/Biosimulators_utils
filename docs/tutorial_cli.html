@@ -5,9 +5,29 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2. Tutorial for the command-line application &#8212; BioSimulators utils 0.1.116 documentation</title>
+    <title>Tutorial for the command-line application &#8212; BioSimulators utils 0.1.117 documentation</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet" />
+  <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/biosimulators.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
+
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
@@ -15,104 +35,171 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="3. biosimulators_utils package" href="source/biosimulators_utils.html" />
-    <link rel="prev" title="1. Installation instructions" href="installation.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="next" title="biosimulators_utils package" href="source/biosimulators_utils.html" />
+    <link rel="prev" title="Installation instructions" href="installation.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+      
+      <link rel="icon" sizes="16x16" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png">
+      
+    
+      
+      <link rel="icon" sizes="32x32" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png">
+      
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="index.html">
+  <img src="_static/biosimulators-logo.svg" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
   
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  <div class="document">
-    
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">BioSimulators utils</a></h1>
-
-
-
-<p class="blurb">Utilities for building standardized command-line interfaces for biosimulation tools</p>
-
-
-
-
-<p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosimulators&repo=Biosimulators_utils&type=watch&count=true&size=large&v=2"
-  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
-</p>
-
-
-
-
-
-<h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation instructions</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Tutorial for the command-line application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#convert-an-escher-metabolic-map-to-a-vega-data-visualization">2.1. Convert an Escher metabolic map to a Vega data visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#convert-a-ginml-activity-flow-diagram-to-a-vega-data-visualization">2.2. Convert a GINML activity flow diagram to a Vega data visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#convert-a-sbgn-process-description-map-to-a-vega-data-visualization">2.3. Convert a SBGN process description map to a Vega data visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#validate-a-modeling-project">2.4. Validate a modeling project</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#execute-a-modeling-project-with-a-standardized-simulation-tool-from-the-biosimulators-registry">2.5. Execute a modeling project with a standardized simulation tool from the BioSimulators registry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#additional-documentation">2.6. Additional documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="source/biosimulators_utils.html">3. API documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="about.html">4. About BioSimulators utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="genindex.html">5. Index</a></li>
-</ul>
-
-
-<hr />
-<ul>
-    
-    <li class="toctree-l1"><a href="https://biosimulators.org">BioSimulators</a></li>
-    
-    <li class="toctree-l1"><a href="https://run.biosimulations.org">runBioSimulations</a></li>
-    
-    <li class="toctree-l1"><a href="https://biosimulations.org">BioSimulations</a></li>
-    
-</ul>
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="installation.html" title="previous chapter"><span class="section-number">1. </span>Installation instructions</a></li>
-      <li>Next: <a href="source/biosimulators_utils.html" title="next chapter"><span class="section-number">3. </span>biosimulators_utils package</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
     </div>
-</div>
-<script>$('#searchbox').show(0);</script>
 
-
-
-
-
-
-
-
-        </div>
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Quick links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/biosimulators/Biosimulators_utils" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://twitter.com/biosimulators" rel="noopener" target="_blank" title="Twitter">
+            <span><i class="fab fa-twitter"></i></span>
+            <label class="sr-only">Twitter</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="mailto:info@biosimulators.org" rel="noopener" target="_blank" title="Email">
+            <span><i class="fas fa-envelope"></i></span>
+            <label class="sr-only">Email</label>
+          </a>
+        </li>
+      </ul>
       </div>
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Enter text to search for ..." aria-label="Enter text to search for ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+            </div>
+            
           
 
-          <div class="body" role="main">
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
             
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#convert-an-escher-metabolic-map-to-a-vega-data-visualization">
+   Convert an Escher metabolic map to a Vega data visualization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#convert-a-ginml-activity-flow-diagram-to-a-vega-data-visualization">
+   Convert a GINML activity flow diagram to a Vega data visualization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#convert-a-sbgn-process-description-map-to-a-vega-data-visualization">
+   Convert a SBGN process description map to a Vega data visualization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#validate-a-modeling-project">
+   Validate a modeling project
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#execute-a-modeling-project-with-a-standardized-simulation-tool-from-the-biosimulators-registry">
+   Execute a modeling project with a standardized simulation tool from the BioSimulators registry
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#additional-documentation">
+   Additional documentation
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/biosimulators/Biosimulators_utils/edit/dev/docs-src/tutorial_cli.rst">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
   <div class="section" id="tutorial-for-the-command-line-application">
-<h1><span class="section-number">2. </span>Tutorial for the command-line application<a class="headerlink" href="#tutorial-for-the-command-line-application" title="Permalink to this headline">¶</a></h1>
+<h1>Tutorial for the command-line application<a class="headerlink" href="#tutorial-for-the-command-line-application" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="convert-an-escher-metabolic-map-to-a-vega-data-visualization">
-<h2><span class="section-number">2.1. </span>Convert an Escher metabolic map to a Vega data visualization<a class="headerlink" href="#convert-an-escher-metabolic-map-to-a-vega-data-visualization" title="Permalink to this headline">¶</a></h2>
+<h2>Convert an Escher metabolic map to a Vega data visualization<a class="headerlink" href="#convert-an-escher-metabolic-map-to-a-vega-data-visualization" title="Permalink to this headline">¶</a></h2>
 <p>The following steps can be used to use an <a class="reference external" href="https://escher.github.io/">Escher</a> map to visualize the results of a flux balance simulation captured by a SED-ML report in a SED-ML document in a COMBINE/OMEX archive.</p>
 <ol class="arabic">
 <li><p>Define a SED-ML document for the simulation. The document should include a flux balance simulation and a report with a dataset for each predicted flux. The <code class="docutils literal notranslate"><span class="pre">label</span></code> of each dataset should be the BiGG id of the corresponding reaction. Save the SED-ML document to a file.</p></li>
@@ -132,7 +219,7 @@
 <p>An example COMBINE/OMEX archive with an Escher map converted to Vega is available <a class="reference external" href="https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/sbml-fbc">here</a>.</p>
 </div>
 <div class="section" id="convert-a-ginml-activity-flow-diagram-to-a-vega-data-visualization">
-<h2><span class="section-number">2.2. </span>Convert a GINML activity flow diagram to a Vega data visualization<a class="headerlink" href="#convert-a-ginml-activity-flow-diagram-to-a-vega-data-visualization" title="Permalink to this headline">¶</a></h2>
+<h2>Convert a GINML activity flow diagram to a Vega data visualization<a class="headerlink" href="#convert-a-ginml-activity-flow-diagram-to-a-vega-data-visualization" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="http://ginsim.org">GINML</a> activity flow diagrams can similarly be used to visualize the results of logical simulations captured by SED-ML reports in SED-ML documents in COMBINE/OMEX archives.</p>
 <ol class="arabic">
 <li><p>Define a SED-ML document for the simulation. The document should include a logical simulation and a report with a dataset for each predicted species. The <code class="docutils literal notranslate"><span class="pre">label</span></code> of each dataset should be the GINsim name of the corresponding species. Save the SED-ML document to a file.</p></li>
@@ -152,7 +239,7 @@
 <p>An example COMBINE/OMEX archive with a GINML diagram converted to Vega is available <a class="reference external" href="https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/sbml-qual">here</a>.</p>
 </div>
 <div class="section" id="convert-a-sbgn-process-description-map-to-a-vega-data-visualization">
-<h2><span class="section-number">2.3. </span>Convert a SBGN process description map to a Vega data visualization<a class="headerlink" href="#convert-a-sbgn-process-description-map-to-a-vega-data-visualization" title="Permalink to this headline">¶</a></h2>
+<h2>Convert a SBGN process description map to a Vega data visualization<a class="headerlink" href="#convert-a-sbgn-process-description-map-to-a-vega-data-visualization" title="Permalink to this headline">¶</a></h2>
 <p>The following steps can be used to use a <a class="reference external" href="https://sbgn.github.io/">Systems Biology Graphical Notation</a> (SBGN) process description map to visualize the results of a dynamic simulation captured by a SED-ML report in a SED-ML document in a COMBINE/OMEX archive.</p>
 <ol class="arabic">
 <li><p>Define a SED-ML document for the simulation. The document should include a dynamic simulation (e.g., ODE, SSA) and a report with a dataset for the predicted dynamics of each glyph. The <code class="docutils literal notranslate"><span class="pre">label</span></code> of each dataset should be the SBGN <code class="docutils literal notranslate"><span class="pre">label</span></code> of the corresponding glyph. Save the SED-ML document to a file.</p></li>
@@ -172,21 +259,21 @@
 <p>Example COMBINE/OMEX archives with SBGN maps converted to Vega are available <a class="reference external" href="https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/">here</a>.</p>
 </div>
 <div class="section" id="validate-a-modeling-project">
-<h2><span class="section-number">2.4. </span>Validate a modeling project<a class="headerlink" href="#validate-a-modeling-project" title="Permalink to this headline">¶</a></h2>
+<h2>Validate a modeling project<a class="headerlink" href="#validate-a-modeling-project" title="Permalink to this headline">¶</a></h2>
 <p>The following command can be used to validate a COMBINE/OMEX archive and get a summary of the contents of the archive. Note, BioSimulators utils must be installed with the <code class="docutils literal notranslate"><span class="pre">sbml</span></code> option to validate COMBINE/OMEX archives that include models encoded in the SMBL format.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>biosimulators-utils validate /path/to/project.omex
 </pre></div>
 </div>
 </div>
 <div class="section" id="execute-a-modeling-project-with-a-standardized-simulation-tool-from-the-biosimulators-registry">
-<h2><span class="section-number">2.5. </span>Execute a modeling project with a standardized simulation tool from the BioSimulators registry<a class="headerlink" href="#execute-a-modeling-project-with-a-standardized-simulation-tool-from-the-biosimulators-registry" title="Permalink to this headline">¶</a></h2>
+<h2>Execute a modeling project with a standardized simulation tool from the BioSimulators registry<a class="headerlink" href="#execute-a-modeling-project-with-a-standardized-simulation-tool-from-the-biosimulators-registry" title="Permalink to this headline">¶</a></h2>
 <p>The following command can be used to use a standardized simulation from the <a class="reference external" href="https://biosimulators.org">BioSimulators registry</a>, such as tellurium, to execute a COMBINE/OMEX archive and save its outputs (reports and plots) to a directory. Please see the BioSimulators registry for a list of the available simulation tools. Note, this requires Docker and the installing BioSimulators utils with the <code class="docutils literal notranslate"><span class="pre">containers</span></code> option.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>biosimulators-utils exec -i /path/to/project.omex -o /path/to/save/outputs ghcr.io/biosimulators/tellurium:latest
 </pre></div>
 </div>
 </div>
 <div class="section" id="additional-documentation">
-<h2><span class="section-number">2.6. </span>Additional documentation<a class="headerlink" href="#additional-documentation" title="Permalink to this headline">¶</a></h2>
+<h2>Additional documentation<a class="headerlink" href="#additional-documentation" title="Permalink to this headline">¶</a></h2>
 <p>The command-line program is documented inline. To view the documentation, execute the command-line program the <code class="docutils literal notranslate"><span class="pre">--help</span></code> option.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>biosimulators-utils --help
 </pre></div>
@@ -195,26 +282,27 @@
 </div>
 
 
-          </div>
+              </div>
+              
+              
+          </main>
           
-        </div>
+
       </div>
-    <div class="clearer"></div>
-  </div>
-    <div class="footer">
-      &copy;2021, BioSimulators Team.
-      
-      |
-      <a href="_sources/tutorial_cli.rst.txt"
-          rel="nofollow">Page source</a>
     </div>
+  
+  <script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
 
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
     
-    <a href="https://github.com/biosimulators/Biosimulators_utils" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
-    </a>
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, BioSimulators Team.<br/>
+</p>
+    </div>
     
-
-    
+  </div>
+</footer>
   </body>
 </html>
