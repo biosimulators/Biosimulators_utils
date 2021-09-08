@@ -16,13 +16,14 @@ from .validation import validate_model
 import os
 import types  # noqa: F401
 
-__all__ = ['get_parameters_variables_for_simulation']
+__all__ = ['get_parameters_variables_outputs_for_simulation']
 
 
-def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
-                                            include_compartment_sizes_in_simulation_variables=False,
-                                            include_model_parameters_in_simulation_variables=False,
-                                            validate=True, validate_consistency=True):
+def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
+                                                    native_ids=False, native_data_types=False,
+                                                    include_compartment_sizes_in_simulation_variables=False,
+                                                    include_model_parameters_in_simulation_variables=False,
+                                                    validate=True, validate_consistency=True):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -31,6 +32,9 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
         algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
+        native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
+            for the variable of an associated SED-ML data generator
+        native_data_types (:obj:`bool`, optional): whether to return ``new_value`` in their native data types
         include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
             non-constant SBML compartments with assignment rules among the returned SED variables
         include_model_parameters_in_simulation_variables (:obj:`bool`, optional): whether to include the values of
@@ -42,6 +46,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
         :obj:`list` of :obj:`Simulation`: simulation of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
+        :obj:`list` of :obj:`Plot`: possible plots of the results of a simulation of the model
     """
     # check model file exists
     if not os.path.isfile(model_filename):
@@ -85,8 +90,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             raise NotImplementedError('One step and time course simulations are not supported for FBC models')
 
         vars.append(Variable(
-            id='time',
-            name='Time',
+            id=None if native_ids else 'time',
+            name=None if native_ids else 'Time',
             symbol=Symbol.time,
         ))
 
@@ -110,11 +115,11 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         has_flux = False
         has_flux_bounds = False
 
-        if algorithm_kisao_id in ['KISAO_0000437', 'KISAO_0000527', 'KISAO_0000528', 'KISAO_0000554']:
+        if sim.algorithm.kisao_id in ['KISAO_0000437', 'KISAO_0000527', 'KISAO_0000528', 'KISAO_0000554']:
             # FBA, gFBA, pFBA
             has_flux = True
 
-        elif algorithm_kisao_id in ['KISAO_0000526']:
+        elif sim.algorithm.kisao_id in ['KISAO_0000526']:
             # FVA
             has_flux_bounds = True
 
@@ -128,11 +133,11 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             param_id = parameter.getId()
 
             params.append(ModelAttributeChange(
-                id='value_parameter_' + param_id,
-                name='Value of parameter "{}"'.format(parameter.getName() or param_id),
+                id=param_id if native_ids else 'value_parameter_' + param_id,
+                name=parameter.getName() or None if native_ids else 'Value of parameter "{}"'.format(parameter.getName() or param_id),
                 target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='{}']/@value".format(param_id),
                 target_namespaces=namespaces,
-                new_value=format_float(parameter.getValue()),
+                new_value=parameter.getValue() if native_data_types else format_float(parameter.getValue()),
             ))
 
         if has_flux:
@@ -143,8 +148,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             obj = plugin.getActiveObjective()
             obj_id = obj.getId()
             var = Variable(
-                id='value_objective_' + obj_id,
-                name='Value of objective "{}"'.format(obj.getName() or obj_id),
+                id=obj_id if native_ids else 'value_objective_' + obj_id,
+                name=obj.getName() or None if native_ids else 'Value of objective "{}"'.format(obj.getName() or obj_id),
                 target="/sbml:sbml/sbml:model/fbc:listOfObjectives/fbc:objective[@fbc:id='{}']/@value".format(obj_id),
                 target_namespaces=namespaces,
             )
@@ -156,8 +161,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             for reaction in model.getListOfReactions():
                 rxn_id = reaction.getId()
                 var = Variable(
-                    id='flux_reaction_' + rxn_id,
-                    name='Flux of reaction "{}"'.format(reaction.getName() or rxn_id),
+                    id=rxn_id if native_ids else 'flux_reaction_' + rxn_id,
+                    name=reaction.getName() or None if native_ids else 'Flux of reaction "{}"'.format(reaction.getName() or rxn_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/@flux".format(rxn_id),
                     target_namespaces=namespaces,
                 )
@@ -172,16 +177,16 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 rxn_id = reaction.getId()
 
                 var = Variable(
-                    id='min_flux_reaction_' + rxn_id,
-                    name='Minimum flux of reaction "{}"'.format(reaction.getName() or rxn_id),
+                    id=rxn_id if native_ids else 'min_flux_reaction_' + rxn_id,
+                    name=reaction.getName() or None if native_ids else 'Minimum flux of reaction "{}"'.format(reaction.getName() or rxn_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/@minFlux".format(rxn_id),
                     target_namespaces=namespaces,
                 )
                 vars.append(var)
 
                 var = Variable(
-                    id='max_flux_reaction_' + rxn_id,
-                    name='Maximum flux of reaction "{}"'.format(reaction.getName() or rxn_id),
+                    id=rxn_id if native_ids else 'max_flux_reaction_' + rxn_id,
+                    name=reaction.getName() or None if native_ids else 'Maximum flux of reaction "{}"'.format(reaction.getName() or rxn_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/@maxFlux".format(rxn_id),
                     target_namespaces=namespaces,
                 )
@@ -224,20 +229,20 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
             if species.isSetInitialLevel():
                 params.append(ModelAttributeChange(
-                    id='init_level_species_{}'.format(species_id),
-                    name='Initial level of species "{}"'.format(species.getName() or species_id),
+                    id=species_id if native_ids else 'init_level_species_{}'.format(species_id),
+                    name=species.getName() or None if native_ids else 'Initial level of species "{}"'.format(species.getName() or species_id),
                     target=(
                         "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies"
                         "/qual:qualitativeSpecies[@qual:id='{}']/@qual:initialLevel"
                     ).format(species_id),
                     target_namespaces=namespaces,
-                    new_value=str(species.getInitialLevel()),
+                    new_value=species.getInitialLevel() if native_data_types else str(species.getInitialLevel()),
                 ))
 
             if not species.isSetConstant() or not species.getConstant():
                 var = Variable(
-                    id='level_species_' + species_id,
-                    name='Level of species "{}"'.format(species.getName() or species_id),
+                    id=species_id if native_ids else 'level_species_' + species_id,
+                    name=species.getName() or None if native_ids else 'Level of species "{}"'.format(species.getName() or species_id),
                     target="/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies/qual:qualitativeSpecies[@qual:id='{}']".format(species_id),
                     target_namespaces=namespaces,
                 )
@@ -251,11 +256,11 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
             if comp.isSetSize():
                 params.append(ModelAttributeChange(
-                    id='init_size_compartment_{}'.format(comp.getId()),
-                    name='Initial size of compartment "{}"'.format(comp.getName() or comp.getId()),
+                    id=comp.getId() if native_ids else 'init_size_compartment_{}'.format(comp.getId()),
+                    name=comp.getName() or None if native_ids else 'Initial size of compartment "{}"'.format(comp.getName() or comp.getId()),
                     target="/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='{}']/@size".format(comp_id),
                     target_namespaces=namespaces,
-                    new_value=format_float(comp.getSize()),
+                    new_value=comp.getSize() if native_data_types else format_float(comp.getSize()),
                 ))
 
             if (
@@ -265,8 +270,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 and model.getAssignmentRuleByVariable(comp_id)
             ):
                 var = Variable(
-                    id='size_compartment_' + comp_id,
-                    name='Size of compartment "{}"'.format(comp.getName() or comp_id),
+                    id=comp_id if native_ids else 'size_compartment_' + comp_id,
+                    name=comp.getName() or None if native_ids else 'Size of compartment "{}"'.format(comp.getName() or comp_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='{}']/@size".format(comp_id),
                     target_namespaces=namespaces,
                 )
@@ -308,25 +313,25 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
             if species.isSetInitialAmount():
                 params.append(ModelAttributeChange(
-                    id='init_amount_species_{}'.format(species_id),
-                    name='Initial amount of species "{}"'.format(species.getName() or species_id),
+                    id=species_id if native_ids else 'init_amount_species_{}'.format(species_id),
+                    name=species.getName() or None if native_ids else 'Initial amount of species "{}"'.format(species.getName() or species_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']/@initialAmount".format(species_id),
                     target_namespaces=namespaces,
-                    new_value=format_float(species.getInitialAmount()),
+                    new_value=species.getInitialAmount() if native_data_types else format_float(species.getInitialAmount()),
                 ))
             elif species.isSetInitialConcentration():
                 params.append(ModelAttributeChange(
-                    id='init_conc_species_{}'.format(species_id),
-                    name='Initial concentration of species "{}"'.format(species.getName() or species_id),
+                    id=species_id if native_ids else 'init_conc_species_{}'.format(species_id),
+                    name=species.getName() or None if native_ids else 'Initial concentration of species "{}"'.format(species.getName() or species_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']/@initialConcentration".format(species_id),
                     target_namespaces=namespaces,
-                    new_value=format_float(species.getInitialConcentration()),
+                    new_value=species.getInitialConcentration() if native_data_types else format_float(species.getInitialConcentration()),
                 ))
 
             if not species.isSetConstant() or not species.getConstant():
                 var = Variable(
-                    id='dynamics_species_' + species_id,
-                    name='Dynamics of species "{}"'.format(species.getName() or species_id),
+                    id=species_id if native_ids else 'dynamics_species_' + species_id,
+                    name=species.getName() or None if native_ids else 'Dynamics of species "{}"'.format(species.getName() or species_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']".format(species_id),
                     target_namespaces=namespaces,
                 )
@@ -340,11 +345,11 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 and not model.getInitialAssignmentBySymbol(comp_id)
             ):
                 params.append(ModelAttributeChange(
-                    id='init_size_compartment_{}'.format(comp.getId()),
-                    name='Initial size of compartment "{}"'.format(comp.getName() or comp.getId()),
+                    id=comp.getId() if native_ids else 'init_size_compartment_{}'.format(comp.getId()),
+                    name=comp.getName() or None if native_ids else 'Initial size of compartment "{}"'.format(comp.getName() or comp.getId()),
                     target="/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='{}']/@size".format(comp_id),
                     target_namespaces=namespaces,
-                    new_value=format_float(comp.getSize()),
+                    new_value=comp.getSize() if native_data_types else format_float(comp.getSize()),
                 ))
 
             if (
@@ -354,8 +359,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 and model.getAssignmentRuleByVariable(comp_id)
             ):
                 var = Variable(
-                    id='size_compartment_' + comp_id,
-                    name='Size of compartment "{}"'.format(comp.getName() or comp_id),
+                    id=comp_id if native_ids else 'size_compartment_' + comp_id,
+                    name=comp.getName() or None if native_ids else 'Size of compartment "{}"'.format(comp.getName() or comp_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='{}']/@size".format(comp_id),
                     target_namespaces=namespaces,
                 )
@@ -366,11 +371,11 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
             if not model.getInitialAssignmentBySymbol(param_id):
                 params.append(ModelAttributeChange(
-                    id='value_parameter_' + param_id,
-                    name='Value of parameter "{}"'.format(parameter.getName() or param_id),
+                    id=param_id if native_ids else 'value_parameter_' + param_id,
+                    name=parameter.getName() or None if native_ids else 'Value of parameter "{}"'.format(parameter.getName() or param_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='{}']/@value".format(param_id),
                     target_namespaces=namespaces,
-                    new_value=format_float(parameter.getValue()),
+                    new_value=parameter.getValue() if native_data_types else format_float(parameter.getValue()),
                 ))
 
             if (
@@ -380,8 +385,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                 and model.getAssignmentRuleByVariable(param_id)
             ):
                 var = Variable(
-                    id='value_parameter_' + param_id,
-                    name='Value of parameter "{}"'.format(parameter.getName() or param_id),
+                    id=param_id if native_ids else 'value_parameter_' + param_id,
+                    name=parameter.getName() or None if native_ids else 'Value of parameter "{}"'.format(parameter.getName() or param_id),
                     target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='{}']/@value".format(param_id),
                     target_namespaces=namespaces,
                 )
@@ -407,12 +412,12 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                             ).format(reaction_id, param_id)
 
                         params.append(ModelAttributeChange(
-                            id='value_parameter_' + param_id,
-                            name='Value of parameter "{}" of reaction "{}"'.format(
+                            id=param_id if native_ids else 'value_parameter_' + param_id,
+                            name=parameter.getName() or None if native_ids else 'Value of parameter "{}" of reaction "{}"'.format(
                                 parameter.getName() or param_id, reaction.getName() or reaction_id),
                             target=target,
                             target_namespaces=namespaces,
-                            new_value=format_float(parameter.getValue()),
+                            new_value=parameter.getValue() if native_data_types else format_float(parameter.getValue()),
                         ))
 
                     if (
@@ -422,12 +427,12 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                         and model.getAssignmentRuleByVariable(param_id)
                     ):
                         var = Variable(
-                            id='value_parameter_' + param_id,
-                            name='Value of parameter "{}" of reaction "{}"'.format(
+                            id=param_id if native_ids else 'value_parameter_' + param_id,
+                            name=parameter.getName() or None if native_ids else 'Value of parameter "{}" of reaction "{}"'.format(
                                 parameter.getName() or param_id, reaction.getName() or reaction_id),
                             target=target,
                             target_namespaces=namespaces,
                         )
                         vars.append(var)
 
-    return (params, [sim], vars)
+    return (params, [sim], vars, [])

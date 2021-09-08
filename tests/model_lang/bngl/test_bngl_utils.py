@@ -1,4 +1,4 @@
-from biosimulators_utils.model_lang.bngl.utils import get_parameters_variables_for_simulation
+from biosimulators_utils.model_lang.bngl.utils import get_parameters_variables_outputs_for_simulation
 from biosimulators_utils.sedml.data_model import (ModelLanguage, SteadyStateSimulation,
                                                   OneStepSimulation, UniformTimeCourseSimulation,
                                                   Algorithm, AlgorithmParameterChange,
@@ -17,20 +17,21 @@ class BgnlUtilsTestCase(unittest.TestCase):
 
     def test_get_parameters_variables_for_simulation_error_handling(self):
         with self.assertRaisesRegex(ValueError, 'is not a path to a model file'):
-            get_parameters_variables_for_simulation(None, None, UniformTimeCourseSimulation, None)
+            get_parameters_variables_outputs_for_simulation(None, None, UniformTimeCourseSimulation, None)
 
         with self.assertRaisesRegex(FileNotFoundError, 'does not exist'):
-            get_parameters_variables_for_simulation('not a file', None, UniformTimeCourseSimulation, None)
+            get_parameters_variables_outputs_for_simulation('not a file', None, UniformTimeCourseSimulation, None)
 
         with self.assertRaisesRegex(ValueError, 'not a valid BNGL or BNGL XML file'):
-            get_parameters_variables_for_simulation(self.INVALID_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+            get_parameters_variables_outputs_for_simulation(self.INVALID_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         with self.assertRaisesRegex(NotImplementedError, 'must be'):
-            get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, SteadyStateSimulation, None)
+            get_parameters_variables_outputs_for_simulation(self.FIXTURE_FILENAME, None, SteadyStateSimulation, None)
 
     def test_get_parameters_variables_for_simulation(self):
-        params, sims, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, OneStepSimulation, None)
-        params, sims, vars = get_parameters_variables_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.FIXTURE_FILENAME, None, OneStepSimulation, None)
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='value_parameter_k_1',
@@ -94,14 +95,81 @@ class BgnlUtilsTestCase(unittest.TestCase):
         )))
         self.assertEqual(len(vars), 17)
 
+    def test_get_parameters_variables_for_simulation_native_data_types(self):
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None,
+                                                                                      native_ids=True, native_data_types=True)
+
+        self.assertTrue(params[0].is_equal(ModelAttributeChange(
+            id='k_1',
+            name=None,
+            target='parameters.k_1.value',
+            new_value=0.0,
+        )))
+        self.assertTrue(params[7].is_equal(ModelAttributeChange(
+            id='fa',
+            name=None,
+            target='parameters.fa.value',
+            new_value=1E-5,
+        )))
+        self.assertTrue(params[9].is_equal(ModelAttributeChange(
+            id='GeneA_00()',
+            name=None,
+            target='species.GeneA_00().initialCount',
+            new_value=1,
+        )))
+        self.assertTrue(params[17].is_equal(ModelAttributeChange(
+            id='gfunc',
+            name=None,
+            target='functions.gfunc.expression',
+            new_value='(0.5*(Atot^2))/(10+(Atot^2))',
+        )))
+
+        self.assertEqual(len(sims), 4)
+        self.assertIsInstance(sims[0], UniformTimeCourseSimulation)
+        expected_sim = UniformTimeCourseSimulation(
+            id='simulation_0',
+            initial_time=0.,
+            output_start_time=0.,
+            output_end_time=1000000.,
+            number_of_steps=1000,
+            algorithm=Algorithm(
+                kisao_id='KISAO_0000029',
+                changes=[
+                    AlgorithmParameterChange(
+                        kisao_id='KISAO_0000488',
+                        new_value=2,
+                    )
+                ]
+            )
+        )
+        self.assertTrue(sims[0].is_equal(expected_sim))
+
+        self.assertTrue(vars[0].is_equal(Variable(
+            id=None,
+            name=None,
+            symbol=Symbol.time.value,
+        )))
+        self.assertTrue(vars[1].is_equal(Variable(
+            id='A()',
+            name=None,
+            target='molecules.A().count',
+        )))
+        self.assertTrue(vars[9].is_equal(Variable(
+            id='GeneA_00()',
+            name=None,
+            target='species.GeneA_00().count',
+        )))
+        self.assertEqual(len(vars), 17)
+
     def test_get_parameters_variables_for_simulation_no_actions(self):
-        params, sims, vars = get_parameters_variables_for_simulation(
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
             self.NO_ACTIONS_FIXTURE_FILENAME, None, OneStepSimulation, None)
-        params, sims, vars = get_parameters_variables_for_simulation(
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
             self.NO_ACTIONS_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
     def test_get_parameters_variables_for_simulation_compartmentalized(self):
-        params, sims, vars = get_parameters_variables_for_simulation(self.COMP_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            self.COMP_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='value_parameter_NaV',

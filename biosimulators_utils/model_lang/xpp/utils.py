@@ -10,26 +10,36 @@ from ...sedml.data_model import (  # noqa: F401
     ModelAttributeChange, Variable, Symbol,
     Simulation, OneStepSimulation, UniformTimeCourseSimulation,
     Algorithm, AlgorithmParameterChange,
+    DataGenerator, Plot2D, Plot3D, Curve, Surface, AxisScale
     )
 from ...utils.core import flatten_nested_list_of_strings
 from .data_model import SIMULATION_METHOD_KISAO_MAP
 from .validation import validate_model
 import types  # noqa: F401
 
-__all__ = ['get_parameters_variables_for_simulation']
+__all__ = ['get_parameters_variables_outputs_for_simulation']
 
 
-def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
-                                            include_compartment_sizes_in_simulation_variables=False,
-                                            include_model_parameters_in_simulation_variables=False):
+def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
+                                                    set_filename=None, parameter_filename=None, initial_conditions_filename=None,
+                                                    native_ids=False, native_data_types=False,
+                                                    include_compartment_sizes_in_simulation_variables=False,
+                                                    include_model_parameters_in_simulation_variables=False):
     """ Get the possible observables for a simulation of a model
 
     Args:
-        model_filename (:obj:`str`): path to model file
+        model_filename (:obj:`str`): path to model file or directory of XPP ODE, set, parameters, and initial conditions
+            files
         model_language (:obj:`str`): model language (e.g., ``urn:sedml:language:xpp``)
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
         algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
+        set_filename (:obj:`str`, optional): path to XPP set file
+        parameter_filename (:obj:`str`, optional): path to XPP parameters file
+        initial_conditions_filename (:obj:`str`, optional): path to XPP initial conditions file
+        native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
+            for the variable of an associated SED-ML data generator
+        native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
         include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
             non-constant SBML compartments with assignment rules among the returned SED variables
         include_model_parameters_in_simulation_variables (:obj:`bool`, optional): whether to include the values of
@@ -39,11 +49,15 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
         :obj:`list` of :obj:`Simulation`: simulations of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
+        :obj:`list` of :obj:`Plot`: possible plots of the results of a simulation of the model
     """
     # check model file exists and is valid
-    errors, _, model = validate_model(model_filename)
+    errors, _, model = validate_model(model_filename,
+                                      set_filename=set_filename,
+                                      parameter_filename=parameter_filename,
+                                      initial_conditions_filename=initial_conditions_filename)
     if errors:
-        raise ValueError('Model file `{}` is not a valid XPP file.\n  {}'.format(
+        raise ValueError('Model file `{}` is not a valid XPP file or directory of XPP files.\n  {}'.format(
             model_filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  ')))
 
     if simulation_type not in [OneStepSimulation, UniformTimeCourseSimulation]:
@@ -54,18 +68,18 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     for key, val in model['parameters'].items():
         params.append(ModelAttributeChange(
-            id='parameter_{}'.format(key),
-            name='Value of parameter "{}"'.format(key),
+            id=key if native_ids else 'parameter_{}'.format(key),
+            name=None if native_ids else 'Value of parameter "{}"'.format(key),
             target='parameters.{}'.format(key),
-            new_value=str(val),
+            new_value=val if native_data_types else str(val),
         ))
 
     for key, val in model['initial_conditions'].items():
         params.append(ModelAttributeChange(
-            id='initial_condition_{}'.format(key),
-            name='Initial condition of "{}"'.format(key),
+            id=key if native_ids else 'initial_condition_{}'.format(key),
+            name=None if native_ids else 'Initial condition of "{}"'.format(key),
             target='initialConditions.{}'.format(key),
-            new_value=str(val),
+            new_value=val if native_data_types else str(val),
         ))
 
     # simulation
@@ -94,22 +108,93 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
     for key, val in model['simulation_method'].items():
         param_kisao_id = sim_method_props['parameters'].get(key, None)
         if param_kisao_id:
-            sim.algorithm.changes.append(AlgorithmParameterChange(kisao_id=param_kisao_id, new_value=val))
+            sim.algorithm.changes.append(AlgorithmParameterChange(kisao_id=param_kisao_id,
+                                                                  new_value=float(val) if native_data_types else val))
 
     # observables
     vars = []
 
     vars.append(Variable(
-        id='time',
-        name='Time',
+        id=None if native_ids else 'time',
+        name=None if native_ids else 'Time',
         symbol=Symbol.time,
     ))
 
     for key in model['initial_conditions'].keys():
-        vars.append(Variable(
-            id='dynamics_{}'.format(key),
-            name='Dynamics of "{}"'.format(key),
+        var = Variable(
+            id=key if native_ids else 'dynamics_{}'.format(key),
+            name=None if native_ids else 'Dynamics of "{}"'.format(key),
             target=key,
-        ))
+        )
+        vars.append(var)
 
-    return (params, [sim], vars)
+    for key in model['auxiliary_variables'].keys():
+        var = Variable(
+            id=key if native_ids else 'dynamics_{}'.format(key),
+            name=None if native_ids else 'Dynamics of "{}"'.format(key),
+            target=key,
+        )
+        vars.append(var)
+
+    # plots
+    if 'elements' in model['plot']:
+        plot_type = Plot2D
+        for i_element in sorted(model['plot']['elements'].keys()):
+            element = model['plot']['elements'][i_element]
+            if 'z' in element:
+                plot_type = Plot3D
+                break
+
+        for i_element in sorted(model['plot']['elements'].keys()):
+            element = model['plot']['elements'][i_element]
+            if 'x' not in element:
+                raise ValueError('Plot element {} must have x data.'.format(i_element + 1))
+
+            if 'y' not in element:
+                raise ValueError('Plot element {} must have y data.'.format(i_element + 1))
+
+            if plot_type == Plot3D:
+                if 'z' not in element:
+                    raise ValueError('3D plot element {} must have z data.'.format(i_element + 1))
+
+        data_generators = {}
+        for var in vars:
+            data_generators[var.target] = DataGenerator(
+                id='data_generator_{}'.format(var.target),
+                name=var.target,
+                variables=[var],
+                math=var.id,
+            )
+
+        plot = plot_type(id='plot')
+
+        for i_element in sorted(model['plot']['elements'].keys()):
+            element = model['plot']['elements'][i_element]
+
+            if plot_type == Plot2D:
+                plot.curves.append(Curve(
+                    id='curve_{}'.format(i_element),
+                    name='{} vs {}'.format(element['y'], element['x']),
+                    x_data_generator=data_generators[element['x']],
+                    y_data_generator=data_generators[element['y']],
+                    x_scale=AxisScale.linear,
+                    y_scale=AxisScale.linear,
+                ))
+
+            else:
+                plot.surfaces.append(Surface(
+                    id='surface_{}'.format(i_element),
+                    name='{} vs {} vs {}'.format(element['z'], element['y'], element['x']),
+                    x_data_generator=data_generators[element['x']],
+                    y_data_generator=data_generators[element['y']],
+                    z_data_generator=data_generators[element['z']],
+                    x_scale=AxisScale.linear,
+                    y_scale=AxisScale.linear,
+                    z_scale=AxisScale.linear,
+                ))
+
+        outputs = [plot]
+    else:
+        outputs = []
+
+    return (params, [sim], vars, outputs)

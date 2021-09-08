@@ -49,6 +49,7 @@ __all__ = [
     'Output',
     'Report',
     'DataSet',
+    'Plot',
     'Plot2D',
     'Plot3D',
     'AxisScale',
@@ -1570,7 +1571,17 @@ class DataSet(SedBase, SedIdGroupMixin):
                      and self.data_generator.id == other.data_generator.id))
 
 
-class Plot2D(Output):
+class Plot(Output):
+    """ A 2D plot
+
+    Attributes:
+        id (:obj:`str`): id
+        name (:obj:`str`): name
+    """
+    pass  # pragma: no cover
+
+
+class Plot2D(Plot):
     """ A 2D plot
 
     Attributes:
@@ -1614,7 +1625,7 @@ class Plot2D(Output):
             and are_lists_equal(self.curves, other.curves)
 
 
-class Plot3D(Output):
+class Plot3D(Plot):
     """ A 3D plot
 
     Attributes:

@@ -15,12 +15,13 @@ import os
 import re
 import types  # noqa: F401
 
-__all__ = ['get_parameters_variables_for_simulation']
+__all__ = ['get_parameters_variables_outputs_for_simulation']
 
 
-def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
-                                            include_compartment_sizes_in_simulation_variables=False,
-                                            include_model_parameters_in_simulation_variables=False):
+def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
+                                                    native_ids=False, native_data_types=False,
+                                                    include_compartment_sizes_in_simulation_variables=False,
+                                                    include_model_parameters_in_simulation_variables=False):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -29,6 +30,9 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
         algorithm_kisao_id (:obj:`str`): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
+        native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
+            for the variable of an associated SED-ML data generator
+        native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
         include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
             non-constant SBML compartments with assignment rules among the returned SED variables
         include_model_parameters_in_simulation_variables (:obj:`bool`, optional): whether to include the values of
@@ -59,11 +63,81 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     params = []
     for instruction in model.instructions:
+        if native_data_types:
+            if instruction.macro in ['dim', 'max_compartment', 'max_surface', 'species', 'molecule_lists']:
+                id = None
+            elif (
+                instruction.macro.startswith('define ')
+                or instruction.macro.startswith('define_global ')
+                or instruction.macro.startswith('difc ')
+                or instruction.macro.startswith('boundaries ')
+                or instruction.macro.startswith('low_wall ')
+                or instruction.macro.startswith('hi_wall ')
+                or instruction.macro.startswith('difm ')
+                or instruction.macro.startswith('drift ')
+                or instruction.macro.startswith('surface_drift ')
+                or instruction.macro.startswith('mol ')
+                or instruction.macro.startswith('surface_mol ')
+                or instruction.macro.startswith('compartment_mol ')
+                or instruction.macro.startswith('mol_list ')
+                or instruction.macro.startswith('reaction_rate ')
+                or instruction.macro.startswith('confspread_radius ')
+                or instruction.macro.startswith('binding_radius ')
+                or instruction.macro.startswith('reaction_probability ')
+                or instruction.macro.startswith('reaction_chi ')
+                or instruction.macro.startswith('reaction_production ')
+                or instruction.macro.startswith('reaction_serialnum ')
+                or instruction.macro.startswith('product_placement ')
+            ):
+                id = instruction.macro.partition(' ')[2]
+            else:
+                id = None
+        else:
+            id = instruction.id
+
+        if native_data_types:
+            if (
+                instruction.macro.startswith('define ')
+                or instruction.macro.startswith('define_global ')
+                or instruction.macro.startswith('difc ')
+                or instruction.macro.startswith('reaction_rate ')
+                or instruction.macro.startswith('confspread_radius ')
+                or instruction.macro.startswith('binding_radius ')
+                or instruction.macro.startswith('reaction_probability ')
+                or instruction.macro.startswith('reaction_chi ')
+                or instruction.macro.startswith('reaction_production ')
+                or instruction.macro in ['dim', 'max_compartment', 'max_surface']
+            ):
+                new_value = float(instruction.arguments)
+            elif (
+                instruction.macro.startswith('difm ')
+                or instruction.macro.startswith('drift ')
+                or instruction.macro.startswith('surface_drift ')
+                or instruction.macro.startswith('mol ')
+                or instruction.macro.startswith('surface_mol ')
+                or instruction.macro.startswith('compartment_mol ')
+            ):
+                new_value = [float(val) for val in instruction.arguments.split(' ')]
+            elif (
+                instruction.macro in ['species', 'molecule_lists']
+                or instruction.macro.startswith('mol_list ')
+                or instruction.macro.startswith('boundaries ')
+                or instruction.macro.startswith('low_wall ')
+                or instruction.macro.startswith('hi_wall ')
+                # or instruction.macro.startswith('reaction_serialnum ')
+                # or instruction.macro.startswith('product_placement ')
+            ):
+                new_value = instruction.arguments.split(' ')
+            else:
+                new_value = instruction.arguments
+        else:
+            new_value = instruction.arguments
+
         params.append(ModelAttributeChange(
-            id=instruction.id,
-            name=instruction.description,
+            id=id,
+            name=None if native_ids else instruction.description,
             target=instruction.macro,
-            new_value=instruction.arguments,
+            new_value=new_value,
         ))
 
     sim = UniformTimeCourseSimulation(
@@ -79,27 +153,29 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
     vars = []
     vars.append(Variable(
-        id='time',
-        name='Time',
+        id=None if native_ids else 'time',
+        name=None if native_ids else 'Time',
         symbol=Symbol.time.value,
     ))
     for species in model.species:
         vars.append(Variable(
-            id='count_species_{}'.format(re.sub('[^a-zA-Z0-9_]', '_', species)),
-            name='Count of species "{}"'.format(species),
+            id=species if native_ids else 'count_species_{}'.format(re.sub('[^a-zA-Z0-9_]', '_', species)),
+            name=None if native_ids else 'Count of species "{}"'.format(species),
             target="molcount {}".format(species),
         ))
         for compartment in model.compartments:
             vars.append(Variable(
-                id='count_species_{}_compartment_{}'.format(re.sub('[^a-zA-Z0-9_]', '_', species), compartment),
-                name='Count of species "{}" in compartment "{}"'.format(species, compartment),
+                id="{}.{}".format(species, compartment) if native_ids else 'count_species_{}_compartment_{}'.format(
+                    re.sub('[^a-zA-Z0-9_]', '_', species), compartment),
+                name=None if native_ids else 'Count of species "{}" in compartment "{}"'.format(species, compartment),
                 target="molcountincmpt {} {}".format(species, compartment),
             ))
         for surface in model.surfaces:
             vars.append(Variable(
-                id='count_species_{}_surface_{}'.format(re.sub('[^a-zA-Z0-9_]', '_', species), surface),
-                name='Count of species "{}" in surface "{}"'.format(species, surface),
+                id="{}.{}".format(species, surface) if native_ids else 'count_species_{}_surface_{}'.format(
+                    re.sub('[^a-zA-Z0-9_]', '_', species), surface),
+                name=None if native_ids else 'Count of species "{}" in surface "{}"'.format(species, surface),
                 target="molcountonsurf {} {}".format(species, surface),
             ))
 
-    return (params, [sim], vars)
+    return (params, [sim], vars, [])

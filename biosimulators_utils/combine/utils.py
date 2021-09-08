@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..sedml.data_model import Report, Plot2D, Plot3D
+from ..sedml.data_model import Report, Plot, Plot2D, Plot3D
 from ..sedml.io import SedmlSimulationReader
 from .data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormatPattern  # noqa: F401
 import os
@@ -106,7 +106,7 @@ def get_summary_sedml_contents(archive, archive_dir,
 
         sorted_tasks = sorted(doc.tasks, key=lambda task: task.id)
         sorted_reports = sorted((output for output in doc.outputs if isinstance(output, Report)), key=lambda output: output.id)
-        sorted_plots = sorted((output for output in doc.outputs if isinstance(output, (Plot2D, Plot3D))), key=lambda output: output.id)
+        sorted_plots = sorted((output for output in doc.outputs if isinstance(output, Plot)), key=lambda output: output.id)
 
         if sorted_tasks:
             summary += '    Tasks ({}):\n'.format(len(sorted_tasks))

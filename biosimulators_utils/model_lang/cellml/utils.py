@@ -18,12 +18,13 @@ import lxml  # noqa: F401
 import os
 import types  # noqa: F401
 
-__all__ = ['get_parameters_variables_for_simulation']
+__all__ = ['get_parameters_variables_outputs_for_simulation']
 
 
-def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
-                                            include_compartment_sizes_in_simulation_variables=False,
-                                            include_model_parameters_in_simulation_variables=False):
+def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
+                                                    native_ids=False, native_data_types=False,
+                                                    include_compartment_sizes_in_simulation_variables=False,
+                                                    include_model_parameters_in_simulation_variables=False):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -32,6 +33,9 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
         algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
+        native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
+            for the variable of an associated SED-ML data generator
+        native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
         include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
             non-constant SBML compartments with assignment rules among the returned SED variables
         include_model_parameters_in_simulation_variables (:obj:`bool`, optional): whether to include the values of
@@ -41,6 +45,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
         :obj:`list` of :obj:`Simulation`: simulation of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
+        :obj:`list` of :obj:`Plot`: possible plots of the results of a simulation of the model
     """
     # check model file exists
     if not isinstance(model_filename, str):
@@ -62,13 +67,16 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         default_ns.startswith('http://www.cellml.org/cellml/1.0')
         or default_ns.startswith('http://www.cellml.org/cellml/1.1')
     ):
-        return get_parameters_variables_for_simulation_version_1(model, root, simulation_type, algorithm_kisao_id=algorithm_kisao_id)
+        return get_parameters_variables_for_simulation_version_1(model, root, simulation_type, algorithm_kisao_id=algorithm_kisao_id,
+                                                                 native_ids=native_ids, native_data_types=native_data_types)
 
     else:
-        return get_parameters_variables_for_simulation_version_2(model, root, simulation_type, algorithm_kisao_id=algorithm_kisao_id)
+        return get_parameters_variables_for_simulation_version_2(model, root, simulation_type, algorithm_kisao_id=algorithm_kisao_id,
+                                                                 native_ids=native_ids, native_data_types=native_data_types)
 
 
-def get_parameters_variables_for_simulation_version_1(model, xml_root, simulation_type, algorithm_kisao_id=None):
+def get_parameters_variables_for_simulation_version_1(model, xml_root, simulation_type,
+                                                      algorithm_kisao_id=None, native_ids=False, native_data_types=False):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -77,11 +85,15 @@ def get_parameters_variables_for_simulation_version_1(model, xml_root, simulatio
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
         algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
+        native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
+            for the variable of an associated SED-ML data generator
+        native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
         :obj:`list` of :obj:`Simulation`: simulation of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
+        :obj:`list` of :obj:`Plot`: possible plots of the results of a simulation of the model
     """
     params = []
     if simulation_type == UniformTimeCourseSimulation:
@@ -117,29 +129,30 @@ def get_parameters_variables_for_simulation_version_1(model, xml_root, simulatio
             initial_value = variable.attrib.get('initial_value', None)
             if initial_value is not None:
                 params.append(ModelAttributeChange(
-                    id='initial_value_component_{}_variable_{}'.format(
+                    id='{}.{}'.format(component_name, variable_name) if native_ids else 'initial_value_component_{}_variable_{}'.format(
                         component_name, variable_name),
-                    name='Initial value of variable "{}" of component "{}"'.format(
+                    name=None if native_ids else 'Initial value of variable "{}" of component "{}"'.format(
                         variable_name, component_name),
                     target="/cellml:model/cellml:component[@name='{}']/cellml:variable[@name='{}']/@initial_value".format(
                         component_name, variable_name),
                     target_namespaces=namespaces,
-                    new_value=initial_value,
+                    new_value=float(initial_value) if native_data_types else initial_value,
                 ))
 
             vars.append(Variable(
-                id='value_component_{}_variable_{}'.format(
+                id='{}.{}'.format(component_name, variable_name) if native_ids else 'value_component_{}_variable_{}'.format(
                     component_name, variable_name),
-                name='Value of variable "{}" of component "{}"'.format(
+                name=None if native_ids else 'Value of variable "{}" of component "{}"'.format(
                     variable_name, component_name),
                 target="/cellml:model/cellml:component[@name='{}']/cellml:variable[@name='{}']".format(
                     component_name, variable_name),
                 target_namespaces=namespaces,
             ))
-    return params, [sim], vars
+    return params, [sim], vars, []
 
 
-def get_parameters_variables_for_simulation_version_2(model, xml_root, simulation_type, algorithm_kisao_id=None):
+def get_parameters_variables_for_simulation_version_2(model, xml_root, simulation_type,
+                                                      algorithm_kisao_id=None, native_ids=False, native_data_types=False):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -148,11 +161,15 @@ def get_parameters_variables_for_simulation_version_2(model, xml_root, simulatio
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
         algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
+        native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
+            for the variable of an associated SED-ML data generator
+        native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
         :obj:`list` of :obj:`Simulation`: simulation of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
+        :obj:`list` of :obj:`Plot`: possible plots of the results of a simulation of the model
     """
     namespaces = {
         'cellml': xml_root.nsmap.get(None, '')
@@ -190,23 +207,23 @@ def get_parameters_variables_for_simulation_version_2(model, xml_root, simulatio
             initial_value = variable.initialValue()
             if initial_value:
                 params.append(ModelAttributeChange(
-                    id='initial_value_component_{}_variable_{}'.format(
+                    id='{}.{}'.format(component_name, variable_name) if native_ids else 'initial_value_component_{}_variable_{}'.format(
                         component_name, variable_name),
-                    name='Initial value of variable "{}" of component "{}"'.format(
+                    name=None if native_ids else 'Initial value of variable "{}" of component "{}"'.format(
                         variable_name, component_name),
                     target="/cellml:model/cellml:component[@name='{}']/cellml:variable[@name='{}']/@initial_value".format(
                         component_name, variable_name),
                     target_namespaces=namespaces,
-                    new_value=initial_value,
+                    new_value=float(initial_value) if native_data_types else initial_value,
                 ))
 
             vars.append(Variable(
-                id='value_component_{}_variable_{}'.format(
+                id='{}.{}'.format(component_name, variable_name) if native_ids else 'value_component_{}_variable_{}'.format(
                     component_name, variable_name),
-                name='Value of variable "{}" of component "{}"'.format(
+                name=None if native_ids else 'Value of variable "{}" of component "{}"'.format(
                     variable_name, component_name),
                 target="/cellml:model/cellml:component[@name='{}']/cellml:variable[@name='{}']".format(
                     component_name, variable_name),
                 target_namespaces=namespaces,
             ))
-    return params, [sim], vars
+    return params, [sim], vars, []

@@ -10,8 +10,5 @@ init u=.1,v=.05
 u'=-u+f(aee*u-aie*v-ze+i_e(t))
 v'=(-v+f(aei*u-aii*v-zi+i_i(t)))/tau
 @ total=40
-@ xp=u,yp=v,xlo=-.1,xhi=1,ylo=-.1,yhi=1,axes=2
-@ total=80, dt =120, dt= 140, total=130 ,dt =160, # dt=100
-@ njmp=10, nout=20
-d
-@ dt=150
+@ xp=u,yp=v,xlo=-.1,xhi=1,ylo=-.1,yhi=1
+done

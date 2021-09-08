@@ -15,7 +15,7 @@ from .data_model import (SedBase, SedIdGroupMixin, SedDocument,  # noqa: F401
                          Model, ModelLanguagePattern, ModelChange, ModelAttributeChange, AddElementModelChange,
                          ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange, SetValueComputeModelChange,
                          OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation,
-                         Task, RepeatedTask, Output, Report, Plot2D, Plot3D,
+                         Task, RepeatedTask, Output, Report, Plot, Plot2D, Plot3D,
                          DataGenerator, Variable,
                          Range, UniformRange, VectorRange, FunctionalRange, UniformRangeType)
 from .math import AGGREGATE_MATH_FUNCTIONS, compile_math, eval_math
@@ -863,7 +863,7 @@ def remove_plots(sed_doc):
         sed_doc (:obj:`SedDocument`): SED document
     """
     for output in list(sed_doc.outputs):
-        if isinstance(output, (Plot2D, Plot3D)):
+        if isinstance(output, Plot):
             sed_doc.outputs.remove(output)
 
 

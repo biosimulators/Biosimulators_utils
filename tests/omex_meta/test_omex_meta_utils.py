@@ -1,5 +1,5 @@
 from biosimulators_utils.omex_meta.data_model import OmexMetaOutputFormat
-from biosimulators_utils.omex_meta.utils import build_omex_meta_file_for_model, _build_omex_meta_file_for_model
+from biosimulators_utils.omex_meta.utils import build_omex_meta_file_for_model
 import os
 import shutil
 import tempfile
@@ -19,8 +19,6 @@ class OmexMetaUtilsTestCase(unittest.TestCase):
         model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-metadata', 'demo1.xml')
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
         metadata_format = OmexMetaOutputFormat.rdfxml_abbrev
-
-        _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format.value)
 
         build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
 
@@ -48,13 +46,10 @@ class OmexMetaUtilsTestCase(unittest.TestCase):
         metadata_format = OmexMetaOutputFormat.rdfxml_abbrev
         with open(model_filename, 'w') as file:
             file.write('<sbml></sbml')
-        with self.assertRaisesRegex(RuntimeError, 'could not be generated'):
+        with self.assertRaisesRegex(ValueError, 'could not be extracted'):
             build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
-        with self.assertRaisesRegex(RuntimeError, 'could not be read'):
-            _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format.value)
 
         model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-metadata', 'simple-regulation.xml')
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
         metadata_format = OmexMetaOutputFormat.rdfxml_abbrev
-        with self.assertRaisesRegex(RuntimeError, 'could not be generated'):
-            build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
+        build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)

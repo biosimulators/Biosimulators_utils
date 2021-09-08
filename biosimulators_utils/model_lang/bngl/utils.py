@@ -18,12 +18,13 @@ import os
 import re
 import types  # noqa: F401
 
-__all__ = ['get_parameters_variables_for_simulation']
+__all__ = ['get_parameters_variables_outputs_for_simulation']
 
 
-def get_parameters_variables_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
-                                            include_compartment_sizes_in_simulation_variables=False,
-                                            include_model_parameters_in_simulation_variables=False):
+def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
+                                                    native_ids=False, native_data_types=False,
+                                                    include_compartment_sizes_in_simulation_variables=False,
+                                                    include_model_parameters_in_simulation_variables=False):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -32,6 +33,9 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
         algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
+        native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
+            for the variable of an associated SED-ML data generator
+        native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
         include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
             non-constant SBML compartments with assignment rules among the returned SED variables
         include_model_parameters_in_simulation_variables (:obj:`bool`, optional): whether to include the values of
@@ -41,6 +45,7 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
         :obj:`list` of :obj:`Simulation`: simulations of the model
         :obj:`list` of :obj:`Variable`: possible observables for a simulation of the model
+        :obj:`list` of :obj:`Plot`: possible plots of the results of a simulation of the model
     """
     # check model file exists and is valid
     if not isinstance(model_filename, str):
@@ -64,19 +69,19 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
         for el in model.parameters.items.values():
             escaped_el_name = escape_id(el.name)
             params.append(ModelAttributeChange(
-                id='value_parameter_{}'.format(escaped_el_name),
-                name='Value of parameter "{}"'.format(el.name),
+                id=el.name if native_ids else 'value_parameter_{}'.format(escaped_el_name),
+                name=None if native_ids else 'Value of parameter "{}"'.format(el.name),
                 target='parameters.{}.value'.format(el.name),
-                new_value=el.expr,
+                new_value=parse_expression(el.expr, native_data_types=native_data_types),
             ))
 
     if hasattr(model, 'compartments'):
         for el in model.compartments.items.values():
             params.append(ModelAttributeChange(
-                id='initial_size_compartment_{}'.format(el.name),
-                name='Initial size of {}-D compartment "{}"'.format(el.dim, el.name),
+                id=el.name if native_ids else 'initial_size_compartment_{}'.format(el.name),
+                name=None if native_ids else 'Initial size of {}-D compartment "{}"'.format(el.dim, el.name),
                 target='compartments.{}.size'.format(el.name),
-                new_value=el.size,
+                new_value=parse_expression(el.size, native_data_types=native_data_types),
             ))
 
     if hasattr(model, 'species'):
@@ -84,17 +89,17 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             el_pattern = el.pattern.xml['@name'].replace('::', ':')
             escaped_el_pattern = escape_id(el_pattern)
             params.append(ModelAttributeChange(
-                id='initial_amount_species_{}'.format(escaped_el_pattern),
-                name='Initial amount of species "{}"'.format(el_pattern),
+                id=el_pattern if native_ids else 'initial_amount_species_{}'.format(escaped_el_pattern),
+                name=None if native_ids else 'Initial amount of species "{}"'.format(el_pattern),
                 target='species.{}.initialCount'.format(el_pattern),
-                new_value=el.count,
+                new_value=parse_expression(el.count, native_data_types=native_data_types),
             ))
 
     if hasattr(model, 'functions'):
         for el in model.functions.items.values():
             params.append(ModelAttributeChange(
-                id='expression_function_{}'.format(el.name),
-                name='Expression of function "{}({})"'.format(el.name, ', '.join(el.args)),
+                id=el.name if native_ids else 'expression_function_{}'.format(el.name),
+                name=None if native_ids else 'Expression of function "{}({})"'.format(el.name, ', '.join(el.args)),
                 target='functions.{}.expression'.format(el.name),
                 new_value=str(el.expr),
             ))
@@ -170,13 +175,13 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
 
         if seed is not None:
             sim.algorithm.changes.append(AlgorithmParameterChange(
-                kisao_id='KISAO_0000488', new_value=seed))
+                kisao_id='KISAO_0000488', new_value=parse_expression(seed, native_data_types=native_data_types)))
         if a_tol is not None:
             sim.algorithm.changes.append(AlgorithmParameterChange(
-                kisao_id='KISAO_0000211', new_value=a_tol))
+                kisao_id='KISAO_0000211', new_value=parse_expression(a_tol, native_data_types=native_data_types)))
         if r_tol is not None:
             sim.algorithm.changes.append(AlgorithmParameterChange(
-                kisao_id='KISAO_0000209', new_value=r_tol))
+                kisao_id='KISAO_0000209', new_value=parse_expression(r_tol, native_data_types=native_data_types)))
         if stop_if is not None:
             if stop_if[0] == '"' and stop_if[-1] == '"':
                 stop_if = stop_if[1:-1]
@@ -214,8 +219,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
     vars = []
 
     vars.append(Variable(
-        id='time',
-        name='Time',
+        id=None if native_ids else 'time',
+        name=None if native_ids else 'Time',
         symbol=Symbol.time,
     ))
 
@@ -224,8 +229,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             el_molecule = str(el)
             escaped_el_molecule = escape_id(el_molecule)
             vars.append(Variable(
-                id='amount_molecule_{}'.format(escaped_el_molecule),
-                name='Dynamics of molecule "{}"'.format(el_molecule),
+                id=el_molecule if native_ids else 'amount_molecule_{}'.format(escaped_el_molecule),
+                name=None if native_ids else 'Dynamics of molecule "{}"'.format(el_molecule),
                 target='molecules.{}.count'.format(el_molecule),
             ))
 
@@ -234,8 +239,8 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
             el_pattern = el.pattern.xml['@name'].replace('::', ':')
             escaped_el_pattern = escape_id(el_pattern)
             vars.append(Variable(
-                id='amount_species_{}'.format(escaped_el_pattern),
-                name='Dynamics of species "{}"'.format(el_pattern),
+                id=el_pattern if native_ids else 'amount_species_{}'.format(escaped_el_pattern),
+                name=None if native_ids else 'Dynamics of species "{}"'.format(el_pattern),
                 target='species.{}.count'.format(el_pattern),
             ))
 
@@ -248,13 +253,31 @@ def get_parameters_variables_for_simulation(model_filename, model_language, simu
                     if pattern not in molecule_types:
                         escaped_pattern = escape_id(pattern)
                         vars.append(Variable(
-                            id='amount_molecule_{}'.format(escaped_pattern),
-                            name='Dynamics of molecule "{}"'.format(pattern),
+                            id=pattern if native_ids else 'amount_molecule_{}'.format(escaped_pattern),
+                            name=None if native_ids else 'Dynamics of molecule "{}"'.format(pattern),
                             target='molecules.{}.count'.format(pattern),
                         ))
 
-    return (params, sims, vars)
+    return (params, sims, vars, [])
 
 
 def escape_id(id):
     return re.sub(r'[^a-zA-Z0-9_]', '_', id)
+
+
+def parse_expression(value, native_data_types=False):
+    """ Optionally parse an expression
+
+    Args:
+        native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
+
+    Returns:
+        :obj:`object`: expression or parsed expression
+    """
+    if native_data_types:
+        try:
+            return float(value)
+        except ValueError:
+            return value
+    else:
+        return value

@@ -189,7 +189,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             content_filename = os.path.join(archive_tmp_dir, content.location)
             content_id = os.path.relpath(content_filename, archive_tmp_dir)
 
-            print('Executing SED-ML file {}: {} ...'.format(i_content, content_id))
+            print('Executing SED-ML file {}: {} ...'.format(i_content + 1, content_id))
 
             if config.LOG:
                 doc_log = log.sed_documents[content_id]

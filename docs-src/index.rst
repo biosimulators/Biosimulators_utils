@@ -7,8 +7,7 @@ Contents
 --------
 
 .. toctree::
-   :maxdepth: 3
-   :numbered:
+   :maxdepth: 2
 
    installation.rst
    tutorial_cli.rst

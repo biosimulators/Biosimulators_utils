@@ -21,6 +21,7 @@ DEFAULT_REPORTS_PATH = 'reports.zip'
 DEFAULT_PLOTS_PATH = 'plots.zip'
 DEFAULT_LOG_PATH = 'log.yml'
 DEFAULT_BIOSIMULATORS_API_ENDPOINT = 'https://api.biosimulators.org/'
+DEFAULT_RUNBIOSIMULATIONS_API_ENDPOINT = 'https://run.api.biosimulations.org/'
 
 
 class Config(object):
@@ -49,6 +50,7 @@ class Config(object):
         LOG (:obj:`bool`): whether to log the execution of a COMBINE/OMEX archive
         LOG_PATH (:obj:`str`): path to save the execution log of a COMBINE/OMEX archive
         BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
+        RUNBIOSIMULATIONS_API_ENDPOINT (:obj:`str`): URL for runBioSimulations API
         VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
         DEBUG (:obj:`bool`): whether to raise exceptions rather than capturing them
     """
@@ -64,8 +66,8 @@ class Config(object):
                  COLLECT_COMBINE_ARCHIVE_RESULTS=False,
                  COLLECT_SED_DOCUMENT_RESULTS=False,
                  SAVE_PLOT_DATA=True,
-                 REPORT_FORMATS=[ReportFormat.h5.name],
-                 VIZ_FORMATS=[VizFormat.pdf.name],
+                 REPORT_FORMATS=[ReportFormat.h5],
+                 VIZ_FORMATS=[VizFormat.pdf],
                  H5_REPORTS_PATH=DEFAULT_H5_REPORTS_PATH,
                  REPORTS_PATH=DEFAULT_REPORTS_PATH,
                  PLOTS_PATH=DEFAULT_PLOTS_PATH,
@@ -74,6 +76,7 @@ class Config(object):
                  LOG=True,
                  LOG_PATH=DEFAULT_LOG_PATH,
                  BIOSIMULATORS_API_ENDPOINT=DEFAULT_BIOSIMULATORS_API_ENDPOINT,
+                 RUNBIOSIMULATIONS_API_ENDPOINT=DEFAULT_RUNBIOSIMULATIONS_API_ENDPOINT,
                  VERBOSE=False,
                  DEBUG=False):
         """
@@ -100,6 +103,7 @@ class Config(object):
             LOG (:obj:`bool`): whether to log the execution of a COMBINE/OMEX archive
             LOG_PATH (:obj:`str`): path to save the execution status of a COMBINE/OMEX archive
             BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
+            RUNBIOSIMULATIONS_API_ENDPOINT (:obj:`str`): URL for runBioSimulations API
             VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
             DEBUG (:obj:`bool`): whether to raise exceptions rather than capturing them
         """
@@ -123,6 +127,7 @@ class Config(object):
         self.LOG = LOG
         self.LOG_PATH = LOG_PATH
         self.BIOSIMULATORS_API_ENDPOINT = BIOSIMULATORS_API_ENDPOINT
+        self.RUNBIOSIMULATIONS_API_ENDPOINT = RUNBIOSIMULATIONS_API_ENDPOINT
         self.VERBOSE = VERBOSE
         self.DEBUG = DEBUG
 
@@ -167,6 +172,7 @@ def get_config():
         LOG=os.environ.get('LOG', '1').lower() in ['1', 'true'],
         LOG_PATH=os.environ.get('LOG_PATH', DEFAULT_LOG_PATH),
         BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', DEFAULT_BIOSIMULATORS_API_ENDPOINT),
+        RUNBIOSIMULATIONS_API_ENDPOINT=os.environ.get('RUNBIOSIMULATIONS_API_ENDPOINT', DEFAULT_RUNBIOSIMULATIONS_API_ENDPOINT),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
     )

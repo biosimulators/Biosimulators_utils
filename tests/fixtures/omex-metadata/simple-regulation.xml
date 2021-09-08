@@ -12,11 +12,11 @@
       <species id="D" compartment="cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false" metaid="#OmexMetaId0004"/>
     </listOfSpecies>
     <listOfParameters>
-      <parameter id="S" value="0" constant="true"/>
-      <parameter id="k1" value="0.1" constant="true"/>
-      <parameter id="k2" value="0.1" constant="true"/>
-      <parameter id="k3" value="0.1" constant="true"/>
-      <parameter id="k4" value="0.1" constant="true"/>
+      <parameter id="S" value="0" constant="true" metaid="parameter0000"/>
+      <parameter id="k1" value="0.1" constant="true" metaid="parameter0001"/>
+      <parameter id="k2" value="0.1" constant="true" metaid="parameter0002"/>
+      <parameter id="k3" value="0.1" constant="true" metaid="parameter0003"/>
+      <parameter id="k4" value="0.1" constant="true" metaid="parameter0004"/>
     </listOfParameters>
     <listOfReactions>
       <reaction id="R1" reversible="false" fast="false" metaid="#OmexMetaId0005">
