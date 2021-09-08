@@ -82,7 +82,7 @@ jobs:
       # install package
       - name: Install the package
         run: |
-          python -m pip install git+https://github.com/biosimulators/RBApy.git#egg=rba
+          python -m pip install git+https://github.com/biosimulators/RBApy.git#egg=rbapy
           python -m pip install .[all]
 
       # lint
