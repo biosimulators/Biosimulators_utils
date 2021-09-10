@@ -11,9 +11,11 @@ import unittest
 
 class BgnlUtilsTestCase(unittest.TestCase):
     FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'valid.bngl')
+    MULTIPLE_ACTIONS_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'multiple-actions.bngl')
     NO_ACTIONS_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'no-actions.bngl')
     COMP_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'LR_comp.bngl')
     INVALID_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'invalid.bngl')
+    INVALID_SYNTAX_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'invalid-syntax.bngl')
 
     def test_get_parameters_variables_for_simulation_error_handling(self):
         with self.assertRaisesRegex(ValueError, 'is not a path to a model file'):
@@ -27,6 +29,11 @@ class BgnlUtilsTestCase(unittest.TestCase):
 
         with self.assertRaisesRegex(NotImplementedError, 'must be'):
             get_parameters_variables_outputs_for_simulation(self.FIXTURE_FILENAME, None, SteadyStateSimulation, None)
+
+    @unittest.expectedFailure  # BioNetGen doesn't correct parse models
+    def test_get_parameters_variables_for_simulation_action_syntax_error_handling(self):
+        with self.assertRaisesRegex(ValueError, 'not a valid BNGL or BNGL XML file'):
+            get_parameters_variables_outputs_for_simulation(self.INVALID_SYNTAX_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
     def test_get_parameters_variables_for_simulation(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.FIXTURE_FILENAME, None, OneStepSimulation, None)
@@ -97,7 +104,7 @@ class BgnlUtilsTestCase(unittest.TestCase):
 
     def test_get_parameters_variables_for_simulation_native_data_types(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None,
-                                                                                      native_ids=True, native_data_types=True)
+                                                                                    native_ids=True, native_data_types=True)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='k_1',
@@ -160,6 +167,11 @@ class BgnlUtilsTestCase(unittest.TestCase):
             target='species.GeneA_00().count',
         )))
         self.assertEqual(len(vars), 17)
+
+    def test_get_parameters_variables_for_simulation_multiple_actions(self):
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            self.MULTIPLE_ACTIONS_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
+        self.assertEqual(len(sims), 6)
 
     def test_get_parameters_variables_for_simulation_no_actions(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
