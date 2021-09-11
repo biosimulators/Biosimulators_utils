@@ -389,7 +389,7 @@ def resolve_model(model, sed_doc, working_dir):
         return None
 
 
-def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
+def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=None,
                                variable_values=None, range_values=None,
                                validate_unique_xml_targets=True):
     """ Modify an XML-encoded model according to a model change
@@ -397,8 +397,10 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
     Args:
         model (:obj:`Model`): model
         model_etree (:obj:`etree._ElementTree`): element tree for model
-        sed_doc (:obj:`SedDocument`): parent SED document; used to resolve sources defined by reference to other models
-        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
+        sed_doc (:obj:`SedDocument`, optional): parent SED document; used to resolve sources defined by reference to other models;
+            required for compute changes
+        working_dir (:obj:`str`, optional): working directory of the SED document (path relative to which models are located);
+            required for compute changes
         variable_values (:obj:`dict`, optional): dictionary which contains the value of each variable of each
             compute model change
         range_values (:obj:`dict`, optional): dictionary which contains the value of each range of each
