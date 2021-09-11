@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.118 documentation</title>
+    <title>biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.119 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -143,6 +143,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="biosimulators_utils.kisao.html">
    biosimulators_utils.kisao package
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="biosimulators_utils.licensing.html">
+   biosimulators_utils.licensing package
   </a>
  </li>
  <li class="toctree-l1">
@@ -4273,15 +4278,17 @@ for the variable of an associated SED-ML data generator</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.utils.apply_changes_to_xml_model">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.utils.</span></span><span class="sig-name descname"><span class="pre">apply_changes_to_xml_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_etree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sed_doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_unique_xml_targets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.apply_changes_to_xml_model" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.utils.</span></span><span class="sig-name descname"><span class="pre">apply_changes_to_xml_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_etree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sed_doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_unique_xml_targets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.utils.apply_changes_to_xml_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Modify an XML-encoded model according to a model change</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Model</span></code>) – model</p></li>
 <li><p><strong>model_etree</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">etree._ElementTree</span></code>) – element tree for model</p></li>
-<li><p><strong>sed_doc</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocument</span></code>) – parent SED document; used to resolve sources defined by reference to other models</p></li>
-<li><p><strong>working_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – working directory of the SED document (path relative to which models are located)</p></li>
+<li><p><strong>sed_doc</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocument</span></code>, optional) – parent SED document; used to resolve sources defined by reference to other models;
+required for compute changes</p></li>
+<li><p><strong>working_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – working directory of the SED document (path relative to which models are located);
+required for compute changes</p></li>
 <li><p><strong>variable_values</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – dictionary which contains the value of each variable of each
 compute model change</p></li>
 <li><p><strong>range_values</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – dictionary which contains the value of each range of each
