@@ -15,12 +15,12 @@ class XppUtilsTestCase(unittest.TestCase):
 
         self.assertEqual(params[0].id, 'parameter_aee')
         self.assertEqual(params[0].name, 'Value of parameter "aee"')
-        self.assertEqual(params[0].target, 'parameters.aee')
+        self.assertEqual(params[0].target, 'aee')
         self.assertEqual(params[0].new_value, '10.0')
 
         self.assertEqual(params[12].id, 'initial_condition_U')
         self.assertEqual(params[12].name, 'Initial condition of "U"')
-        self.assertEqual(params[12].target, 'initialConditions.U')
+        self.assertEqual(params[12].target, 'U')
         self.assertEqual(params[12].new_value, '0.1')
 
         self.assertEqual(len(sims), 1)
@@ -85,12 +85,12 @@ class XppUtilsTestCase(unittest.TestCase):
 
         self.assertEqual(params[0].id, 'aee')
         self.assertEqual(params[0].name, None)
-        self.assertEqual(params[0].target, 'parameters.aee')
+        self.assertEqual(params[0].target, 'aee')
         self.assertEqual(params[0].new_value, 10.0)
 
         self.assertEqual(params[12].id, 'U')
         self.assertEqual(params[12].name, None)
-        self.assertEqual(params[12].target, 'initialConditions.U')
+        self.assertEqual(params[12].target, 'U')
         self.assertEqual(params[12].new_value, 0.1)
 
         self.assertEqual(len(sims), 1)

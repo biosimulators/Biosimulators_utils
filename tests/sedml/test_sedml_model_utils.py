@@ -86,7 +86,7 @@ class ModelUtilsTestCase(unittest.TestCase):
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='parameter_aee',
             name='Value of parameter "aee"',
-            target='parameters.aee',
+            target='aee',
             new_value='10.0',
         )))
 

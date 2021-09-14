@@ -70,7 +70,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         params.append(ModelAttributeChange(
             id=key if native_ids else 'parameter_{}'.format(key),
             name=None if native_ids else 'Value of parameter "{}"'.format(key),
-            target='parameters.{}'.format(key),
+            target='{}'.format(key),
             new_value=val if native_data_types else str(val),
         ))
 
@@ -78,7 +78,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         params.append(ModelAttributeChange(
             id=key if native_ids else 'initial_condition_{}'.format(key),
             name=None if native_ids else 'Initial condition of "{}"'.format(key),
-            target='initialConditions.{}'.format(key),
+            target='{}'.format(key),
             new_value=val if native_data_types else str(val),
         ))
 
