@@ -13,7 +13,9 @@ from .data_model import VizFormat
 from .warnings import IllogicalVizWarning
 from matplotlib import cm as ColorMap
 from matplotlib import pyplot
+import copy
 import matplotlib  # noqa: F401
+import numpy
 import os
 
 
@@ -49,6 +51,11 @@ def write_plot_2d(plot, data_generator_results, base_path, rel_path, format=VizF
         y_result = data_generator_results[y_id]
 
         with pyplot.style.context(style):
+            if x_result.ndim > 1:
+                x_result = x_result.reshape((numpy.prod(x_result.shape[0:-1]), x_result.shape[-1])).transpose()
+            if y_result.ndim > 1:
+                y_result = y_result.reshape((numpy.prod(y_result.shape[0:-1]), y_result.shape[-1])).transpose()
+
             axes.plot(x_result, y_result)
 
         x_name = curve.x_data_generator.name or x_id
@@ -122,7 +129,7 @@ def write_plot_3d(plot, data_generator_results, base_path, rel_path, format=VizF
 
     plotted_surfaces = []
     surface_names = []
-    for i_surfacce, surface in enumerate(plot.surfaces):
+    for i_surface, surface in enumerate(plot.surfaces):
         x_id = surface.x_data_generator.id
         y_id = surface.y_data_generator.id
         z_id = surface.z_data_generator.id
@@ -131,8 +138,57 @@ def write_plot_3d(plot, data_generator_results, base_path, rel_path, format=VizF
         y_result = data_generator_results[y_id]
         z_result = data_generator_results[z_id]
 
-        with pyplot.style.context(style):
-            plotted_surfaces.append(axes.plot_surface(x_result, y_result, z_result, cmap=colormaps[i_surfacce % len(colormaps)]))
+        n_dim = 0
+        extra_dims_lens = set()
+
+        if x_result.ndim > 2 and numpy.any(numpy.array(x_result.shape[0:-2]) != 1):
+            n_dim = max(n_dim, x_result.ndim)
+            extra_dims_lens.add(numpy.prod(x_result.shape[0:-2]))
+            x_result = x_result.reshape((numpy.prod(x_result.shape[0:-2]), x_result.shape[-2], x_result.shape[-1]))
+        if y_result.ndim > 2 and numpy.any(numpy.array(y_result.shape[0:-2]) != 1):
+            n_dim = max(n_dim, y_result.ndim)
+            extra_dims_lens.add(numpy.prod(y_result.shape[0:-2]))
+            y_result = y_result.reshape((numpy.prod(y_result.shape[0:-2]), y_result.shape[-2], y_result.shape[-1]))
+        if z_result.ndim > 2 and numpy.any(numpy.array(z_result.shape[0:-2]) != 1):
+            n_dim = max(n_dim, z_result.ndim)
+            extra_dims_lens.add(numpy.prod(z_result.shape[0:-2]))
+            z_result = z_result.reshape((numpy.prod(z_result.shape[0:-2]), z_result.shape[-2], z_result.shape[-1]))
+
+        if extra_dims_lens:
+            warn('3D surface plots of {}-dimensional data may not be informative.'.format(n_dim), IllogicalVizWarning)
+
+        if len(extra_dims_lens) > 1:
+            raise ValueError('Multidimensional data must have consistent shapes.')
+        elif extra_dims_lens:
+            n_surfaces = list(extra_dims_lens)[0]
+        else:
+            n_surfaces = 1
+
+        for j_surface in range(n_surfaces):
+            if x_result.ndim <= 2:
+                x = x_result
+            elif x_result.shape[0] == 1:
+                x = x_result.squeeze(axis=0)
+            else:
+                x = x_result[j_surface, :, :]
+
+            if y_result.ndim <= 2:
+                y = y_result
+            elif y_result.shape[0] == 1:
+                y = y_result.squeeze(axis=0)
+            else:
+                y = y_result[j_surface, :, :]
+
+            if z_result.ndim <= 2:
+                z = z_result
+            elif z_result.shape[0] == 1:
+                z = z_result.squeeze(axis=0)
+            else:
+                z = z_result[j_surface, :, :]
+
+            with pyplot.style.context(style):
+                plotted_surfaces.append(axes.plot_surface(
+                    x, y, z, cmap=colormaps[((i_surface * len(plot.surfaces)) + j_surface) % len(colormaps)]))
 
         x_name = surface.x_data_generator.name or x_id
         y_name = surface.y_data_generator.name or y_id
