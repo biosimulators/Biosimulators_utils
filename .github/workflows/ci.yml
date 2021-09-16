@@ -180,7 +180,7 @@ jobs:
           set +e
           git stash pop
           git add docs
-          git commit -m "Updating compiled documentation"
+          git commit -m "chore: Updating compiled documentation"
           if [[ $? = 0 ]]; then
             docsChanged=1
           else
