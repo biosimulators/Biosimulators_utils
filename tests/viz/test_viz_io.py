@@ -202,6 +202,9 @@ class PlotIoTestCase(unittest.TestCase):
 
         self.assertTrue(os.path.isfile(os.path.join(base_path, 'path/to/sim.sedml/plot_1.pdf')))
 
+        data_gen_results[species_a.id] = numpy.sin(time_data + 0/16 * numpy.pi).reshape(shape)
+        io.write_plot_2d(plot, data_gen_results, base_path, rel_path, format=format)
+
     def test_write_plot_3d_one_surface(self):
         x = DataGenerator(id='x')
         y = DataGenerator(id='y')
