@@ -6,6 +6,7 @@ import h5py
 import numpy
 import numpy.testing
 import os
+import pandas
 import shutil
 import tempfile
 import unittest
@@ -179,7 +180,7 @@ class ReportIoTestCase(unittest.TestCase):
                 self.assertEqual(file[format.value + '/e.sedml/' + report_3.id].attrs['sedmlId'], report_3.id)
                 self.assertNotIn('sedmlName', file[format.value + '/e.sedml/' + report_3.id].attrs)
 
-    def test_read_write_warnings(self):
+    def test_read_write_error_handling(self):
         report_1 = Report(
             id='report_1',
             data_sets=[
@@ -206,6 +207,10 @@ class ReportIoTestCase(unittest.TestCase):
         report_1.data_sets.pop()
         with self.assertWarns(ExtraDataWarning):
             io.ReportReader().run(report_1, self.dirname, rel_path_1, format=data_model.ReportFormat.h5)
+
+        data_set_results_1['x'] = numpy.array([1., 2.], dtype=numpy.dtype('object'))
+        with self.assertRaisesRegex(TypeError, 'NumPy dtype should be '):
+            io.ReportWriter().run(report_1, data_set_results_1, self.dirname, rel_path_1, format=data_model.ReportFormat.h5)
 
     def test_read_write_duplicate_labels(self):
         # labels in same order

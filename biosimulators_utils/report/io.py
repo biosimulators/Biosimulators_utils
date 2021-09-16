@@ -76,7 +76,11 @@ class ReportWriter(object):
                     data_set_data_types.append('__None__')
                     data_set_shapes.append('')
                 else:
-                    data_set_data_types.append(data_set_result.dtype.name)
+                    data_set_dtype = data_set_result.dtype
+                    if data_set_dtype in [numpy.dtype('object'), numpy.dtype('void'), numpy.dtype('S'), numpy.dtype('a')]:
+                        msg = 'NumPy dtype should be a specific type such as `float64` or `int64` not `{}`.'.format(data_set_dtype.name)
+                        raise TypeError(msg)
+                    data_set_data_types.append(data_set_dtype.name)
                     data_set_shapes.append(','.join(str(dim_len) for dim_len in data_set_result.shape))
         results_array = pad_arrays_to_consistent_shapes(results_array)
         results_array = numpy.array(results_array)
