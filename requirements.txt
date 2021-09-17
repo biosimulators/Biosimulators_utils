@@ -8,7 +8,7 @@ lxml
 matplotlib
 mpmath
 natsort
-networkx
+networkx >= 2.6
 numpy
 openpyxl
 pandas

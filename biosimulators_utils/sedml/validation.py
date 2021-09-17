@@ -143,10 +143,11 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
         model_source_graph = networkx.DiGraph()
 
         for model in doc.models:
-            model_source_graph.add_node(model.id)
+            if model.id:
+                model_source_graph.add_node(model.id)
 
         for model in doc.models:
-            if model.source and model.source.startswith('#'):
+            if model.id and model.source and model.source.startswith('#'):
                 model_source_graph.add_edge(model.id, model.source[1:])
 
         try:
@@ -159,13 +160,14 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
         model_change_graph = networkx.DiGraph()
 
         for model in doc.models:
-            model_change_graph.add_node(model.id)
+            if model.id:
+                model_change_graph.add_node(model.id)
 
         for model in doc.models:
             for change in model.changes:
                 if isinstance(change, ComputeModelChange):
                     for variable in change.variables:
-                        if variable.model and variable.model != model:
+                        if model.id and variable.model and variable.model != model and variable.model.id:
                             model_change_graph.add_edge(model.id, variable.model.id)
 
         try:
@@ -198,7 +200,8 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
         # sub tasks of repeated tasks reference tasks and have unique orders
         sub_task_graph = networkx.DiGraph()
         for task in doc.tasks:
-            sub_task_graph.add_node(task.id)
+            if task.id:
+                sub_task_graph.add_node(task.id)
 
             if isinstance(task, RepeatedTask):
                 if not task.sub_tasks:
@@ -207,7 +210,8 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
 
                 for i_sub_task, sub_task in enumerate(task.sub_tasks):
                     if sub_task.task and isinstance(sub_task.task, AbstractTask):
-                        sub_task_graph.add_edge(task.id, sub_task.task.id)
+                        if task.id and sub_task.task.id:
+                            sub_task_graph.add_edge(task.id, sub_task.task.id)
                     else:
                         msg = 'Sub-task {} must reference a task.'.format(i_sub_task + 1)
                         task_errors[task]['other'].append([msg])
@@ -345,8 +349,10 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                 for range in task.ranges:
                     if isinstance(range, FunctionalRange):
                         if range.id and range.range and range.range.id:
-                            functional_range_graph.add_node(range.id)
-                            functional_range_graph.add_edge(range.id, range.range.id)
+                            if range.id:
+                                functional_range_graph.add_node(range.id)
+                                if range.range.id:
+                                    functional_range_graph.add_edge(range.id, range.range.id)
                         else:
                             check_range_cycles = False
 
