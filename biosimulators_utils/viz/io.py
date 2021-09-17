@@ -13,7 +13,6 @@ from .data_model import VizFormat
 from .warnings import IllogicalVizWarning
 from matplotlib import cm as ColorMap
 from matplotlib import pyplot
-import copy
 import matplotlib  # noqa: F401
 import numpy
 import os
