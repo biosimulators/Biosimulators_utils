@@ -1,4 +1,4 @@
-from biosimulators_utils.model_lang.sbml.utils import get_parameters_variables_outputs_for_simulation
+from biosimulators_utils.model_lang.sbml.utils import get_parameters_variables_outputs_for_simulation, get_package_namespace
 from biosimulators_utils.sedml.data_model import (ModelLanguage, SteadyStateSimulation,
                                                   OneStepSimulation, UniformTimeCourseSimulation, Symbol)
 from unittest import mock
@@ -416,7 +416,7 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
 
     def test_core_one_step(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.CORE_FIXTURE, ModelLanguage.SBML, OneStepSimulation, 'KISAO_0000019',
-                                                                                      native_ids=True, native_data_types=True)
+                                                                                    native_ids=True, native_data_types=True)
 
     def test_core_time_course(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
@@ -449,7 +449,7 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
 
     def test_fbc_steady_state_fba(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000437',
-                                                                                      native_ids=True, native_data_types=True)
+                                                                                    native_ids=True, native_data_types=True)
 
         self.assertEqual(params[0].id, 'cobra_default_lb')
         self.assertEqual(params[0].name, None)
@@ -485,7 +485,7 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
 
     def test_fbc_steady_state_fva(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000526',
-                                                                                      native_ids=True, native_data_types=True)
+                                                                                    native_ids=True, native_data_types=True)
 
         self.assertEqual(vars[0].id, 'R_ACALD')
         self.assertEqual(vars[0].name, 'acetaldehyde dehydrogenase (acetylating)')
@@ -592,3 +592,22 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
             'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
             'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
         })
+
+    def test_get_package_namespace(self):
+        self.assertEqual(get_package_namespace('fbc', {
+            None: 'http://www.sbml.org/sbml/level3/version1/core',
+            'xyz': 'http://www.sbml.org/sbml/level3/version1/fbc/version2',
+        })[0], 'xyz')
+
+        with self.assertRaises(ValueError):
+            get_package_namespace('fbc', {
+                None: 'http://www.sbml.org/sbml/level3/version1/core',
+                'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
+            })
+
+        with self.assertRaises(ValueError):
+            get_package_namespace('fbc', {
+                None: 'http://www.sbml.org/sbml/level3/version1/core',
+                'uvw': 'http://www.sbml.org/sbml/level3/version1/fbc/version2',
+                'xyz': 'http://www.sbml.org/sbml/level3/version1/fbc/version1',
+            })

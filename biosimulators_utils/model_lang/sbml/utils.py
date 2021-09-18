@@ -14,9 +14,11 @@ from ...sedml.data_model import (  # noqa: F401
 from ...utils.core import format_float, flatten_nested_list_of_strings
 from .validation import validate_model
 import os
+import re
 import types  # noqa: F401
+import typing
 
-__all__ = ['get_parameters_variables_outputs_for_simulation']
+__all__ = ['get_parameters_variables_outputs_for_simulation', 'get_package_namespace']
 
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
@@ -230,7 +232,11 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             if species.isSetInitialLevel():
                 params.append(ModelAttributeChange(
                     id=species_id if native_ids else 'init_level_species_{}'.format(species_id),
-                    name=species.getName() or None if native_ids else 'Initial level of species "{}"'.format(species.getName() or species_id),
+                    name=(
+                        species.getName() or None
+                        if native_ids else
+                        'Initial level of species "{}"'.format(species.getName() or species_id)
+                    ),
                     target=(
                         "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies"
                         "/qual:qualitativeSpecies[@qual:id='{}']/@qual:initialLevel"
@@ -257,7 +263,11 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             if comp.isSetSize():
                 params.append(ModelAttributeChange(
                     id=comp.getId() if native_ids else 'init_size_compartment_{}'.format(comp.getId()),
-                    name=comp.getName() or None if native_ids else 'Initial size of compartment "{}"'.format(comp.getName() or comp.getId()),
+                    name=(
+                        comp.getName() or None
+                        if native_ids else
+                        'Initial size of compartment "{}"'.format(comp.getName() or comp.getId())
+                    ),
                     target="/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='{}']/@size".format(comp_id),
                     target_namespaces=namespaces,
                     new_value=comp.getSize() if native_data_types else format_float(comp.getSize()),
@@ -314,7 +324,11 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             if species.isSetInitialAmount():
                 params.append(ModelAttributeChange(
                     id=species_id if native_ids else 'init_amount_species_{}'.format(species_id),
-                    name=species.getName() or None if native_ids else 'Initial amount of species "{}"'.format(species.getName() or species_id),
+                    name=(
+                        species.getName() or None
+                        if native_ids else
+                        'Initial amount of species "{}"'.format(species.getName() or species_id)
+                    ),
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']/@initialAmount".format(species_id),
                     target_namespaces=namespaces,
                     new_value=species.getInitialAmount() if native_data_types else format_float(species.getInitialAmount()),
@@ -322,7 +336,11 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             elif species.isSetInitialConcentration():
                 params.append(ModelAttributeChange(
                     id=species_id if native_ids else 'init_conc_species_{}'.format(species_id),
-                    name=species.getName() or None if native_ids else 'Initial concentration of species "{}"'.format(species.getName() or species_id),
+                    name=(
+                        species.getName() or None
+                        if native_ids else
+                        'Initial concentration of species "{}"'.format(species.getName() or species_id)
+                    ),
                     target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']/@initialConcentration".format(species_id),
                     target_namespaces=namespaces,
                     new_value=species.getInitialConcentration() if native_data_types else format_float(species.getInitialConcentration()),
@@ -436,3 +454,27 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                         vars.append(var)
 
     return (params, [sim], vars, [])
+
+
+def get_package_namespace(package: str, namespaces: typing.Dict[typing.Union[str, None], str]) -> typing.Tuple[str, str]:
+    """ Get the prefix and URI for the namespace of an SBML package
+
+    Args:
+        package (:obj:`str`): SBML package id (e.g., ``fbc``, ``qual``)
+        namespaces (:obj:`dict`): dictionary that maps namespace prefixes to URIs
+
+    Returns:
+        :obj:`tuple`:
+
+            * :obj:`str`: prefix
+            * :obj:`str: URI
+    """
+    sbml_fbc_prefixes = set()
+    sbml_fbc_uris = set()
+    for prefix, uri in namespaces.items():
+        if uri and re.match(r'^http://www.sbml.org/sbml/level\d+/version\d+/{}/version\d+$'.format(package), uri):
+            sbml_fbc_prefixes.add(prefix)
+            sbml_fbc_uris.add(uri)
+    if len(sbml_fbc_uris) != 1:
+        raise ValueError('Namespaces must include 1 SBML {} namespace.'.format(package))
+    return list(sbml_fbc_prefixes)[0], list(sbml_fbc_uris)[0]
