@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>biosimulators_utils.model_lang.sbml package &#8212; BioSimulators utils 0.1.121 documentation</title>
+    <title>biosimulators_utils.model_lang.sbml package &#8212; BioSimulators utils 0.1.122 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -337,6 +337,30 @@
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.sbml.utils.get_package_namespace">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.sbml.utils.</span></span><span class="sig-name descname"><span class="pre">get_package_namespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespaces</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/sbml/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.sbml.utils.get_package_namespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the prefix and URI for the namespace of an SBML package</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>package</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – SBML package id (e.g., <code class="docutils literal notranslate"><span class="pre">fbc</span></code>, <code class="docutils literal notranslate"><span class="pre">qual</span></code>)</p></li>
+<li><p><strong>namespaces</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>) – dictionary that maps namespace prefixes to URIs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: prefix</p></li>
+<li><p>:obj:<a href="#id1"><span class="problematic" id="id2">`</span></a>str: URI</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.model_lang.sbml.utils.get_parameters_variables_outputs_for_simulation">
 <span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.sbml.utils.</span></span><span class="sig-name descname"><span class="pre">get_parameters_variables_outputs_for_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_kisao_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_data_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_compartment_sizes_in_simulation_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_model_parameters_in_simulation_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_consistency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/sbml/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.sbml.utils.get_parameters_variables_outputs_for_simulation" title="Permalink to this definition">¶</a></dt>
