@@ -14,6 +14,7 @@ from ...sedml.data_model import (  # noqa: F401
 from ...utils.core import flatten_nested_list_of_strings
 from ...warnings import warn, BioSimulatorsWarning
 from .validation import validate_model
+import numpy
 import os
 import re
 import types  # noqa: F401
