@@ -44,14 +44,6 @@ class BgnlUtilsTestCase(unittest.TestCase):
             get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'insufficient-action-args-2.bngl'),
                                                             None, UniformTimeCourseSimulation, None)
 
-        with self.assertWarnsRegex(BioSimulatorsWarning, 'Output step interval'):
-            get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'unsupported-action-args.bngl'),
-                                                            None, UniformTimeCourseSimulation, None)
-
-        with self.assertWarnsRegex(BioSimulatorsWarning, 'Maximum simulation steps'):
-            get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'unsupported-action-args.bngl'),
-                                                            None, UniformTimeCourseSimulation, None)
-
     def test_get_parameters_variables_for_simulation_action_syntax_error_handling(self):
         with self.assertRaisesRegex(ValueError, 'not a valid BNGL or BNGL XML file'):
             get_parameters_variables_outputs_for_simulation(self.INVALID_SYNTAX_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
@@ -123,10 +115,21 @@ class BgnlUtilsTestCase(unittest.TestCase):
         )))
         self.assertEqual(len(vars), 17)
 
+    def test_get_parameters_variables_for_simulation_with_step_args(self):
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            os.path.join(self.FIXTURE_DIRNAME, 'step-action-args.bngl'),
+            None, UniformTimeCourseSimulation, None)
+
+        self.assertEqual(sims[0].algorithm.changes[-2].kisao_id, 'KISAO_0000684')
+        self.assertEqual(sims[0].algorithm.changes[-2].new_value, '2')
+        self.assertEqual(sims[0].algorithm.changes[-1].kisao_id, 'KISAO_0000415')
+        self.assertEqual(sims[0].algorithm.changes[-1].new_value, '10000')
+
     @unittest.expectedFailure
     def test_get_parameters_variables_for_simulation_with_sample_times(self):
-        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'sample-times.bngl'),
-                                                                                    None, UniformTimeCourseSimulation, None)
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            os.path.join(self.FIXTURE_DIRNAME, 'sample-times.bngl'),
+            None, UniformTimeCourseSimulation, None)
 
         self.assertEqual(sims[0].initial_time, 0)
         self.assertEqual(sims[0].output_start_time, 1)

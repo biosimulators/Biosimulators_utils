@@ -113,6 +113,8 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         initial_time = float(args.get('t_start', '0.'))
         output_start_time = initial_time
         output_end_time = args.get('t_end', None)
+        output_step_interval = args.get('output_step_interval', None)
+        max_sim_steps = args.get('max_sim_steps', None)
         number_of_steps = int(float(args.get('n_steps', args.get('n_output_steps', '1'))))
         seed = args.get('seed', None)
         a_tol = args.get('atol', None)
@@ -153,7 +155,6 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         else:
             continue  # pragma: no cover
 
-        warnings = []
         if 'sample_times' in args:
             sample_times = sorted(args['sample_times'])
             if not sample_times:
@@ -166,15 +167,13 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             if len(set(numpy.diff(sample_times))) <= 1:
                 number_of_steps = len(sample_times) - 1
             else:
-                warnings.append('Non-uniformly-distributed sample times (`sample_times`) cannot be translated into SED-ML.')
-        if 'output_step_interval' in args:
-            warnings.append('Output step interval (`output_step_interval`) cannot be translated into SED-ML that BioNetGen can interpret.')
-        if 'max_sim_steps' in args:
-            warnings.append('Maximum simulation steps (`max_sim_steps`) cannot be translated into SED-ML that BioNetGen can interpret.')
+                msg = (
+                    'Non-uniformly-distributed sample times (`sample_times`) for action {} were ignored '
+                    'because they cannot be translated into SED-ML.'
+                ).format(i_action + 1)
+                warn(msg, BioSimulatorsWarning)
         if output_end_time is None:
             raise ValueError('`Simulation end time (`t_end`) must be set for `{}` action {}.'.format(action.name, i_action + 1))
-        if warnings:
-            warn('Skipping action {}:\n  {}'.format(i_action + 1, '\n  '.join(warnings)), BioSimulatorsWarning)
 
         if method == 'ode':
             algorithm_kisao_id = 'KISAO_0000019'
@@ -198,13 +197,19 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
 
         if seed is not None:
             sim.algorithm.changes.append(AlgorithmParameterChange(
-                kisao_id='KISAO_0000488', new_value=parse_expression(seed, native_data_types=native_data_types)))
+                kisao_id='KISAO_0000488', new_value=int(float(seed)) if native_data_types else str(seed)))
         if a_tol is not None:
             sim.algorithm.changes.append(AlgorithmParameterChange(
-                kisao_id='KISAO_0000211', new_value=parse_expression(a_tol, native_data_types=native_data_types)))
+                kisao_id='KISAO_0000211', new_value=float(a_tol) if native_data_types else str(a_tol)))
         if r_tol is not None:
             sim.algorithm.changes.append(AlgorithmParameterChange(
-                kisao_id='KISAO_0000209', new_value=parse_expression(r_tol, native_data_types=native_data_types)))
+                kisao_id='KISAO_0000209', new_value=float(r_tol) if native_data_types else str(r_tol)))
+        if output_step_interval is not None:
+            sim.algorithm.changes.append(AlgorithmParameterChange(
+                kisao_id='KISAO_0000684', new_value=int(float(output_step_interval)) if native_data_types else str(output_step_interval)))
+        if max_sim_steps is not None:
+            sim.algorithm.changes.append(AlgorithmParameterChange(
+                kisao_id='KISAO_0000415', new_value=int(float(max_sim_steps)) if native_data_types else str(max_sim_steps)))
         if stop_if is not None:
             if stop_if[0] == '"' and stop_if[-1] == '"':
                 stop_if = stop_if[1:-1]
@@ -301,6 +306,6 @@ def parse_expression(value, native_data_types=False):
         try:
             return float(value)
         except ValueError:
-            return value
+            return str(value)
     else:
-        return value
+        return str(value)
