@@ -34,6 +34,7 @@ def validate_model(filename, name=None):
 
     if filename:
         if os.path.isfile(filename):
+            # create temporary file with ``.bngl`` extension because pyBioNet requires this
             if os.path.splitext(filename)[1] == '.bngl':
                 bngl_filename = filename
             else:
@@ -41,9 +42,11 @@ def validate_model(filename, name=None):
                 os.close(fid)
                 shutil.copyfile(filename, bngl_filename)
 
+            # parse model
             model, temp_errors, stdout = read_model(bngl_filename, filename)
             errors.extend(temp_errors)
 
+            # clean up temporary file
             if bngl_filename != filename:
                 os.remove(bngl_filename)
 

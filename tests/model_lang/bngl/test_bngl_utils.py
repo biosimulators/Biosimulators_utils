@@ -1,15 +1,17 @@
-from biosimulators_utils.model_lang.bngl.utils import get_parameters_variables_outputs_for_simulation
+from biosimulators_utils.model_lang.bngl.utils import get_parameters_variables_outputs_for_simulation, parse_expression
 from biosimulators_utils.sedml.data_model import (ModelLanguage, SteadyStateSimulation,
                                                   OneStepSimulation, UniformTimeCourseSimulation,
                                                   Algorithm, AlgorithmParameterChange,
                                                   Symbol,
                                                   ModelAttributeChange, Variable)
+from biosimulators_utils.warnings import BioSimulatorsWarning
 from unittest import mock
 import os
 import unittest
 
 
 class BgnlUtilsTestCase(unittest.TestCase):
+    FIXTURE_DIRNAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl')
     FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'valid.bngl')
     MULTIPLE_ACTIONS_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'multiple-actions.bngl')
     NO_ACTIONS_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'bngl', 'no-actions.bngl')
@@ -30,7 +32,26 @@ class BgnlUtilsTestCase(unittest.TestCase):
         with self.assertRaisesRegex(NotImplementedError, 'must be'):
             get_parameters_variables_outputs_for_simulation(self.FIXTURE_FILENAME, None, SteadyStateSimulation, None)
 
-    @unittest.expectedFailure  # BioNetGen doesn't correct parse models
+        with self.assertRaisesRegex(ValueError, 'must define a `method` argument'):
+            get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'insufficient-action-args.bngl'),
+                                                            None, UniformTimeCourseSimulation, None)
+
+        with self.assertRaisesRegex(ValueError, 'must define a `method` argument'):
+            get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'insufficient-action-args.bngl'),
+                                                            None, UniformTimeCourseSimulation, None)
+
+        with self.assertRaisesRegex(ValueError, r'`Simulation end time \(`t_end`\) must be set'):
+            get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'insufficient-action-args-2.bngl'),
+                                                            None, UniformTimeCourseSimulation, None)
+
+        with self.assertWarnsRegex(BioSimulatorsWarning, 'Output step interval'):
+            get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'unsupported-action-args.bngl'),
+                                                            None, UniformTimeCourseSimulation, None)
+
+        with self.assertWarnsRegex(BioSimulatorsWarning, 'Maximum simulation steps'):
+            get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'unsupported-action-args.bngl'),
+                                                            None, UniformTimeCourseSimulation, None)
+
     def test_get_parameters_variables_for_simulation_action_syntax_error_handling(self):
         with self.assertRaisesRegex(ValueError, 'not a valid BNGL or BNGL XML file'):
             get_parameters_variables_outputs_for_simulation(self.INVALID_SYNTAX_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
@@ -65,7 +86,7 @@ class BgnlUtilsTestCase(unittest.TestCase):
             new_value='(0.5*(Atot^2))/(10+(Atot^2))',
         )))
 
-        self.assertEqual(len(sims), 4)
+        self.assertEqual(len(sims), 5)
         self.assertIsInstance(sims[0], UniformTimeCourseSimulation)
         expected_sim = UniformTimeCourseSimulation(
             id='simulation_0',
@@ -102,9 +123,38 @@ class BgnlUtilsTestCase(unittest.TestCase):
         )))
         self.assertEqual(len(vars), 17)
 
+    @unittest.expectedFailure
+    def test_get_parameters_variables_for_simulation_with_sample_times(self):
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'sample-times.bngl'),
+                                                                                    None, UniformTimeCourseSimulation, None)
+
+        self.assertEqual(sims[0].initial_time, 0)
+        self.assertEqual(sims[0].output_start_time, 1)
+        self.assertEqual(sims[0].output_end_time, 5)
+        self.assertEqual(sims[0].number_of_steps, 4)
+
+    @unittest.expectedFailure
+    def test_get_parameters_variables_for_simulation_with_empty_sample_times(self):
+        with self.assertRaisesRegex(ValueError, 'must be a non-empty array'):
+            get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'empty-sample-times.bngl'),
+                                                            None, UniformTimeCourseSimulation, None)
+
+    @unittest.expectedFailure
+    def test_get_parameters_variables_for_simulation_with_non_uniform_sample_times(self):
+        with self.assertWarnsRegex(BioSimulatorsWarning, 'Non-uniformly-distributed sample times'):
+            params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+                os.path.join(self.FIXTURE_DIRNAME, 'non-uniform-sample-times.bngl'),
+                None, UniformTimeCourseSimulation, None)
+
+        self.assertEqual(sims[0].initial_time, 0)
+        self.assertEqual(sims[0].output_start_time, 1)
+        self.assertEqual(sims[0].output_end_time, 6)
+        self.assertEqual(sims[0].number_of_steps, 1)
+
     def test_get_parameters_variables_for_simulation_native_data_types(self):
-        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None,
-                                                                                    native_ids=True, native_data_types=True)
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None,
+            native_ids=True, native_data_types=True)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
             id='k_1',
@@ -131,7 +181,7 @@ class BgnlUtilsTestCase(unittest.TestCase):
             new_value='(0.5*(Atot^2))/(10+(Atot^2))',
         )))
 
-        self.assertEqual(len(sims), 4)
+        self.assertEqual(len(sims), 5)
         self.assertIsInstance(sims[0], UniformTimeCourseSimulation)
         expected_sim = UniformTimeCourseSimulation(
             id='simulation_0',
@@ -149,6 +199,7 @@ class BgnlUtilsTestCase(unittest.TestCase):
                 ]
             )
         )
+
         self.assertTrue(sims[0].is_equal(expected_sim))
 
         self.assertTrue(vars[0].is_equal(Variable(
@@ -171,7 +222,7 @@ class BgnlUtilsTestCase(unittest.TestCase):
     def test_get_parameters_variables_for_simulation_multiple_actions(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
             self.MULTIPLE_ACTIONS_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
-        self.assertEqual(len(sims), 6)
+        self.assertEqual(len(sims), 7)
 
     def test_get_parameters_variables_for_simulation_no_actions(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
@@ -236,3 +287,10 @@ class BgnlUtilsTestCase(unittest.TestCase):
             target='molecules.L(r!1).R(l!1).count',
         )))
         self.assertEqual(len(vars), 7)
+
+    def test_parse_expression(self):
+        self.assertEqual(parse_expression('123', native_data_types=False), '123')
+        self.assertEqual(parse_expression('123', native_data_types=True), 123)
+
+        self.assertEqual(parse_expression('xyz', native_data_types=False), 'xyz')
+        self.assertEqual(parse_expression('xyz', native_data_types=True), 'xyz')

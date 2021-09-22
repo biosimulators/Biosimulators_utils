@@ -109,9 +109,10 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     for i_action, action in enumerate(model.actions.items):
         args = {key: val for key, val in action.args}
 
-        initial_time = args.get('t_start', '0.')
+        initial_time = float(args.get('t_start', '0.'))
+        output_start_time = initial_time
         output_end_time = args.get('t_end', None)
-        number_of_steps = args.get('n_steps', args.get('n_output_steps', '1'))
+        number_of_steps = int(float(args.get('n_steps', args.get('n_output_steps', '1'))))
         seed = args.get('seed', None)
         a_tol = args.get('atol', None)
         r_tol = args.get('rtol', None)
@@ -119,8 +120,8 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
 
         if action.name == 'simulate':
             method = args.get('method', None)
-            if method[0] == '"' and method[-1] == '"':
-                method = method[1:-1]
+            if method is None:
+                raise ValueError('`simulate` action {} must define a `method` argument.'.format(i_action + 1))
 
         elif action.name == 'simulate_ode':
             method = 'ode'
@@ -134,24 +135,45 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         elif action.name == 'simulate_nf':
             method = 'nf'
 
-        # elif action.name == 'parameter_scan':
-        # elif action.name == 'bifurcate':
+        elif action.name == 'parameter_scan':
+            msg = (
+                'Parameter scan action {} was ignored because parameter scan actions are not supported.'
+            ).format(i_action + 1)
+            warn(msg, BioSimulatorsWarning)
+            continue
+
+        elif action.name == 'bifurcate':
+            msg = (
+                'Bifurcation analysis action {} was ignored because bifurcation analyses actions are not supported.'
+            ).format(i_action + 1)
+            warn(msg, BioSimulatorsWarning)
+            continue
 
         else:
-            continue
+            continue  # pragma: no cover
 
         warnings = []
         if 'sample_times' in args:
-            warnings.append('Sample times cannot be translated into SED-ML.')
+            sample_times = sorted(args['sample_times'])
+            if not sample_times:
+                raise ValueError((
+                    'Sample times (`sample_times`) must be a non-empty array of floats '
+                    'greater than or equal to the simulation start time (`t_start`).'
+                ))
+            output_end_time = sample_times[0]
+            output_start_time = sample_times[-1]
+            if len(set(numpy.diff(sample_times))) <= 1:
+                number_of_steps = len(sample_times) - 1
+            else:
+                warnings.append('Non-uniformly-distributed sample times (`sample_times`) cannot be translated into SED-ML.')
         if 'output_step_interval' in args:
-            warnings.append('Output step interval cannot be translated into SED-ML.')
+            warnings.append('Output step interval (`output_step_interval`) cannot be translated into SED-ML that BioNetGen can interpret.')
         if 'max_sim_steps' in args:
-            warnings.append('Maximum simulation steps cannot be translated into SED-ML.')
+            warnings.append('Maximum simulation steps (`max_sim_steps`) cannot be translated into SED-ML that BioNetGen can interpret.')
         if output_end_time is None:
-            warnings.append('Output end time must be set.')
+            raise ValueError('`Simulation end time (`t_end`) must be set for `{}` action {}.'.format(action.name, i_action + 1))
         if warnings:
             warn('Skipping action {}:\n  {}'.format(i_action + 1, '\n  '.join(warnings)), BioSimulatorsWarning)
-            continue
 
         if method == 'ode':
             algorithm_kisao_id = 'KISAO_0000019'
@@ -164,10 +186,10 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
 
         sim = UniformTimeCourseSimulation(
             id='simulation_{}'.format(i_action),
-            initial_time=float(initial_time),
-            output_start_time=float(initial_time),
+            initial_time=initial_time,
+            output_start_time=output_start_time,
             output_end_time=float(output_end_time),
-            number_of_steps=int(number_of_steps),
+            number_of_steps=number_of_steps,
             algorithm=Algorithm(
                 kisao_id=algorithm_kisao_id,
             )
