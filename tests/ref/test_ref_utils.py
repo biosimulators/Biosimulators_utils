@@ -31,7 +31,7 @@ class RefUtilsTestCase(unittest.TestCase):
         self.assertEqual(ref.pubmed_central_id, 'PMC5813803')
         self.assertEqual(ref.doi, '10.1542/peds.2012-2758')
 
-        ref = utils.get_reference_from_pubmed(pubmed_id=None, doi='10.1103/PhysRevLett.127.104301')
+        ref = utils.get_reference_from_pubmed(pubmed_id=None, doi='10.1103/PhysRevLett.127.104301x')
         self.assertEqual(ref, None)
 
         with self.assertRaises(ValueError):
