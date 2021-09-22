@@ -108,8 +108,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     # simulation
     sims = []
     for i_action, action in enumerate(model.actions.items):
-        args = {key: val for key, val in action.args}
-
+        args = action.args
         initial_time = float(args.get('t_start', '0.'))
         output_start_time = initial_time
         output_end_time = args.get('t_end', None)
@@ -156,14 +155,15 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             continue  # pragma: no cover
 
         if 'sample_times' in args:
-            sample_times = sorted(args['sample_times'])
-            if not sample_times:
+            sample_times_str = args['sample_times'][1:-1].strip()
+            if not sample_times_str:
                 raise ValueError((
                     'Sample times (`sample_times`) must be a non-empty array of floats '
                     'greater than or equal to the simulation start time (`t_start`).'
                 ))
-            output_end_time = sample_times[0]
-            output_start_time = sample_times[-1]
+            sample_times = sorted([float(sample_time.strip()) for sample_time in args['sample_times'][1:-1].strip().split(',')])
+            output_start_time = sample_times[0]
+            output_end_time = sample_times[-1]
             if len(set(numpy.diff(sample_times))) <= 1:
                 number_of_steps = len(sample_times) - 1
             else:

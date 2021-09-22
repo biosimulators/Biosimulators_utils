@@ -124,7 +124,6 @@ class BgnlUtilsTestCase(unittest.TestCase):
         self.assertEqual(sims[0].algorithm.changes[-1].kisao_id, 'KISAO_0000415')
         self.assertEqual(sims[0].algorithm.changes[-1].new_value, '10000')
 
-    @unittest.expectedFailure
     def test_get_parameters_variables_for_simulation_with_sample_times(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
             os.path.join(self.FIXTURE_DIRNAME, 'sample-times.bngl'),
@@ -135,13 +134,11 @@ class BgnlUtilsTestCase(unittest.TestCase):
         self.assertEqual(sims[0].output_end_time, 5)
         self.assertEqual(sims[0].number_of_steps, 4)
 
-    @unittest.expectedFailure
     def test_get_parameters_variables_for_simulation_with_empty_sample_times(self):
         with self.assertRaisesRegex(ValueError, 'must be a non-empty array'):
             get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'empty-sample-times.bngl'),
                                                             None, UniformTimeCourseSimulation, None)
 
-    @unittest.expectedFailure
     def test_get_parameters_variables_for_simulation_with_non_uniform_sample_times(self):
         with self.assertWarnsRegex(BioSimulatorsWarning, 'Non-uniformly-distributed sample times'):
             params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
