@@ -116,12 +116,11 @@ class BgnlUtilsTestCase(unittest.TestCase):
         self.assertEqual(len(vars), 17)
 
     def test_get_parameters_variables_for_simulation_with_step_args(self):
-        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
-            os.path.join(self.FIXTURE_DIRNAME, 'step-action-args.bngl'),
-            None, UniformTimeCourseSimulation, None)
+        with self.assertWarnsRegex(BioSimulatorsWarning, r'Output step interval \(`output_step_interval`\) was ignored'):
+            params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+                os.path.join(self.FIXTURE_DIRNAME, 'step-action-args.bngl'),
+                None, UniformTimeCourseSimulation, None)
 
-        self.assertEqual(sims[0].algorithm.changes[-2].kisao_id, 'KISAO_0000684')
-        self.assertEqual(sims[0].algorithm.changes[-2].new_value, '2')
         self.assertEqual(sims[0].algorithm.changes[-1].kisao_id, 'KISAO_0000415')
         self.assertEqual(sims[0].algorithm.changes[-1].new_value, '10000')
 

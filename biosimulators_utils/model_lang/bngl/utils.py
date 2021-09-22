@@ -205,8 +205,11 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             sim.algorithm.changes.append(AlgorithmParameterChange(
                 kisao_id='KISAO_0000209', new_value=float(r_tol) if native_data_types else str(r_tol)))
         if output_step_interval is not None:
-            sim.algorithm.changes.append(AlgorithmParameterChange(
-                kisao_id='KISAO_0000684', new_value=int(float(output_step_interval)) if native_data_types else str(output_step_interval)))
+            msg = (
+                'Output step interval (`output_step_interval`) was ignored for action {} because this cannot be '
+                'encoded into a SED-ML uniform time course.'
+            ).format(i_action + 1)
+            warn(msg, BioSimulatorsWarning)
         if max_sim_steps is not None:
             sim.algorithm.changes.append(AlgorithmParameterChange(
                 kisao_id='KISAO_0000415', new_value=int(float(max_sim_steps)) if native_data_types else str(max_sim_steps)))
