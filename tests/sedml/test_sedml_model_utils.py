@@ -73,10 +73,10 @@ class ModelUtilsTestCase(unittest.TestCase):
         params, sims, vars, plots = model_utils.get_parameters_variables_outputs_for_simulation(
             filename, ModelLanguage.Smoldyn, UniformTimeCourseSimulation, None)
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
-            id='number_dimensions',
-            name='Number of dimensions',
-            target='dim',
-            new_value='1',
+            id='difc_red',
+            name='Diffusion coefficient of species "red"',
+            target='difc red',
+            new_value='3',
         )))
 
         # XPP
