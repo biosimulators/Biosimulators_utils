@@ -7,6 +7,7 @@ import unittest
 class SmoldynUtilsTestCase(unittest.TestCase):
     FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'smoldyn', 'bounce1.txt')
     COMP_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'smoldyn', 'compart.txt')
+    COMP_FIXTURE_FILENAME_2 = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'smoldyn', 'compart-2.txt')
     INVALID_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'smoldyn', 'invalid.txt')
 
     def test_get_parameters_variables_for_simulation_error_handling(self):
@@ -16,7 +17,7 @@ class SmoldynUtilsTestCase(unittest.TestCase):
         with self.assertRaisesRegex(FileNotFoundError, 'does not exist'):
             get_parameters_variables_outputs_for_simulation('not a file', None, UniformTimeCourseSimulation, None)
 
-        with self.assertRaisesRegex(ValueError, 'not a valid BNGL or BNGL XML file'):
+        with self.assertRaisesRegex(ValueError, 'not a valid Smoldyn file'):
             get_parameters_variables_outputs_for_simulation(self.INVALID_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         with self.assertRaisesRegex(NotImplementedError, 'must be'):
@@ -27,16 +28,16 @@ class SmoldynUtilsTestCase(unittest.TestCase):
             self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
-            id='number_dimensions',
-            name='Number of dimensions',
-            target='dim',
-            new_value='1',
+            id='difc_red',
+            name='Diffusion coefficient of species "red"',
+            target='difc red',
+            new_value='3',
         )))
         self.assertTrue(params[1].is_equal(ModelAttributeChange(
-            id='x_boundary',
-            name='X boundary',
-            target='boundaries x',
-            new_value='0 100 r',
+            id='difc_green',
+            name='Diffusion coefficient of species "green"',
+            target='difc green',
+            new_value='1',
         )))
 
         self.assertEqual(len(sims), 1)
@@ -88,21 +89,37 @@ class SmoldynUtilsTestCase(unittest.TestCase):
             target='molcountonsurf red walls',
         )))
 
-    def test_get_parameters_variables_for_simulation_native_ids_data_types(self):
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            self.COMP_FIXTURE_FILENAME_2, None, UniformTimeCourseSimulation, None, native_data_types=True)
+
+        self.assertTrue(params[2].is_equal(ModelAttributeChange(
+            id='red',
+            name='Membrane diffusion coefficient of species "red"',
+            target='difm red',
+            new_value=[1., 0., 0., 2.],
+        )))
+        self.assertTrue(params[3].is_equal(ModelAttributeChange(
+            id='green',
+            name='Membrane diffusion coefficient of species "green"',
+            target='difm green',
+            new_value=[1., 0., 0., 2.],
+        )))
+
+    def tezst_get_parameters_variables_for_simulation_native_ids_data_types(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None,
-                                                                                      native_ids=True, native_data_types=True)
+                                                                                    native_ids=True, native_data_types=True)
 
         self.assertTrue(params[0].is_equal(ModelAttributeChange(
-            id=None,
+            id='red',
             name=None,
-            target='dim',
-            new_value=1,
+            target='difc red',
+            new_value=3,
         )))
         self.assertTrue(params[1].is_equal(ModelAttributeChange(
-            id='x',
+            id='green',
             name=None,
-            target='boundaries x',
-            new_value=['0', '100', 'r'],
+            target='difc green',
+            new_value=1,
         )))
 
         self.assertEqual(len(sims), 1)
@@ -131,7 +148,7 @@ class SmoldynUtilsTestCase(unittest.TestCase):
         )))
 
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.COMP_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None,
-                                                                                      native_ids=True, native_data_types=True)
+                                                                                    native_ids=True, native_data_types=True)
 
         self.assertTrue(vars[0].is_equal(Variable(
             id=None,

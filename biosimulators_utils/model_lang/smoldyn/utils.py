@@ -52,93 +52,11 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
 
     errors, _, (smoldyn_model, model_config) = validate_model(model_filename)
     if errors:
-        raise ValueError('Model file `{}` is not a valid BNGL or BNGL XML file.\n  {}'.format(
+        raise ValueError('Model file `{}` is not a valid Smoldyn file.\n  {}'.format(
             model_filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  ')))
 
     if simulation_type not in [UniformTimeCourseSimulation]:
         raise NotImplementedError('`simulation_type` must be `OneStepSimulation` or `UniformTimeCourseSimulation`')
-
-    # get parameters and observables
-    model = read_simulation(model_filename)
-
-    params = []
-    for instruction in model.instructions:
-        if native_data_types:
-            if instruction.macro in ['dim', 'max_compartment', 'max_surface', 'species', 'molecule_lists']:
-                id = None
-            elif (
-                instruction.macro.startswith('define ')
-                or instruction.macro.startswith('define_global ')
-                or instruction.macro.startswith('difc ')
-                or instruction.macro.startswith('boundaries ')
-                or instruction.macro.startswith('low_wall ')
-                or instruction.macro.startswith('hi_wall ')
-                or instruction.macro.startswith('difm ')
-                or instruction.macro.startswith('drift ')
-                or instruction.macro.startswith('surface_drift ')
-                or instruction.macro.startswith('mol ')
-                or instruction.macro.startswith('surface_mol ')
-                or instruction.macro.startswith('compartment_mol ')
-                or instruction.macro.startswith('mol_list ')
-                or instruction.macro.startswith('reaction_rate ')
-                or instruction.macro.startswith('confspread_radius ')
-                or instruction.macro.startswith('binding_radius ')
-                or instruction.macro.startswith('reaction_probability ')
-                or instruction.macro.startswith('reaction_chi ')
-                or instruction.macro.startswith('reaction_production ')
-                or instruction.macro.startswith('reaction_serialnum ')
-                or instruction.macro.startswith('product_placement ')
-            ):
-                id = instruction.macro.partition(' ')[2]
-            else:
-                id = None
-        else:
-            id = instruction.id
-
-        if native_data_types:
-            if (
-                instruction.macro.startswith('define ')
-                or instruction.macro.startswith('define_global ')
-                or instruction.macro.startswith('difc ')
-                or instruction.macro.startswith('reaction_rate ')
-                or instruction.macro.startswith('confspread_radius ')
-                or instruction.macro.startswith('binding_radius ')
-                or instruction.macro.startswith('reaction_probability ')
-                or instruction.macro.startswith('reaction_chi ')
-                or instruction.macro.startswith('reaction_production ')
-                or instruction.macro in ['dim', 'max_compartment', 'max_surface']
-            ):
-                new_value = float(instruction.arguments)
-            elif (
-                instruction.macro.startswith('difm ')
-                or instruction.macro.startswith('drift ')
-                or instruction.macro.startswith('surface_drift ')
-                or instruction.macro.startswith('mol ')
-                or instruction.macro.startswith('surface_mol ')
-                or instruction.macro.startswith('compartment_mol ')
-            ):
-                new_value = [float(val) for val in instruction.arguments.split(' ')]
-            elif (
-                instruction.macro in ['species', 'molecule_lists']
-                or instruction.macro.startswith('mol_list ')
-                or instruction.macro.startswith('boundaries ')
-                or instruction.macro.startswith('low_wall ')
-                or instruction.macro.startswith('hi_wall ')
-                # or instruction.macro.startswith('reaction_serialnum ')
-                # or instruction.macro.startswith('product_placement ')
-            ):
-                new_value = instruction.arguments.split(' ')
-            else:
-                new_value = instruction.arguments
-        else:
-            new_value = instruction.arguments
-
-        params.append(ModelAttributeChange(
-            id=id,
-            name=None if native_ids else instruction.description,
-            target=instruction.macro,
-            new_value=new_value,
-        ))
 
     sim = UniformTimeCourseSimulation(
         id='simulation',
@@ -150,6 +68,105 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             kisao_id=algorithm_kisao_id or 'KISAO_0000057',
         ),
     )
+
+    # get parameters and observables
+    model = read_simulation(model_filename)
+
+    params = []
+    for instruction in model.instructions:
+        if not (
+            instruction.macro.startswith('define ')
+            # or instruction.macro.startswith('define_global ')
+            or instruction.macro.startswith('difc ')
+            or instruction.macro.startswith('difc_rule ')
+            or instruction.macro.startswith('difm ')
+            or instruction.macro.startswith('difm_rule ')
+            or instruction.macro.startswith('drift ')
+            or instruction.macro.startswith('drift_rule ')
+            or instruction.macro.startswith('surface_drift ')
+            or instruction.macro.startswith('surface_drift_rule ')
+        ):
+            continue
+
+        if native_data_types:
+            id = instruction.macro.partition(' ')[2]
+        else:
+            id = re.sub(r'[^a-zA-Z0-9_]', '_', instruction.macro)
+
+        if native_data_types:
+            if (
+                instruction.macro.startswith('define ')
+                # or instruction.macro.startswith('define_global ')
+                or instruction.macro.startswith('difc ')
+                or instruction.macro.startswith('difc_rule ')
+            ):
+                new_value = float(instruction.arguments)
+            elif (
+                instruction.macro.startswith('difm ')
+                or instruction.macro.startswith('difm_rule ')
+                or instruction.macro.startswith('drift ')
+                or instruction.macro.startswith('drift_rule ')
+                or instruction.macro.startswith('surface_drift ')
+                or instruction.macro.startswith('surface_drift_rule ')
+            ):
+                new_value = [float(val) for val in instruction.arguments.split(' ')]
+        else:
+            new_value = instruction.arguments
+
+        if instruction.macro.partition(' ')[2] != 'all':
+            params.append(ModelAttributeChange(
+                id=id,
+                name=None if native_ids else instruction.description,
+                target=instruction.macro,
+                new_value=new_value,
+            ))
+
+    smoldyn_model.addOutputData('counts')
+    smoldyn_model.addCommand(cmd='molcount counts', cmd_type='E')
+    for compartment in model.compartments:
+        data_id = 'counts_cmpt_' + compartment
+        smoldyn_model.addOutputData(data_id)
+        smoldyn_model.addCommand(cmd='molcountincmpt ' + compartment + ' ' + data_id, cmd_type='E')
+    for surface in model.surfaces:
+        data_id = 'counts_surf_' + surface
+        smoldyn_model.addOutputData(data_id)
+        smoldyn_model.addCommand(cmd='molcountonsurf ' + surface + ' ' + data_id, cmd_type='E')
+
+    smoldyn_model.run(stop=1e-12, dt=1., overwrite=True, display=False, quit_at_end=False)
+
+    data_id = 'counts'
+    species_counts = smoldyn_model.getOutputData(data_id, True)[0][1:]
+    for species, count in zip(model.species, species_counts):
+        params.append(ModelAttributeChange(
+            id=species if native_ids else 'initial_count_species_{}'.format(re.sub('[^a-zA-Z0-9_]', '_', species)),
+            name=None if native_ids else 'Initial count of species "{}"'.format(species),
+            target="fixmolcount {}".format(species),
+            new_value=count if native_data_types else str(count),
+        ))
+
+    for compartment in model.compartments:
+        data_id = 'counts_cmpt_' + compartment
+        species_counts = smoldyn_model.getOutputData(data_id, True)[0][1:]
+        for species, count in zip(model.species, species_counts):
+            params.append(ModelAttributeChange(
+                id="{}.{}".format(species, compartment) if native_ids else 'initial_count_species_{}_compartment_{}'.format(
+                    re.sub('[^a-zA-Z0-9_]', '_', species), compartment),
+                name=None if native_ids else 'Initial count of species "{}" in compartment "{}"'.format(species, compartment),
+                target="fixmolcountincmpt {} {}".format(species, compartment),
+                new_value=new_value,
+            ))
+
+    for surface in model.surfaces:
+        data_id = 'counts_surf_' + surface
+        species_counts = smoldyn_model.getOutputData(data_id, True)[0][1:]
+        for species, count in zip(model.species, species_counts):
+            params.append(ModelAttributeChange(
+                id="{}.{}".format(species, surface) if native_ids else 'initial_count_species_{}_surface_{}'.format(
+                    re.sub('[^a-zA-Z0-9_]', '_', species), surface),
+                name=None if native_ids else 'Initial count of species "{}" in surface "{}"'.format(species, surface),
+                target="fixmolcountonsurf {} {}".format(species, surface),
+                new_value=new_value,
+            ))
 
     vars = []
     vars.append(Variable(
