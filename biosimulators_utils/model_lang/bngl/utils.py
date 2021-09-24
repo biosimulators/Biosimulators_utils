@@ -124,6 +124,8 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             method = args.get('method', None)
             if method is None:
                 raise ValueError('`simulate` action {} must define a `method` argument.'.format(i_action + 1))
+            if method and method[0] == '"':
+                method = method[1:-1]
 
         elif action.name == 'simulate_ode':
             method = 'ode'
@@ -259,11 +261,19 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         for el in model.molecule_types.items.values():
             el_molecule = str(el)
             escaped_el_molecule = escape_id(el_molecule)
-            vars.append(Variable(
-                id=el_molecule if native_ids else 'amount_molecule_{}'.format(escaped_el_molecule),
-                name=None if native_ids else 'Dynamics of molecule "{}"'.format(el_molecule),
-                target='molecules.{}.count'.format(el_molecule),
-            ))
+
+            multiple_states = False
+            for component in el.molecule.components:
+                if len(component.states) > 1:
+                    multiple_states = True
+                    break
+
+            if not multiple_states:
+                vars.append(Variable(
+                    id=el_molecule if native_ids else 'amount_molecule_{}'.format(escaped_el_molecule),
+                    name=None if native_ids else 'Dynamics of molecule "{}"'.format(el_molecule),
+                    target='molecules.{}.count'.format(el_molecule),
+                ))
 
     if hasattr(model, 'species'):
         for el in model.species.items.values():
