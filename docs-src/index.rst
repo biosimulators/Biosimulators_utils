@@ -11,6 +11,7 @@ Contents
 
    installation.rst
    tutorial_cli.rst
+   tutorial_api.rst
    API documentation <source/biosimulators_utils.rst>
    about.rst
    genindex.rst

@@ -78,6 +78,14 @@ To use BioSimulators utils to log the standard output and error produced by simu
 pip install biosimulators-utils[logging]
 ```
 
+## Tutorials
+
+### Command-line interface
+A tutorial for the command-line interface is available [here](https://docs.biosimulators.org/Biosimulators_utils/).
+
+### Python API
+Interactive tutorials for using BioSimulators-utils and Python APIs for simulation tools to execute simulations are available from Binder [here](https://mybinder.org/v2/gh/biosimulators/Biosimulators_tutorials/HEAD).
+
 ## API documentation
 API documentation is available [here](https://docs.biosimulators.org/Biosimulators_utils/).
 
