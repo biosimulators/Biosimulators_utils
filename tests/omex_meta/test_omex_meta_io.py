@@ -72,7 +72,7 @@ class OmexMetaIoTestCase(unittest.TestCase):
         rdf, errors, warnings = io.BiosimulationsOmexMetaReader.read_rdf(self.FIXTURE)
         triples = io.BiosimulationsOmexMetaReader.get_rdf_triples(rdf)
         root_uri, errors, warnings = io.BiosimulationsOmexMetaReader.get_combine_archive_uri(triples)
-        self.assertEqual(root_uri, 'http://omex-libary.org/BioSim0001.omex')
+        self.assertEqual(root_uri, 'http://omex-library.org/BioSim0001.omex')
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
