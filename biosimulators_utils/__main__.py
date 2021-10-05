@@ -7,6 +7,7 @@
 """
 
 from .combine.data_model import CombineArchiveContentFormat
+from .config import get_config
 from .omex_meta.data_model import OmexMetaSchema
 from .sedml.data_model import ModelLanguage, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation
 from .utils.core import flatten_nested_list_of_strings
@@ -166,9 +167,11 @@ class ValidateModelingProjectController(cement.Controller):
 
         archive_dirname = tempfile.mkdtemp()
 
+        config = get_config()
+
         reader = biosimulators_utils.combine.io.CombineArchiveReader()
         try:
-            archive = reader.run(args.filename, archive_dirname)
+            archive = reader.run(args.filename, archive_dirname, config=config)
         except Exception as exception:
             shutil.rmtree(archive_dirname)
             raise SystemExit(str(exception))
@@ -177,6 +180,7 @@ class ValidateModelingProjectController(cement.Controller):
             archive, archive_dirname,
             formats_to_validate=list(CombineArchiveContentFormat.__members__.values()),
             metadata_schema=OmexMetaSchema.biosimulations,
+            config=config,
         )
         if warnings:
             msg = 'The COMBINE/OMEX archive may be invalid.\n  {}'.format(

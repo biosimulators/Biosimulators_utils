@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..config import get_config
+from ..config import get_config, Config  # noqa: F401
 from ..omex_meta.data_model import OmexMetaInputFormat, OmexMetaSchema
 from ..omex_meta.io import read_omex_meta_file
 from ..sedml.io import SedmlSimulationReader
@@ -31,7 +31,8 @@ def validate(archive, archive_dirname,
                  CombineArchiveContentFormat.SED_ML,
              ],
              metadata_schema=OmexMetaSchema.rdf_triples,
-             validate_models_with_languages=True):
+             validate_models_with_languages=True,
+             config=None):
     """ Validate a COMBINE/OMEX archive and the SED-ML and model documents it contains
 
     Args:
@@ -45,6 +46,7 @@ def validate(archive, archive_dirname,
             for formats of files to validate
         metadata_schema (:obj:`OmexMetaSchema`, optional): expected schema for OMEX Metadata file
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
+        config (:obj:`Config`, optional): configuration
 
     Returns:
         :obj:`tuple`:
@@ -52,7 +54,8 @@ def validate(archive, archive_dirname,
             * nested :obj:`list` of :obj:`str`: nested list of errors with the archive
             * nested :obj:`list` of :obj:`str`: nested list of warnings with the archive
     """
-    config = get_config()
+    if config is None:
+        config = get_config()
 
     errors = []
     warnings = []
@@ -122,7 +125,8 @@ def validate(archive, archive_dirname,
                 content, archive_dirname,
                 formats_to_validate=formats_to_validate,
                 metadata_schema=metadata_schema,
-                validate_models_with_languages=validate_models_with_languages)
+                validate_models_with_languages=validate_models_with_languages,
+                config=config)
             errors.extend(content_errors)
             warnings.extend(content_warnings)
 
@@ -164,7 +168,8 @@ def validate_content(content, archive_dirname,
                          CombineArchiveContentFormat.SED_ML,
                      ],
                      metadata_schema=OmexMetaSchema.rdf_triples,
-                     validate_models_with_languages=True):
+                     validate_models_with_languages=True,
+                     config=None):
     """ Validate an item of a COMBINE/OMEX archive
 
     Args:
@@ -174,6 +179,7 @@ def validate_content(content, archive_dirname,
             for formats of files to validate
         metadata_schema (:obj:`OmexMetaSchema`, optional): expected schema for OMEX Metadata file
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
+        config (:obj:`Config`, optional): configuration
 
     Returns:
         :obj:`tuple`:
@@ -181,7 +187,8 @@ def validate_content(content, archive_dirname,
             * nested :obj:`list` of :obj:`str`: nested list of errors with the archive
             * nested :obj:`list` of :obj:`str`: nested list of warnings with the archive
     """
-    config = get_config()
+    if config is None:
+        config = get_config()
 
     filename = os.path.join(archive_dirname, content.location)
     file_type = None

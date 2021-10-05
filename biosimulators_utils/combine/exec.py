@@ -120,10 +120,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
 
         try:
             # unpack archive and read metadata
-            archive = CombineArchiveReader().run(archive_filename, archive_tmp_dir)
+            archive = CombineArchiveReader().run(archive_filename, archive_tmp_dir, config=config)
 
             # validate archive
-            errors, warnings = validate(archive, archive_tmp_dir)
+            errors, warnings = validate(archive, archive_tmp_dir, config=config)
             if warnings:
                 msg = 'The COMBINE/OMEX archive may be invalid.\n  {}'.format(
                     flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))

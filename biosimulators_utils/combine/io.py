@@ -9,6 +9,7 @@
 from .data_model import (CombineArchiveBase, CombineArchive, CombineArchiveContent,  # noqa: F401
                          CombineArchiveContentFormat, CombineArchiveContentFormatPattern)
 from ..archive.io import ArchiveReader
+from ..config import get_config, Config  # noqa: F401
 from ..data_model import Person
 from ..utils.core import flatten_nested_list_of_strings
 from ..warnings import warn, BioSimulatorsWarning
@@ -183,7 +184,7 @@ class CombineArchiveReader(object):
         self.errors = []
         self.warnings = []
 
-    def run(self, in_file, out_dir, include_omex_metadata_files=True, try_reading_as_plain_zip_archive=True):
+    def run(self, in_file, out_dir, include_omex_metadata_files=True, config=None):
         """ Read an archive from a file
 
         Args:
@@ -191,8 +192,7 @@ class CombineArchiveReader(object):
             out_dir (:obj:`str`): directory where the contents of the archive should be unpacked
             include_omex_metadata_files (:obj:`bool`, optional): whether to include the OMEX metadata
                 file as part of the contents of the archive
-            try_reading_as_plain_zip_archive (:obj:`bool`, optional): whether to try reading the
-                file as a plain zip archive
+            config (:obj:`Config`, optional): configuration
 
         Returns:
             :obj:`CombineArchive`: description of archive
@@ -200,6 +200,9 @@ class CombineArchiveReader(object):
         Raises:
             :obj:`ValueError`: archive is invalid
         """
+        if config is None:
+            config = get_config()
+
         self.errors = []
         self.warnings = []
 
@@ -215,7 +218,7 @@ class CombineArchiveReader(object):
             self.warnings.extend(warnings)
 
         else:
-            if try_reading_as_plain_zip_archive:
+            if not config.VALIDATE_OMEX_MANIFESTS:
                 try:
                     archive = CombineArchiveZipReader().run(in_file, out_dir)
                     msg = '`{}` is a plain zip archive, not a COMBINE/OMEX archive.'.format(in_file)

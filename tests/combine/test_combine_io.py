@@ -11,6 +11,7 @@ from biosimulators_utils.archive.io import ArchiveWriter
 from biosimulators_utils.combine import data_model
 from biosimulators_utils.combine import io
 from biosimulators_utils.combine import validation
+from biosimulators_utils.config import Config
 from biosimulators_utils.data_model import Person
 from biosimulators_utils.warnings import BioSimulatorsWarning
 from unittest import mock
@@ -175,6 +176,12 @@ class ReadWriteTestCase(unittest.TestCase):
         ArchiveWriter().run(archive, archive_filename)
 
         zip_out_dir = os.path.join(self.temp_dir, 'out_zip')
+        with self.assertRaisesRegex(ValueError, 'not a valid COMBINE/OMEX archive'):
+            io.CombineArchiveReader().run(archive_filename, zip_out_dir)
+
+        config = Config(VALIDATE_OMEX_MANIFESTS=False)
+        archive = io.CombineArchiveReader().run(archive_filename, zip_out_dir, config=config)
+
         combine_archive = io.CombineArchiveZipReader().run(archive_filename, zip_out_dir)
 
         expected_combine_archive = data_model.CombineArchive(contents=[
@@ -184,18 +191,21 @@ class ReadWriteTestCase(unittest.TestCase):
         self.assertTrue(combine_archive.is_equal(expected_combine_archive))
 
         combine_out_dir = os.path.join(self.temp_dir, 'out_combine')
-        combine_archive = io.CombineArchiveReader().run(archive_filename, combine_out_dir)
+        config = Config(VALIDATE_OMEX_MANIFESTS=False)
+        combine_archive = io.CombineArchiveReader().run(archive_filename, combine_out_dir, config=config)
         self.assertTrue(combine_archive.is_equal(expected_combine_archive))
 
         # error handling
         with self.assertRaisesRegex(ValueError, 'not a valid zip archive'):
             io.CombineArchiveZipReader().run(sim_path, zip_out_dir)
 
+        config = Config(VALIDATE_OMEX_MANIFESTS=False)
         with self.assertRaisesRegex(ValueError, 'not a valid COMBINE/OMEX archive'):
-            io.CombineArchiveReader().run(sim_path, zip_out_dir, try_reading_as_plain_zip_archive=True)
+            io.CombineArchiveReader().run(sim_path, zip_out_dir, config=config)
 
+        config = Config(VALIDATE_OMEX_MANIFESTS=True)
         with self.assertRaisesRegex(ValueError, 'not a valid COMBINE/OMEX archive'):
-            io.CombineArchiveReader().run(sim_path, zip_out_dir, try_reading_as_plain_zip_archive=False)
+            io.CombineArchiveReader().run(sim_path, zip_out_dir, config=config)
 
     def test_sedml_validation_examples(self):
         dirname = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml-validation')
