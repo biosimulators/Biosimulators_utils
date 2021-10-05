@@ -266,3 +266,41 @@ class ReadWriteTestCase(unittest.TestCase):
         archive = data_model.CombineArchive(contents=contents)
         archive_2 = data_model.CombineArchive(contents=contents_2)
         self.assertTrue(archive_2.is_equal(archive))
+
+    def test_read_manifest_from_plain_zip(self):
+        in_dir = os.path.join(self.temp_dir, 'in')
+        os.mkdir(in_dir)
+        sim_path = os.path.join(in_dir, 'simulation.sedml')
+        model_path = os.path.join(in_dir, 'model.xml')
+        archive_filename = os.path.join(in_dir, 'archive.zip')
+        with open(sim_path, 'w'):
+            pass
+        with open(model_path, 'w'):
+            pass
+
+        archive = Archive(files=[
+            ArchiveFile(local_path=sim_path, archive_path='simulation.sedml'),
+            ArchiveFile(local_path=model_path, archive_path='model.xml'),
+        ])
+
+        ArchiveWriter().run(archive, archive_filename)
+
+        zip_out_dir = os.path.join(self.temp_dir, 'out_zip')
+
+        config = Config(VALIDATE_OMEX_MANIFESTS=False)
+        archive = io.CombineArchiveReader().run(archive_filename, zip_out_dir, config=config)
+        self.assertEqual(len(archive.contents), 2)
+
+        config = Config(VALIDATE_OMEX_MANIFESTS=True)
+        with self.assertRaisesRegex(ValueError, 'not a valid COMBINE/OMEX archive'):
+            io.CombineArchiveReader().run(archive_filename, zip_out_dir, config=config)
+
+        manifest_filename = os.path.join(in_dir, 'manifest.xml')
+
+        config = Config(VALIDATE_OMEX_MANIFESTS=False)
+        archive.contents = io.CombineArchiveReader().read_manifest(manifest_filename, archive_filename, config=config)
+        self.assertEqual(len(archive.contents), 2)
+
+        config = Config(VALIDATE_OMEX_MANIFESTS=True)
+        archive.contents = io.CombineArchiveReader().read_manifest(manifest_filename, archive_filename, config=config)
+        self.assertEqual(len(archive.contents), 0)

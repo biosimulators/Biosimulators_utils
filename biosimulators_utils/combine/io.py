@@ -212,23 +212,26 @@ class CombineArchiveReader(object):
             raise ValueError(msg)
 
         archive_comb = libcombine.CombineArchive()
-        if archive_comb.initializeFromArchive(in_file):
+        archive_initialized = archive_comb.initializeFromArchive(in_file)
+        if archive_initialized:
             errors, warnings = get_combine_errors_warnings(archive_comb.getManifest())
-            self.errors.extend(errors)
-            self.warnings.extend(warnings)
+            if config.VALIDATE_OMEX_MANIFESTS:
+                self.errors.extend(errors)
+                self.warnings.extend(warnings)
 
-        else:
+        if not archive_initialized or errors:
             if not config.VALIDATE_OMEX_MANIFESTS:
                 try:
                     archive = CombineArchiveZipReader().run(in_file, out_dir)
                     msg = '`{}` is a plain zip archive, not a COMBINE/OMEX archive.'.format(in_file)
+                    self.warnings.append([msg])
                     warn(msg, BioSimulatorsWarning)
                     return archive
                 except ValueError:
                     msg = "`{}` is not a valid COMBINE/OMEX archive.".format(in_file)
                     self.errors.append([msg])
                     raise ValueError(msg)
-            else:
+            elif not self.errors:
                 msg = "`{}` is not a valid COMBINE/OMEX archive.".format(in_file)
                 self.errors.append([msg])
                 raise ValueError(msg)
@@ -263,7 +266,7 @@ class CombineArchiveReader(object):
         # read metadata files skipped by libCOMBINE
         content_locations = set(os.path.relpath(content.location, '.') for content in archive.contents)
         if include_omex_metadata_files:
-            for manifest_content in self.read_manifest(os.path.join(out_dir, 'manifest.xml')):
+            for manifest_content in self.read_manifest(os.path.join(out_dir, 'manifest.xml'), in_file, config=config):
                 if (
                     manifest_content.format
                     and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, manifest_content.format)
@@ -282,25 +285,47 @@ class CombineArchiveReader(object):
         # return information about archive
         return archive
 
-    def read_manifest(self, filename):
+    def read_manifest(self, filename, archive_filename=None, config=None):
         """ Read the contents of an OMEX manifest file
 
         Args:
             filename (:obj:`str`): path to OMEX manifest file
+            archive_filename (:obj:`str`, option): path to COMBINE archive
+            config (:obj:`Config`, optional): configuration
 
         Returns:
             :obj:`list` of :obj:`CombineArchiveContent`: contents of the OMEX manifest file
         """
+        if config is None:
+            config = get_config()
+
         manifest_comb = libcombine.readOMEXFromFile(filename)
         if not isinstance(manifest_comb, libcombine.CaOmexManifest):
-            self.errors(['`{}` could not be read as an OMEX manifest file.'].format(filename))
-            return []
+            if config.VALIDATE_OMEX_MANIFESTS or archive_filename is None:
+                self.errors(['`{}` could not be read as an OMEX manifest file.'].format(filename))
+                return []
+            else:
+                try:
+                    return CombineArchiveZipReader().run(archive_filename).contents
+                except ValueError:
+                    msg = "`{}` is not a valid zip file.".format(archive_filename)
+                    self.errors.append([msg])
+                    return []
 
         errors, warnings = get_combine_errors_warnings(manifest_comb)
-        self.errors.extend(errors)
-        self.warnings.extend(warnings)
-        if errors:
-            return []
+        if config.VALIDATE_OMEX_MANIFESTS or archive_filename is None:
+            self.errors.extend(errors)
+            self.warnings.extend(warnings)
+            if errors:
+                return []
+        else:
+            if errors:
+                try:
+                    return CombineArchiveZipReader().run(archive_filename).contents
+                except ValueError:
+                    msg = "`{}` is not a valid zip file.".format(archive_filename)
+                    self.errors.append([msg])
+                    return []
 
         contents = []
         for content_comb in manifest_comb.getListOfContents():
@@ -356,12 +381,12 @@ class CombineArchiveZipReader(object):
     the extension ``.sedml`` to :obj:`CombineArchiveContentFormat.SED_ML.value`.
     """
     @classmethod
-    def run(cls, in_file, out_dir):
+    def run(cls, in_file, out_dir=None):
         """ Read an archive from a zip file
 
         Args:
             in_file (:obj:`str`): path to archive
-            out_dir (:obj:`str`): directory where the contents of the archive should be unpacked
+            out_dir (:obj:`str`, optional): directory where the contents of the archive should be unpacked
 
         Returns:
             :obj:`CombineArchive`: description of the archive
