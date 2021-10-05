@@ -4,11 +4,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Installation instructions &#8212; BioSimulators utils 0.1.126 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Installation instructions &#8212; BioSimulators utils 0.1.127 documentation</title>
     
-  <link href="_static/css/theme.css" rel="stylesheet" />
-  <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -23,10 +24,10 @@
 
     
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/biosimulators.css" />
     
-  <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -38,7 +39,7 @@
     <link rel="next" title="Tutorial for the command-line application" href="tutorial_cli.html" />
     <link rel="prev" title="BioSimulators utils documentation" href="index.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
+    <meta name="docsearch:language" content="en">
     
       
       <link rel="icon" sizes="16x16" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png">
@@ -47,6 +48,9 @@
       
       <link rel="icon" sizes="32x32" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png">
       
+    
+
+    <!-- Google Analytics -->
     
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
@@ -163,6 +167,11 @@
    Installing the optional features
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dockerfile-and-docker-image">
+   Dockerfile and Docker image
+  </a>
+ </li>
 </ul>
 
 </nav>
@@ -191,16 +200,16 @@
               
               <div>
                 
-  <div class="section" id="installation-instructions">
+  <section id="installation-instructions">
 <h1>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="requirements">
+<section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Python &gt;= 3.7</p></li>
 <li><p>pip</p></li>
 </ul>
-</div>
-<div class="section" id="optional-requirements">
+</section>
+<section id="optional-requirements">
 <h2>Optional requirements<a class="headerlink" href="#optional-requirements" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.docker.com/">Docker</a>: required to execute containerized simulation tools</p></li>
@@ -209,22 +218,22 @@
 <li><p><a class="reference external" href="https://sysbioinra.github.io/RBApy/">RBApy</a>: required to parse and validate RBA files</p></li>
 <li><p><a class="reference external" href="http://www.math.pitt.edu/~bard/xpp/xpp.html">XPP</a>: required to parse and validate XPP files</p></li>
 </ul>
-</div>
-<div class="section" id="installing-the-latest-release-from-pypi">
+</section>
+<section id="installing-the-latest-release-from-pypi">
 <h2>Installing the latest release from PyPI<a class="headerlink" href="#installing-the-latest-release-from-pypi" title="Permalink to this headline">¶</a></h2>
 <p>After installing <a class="reference external" href="https://www.python.org/downloads/">Python</a> (&gt;= 3.7) and <a class="reference external" href="https://pip.pypa.io/">pip</a>, run the following command to install BioSimulators utils:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pip install biosimulators-utils
 </pre></div>
 </div>
-</div>
-<div class="section" id="installing-the-latest-revision-from-github">
+</section>
+<section id="installing-the-latest-revision-from-github">
 <h2>Installing the latest revision from GitHub<a class="headerlink" href="#installing-the-latest-revision-from-github" title="Permalink to this headline">¶</a></h2>
 <p>After installing <a class="reference external" href="https://www.python.org/downloads/">Python</a> (&gt;= 3.7) and <a class="reference external" href="https://pip.pypa.io/">pip</a>, run the following command to install BioSimulators utils:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pip install git+https://github.com/biosimulators/Biosimulators_utils#egg=biosimulators_utils
 </pre></div>
 </div>
-</div>
-<div class="section" id="installing-the-optional-features">
+</section>
+<section id="installing-the-optional-features">
 <h2>Installing the optional features<a class="headerlink" href="#installing-the-optional-features" title="Permalink to this headline">¶</a></h2>
 <p>To use BioSimulators utils to validate models encoded in BNGL, install BioSimulators utils with the <code class="docutils literal notranslate"><span class="pre">bngl</span></code> option:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pip install biosimulators-utils[bngl]
@@ -262,8 +271,19 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>pip install biosimulators-utils[logging]
 </pre></div>
 </div>
+</section>
+<section id="dockerfile-and-docker-image">
+<h2>Dockerfile and Docker image<a class="headerlink" href="#dockerfile-and-docker-image" title="Permalink to this headline">¶</a></h2>
+<p>This package is available in the <code class="docutils literal notranslate"><span class="pre">ghcr.io/biosimulators/biosimulators</span></code> Docker image. This image includes all of the optional dependencies and installation options.</p>
+<p>To install and run this image, run the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">biosimulators</span><span class="o">/</span><span class="n">biosimulators</span>
+<span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">it</span> <span class="o">--</span><span class="n">rm</span> <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">biosimulators</span><span class="o">/</span><span class="n">biosimulators</span>
+</pre></div>
 </div>
-</div>
+<p>This image includes this package, as well as standardized Python APIs for the simulation tools validated by BioSimulators. Because this image aims to incorporate as many simulation tools as possible within a single Python environment, this image may sometimes lag behind the latest version of this package.</p>
+<p>The Dockerfile for this image is available <a class="reference external" href="https://github.com/biosimulators/Biosimulators/blob/dev/Dockerfile">here</a>.</p>
+</section>
+</section>
 
 
               </div>
@@ -275,14 +295,13 @@
       </div>
     </div>
   
-  <script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
-
-  <footer class="footer mt-5 mt-md-0">
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2021, BioSimulators Team.<br/>
+    &copy; Copyright 2021, BioSimulators Team.<br>
 </p>
     </div>
     
