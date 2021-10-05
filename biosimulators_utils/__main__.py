@@ -190,8 +190,8 @@ class ValidateModelingProjectController(cement.Controller):
         if errors:
             shutil.rmtree(archive_dirname)
 
-            msg = 'The COMBINE/OMEX archive is invalid.\n  {}'.format(
-                flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
+            msg = '`{}` is not a valid COMBINE/OMEX archive.\n  {}'.format(
+                args.filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
             raise SystemExit(msg)
 
         # print summary

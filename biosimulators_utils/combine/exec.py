@@ -130,8 +130,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                 warn(msg, BioSimulatorsWarning)
 
             if errors:
-                msg = 'The COMBINE/OMEX archive is invalid.\n  {}'.format(
-                    flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
+                msg = '`{}` is not a valid COMBINE/OMEX archive.\n  {}'.format(
+                    archive_filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
                 raise ValueError(msg)
 
             # determine files to execute

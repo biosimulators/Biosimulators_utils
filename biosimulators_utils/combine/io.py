@@ -276,7 +276,8 @@ class CombineArchiveReader(object):
             warn('COMBINE/OMEX archive may be invalid.\n  ' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
                  BioSimulatorsWarning)
         if self.errors:
-            raise ValueError('COMBINE/OMEX archive is invalid.\n  ' + flatten_nested_list_of_strings(self.errors).replace('\n', '\n  '))
+            raise ValueError('`{}` is not a valid COMBINE/OMEX archive.\n  {}'.format(
+                in_file, flatten_nested_list_of_strings(self.errors).replace('\n', '\n  ')))
 
         # return information about archive
         return archive
