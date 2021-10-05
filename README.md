@@ -79,13 +79,27 @@ To use BioSimulators utils to log the standard output and error produced by simu
 pip install biosimulators-utils[logging]
 ```
 
+## Dockerfile and Docker image
+
+This package is available in the `ghcr.io/biosimulators/biosimulators` Docker image. This image includes all of the optional dependencies and installation options.
+
+To install and run this image, run the following commands:
+```
+docker pull ghcr.io/biosimulators/biosimulators
+docker run -it --rm ghcr.io/biosimulators/biosimulators
+```
+
+This image includes this package, as well as standardized Python APIs for the simulation tools validated by BioSimulators. Because this image aims to incorporate as many simulation tools as possible within a single Python environment, this image may sometimes lag behind the latest version of this package.
+
+The Dockerfile for this image is available [here](https://github.com/biosimulators/Biosimulators/blob/dev/Dockerfile).
+
 ## Tutorials
 
 ### Command-line interface
 A tutorial for the command-line interface is available [here](https://docs.biosimulators.org/Biosimulators_utils/).
 
 ### Python API
-Interactive tutorials for using BioSimulators-utils and Python APIs for simulation tools to execute simulations are available from Binder [here](https://mybinder.org/v2/gh/biosimulators/Biosimulators_tutorials/HEAD).
+Interactive tutorials for using BioSimulators-utils and Python APIs for simulation tools to execute simulations are available online from Binder [here](https://mybinder.org/v2/gh/biosimulators/Biosimulators_tutorials/HEAD). The Jupyter notebooks for these tutorials are also available [here](https://github.com/biosimulators/Biosimulators_tutorials).
 
 ## API documentation
 API documentation is available [here](https://docs.biosimulators.org/Biosimulators_utils/).
