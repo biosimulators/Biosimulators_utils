@@ -130,6 +130,24 @@ def validate(archive, archive_dirname,
             errors.extend(content_errors)
             warnings.extend(content_warnings)
 
+    if config.VALIDATE_OMEX_METADATA and CombineArchiveContentFormat.OMEX_METADATA in formats_to_validate:
+        has_metadata = False
+        for content in archive.contents:
+            if (
+                isinstance(content, CombineArchiveContent)
+                and content.location
+                and content.format
+                and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format)
+            ):
+                has_metadata = True
+                break
+
+        if not has_metadata:
+            errors.append([(
+                'The COMBINE/OMEX does not contain an OMEX Metadata file. '
+                'Archives must contain metadata for publication to BioSimulations.'
+            )])
+
     # return errors and warnings
     return (errors, warnings)
 

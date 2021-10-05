@@ -1,6 +1,7 @@
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat
 from biosimulators_utils.combine.io import CombineArchiveReader
 from biosimulators_utils.combine.validation import validate, validate_format, validate_content, validate_omex_meta_file
+from biosimulators_utils.config import Config
 from biosimulators_utils.sedml.data_model import SedDocument, Model, ModelLanguage
 from biosimulators_utils.sedml.io import SedmlSimulationReader, SedmlSimulationWriter
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
@@ -336,3 +337,28 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(warnings, [])
 
         os.remove(metadata_file)
+
+    def test_validate_no_metadata(self):
+        os.remove(os.path.join(self.tmp_dir, 'thumbnail.png'))
+
+        config = Config(VALIDATE_OMEX_METADATA=True)
+        archive = CombineArchiveReader().run(os.path.join(self.FIXTURES_DIR, 'no-metadata.omex'), self.tmp_dir, config=config)
+        errors, warnings = validate(archive, self.tmp_dir, config=config)
+        self.assertEqual(errors, [])
+
+        config = Config(VALIDATE_OMEX_METADATA=False)
+        archive = CombineArchiveReader().run(os.path.join(self.FIXTURES_DIR, 'no-metadata.omex'), self.tmp_dir, config=config)
+        errors, warnings = validate(archive, self.tmp_dir, config=config)
+        self.assertEqual(errors, [])
+
+        config = Config(VALIDATE_OMEX_METADATA=True)
+        archive = CombineArchiveReader().run(os.path.join(self.FIXTURES_DIR, 'no-metadata.omex'), self.tmp_dir, config=config)
+        errors, warnings = validate(archive, self.tmp_dir, formats_to_validate=list(
+            CombineArchiveContentFormat.__members__.values()), config=config)
+        self.assertNotEqual(errors, [])
+
+        config = Config(VALIDATE_OMEX_METADATA=False)
+        archive = CombineArchiveReader().run(os.path.join(self.FIXTURES_DIR, 'no-metadata.omex'), self.tmp_dir, config=config)
+        errors, warnings = validate(archive, self.tmp_dir, formats_to_validate=list(
+            CombineArchiveContentFormat.__members__.values()), config=config)
+        self.assertEqual(errors, [])
