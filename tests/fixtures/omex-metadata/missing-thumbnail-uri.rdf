@@ -13,7 +13,7 @@
     xmlns:dcterms="http://purl.org/dc/terms/"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
-  <rdf:Description rdf:about="http://omex-libary.org/BioSim0001.omex">
+  <rdf:Description rdf:about="http://omex-library.org/BioSim0001.omex">
     <!-- name -->
     <dc:title>Name</dc:title>
 
