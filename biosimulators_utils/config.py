@@ -21,7 +21,7 @@ DEFAULT_REPORTS_PATH = 'reports.zip'
 DEFAULT_PLOTS_PATH = 'plots.zip'
 DEFAULT_LOG_PATH = 'log.yml'
 DEFAULT_BIOSIMULATORS_API_ENDPOINT = 'https://api.biosimulators.org/'
-DEFAULT_RUNBIOSIMULATIONS_API_ENDPOINT = 'https://run.api.biosimulations.org/'
+DEFAULT_RUNBIOSIMULATIONS_API_ENDPOINT = 'https://api.biosimulations.org/'
 
 
 class Config(object):
