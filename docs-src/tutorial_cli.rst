@@ -19,7 +19,7 @@ The following steps can be used to use an `Escher <https://escher.github.io/>`_ 
 
 #. Add the Vega file to the COMBINE/OMEX archive and its manifest with the format ``http://purl.org/NET/mediatypes/application/vega+json``.
 
-An example COMBINE/OMEX archive with an Escher map converted to Vega is available `here <https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/sbml-fbc>`_.
+An example COMBINE/OMEX archive with an Escher map converted to Vega is available `here <https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/sbml-fbc>`_. The directory includes both example Escher and converted Vega files. Note, this Vega file must be further processed by BioSimulations (to combine the diagram with simulation results). A complete Vega file is available `here <https://github.com/biosimulators/Biosimulators_tutorials/tree/dev/tutorials/data/Escherichia-coli-core-metabolism.vg.json>`_.
 
 
 Convert a GINML activity flow diagram to a Vega data visualization
@@ -40,7 +40,7 @@ Convert a GINML activity flow diagram to a Vega data visualization
 
 #. Add the Vega file to the COMBINE/OMEX archive and its manifest with the format ``http://purl.org/NET/mediatypes/application/vega+json``.
 
-An example COMBINE/OMEX archive with a GINML diagram converted to Vega is available `here <https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/sbml-qual>`_.
+An example COMBINE/OMEX archive with a GINML diagram converted to Vega is available `here <https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/sbml-qual>`_. The directory includes both example GINsim and converted Vega files. Note, this Vega file must be further processed by BioSimulations (to combine the diagram with simulation results). A complete Vega file is available `here <https://github.com/biosimulators/Biosimulators_tutorials/tree/dev/tutorials/data/Irons-J-Theor-Biol-2009-yeast-cell-cycle.activity-flow-diagram.vg.json>`_.
 
 
 Convert a SBGN process description map to a Vega data visualization
@@ -61,7 +61,7 @@ The following steps can be used to use a `Systems Biology Graphical Notation <ht
 
 #. Add the Vega file to the COMBINE/OMEX archive and its manifest with the format ``http://purl.org/NET/mediatypes/application/vega+json``.
 
-Example COMBINE/OMEX archives with SBGN maps converted to Vega are available `here <https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/>`_.
+Example COMBINE/OMEX archives with SBGN maps converted to Vega are available `here <https://github.com/biosimulators/Biosimulators_test_suite/tree/deploy/examples/>`_. The directory includes both example SBGN and converted Vega files. Note, this Vega file must be further processed by BioSimulations (to combine the diagram with simulation results). A complete Vega file is available `here <https://github.com/biosimulators/Biosimulators_tutorials/tree/dev/tutorials/data/Elowitz-Nature-2000-Repressilator.process-description-map.vg.json>`_.
 
 
 Validate a modeling project
