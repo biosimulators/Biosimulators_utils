@@ -7,7 +7,7 @@
 """
 
 from ..combine.data_model import CombineArchive, CombineArchiveContentFormatPattern  # noqa: F401
-from .data_model import (Triple, OmexMetaInputFormat, OmexMetaOutputFormat, OmexMetaSchema,
+from .data_model import (Triple, OmexMetaInputFormat, OmexMetaOutputFormat, OmexMetadataSchema,
                          BIOSIMULATIONS_ROOT_URI_FORMAT,
                          BIOSIMULATIONS_ROOT_URI_PATTERN,
                          BIOSIMULATIONS_PREDICATE_TYPES)
@@ -36,7 +36,7 @@ def read_omex_meta_file(filename, schema, format=OmexMetaInputFormat.rdfxml, arc
 
     Args:
         filename (:obj:`str`): path to OMEX Metadata file
-        schema (:obj:`OmexMetaSchema`): schema to parse :obj:`filename` into
+        schema (:obj:`OmexMetadataSchema`): schema to parse :obj:`filename` into
         format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
         archive (:obj:`CombineArchive`, optional): parent COMBINE archive
         working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
@@ -52,16 +52,16 @@ def read_omex_meta_file(filename, schema, format=OmexMetaInputFormat.rdfxml, arc
     errors = []
     warnings = []
 
-    if schema == OmexMetaSchema.biosimulations:
+    if schema == OmexMetadataSchema.biosimulations:
         return BiosimulationsOmexMetaReader().run(filename, format=format, archive=archive, working_dir=working_dir)
 
-    elif schema == OmexMetaSchema.rdf_triples:
+    elif schema == OmexMetadataSchema.rdf_triples:
         return TriplesOmexMetaReader().run(filename, format=format, archive=archive, working_dir=working_dir)
 
     else:
         errors.append(['Schema `{}` is not supported. The following schemas are supported:',
                        [['None']] + sorted([
-                           [schema.value] for schema in OmexMetaSchema.__members__.values()
+                           [schema.value] for schema in OmexMetadataSchema.__members__.values()
                        ])])
         return (content, errors, warnings)
 
@@ -71,20 +71,20 @@ def write_omex_meta_file(content, schema, filename, format=OmexMetaOutputFormat.
 
     Args:
         content (:obj:`object`): representation of the OMEX Metadata file in :obj:`schema`
-        schema (:obj:`OmexMetaSchema`): schema for :obj:`content` into
+        schema (:obj:`OmexMetadataSchema`): schema for :obj:`content` into
         filename (:obj:`str`): path to save OMEX Metadata file
         format (:obj:`OmexMetaOutputFormat`, optional): format for :obj:`filename`
     """
-    if schema == OmexMetaSchema.biosimulations:
+    if schema == OmexMetadataSchema.biosimulations:
         return BiosimulationsOmexMetaWriter().run(content, filename, format=format)
 
-    elif schema == OmexMetaSchema.rdf_triples:
+    elif schema == OmexMetadataSchema.rdf_triples:
         return TriplesOmexMetaWriter().run(content, filename, format=format)
 
     else:
         msg = 'Schema `{}` is not supported. The following schemas are supported:\n  {}'.format(
             schema,
-            '\n  '.join(['None'] + sorted([schema.value for schema in OmexMetaSchema.__members__.values()])))
+            '\n  '.join(['None'] + sorted([schema.value for schema in OmexMetadataSchema.__members__.values()])))
         raise NotImplementedError(msg)
 
 
@@ -94,7 +94,7 @@ def read_omex_meta_files_for_archive(archive, archive_dirname, schema):
     Args:
         archive (:obj:`CombineArchive`): COMBINE/OMEX archive
         archive_dirname (:obj:`str`): directory with the content of the archive
-        schema (:obj:`OmexMetaSchema`): schema to parse :obj:`filename` into
+        schema (:obj:`OmexMetadataSchema`): schema to parse :obj:`filename` into
 
     Returns:
         :obj:`tuple`:

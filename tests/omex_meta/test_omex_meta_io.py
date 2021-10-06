@@ -304,13 +304,13 @@ class OmexMetaIoTestCase(unittest.TestCase):
     def test_read_omex_meta_file(self):
         triples, errors, warnings = io.read_omex_meta_file(
             self.FIXTURE,
-            schema=data_model.OmexMetaSchema.rdf_triples)
+            schema=data_model.OmexMetadataSchema.rdf_triples)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
         metadata, errors, warnings = io.read_omex_meta_file(
             self.FIXTURE,
-            schema=data_model.OmexMetaSchema.biosimulations,
+            schema=data_model.OmexMetadataSchema.biosimulations,
             working_dir=self.dir_name)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
@@ -419,15 +419,15 @@ class OmexMetaIoTestCase(unittest.TestCase):
         self.assertEqual(md2, md)
 
     def test_write_omex_meta_file(self):
-        triples, errors, _ = io.read_omex_meta_file(self.FIXTURE, data_model.OmexMetaSchema.rdf_triples)
+        triples, errors, _ = io.read_omex_meta_file(self.FIXTURE, data_model.OmexMetadataSchema.rdf_triples)
         self.assertEqual(errors, [])
         filename = os.path.join(self.dir_name, 'md.rdf')
-        io.write_omex_meta_file(triples, data_model.OmexMetaSchema.rdf_triples, filename)
+        io.write_omex_meta_file(triples, data_model.OmexMetadataSchema.rdf_triples, filename)
 
         md, errors, _ = io.BiosimulationsOmexMetaReader().run(self.FIXTURE)
         self.assertEqual(errors, [])
         filename = os.path.join(self.dir_name, 'md.rdf')
-        io.write_omex_meta_file(md, data_model.OmexMetaSchema.biosimulations, filename)
+        io.write_omex_meta_file(md, data_model.OmexMetadataSchema.biosimulations, filename)
 
         with self.assertRaises(NotImplementedError):
             io.write_omex_meta_file(triples, None, filename)
@@ -450,7 +450,7 @@ class OmexMetaIoTestCase(unittest.TestCase):
             ),
         ]
         md, errors, warnings = io.read_omex_meta_files_for_archive(
-            archive, self.dir_name, data_model.OmexMetaSchema.biosimulations)
+            archive, self.dir_name, data_model.OmexMetadataSchema.biosimulations)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
         self.assertEqual(len(md), 3)

@@ -21,7 +21,7 @@ class OmexMetaValidationTestCase(unittest.TestCase):
         shutil.rmtree(self.dir_name)
 
     def test_validate_biosimulations_metadata(self):
-        md, _, _ = read_omex_meta_file(self.FIXTURE, schema=data_model.OmexMetaSchema.biosimulations)
+        md, _, _ = read_omex_meta_file(self.FIXTURE, schema=data_model.OmexMetadataSchema.biosimulations)
         md = md[0]
 
         errors, warnings = validate_biosimulations_metadata(md)

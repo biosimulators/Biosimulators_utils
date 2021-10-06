@@ -8,7 +8,7 @@
 
 from .combine.data_model import CombineArchiveContentFormat
 from .config import get_config
-from .omex_meta.data_model import OmexMetaSchema
+from .omex_meta.data_model import OmexMetadataSchema
 from .sedml.data_model import ModelLanguage, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation
 from .utils.core import flatten_nested_list_of_strings
 from .warnings import warn, BioSimulatorsWarning
@@ -179,7 +179,7 @@ class ValidateModelingProjectController(cement.Controller):
         errors, warnings = biosimulators_utils.combine.validation.validate(
             archive, archive_dirname,
             formats_to_validate=list(CombineArchiveContentFormat.__members__.values()),
-            metadata_schema=OmexMetaSchema.biosimulations,
+            metadata_schema=OmexMetadataSchema.biosimulations,
             config=config,
         )
         if warnings:

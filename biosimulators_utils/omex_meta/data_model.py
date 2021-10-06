@@ -14,7 +14,7 @@ __all__ = [
     'Triple',
     'OmexMetaInputFormat',
     'OmexMetaOutputFormat',
-    'OmexMetaSchema',
+    'OmexMetadataSchema',
     'BIOSIMULATIONS_ROOT_URI_FORMAT',
     'BIOSIMULATIONS_ROOT_URI_PATTERN',
     'BIOSIMULATIONS_PREDICATE_TYPES',
@@ -66,7 +66,7 @@ class OmexMetaOutputFormat(str, enum.Enum):
     turtle = 'turtle'
 
 
-class OmexMetaSchema(str, enum.Enum):
+class OmexMetadataSchema(str, enum.Enum):
     """ Schema for OMEX Metadata documents """
     biosimulations = 'BioSimulations'
     rdf_triples = 'rdf_triples'
