@@ -21,10 +21,10 @@ class GinmlVegaTestCase(unittest.TestCase):
 
         # GINSim model 35
         ginml_filename = os.path.join(self.FIXTURES_DIRNAME, 'ginsim-35-regulatoryGraph.ginml')
-        vega_filename = os.path.join(self.temp_dirname, 'vega.json')
+        vega_filename = os.path.join(self.temp_dirname, 'vg.json')
         ginml_to_vega(data, ginml_filename, vega_filename)
 
         # GINSim model 79
         ginml_filename = os.path.join(self.FIXTURES_DIRNAME, 'ginsim-79-regulatoryGraph-expanded comments.ginml')
-        vega_filename = os.path.join(self.temp_dirname, 'vega.json')
+        vega_filename = os.path.join(self.temp_dirname, 'vg.json')
         ginml_to_vega(data, ginml_filename, vega_filename)

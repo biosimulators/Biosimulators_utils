@@ -269,7 +269,7 @@ class CliTestCase(unittest.TestCase):
             with biosimulators_utils.__main__.App(argv=[
                 'convert', 'escher-to-vega',
                 'path/to/escher.json',
-                'path/to/vega.json',
+                'path/to/vg.json',
             ]) as app:
                 app.run()
 
@@ -279,7 +279,7 @@ class CliTestCase(unittest.TestCase):
                 '--data-file', 'path/to/flux.json',
                 '--data-url', 'http://site.com/flux.json',
                 'path/to/escher.json',
-                'path/to/vega.json',
+                'path/to/vg.json',
             ]) as app:
                 app.run()
 
@@ -288,6 +288,6 @@ class CliTestCase(unittest.TestCase):
                 'convert', 'escher-to-vega',
                 '--data-url', 'path/to/flux.json',
                 'path/to/escher.json',
-                'path/to/vega.json',
+                'path/to/vg.json',
             ]) as app:
                 app.run()

@@ -33,7 +33,7 @@ class EscherVegaVisualizationTestCase(unittest.TestCase):
             'values': dict_to_vega_dataset(self.gen_fluxes()),
         }
 
-        vega_filename = os.path.join(self.temp_dirname, 'vega.json')
+        vega_filename = os.path.join(self.temp_dirname, 'vg.json')
 
         escher_to_vega(reaction_fluxes_data_set, self.ESCHER_FILENAME, vega_filename)
 
@@ -57,7 +57,7 @@ class EscherVegaVisualizationTestCase(unittest.TestCase):
         reaction_fluxes_data_set = {
             'values': dict_to_vega_dataset(self.gen_fluxes()),
         }
-        vega_filename = os.path.join(self.temp_dirname, 'vega.json')
+        vega_filename = os.path.join(self.temp_dirname, 'vg.json')
 
         map = read_escher_map_config(self.ESCHER_FILENAME)
         node_id = list(map[1]['nodes'].keys())[0]
@@ -79,7 +79,7 @@ class EscherVegaVisualizationTestCase(unittest.TestCase):
             }
         }
 
-        vega_filename = os.path.join(self.temp_dirname, 'vega.json')
+        vega_filename = os.path.join(self.temp_dirname, 'vg.json')
         metabolic_map_data_file = {
             'filename': os.path.join(self.temp_dirname, 'map.json'),
             'url': 'http://localhost:3334/map.json',
@@ -109,7 +109,7 @@ class EscherVegaVisualizationTestCase(unittest.TestCase):
             'sedmlUri': ['simulation.sedml', 'report']
         }
 
-        vega_filename = os.path.join(self.temp_dirname, 'vega.json')
+        vega_filename = os.path.join(self.temp_dirname, 'vg.json')
 
         escher_to_vega(reaction_fluxes_data_set, self.ESCHER_FILENAME, vega_filename)
 

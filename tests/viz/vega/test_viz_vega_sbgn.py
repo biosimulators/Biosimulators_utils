@@ -32,7 +32,7 @@ class SbgnVegaVisualizationTestCase(unittest.TestCase):
             }),
         }
 
-        vega_filename = os.path.join(self.temp_dirname, 'vega.json')
+        vega_filename = os.path.join(self.temp_dirname, 'vg.json')
 
         # convert SBGN PD map to Vega
         sbgn_pd_map_to_vega(glyph_data_set, self.SBGN_FILENAME, vega_filename)
