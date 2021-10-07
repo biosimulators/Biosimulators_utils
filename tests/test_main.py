@@ -85,6 +85,91 @@ class CliTestCase(unittest.TestCase):
             app.run()
         self.assertTrue(os.path.isfile(archive_filename))
 
+    def test_validate_model(self):
+        with biosimulators_utils.__main__.App(argv=[
+            'validate-model',
+            'SBML',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'BIOMD0000000297.xml'),
+        ]) as app:
+            app.run()
+
+        with self.assertRaisesRegex(SystemExit, 'is invalid'):
+            with biosimulators_utils.__main__.App(argv=[
+                'validate-model',
+                'SBML',
+                os.path.join(os.path.dirname(__file__), 'fixtures', 'does not exist'),
+            ]) as app:
+                app.run()
+
+        with self.assertRaisesRegex(SystemExit, 'Model language must be'):
+            with biosimulators_utils.__main__.App(argv=[
+                'validate-model',
+                'invalid',
+                os.path.join(os.path.dirname(__file__), 'fixtures', 'BIOMD0000000297.xml'),
+            ]) as app:
+                app.run()
+
+    def test_validate_simulation(self):
+        with biosimulators_utils.__main__.App(argv=[
+            'validate-simulation',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'BIOMD0000000673_sim.sedml'),
+        ]) as app:
+            app.run()
+            
+        with biosimulators_utils.__main__.App(argv=[
+            'validate-simulation',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.sedml'),
+        ]) as app:
+            app.run()
+
+        with biosimulators_utils.__main__.App(argv=[
+            'validate-simulation',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint-invalid-model.sedml'),
+        ]) as app:
+            app.run()
+
+        with biosimulators_utils.__main__.App(argv=[
+            'validate-simulation',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint-invalid-target.sedml'),
+        ]) as app:
+            app.run()
+
+        with self.assertRaisesRegex(SystemExit, 'is invalid.'):
+            with biosimulators_utils.__main__.App(argv=[
+                'validate-simulation',
+                os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint-invalid-xpath.sedml'),
+            ]) as app:
+                app.run()
+
+        with self.assertRaisesRegex(SystemExit, 'is invalid.'):
+            with biosimulators_utils.__main__.App(argv=[
+                'validate-simulation',
+                os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'does not exist'),
+            ]) as app:
+                app.run()
+
+        with self.assertRaisesRegex(SystemExit, 'is invalid.'):
+            with biosimulators_utils.__main__.App(argv=[
+                'validate-simulation',
+                os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'no-id.sedml'),
+            ]) as app:
+                app.run()
+
+        with self.assertRaisesRegex(SystemExit, 'is invalid.'):
+            with biosimulators_utils.__main__.App(argv=[
+                'validate-simulation',
+                os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'duplicate-ids.sedml'),
+            ]) as app:
+                app.run()
+
+        with self.assertRaisesRegex(ValueError, 'Big error'):
+            with biosimulators_utils.__main__.App(argv=[
+                'validate-simulation',
+                os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'duplicate-ids.sedml'),
+            ]) as app:
+                with mock.patch.object(biosimulators_utils.sedml.io.SedmlSimulationReader, 'run', side_effect=ValueError('Big error')):
+                    app.run()
+
     def test_validate_modeling_project(self):
         with biosimulators_utils.__main__.App(argv=[
             'validate-project',

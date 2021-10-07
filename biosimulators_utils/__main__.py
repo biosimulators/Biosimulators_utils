@@ -48,6 +48,17 @@ BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES = [
     ModelLanguage.XPP,
 ]
 
+VALIDATE_MODEL_LANGUAGES = [
+    ModelLanguage.BNGL,
+    ModelLanguage.CellML,
+    # ModelLanguage.ZGINML,
+    ModelLanguage.LEMS,
+    ModelLanguage.RBA,
+    ModelLanguage.SBML,
+    ModelLanguage.Smoldyn,
+    ModelLanguage.XPP,
+]
+
 BUILD_COMBINE_ARCHIVE_SIMULATION_TYPES = [
     OneStepSimulation,
     SteadyStateSimulation,
@@ -113,7 +124,8 @@ class BuildModelingProjectController(cement.Controller):
 
         try:
             model_lang = ModelLanguage[args.model_language]
-        except KeyError:
+            assert model_lang in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES
+        except (KeyError, AssertionError):
             raise SystemExit('Model language must be one of {}, or {}, not `{}`.'.format(
                 ', '.join('`{}`'.format(lang.name) for lang in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES[0:-1]),
                 ', '.join('`{}`'.format(lang.name) for lang in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES[-1:]),
@@ -135,6 +147,109 @@ class BuildModelingProjectController(cement.Controller):
             ))
 
         build_combine_archive_for_model(model_filename, model_lang, sim_type, args.archive_filename)
+
+
+class ValidateModelController(cement.Controller):
+    """ Controller for validating models (e.g., CellML, SBML files) """
+
+    class Meta:
+        label = 'validate-model'
+        stacked_on = 'base'
+        stacked_type = 'nested'
+        help = "Validate a model (e.g., CellML, SBML file)"
+        description = "Validate a model (e.g., CellML, SBML file)"
+        arguments = [
+            (
+                ['language'],
+                dict(
+                    type=str,
+                    help='Model language ({}, or {})'.format(
+                        ', '.join('`{}`'.format(lang.name) for lang in VALIDATE_MODEL_LANGUAGES[0:-1]),
+                        ', '.join('`{}`'.format(lang.name) for lang in VALIDATE_MODEL_LANGUAGES[-1:]),
+                    ),
+                ),
+            ),
+            (
+                ['filename'],
+                dict(
+                    type=str,
+                    help='Path to model',
+                ),
+            ),
+        ]
+
+    @cement.ex(hide=True)
+    def _default(self):
+        import biosimulators_utils.sedml.validation
+
+        args = self.app.pargs
+
+        try:
+            language = ModelLanguage[args.language]
+            assert language in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES
+        except (KeyError, AssertionError):
+            raise SystemExit('Model language must be one of {}, or {}, not `{}`.'.format(
+                ', '.join('`{}`'.format(lang.name) for lang in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES[0:-1]),
+                ', '.join('`{}`'.format(lang.name) for lang in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES[-1:]),
+                args.language,
+            ))
+
+        filename = args.filename
+
+        errors, warnings, _ = biosimulators_utils.sedml.validation.validate_model_with_language(filename, language)
+
+        if warnings:
+            msg = 'The model file `{}` may be invalid.\n  {}'.format(
+                filename, flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
+            warn(msg, BioSimulatorsWarning)
+
+        if errors:
+            msg = 'The model file `{}` is invalid.\n  {}'.format(
+                filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
+            raise SystemExit(msg)
+
+
+class ValidateSimulationController(cement.Controller):
+    """ Controller for validating simulation experiments (SED-ML files) """
+
+    class Meta:
+        label = 'validate-simulation'
+        stacked_on = 'base'
+        stacked_type = 'nested'
+        help = "Validate a simulation experiment (SED-ML file)"
+        description = "Validate a simulation experiment (SED-ML file)"
+        arguments = [
+            (
+                ['filename'],
+                dict(
+                    type=str,
+                    help='Path to a SED-ML file',
+                ),
+            ),
+        ]
+
+    @cement.ex(hide=True)
+    def _default(self):
+        import biosimulators_utils.sedml.io
+
+        args = self.app.pargs
+
+        reader = biosimulators_utils.sedml.io.SedmlSimulationReader()
+        try:
+            reader.run(args.filename, validate_models_with_languages=False, validate_targets_with_model_sources=False)
+        except Exception:
+            if not reader.errors:
+                raise
+
+        if reader.warnings:
+            msg = 'The SED-ML file `{}` may be invalid.\n  {}'.format(
+                args.filename, flatten_nested_list_of_strings(reader.warnings).replace('\n', '\n  '))
+            warn(msg, BioSimulatorsWarning)
+
+        if reader.errors:
+            msg = 'The SED-ML file `{}` is invalid.\n  {}'.format(
+                args.filename, flatten_nested_list_of_strings(reader.errors).replace('\n', '\n  '))
+            raise SystemExit(msg)
 
 
 class ValidateModelingProjectController(cement.Controller):
@@ -212,6 +327,7 @@ class ExecuteModelingProjectController(cement.Controller):
             (
                 ['docker_image'],
                 dict(
+                    metavar='docker-image',
                     type=str,
                     help='Tag or URL for the Docker image of the simulation tools (e.g., ghcr.io/biosimulators/tellurium:latest)',
                 ),
@@ -574,6 +690,8 @@ class App(cement.App):
         handlers = [
             BaseController,
             BuildModelingProjectController,
+            ValidateModelController,
+            ValidateSimulationController,
             ValidateModelingProjectController,
             ExecuteModelingProjectController,
             ConvertController,

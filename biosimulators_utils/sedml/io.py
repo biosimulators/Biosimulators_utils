@@ -41,7 +41,7 @@ class SedmlSimulationWriter(object):
         self._doc_sed = None
         self._obj_to_sed_obj_map = None
 
-    def run(self, doc, filename, validate_semantics=True, validate_models_with_languages=True):
+    def run(self, doc, filename, validate_semantics=True, validate_models_with_languages=True, validate_targets_with_model_sources=True):
         """ Save a SED document to an SED-ML XML file
 
         Args:
@@ -49,12 +49,17 @@ class SedmlSimulationWriter(object):
             filename (:obj:`str`): Path to save simulation experiment in SED-ML format
             validate_semantics (:obj:`bool`, optional): if :obj:`True`, check that SED-ML is semantically valid
             validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
+            validate_targets_with_model_sources (:obj:`bool`, optional): if :obj:`True`, validate targets against
+                their models
 
         Raises:
             :obj:`NotImplementedError`: document uses an supported type of task or output
         """
-        errors, warnings = validate_doc(doc, working_dir=os.path.dirname(
-            filename), validate_semantics=validate_semantics, validate_models_with_languages=validate_models_with_languages)
+        errors, warnings = validate_doc(doc,
+                                        working_dir=os.path.dirname(filename),
+                                        validate_semantics=validate_semantics,
+                                        validate_models_with_languages=validate_models_with_languages,
+                                        validate_targets_with_model_sources=validate_targets_with_model_sources)
         if warnings:
             msg = 'The SED document is potentially incorrect.\n  {}'.format(flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
             warn(msg, BioSimulatorsWarning)
@@ -977,13 +982,15 @@ class SedmlSimulationReader(object):
         self.errors = None
         self.warnings = None
 
-    def run(self, filename, validate_semantics=True, validate_models_with_languages=True):
+    def run(self, filename, validate_semantics=True, validate_models_with_languages=True, validate_targets_with_model_sources=True):
         """ Base class for reading a SED document
 
         Args:
             filename (:obj:`str`): path to SED-ML document
             validate_semantics (:obj:`bool`, optional): if :obj:`True`, check that SED-ML is semantically valid
             validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
+            validate_targets_with_model_sources (:obj:`bool`, optional): if :obj:`True`, validate targets against
+                their models
 
         Returns:
             :obj:`data_model.SedDocument`: SED document
@@ -1349,8 +1356,11 @@ class SedmlSimulationReader(object):
                 '\n  '.join(self._reference_errors)))
 
         # validate
-        errors, warnings = validate_doc(doc, working_dir=os.path.dirname(
-            filename), validate_semantics=validate_semantics, validate_models_with_languages=validate_models_with_languages)
+        errors, warnings = validate_doc(doc,
+                                        working_dir=os.path.dirname(filename),
+                                        validate_semantics=validate_semantics,
+                                        validate_models_with_languages=validate_models_with_languages,
+                                        validate_targets_with_model_sources=validate_targets_with_model_sources)
         self.errors.extend(errors)
         self.warnings.extend(warnings)
         if self.warnings:

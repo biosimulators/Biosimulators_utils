@@ -59,7 +59,9 @@ __all__ = [
 ]
 
 
-def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with_languages=True):
+def validate_doc(doc, working_dir, validate_semantics=True,
+                 validate_models_with_languages=True,
+                 validate_targets_with_model_sources=True):
     """ Validate a SED document
 
     Args:
@@ -67,6 +69,8 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
         working_dir (:obj:`str`): working directory (e.g., for referencing model files)
         validate_semantics (:obj:`bool`, optional): if :obj:`True`, check that SED-ML is semantically valid
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
+        validate_targets_with_model_sources (:obj:`bool`, optional): if :obj:`True`, validate targets against
+            their models
 
     Returns:
         :obj:`tuple`:
@@ -522,30 +526,34 @@ def validate_doc(doc, working_dir, validate_semantics=True, validate_models_with
                 warnings.append(['Task {} may be invalid.'.format(task_id), task_warnings[task]['other']])
 
         # validate data generators
-        model_etrees = {}
-        for model in doc.models:
-            if (
-                model.language
-                and is_model_language_encoded_in_xml(model.language)
-                and model.source
-                and not model.source.startswith('#')
-                and not model.source.startswith('urn:')
-                and not model.source.startswith('http://')
-                and not model.source.startswith('https://')
-            ):
-                if os.path.isabs(model.source):
-                    model_source = model.source
-                else:
-                    model_source = os.path.join(working_dir, model.source)
+        if validate_targets_with_model_sources:
+            model_etrees = {}
+            for model in doc.models:
+                if (
+                    model.language
+                    and is_model_language_encoded_in_xml(model.language)
+                    and model.source
+                    and not model.source.startswith('#')
+                    and not model.source.startswith('urn:')
+                    and not model.source.startswith('http://')
+                    and not model.source.startswith('https://')
+                ):
+                    if os.path.isabs(model.source):
+                        model_source = model.source
+                    else:
+                        model_source = os.path.join(working_dir, model.source)
 
-                if os.path.isfile(model_source):
-                    try:
-                        model_etrees[model] = lxml.etree.parse(model_source)
-                    except Exception:
-                        pass
+                    if os.path.isfile(model_source):
+                        try:
+                            model_etrees[model] = lxml.etree.parse(model_source)
+                        except Exception:
+                            pass
+        else:
+            model_etrees = None
 
         for i_data_gen, data_gen in enumerate(doc.data_generators):
-            data_gen_errors, data_gen_warnings = validate_data_generator(data_gen, model_etrees=model_etrees)
+            data_gen_errors, data_gen_warnings = validate_data_generator(
+                data_gen, model_etrees=model_etrees, validate_targets_with_model_sources=validate_targets_with_model_sources)
 
             data_gen_id = '`' + data_gen.id + '`' if data_gen and data_gen.id else str(i_data_gen + 1)
 
@@ -1158,7 +1166,7 @@ def validate_uniform_range(range):
     return errors
 
 
-def validate_data_generator(data_generator, model_etrees=None):
+def validate_data_generator(data_generator, model_etrees=None, validate_targets_with_model_sources=True):
     """ Validate a data generator
 
     * Parameters have ids
@@ -1171,6 +1179,7 @@ def validate_data_generator(data_generator, model_etrees=None):
     Args:
         data_generator (:obj:`DataGenerator`): data generator
         model_etrees (:obj:`dict`, optional): dictionary that maps models to XML element trees of their sources
+        validate_targets_with_model_sources (:obj:`bool`, optional): whether to validate the targets of the variables of the data generator
 
     Returns:
         :obj:`tuple`:
@@ -1185,7 +1194,8 @@ def validate_data_generator(data_generator, model_etrees=None):
         if not param.id:
             errors.append(['Parameter {} must have an id.'.format(i_parameter + 1)])
 
-    temp_errors, temp_warnings = validate_data_generator_variables(data_generator.variables, model_etrees=model_etrees)
+    temp_errors, temp_warnings = validate_data_generator_variables(data_generator.variables, model_etrees=model_etrees,
+                                                                   validate_targets_with_model_sources=validate_targets_with_model_sources)
     errors.extend(temp_errors)
     warnings.extend(temp_warnings)
 
@@ -1196,12 +1206,13 @@ def validate_data_generator(data_generator, model_etrees=None):
     return (errors, warnings)
 
 
-def validate_data_generator_variables(variables, model_etrees=None):
+def validate_data_generator_variables(variables, model_etrees=None, validate_targets_with_model_sources=True):
     """ Check variables have a symbol or target
 
     Args:
         variables (:obj:`list` of :obj:`Variable`): variables
         model_etrees (:obj:`dict`, optional): dictionary that maps models to XML element trees of their sources
+        validate_targets_with_model_sources (:obj:`bool`, optional): whether to validate the targets of the variables of the data generator
 
     Returns:
         nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
@@ -1242,7 +1253,7 @@ def validate_data_generator_variables(variables, model_etrees=None):
                                                                  DataGenerator, model.language,
                                                                  model_id=model.id,
                                                                  model_etree=model_etrees.get(model, None),
-                                                                 check_in_model_source=not model_changes)
+                                                                 check_in_model_source=not model_changes and validate_targets_with_model_sources)
                     variable_errors.extend(temp_errors)
                     variable_warnings.extend(temp_warnings)
 
