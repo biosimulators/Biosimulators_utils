@@ -467,7 +467,7 @@ def get_package_namespace(package: str, namespaces: typing.Dict[typing.Union[str
         :obj:`tuple`:
 
             * :obj:`str`: prefix
-            * :obj:`str: URI
+            * :obj:`str`: URI
     """
     sbml_fbc_prefixes = set()
     sbml_fbc_uris = set()
