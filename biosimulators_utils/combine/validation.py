@@ -7,7 +7,6 @@
 """
 
 from ..config import get_config, Config  # noqa: F401
-from ..omex_meta.data_model import OmexMetaInputFormat, OmexMetadataSchema
 from ..omex_meta.io import read_omex_meta_file
 from ..sedml.io import SedmlSimulationReader
 from .data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat, CombineArchiveContentFormatPattern  # noqa: F401
@@ -30,7 +29,6 @@ def validate(archive, archive_dirname,
              formats_to_validate=[
                  CombineArchiveContentFormat.SED_ML,
              ],
-             metadata_schema=OmexMetadataSchema.rdf_triples,
              validate_models_with_languages=True,
              config=None):
     """ Validate a COMBINE/OMEX archive and the SED-ML and model documents it contains
@@ -44,7 +42,6 @@ def validate(archive, archive_dirname,
             return all SED documents, regardless of whether they have ``master="true"`` or not.
         formats_to_validate (:obj:`list` of :obj:`CombineArchiveContentFormat`, optional): list
             for formats of files to validate
-        metadata_schema (:obj:`OmexMetadataSchema`, optional): expected schema for OMEX Metadata file
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
         config (:obj:`Config`, optional): configuration
 
@@ -124,7 +121,6 @@ def validate(archive, archive_dirname,
             content_errors, content_warnings = validate_content(
                 content, archive_dirname,
                 formats_to_validate=formats_to_validate,
-                metadata_schema=metadata_schema,
                 validate_models_with_languages=validate_models_with_languages,
                 config=config)
             errors.extend(content_errors)
@@ -185,7 +181,6 @@ def validate_content(content, archive_dirname,
                      formats_to_validate=[
                          CombineArchiveContentFormat.SED_ML,
                      ],
-                     metadata_schema=OmexMetadataSchema.rdf_triples,
                      validate_models_with_languages=True,
                      config=None):
     """ Validate an item of a COMBINE/OMEX archive
@@ -195,7 +190,6 @@ def validate_content(content, archive_dirname,
         archive_dirname (:obj:`str`): directory with the content of the archive
         formats_to_validate (:obj:`list` of :obj:`CombineArchiveContentFormat`, optional): list
             for formats of files to validate
-        metadata_schema (:obj:`OmexMetadataSchema`, optional): expected schema for OMEX Metadata file
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
         config (:obj:`Config`, optional): configuration
 
@@ -240,7 +234,7 @@ def validate_content(content, archive_dirname,
             and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format)
         ):
             file_type = 'OMEX Metadata'
-            errors, warnings = validate_omex_meta_file(filename, archive_dirname, schema=metadata_schema)
+            errors, warnings = validate_omex_meta_file(filename, archive_dirname, config=config)
 
     # validate images
     if config.VALIDATE_IMAGES:
@@ -312,15 +306,13 @@ def validate_content(content, archive_dirname,
     return (errors, warnings)
 
 
-def validate_omex_meta_file(filename, archive_dirname, schema=OmexMetadataSchema.rdf_triples, format=OmexMetaInputFormat.rdfxml):
+def validate_omex_meta_file(filename, archive_dirname, config=None):
     """ validate an OMEX Metadata file
 
     Args:
         filename (:obj:`str`): path to file
         archive_dirname (:obj:`str`): directory with the content of the archive
-        schema (:obj:`OmexMetadataSchema`, optional): expected schema for OMEX Metadata file
-        format (:obj:`OmexMetaInputFormat`, optional): format of the file; must be one of the formats
-            supported by pyomexmeta such as ``rdfxml`` or ``turtle``
+        config (:obj:`Config`, optional): configuration
 
     Returns:
         :obj:`tuple`:
@@ -328,5 +320,8 @@ def validate_omex_meta_file(filename, archive_dirname, schema=OmexMetadataSchema
             * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Metadata file
             * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Metadata file
     """
-    _, errors, warnings = read_omex_meta_file(filename, schema=schema, format=format, working_dir=archive_dirname)
+    if config is None:
+        config = get_config()
+
+    _, errors, warnings = read_omex_meta_file(filename, working_dir=archive_dirname, config=config)
     return (errors, warnings)

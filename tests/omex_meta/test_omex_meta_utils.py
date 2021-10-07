@@ -1,4 +1,4 @@
-from biosimulators_utils.omex_meta.data_model import OmexMetaOutputFormat
+from biosimulators_utils.omex_meta.data_model import OmexMetadataOutputFormat
 from biosimulators_utils.omex_meta.utils import build_omex_meta_file_for_model
 import os
 import shutil
@@ -18,20 +18,20 @@ class OmexMetaUtilsTestCase(unittest.TestCase):
     def test_build_omex_meta_file_for_model(self):
         model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-metadata', 'demo1.xml')
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
-        metadata_format = OmexMetaOutputFormat.rdfxml_abbrev
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
 
         build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
 
     def test_build_omex_meta_file_for_model_error_handling(self):
         model_filename = 'not a file'
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
-        metadata_format = OmexMetaOutputFormat.rdfxml_abbrev
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
         with self.assertRaisesRegex(FileNotFoundError, 'is not a file'):
             build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
 
         model_filename = os.path.join(self.FIXTURE_DIRNAME, 'BIOMD0000000075.xml')
         metadata_filename = os.path.join('not a directory', 'metadata.rdf')
-        metadata_format = OmexMetaOutputFormat.rdfxml_abbrev
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
         with self.assertRaisesRegex(FileNotFoundError, 'does not exist'):
             build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
 
@@ -43,7 +43,7 @@ class OmexMetaUtilsTestCase(unittest.TestCase):
 
         model_filename = os.path.join(self.temp_dirname, 'model.xml')
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
-        metadata_format = OmexMetaOutputFormat.rdfxml_abbrev
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
         with open(model_filename, 'w') as file:
             file.write('<sbml></sbml')
         with self.assertRaisesRegex(ValueError, 'could not be extracted'):
@@ -51,5 +51,5 @@ class OmexMetaUtilsTestCase(unittest.TestCase):
 
         model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-metadata', 'simple-regulation.xml')
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
-        metadata_format = OmexMetaOutputFormat.rdfxml_abbrev
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
         build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)

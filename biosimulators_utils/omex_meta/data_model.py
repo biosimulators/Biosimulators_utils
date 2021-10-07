@@ -6,14 +6,13 @@
 :License: MIT
 """
 
-from ..combine.data_model import CombineArchiveContentFormat
 import enum
 import rdflib.term  # noqa: F401
 
 __all__ = [
     'Triple',
-    'OmexMetaInputFormat',
-    'OmexMetaOutputFormat',
+    'OmexMetadataInputFormat',
+    'OmexMetadataOutputFormat',
     'OmexMetadataSchema',
     'BIOSIMULATIONS_ROOT_URI_FORMAT',
     'BIOSIMULATIONS_ROOT_URI_PATTERN',
@@ -43,7 +42,7 @@ class Triple(object):
         self.object = object
 
 
-class OmexMetaInputFormat(str, enum.Enum):
+class OmexMetadataInputFormat(str, enum.Enum):
     """ An format for reading an OMEX Metadata file """
     ntriples = 'ntriples'
     nquads = 'nquads'
@@ -52,7 +51,7 @@ class OmexMetaInputFormat(str, enum.Enum):
     turtle = 'turtle'
 
 
-class OmexMetaOutputFormat(str, enum.Enum):
+class OmexMetadataOutputFormat(str, enum.Enum):
     """ An format for writing an OMEX Metadata file """
     dot = 'dot'
     json = 'json'
@@ -326,8 +325,8 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
 }
 
 BIOSIMULATIONS_THUMBNAIL_FORMATS = [
-    CombineArchiveContentFormat.GIF,
-    CombineArchiveContentFormat.JPEG,
-    CombineArchiveContentFormat.PNG,
-    CombineArchiveContentFormat.WEBP,
+    'GIF',
+    'JPEG',
+    'PNG',
+    'WEBP',
 ]

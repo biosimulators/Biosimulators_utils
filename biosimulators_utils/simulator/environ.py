@@ -7,6 +7,7 @@
 """
 
 from ..config import get_config
+from ..omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, OmexMetadataSchema
 from ..report.data_model import ReportFormat
 from ..viz.data_model import VizFormat
 from .data_model import EnvironmentVariable
@@ -21,6 +22,31 @@ with mock.patch.dict('os.environ', {}):
     config = get_config()
 
 ENVIRONMENT_VARIABLES = {
+    # formats
+    'OMEX_METADATA_INPUT_FORMAT': EnvironmentVariable(
+        name='OMEX_METADATA_INPUT_FORMAT',
+        description='Which input format to use to validate OMEX metadata files during the validation of COMBINE/OMEX archives.',
+        options=sorted(OmexMetadataInputFormat.__members__.keys()),
+        default=config.OMEX_METADATA_INPUT_FORMAT.value,
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
+    'OMEX_METADATA_OUTPUT_FORMAT': EnvironmentVariable(
+        name='OMEX_METADATA_OUTPUT_FORMAT',
+        description='Which output format to use to export OMEX metadata files.',
+        options=sorted(OmexMetadataOutputFormat.__members__.keys()),
+        default=config.OMEX_METADATA_OUTPUT_FORMAT.value,
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
+    'OMEX_METADATA_SCHEMA': EnvironmentVariable(
+        name='OMEX_METADATA_SCHEMA',
+        description='Which schema to use to validate OMEX metadata files during the validation of COMBINE/OMEX archives.',
+        options=sorted(OmexMetadataSchema.__members__.keys()),
+        default=config.OMEX_METADATA_SCHEMA.value,
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
     # validation
     'VALIDATE_OMEX_MANIFESTS': EnvironmentVariable(
         name='VALIDATE_OMEX_MANIFESTS',

@@ -1,4 +1,5 @@
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat
+from biosimulators_utils.config import Config
 from biosimulators_utils.omex_meta import data_model
 from biosimulators_utils.omex_meta.io import read_omex_meta_file
 from biosimulators_utils.omex_meta.validation import validate_biosimulations_metadata
@@ -21,7 +22,10 @@ class OmexMetaValidationTestCase(unittest.TestCase):
         shutil.rmtree(self.dir_name)
 
     def test_validate_biosimulations_metadata(self):
-        md, _, _ = read_omex_meta_file(self.FIXTURE, schema=data_model.OmexMetadataSchema.biosimulations)
+        config = Config(
+            OMEX_METADATA_SCHEMA=data_model.OmexMetadataSchema.biosimulations
+        )
+        md, _, _ = read_omex_meta_file(self.FIXTURE, config=config)
         md = md[0]
 
         errors, warnings = validate_biosimulations_metadata(md)

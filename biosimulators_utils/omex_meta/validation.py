@@ -86,12 +86,12 @@ def validate_biosimulations_metadata(metadata, archive=None, working_dir=None):
                         ):
                             is_valid = False
                             for format in BIOSIMULATIONS_THUMBNAIL_FORMATS:
-                                if content.format and re.match(CombineArchiveContentFormatPattern[format.name], content.format):
+                                if content.format and re.match(CombineArchiveContentFormatPattern[format], content.format):
                                     is_valid = True
                                     break
                             if not is_valid:
                                 errors.append(['The format of thumbnail `{}` must be one of the following:'.format(thumbnail),
-                                               sorted([[format.value] for format in BIOSIMULATIONS_THUMBNAIL_FORMATS])])
+                                               sorted([[format] for format in BIOSIMULATIONS_THUMBNAIL_FORMATS])])
 
             else:
                 errors.append(['Thumbnail `{}` is not a file.'.format(thumbnail)])

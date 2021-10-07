@@ -7,7 +7,8 @@
 """
 
 from ..combine.data_model import CombineArchive, CombineArchiveContentFormatPattern  # noqa: F401
-from .data_model import (Triple, OmexMetaInputFormat, OmexMetaOutputFormat, OmexMetadataSchema,
+from ..config import get_config, Config  # noqa: F401
+from .data_model import (Triple, OmexMetadataOutputFormat, OmexMetadataSchema,
                          BIOSIMULATIONS_ROOT_URI_FORMAT,
                          BIOSIMULATIONS_ROOT_URI_PATTERN,
                          BIOSIMULATIONS_PREDICATE_TYPES)
@@ -31,15 +32,14 @@ __all__ = [
 ]
 
 
-def read_omex_meta_file(filename, schema, format=OmexMetaInputFormat.rdfxml, archive=None, working_dir=None):
+def read_omex_meta_file(filename, archive=None, working_dir=None, config=None):
     """ Read an OMEX Metadata file
 
     Args:
         filename (:obj:`str`): path to OMEX Metadata file
-        schema (:obj:`OmexMetadataSchema`): schema to parse :obj:`filename` into
-        format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
         archive (:obj:`CombineArchive`, optional): parent COMBINE archive
         working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
+        config (:obj:`Config`, optional): configuration
 
     Returns:
         :obj:`tuple`:
@@ -52,11 +52,14 @@ def read_omex_meta_file(filename, schema, format=OmexMetaInputFormat.rdfxml, arc
     errors = []
     warnings = []
 
-    if schema == OmexMetadataSchema.biosimulations:
-        return BiosimulationsOmexMetaReader().run(filename, format=format, archive=archive, working_dir=working_dir)
+    if config is None:
+        config = get_config()
 
-    elif schema == OmexMetadataSchema.rdf_triples:
-        return TriplesOmexMetaReader().run(filename, format=format, archive=archive, working_dir=working_dir)
+    if config.OMEX_METADATA_SCHEMA == OmexMetadataSchema.biosimulations:
+        return BiosimulationsOmexMetaReader().run(filename, archive=archive, working_dir=working_dir, config=config)
+
+    elif config.OMEX_METADATA_SCHEMA == OmexMetadataSchema.rdf_triples:
+        return TriplesOmexMetaReader().run(filename, archive=archive, working_dir=working_dir, config=config)
 
     else:
         errors.append(['Schema `{}` is not supported. The following schemas are supported:',
@@ -66,35 +69,37 @@ def read_omex_meta_file(filename, schema, format=OmexMetaInputFormat.rdfxml, arc
         return (content, errors, warnings)
 
 
-def write_omex_meta_file(content, schema, filename, format=OmexMetaOutputFormat.rdfxml_abbrev):
+def write_omex_meta_file(content, filename, config=None):
     """ Write an OMEX Metadata file
 
     Args:
         content (:obj:`object`): representation of the OMEX Metadata file in :obj:`schema`
-        schema (:obj:`OmexMetadataSchema`): schema for :obj:`content` into
         filename (:obj:`str`): path to save OMEX Metadata file
-        format (:obj:`OmexMetaOutputFormat`, optional): format for :obj:`filename`
+        config (:obj:`Config`, optional): configuration
     """
-    if schema == OmexMetadataSchema.biosimulations:
-        return BiosimulationsOmexMetaWriter().run(content, filename, format=format)
+    if config is None:
+        config = get_config()
 
-    elif schema == OmexMetadataSchema.rdf_triples:
-        return TriplesOmexMetaWriter().run(content, filename, format=format)
+    if config.OMEX_METADATA_SCHEMA == OmexMetadataSchema.biosimulations:
+        return BiosimulationsOmexMetaWriter().run(content, filename, config=config)
+
+    elif config.OMEX_METADATA_SCHEMA == OmexMetadataSchema.rdf_triples:
+        return TriplesOmexMetaWriter().run(content, filename, config=config)
 
     else:
         msg = 'Schema `{}` is not supported. The following schemas are supported:\n  {}'.format(
-            schema,
+            config.OMEX_METADATA_SCHEMA.value if config.OMEX_METADATA_SCHEMA else None,
             '\n  '.join(['None'] + sorted([schema.value for schema in OmexMetadataSchema.__members__.values()])))
         raise NotImplementedError(msg)
 
 
-def read_omex_meta_files_for_archive(archive, archive_dirname, schema):
+def read_omex_meta_files_for_archive(archive, archive_dirname, config=None):
     """ Read all of the OMEX Metadata files in an archive
 
     Args:
         archive (:obj:`CombineArchive`): COMBINE/OMEX archive
         archive_dirname (:obj:`str`): directory with the content of the archive
-        schema (:obj:`OmexMetadataSchema`): schema to parse :obj:`filename` into
+        config (:obj:`Config`, optional): configuration
 
     Returns:
         :obj:`tuple`:
@@ -107,11 +112,14 @@ def read_omex_meta_files_for_archive(archive, archive_dirname, schema):
     errors = []
     warnings = []
 
+    if config is None:
+        config = get_config()
+
     for item in archive.contents:
         if item.format and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, item.format):
             temp_content, temp_errors, temp_warnings = read_omex_meta_file(
                 os.path.join(archive_dirname, item.location),
-                schema=schema, archive=archive, working_dir=archive_dirname)
+                archive=archive, working_dir=archive_dirname, config=config)
 
             if temp_errors:
                 errors.append(['OMEX Metadata file `{}` is invalid.'.format(item.location), temp_errors])
@@ -128,14 +136,14 @@ class OmexMetaReader(abc.ABC):
     """ Base class for reading OMEX Metadata files """
 
     @ abc.abstractmethod
-    def run(self, filename, format=OmexMetaInputFormat.rdfxml, archive=None, working_dir=None):
+    def run(self, filename, archive=None, working_dir=None, config=None):
         """ Read an OMEX Metadata file
 
         Args:
             filename (:obj:`str`): path to OMEX Metadata file
-            format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
             archive (:obj:`CombineArchive`, optional): parent COMBINE archive
             working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
+            config (:obj:`Config`, optional): configuration
 
         Returns:
             :obj:`tuple`:
@@ -147,12 +155,12 @@ class OmexMetaReader(abc.ABC):
         pass  # pragma: no cover
 
     @ classmethod
-    def read_rdf(cls, filename, format=OmexMetaInputFormat.rdfxml):
+    def read_rdf(cls, filename, config=None):
         """ Read an RDF file
 
         Args:
             filename (:obj:`str`): path to the RDF file
-            format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
+            config (:obj:`Config`, optional): configuration
 
         Returns:
             :obj:`tuple`:
@@ -161,6 +169,9 @@ class OmexMetaReader(abc.ABC):
                 * nested :obj:`list` of :obj:`str`: nested list of errors with the RDF file
                 * nested :obj:`list` of :obj:`str`: nested list of warnings with the RDF file
         """
+        if config is None:
+            config = get_config()
+
         rdf = None
         errors = []
         warnings = []
@@ -196,7 +207,7 @@ class OmexMetaReader(abc.ABC):
 
                 filename = temp_filename
 
-        rdf = pyomexmeta.RDF.from_file(filename, format.value)
+        rdf = pyomexmeta.RDF.from_file(filename, config.OMEX_METADATA_INPUT_FORMAT.value)
 
         if temp_filename:
             os.remove(temp_filename)
@@ -267,13 +278,13 @@ class OmexMetaWriter(abc.ABC):
     """ Base class for writing OMEX Metadata files """
 
     @ abc.abstractmethod
-    def run(self, content, filename, format=OmexMetaOutputFormat.rdfxml_abbrev):
+    def run(self, content, filename, config=None):
         """ Write an OMEX Metadata file
 
         Args:
             content (:obj:`object`): representation of the OMEX Metadata file
             filename (:obj:`str`): path to save OMEX Metadata file
-            format (:obj:`OmexMetaOutputFormat`, optional): format for :obj:`filename`
+            config (:obj:`Config`, optional): configuration
         """
         pass  # pragma: no cover
 
@@ -281,14 +292,14 @@ class OmexMetaWriter(abc.ABC):
 class TriplesOmexMetaReader(OmexMetaReader):
     """ Utility for reading an OMEX Metadata file into a list of triples """
 
-    def run(self, filename, format=OmexMetaInputFormat.rdfxml, archive=None, working_dir=None):
+    def run(self, filename, archive=None, working_dir=None, config=None):
         """ Read an OMEX Metadata file into a list of triples
 
         Args:
             filename (:obj:`str`): path to OMEX Metadata file
-            format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
             archive (:obj:`CombineArchive`, optional): parent COMBINE archive
             working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
+            config (:obj:`Config`, optional): configuration
 
         Returns:
             :obj:`tuple`:
@@ -297,11 +308,14 @@ class TriplesOmexMetaReader(OmexMetaReader):
                 * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Metadata file
                 * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Metadata file
         """
+        if config is None:
+            config = get_config()
+
         triples = None
         errors = []
         warnings = []
 
-        rdf, tmp_errors, tmp_warnings = self.read_rdf(filename, format=format)
+        rdf, tmp_errors, tmp_warnings = self.read_rdf(filename, config=config)
         errors.extend(tmp_errors)
         warnings.extend(tmp_warnings)
         if errors:
@@ -315,14 +329,17 @@ class TriplesOmexMetaReader(OmexMetaReader):
 class TriplesOmexMetaWriter(OmexMetaWriter):
     """ Utility for writing a list of triples to an OMEX Metadata file """
 
-    def run(self, triples, filename, namespaces=None, format=OmexMetaOutputFormat.rdfxml):
+    def run(self, triples, filename, namespaces=None, config=None):
         """ Write a list of triples to an OMEX Metadata file
 
         Args:
             triples (:obj:`list` of :obj:`Triple`): representation of the OMEX Metadata file as list of triples
             filename (:obj:`str`): path to OMEX Metadata file
-            format (:obj:`OmexMetaOutputFormat`, optional): format for :obj:`filename`
+            config (:obj:`Config`, optional): configuration
         """
+        if config is None:
+            config = get_config()
+
         graph = rdflib.Graph()
         for prefix, namespace in (namespaces or {}).items():
             graph.namespace_manager.bind(prefix, namespace)
@@ -332,34 +349,34 @@ class TriplesOmexMetaWriter(OmexMetaWriter):
         for triple in triples:
             graph.add((triple.subject, triple.predicate, triple.object))
 
-        if format == OmexMetaOutputFormat.rdfxml:
+        if config.OMEX_METADATA_OUTPUT_FORMAT == OmexMetadataOutputFormat.rdfxml:
             graph.serialize(filename, format="xml")
 
-        elif format == OmexMetaOutputFormat.turtle:
+        elif config.OMEX_METADATA_OUTPUT_FORMAT == OmexMetadataOutputFormat.turtle:
             graph.serialize(filename, format="turtle")
 
         else:
             graph.serialize(filename, format="xml", version="1.0")
 
             rdf = pyomexmeta.RDF.from_file(filename, 'rdfxml')
-            if rdf.to_file(filename, format.value) != 0:
+            if rdf.to_file(filename, config.OMEX_METADATA_OUTPUT_FORMAT.value) != 0:
                 raise RuntimeError('Metadata could not be saved to `{}` in `{}` format.'.format(
-                    filename, format.value))
+                    filename, config.OMEX_METADATA_OUTPUT_FORMAT.value))
 
 
 class BiosimulationsOmexMetaReader(OmexMetaReader):
     """ Utility for reading the metadata about a COMBINE/OMEX archive in an OMEX Metadata
     file into a dictionary with BioSimulations schema """
 
-    def run(self, filename, format=OmexMetaInputFormat.rdfxml, archive=None, working_dir=None):
+    def run(self, filename, archive=None, working_dir=None, config=None):
         """ Read the metadata about a COMBINE/OMEX archive in an OMEX Metadata file into a dictionary
          with BioSimulations schema
 
         Args:
             filename (:obj:`str`): path to OMEX Metadata file
-            format (:obj:`OmexMetaInputFormat`, optional): format for :obj:`filename`
             archive (:obj:`CombineArchive`, optional): parent COMBINE archive
             working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
+            config (:obj:`Config`, optional): configuration
 
         Returns:
             :obj:`tuple`:
@@ -369,11 +386,14 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
                 * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Metadata file
                 * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Metadata file
         """
+        if config is None:
+            config = get_config()
+
         el_metadatas = None
         errors = []
         warnings = []
 
-        rdf, tmp_errors, tmp_warnings = self.read_rdf(filename, format=format)
+        rdf, tmp_errors, tmp_warnings = self.read_rdf(filename, config=config)
         errors.extend(tmp_errors)
         warnings.extend(tmp_warnings)
         if errors:
@@ -639,15 +659,18 @@ class BiosimulationsOmexMetaWriter(OmexMetaWriter):
     """ Utility for writing the metadata about a COMBINE/OMEX archive to an OMEX Metadata
     file """
 
-    def run(self, el_metadatas, filename, format=OmexMetaOutputFormat.rdfxml_abbrev):
+    def run(self, el_metadatas, filename, config=None):
         """ Write an OMEX Metadata file
 
         Args:
             el_metadatas (:obj:`list` of :obj:`dict`): representation of the metadata about the elements in
                 a COMBINE/OMEX archive in an OMEX Metadata file
             filename (:obj:`str`): path to save OMEX Metadata file
-            format (:obj:`OmexMetaOutputFormat`, optional): format for :obj:`filename`
+            config (:obj:`Config`, optional): configuration
         """
+        if config is None:
+            config = get_config()
+
         # convert to triples
         triples = []
 
@@ -774,4 +797,4 @@ class BiosimulationsOmexMetaWriter(OmexMetaWriter):
                     ))
 
         # save triples to file
-        TriplesOmexMetaWriter().run(triples, filename, namespaces=namespaces, format=format)
+        TriplesOmexMetaWriter().run(triples, filename, namespaces=namespaces, config=config)

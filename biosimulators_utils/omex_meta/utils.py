@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from .data_model import OmexMetaOutputFormat
+from .data_model import OmexMetadataOutputFormat
 import os
 import pyomexmeta
 
@@ -15,14 +15,14 @@ __all__ = ['build_omex_meta_file_for_model']
 
 def build_omex_meta_file_for_model(model_filename,
                                    metadata_filename,
-                                   metadata_format=OmexMetaOutputFormat.rdfxml_abbrev):
+                                   metadata_format=OmexMetadataOutputFormat.rdfxml_abbrev):
     """ Create an OMEX metadata file for a model encoded in CellML or SBML. Also
     add missing metadata ids to the model file.
 
     Args:
         model_filename (:obj:`str`): path to model to extract metadata about
         metadata_filename (:obj:`str`): path to save metadata
-        metadata_format (:obj:`OmexMetaOutputFormat`, optional): format for :obj:`metadata_filename`
+        metadata_format (:obj:`OmexMetadataOutputFormat`, optional): format for :obj:`metadata_filename`
     """
     # uses subprocess by pyomexmetadata has no error handling
     if not isinstance(model_filename, str) or not os.path.isfile(model_filename):
@@ -31,7 +31,7 @@ def build_omex_meta_file_for_model(model_filename,
     if not isinstance(metadata_filename, str) or not os.path.isdir(os.path.dirname(metadata_filename)):
         raise FileNotFoundError('The parent directory for `{}` does not exist.'.format(metadata_filename))
 
-    if not isinstance(metadata_format, OmexMetaOutputFormat):
+    if not isinstance(metadata_format, OmexMetadataOutputFormat):
         raise NotImplementedError('Output format `{}` is not supported.'.format(metadata_format))
 
     rdf = pyomexmeta.RDF()
