@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils package &#8212; BioSimulators utils 0.1.128 documentation</title>
+    <title>biosimulators_utils package &#8212; BioSimulators utils 0.1.129 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="biosimulators_utils.archive package" href="biosimulators_utils.archive.html" />
-    <link rel="prev" title="Tutorial for the Python API" href="../tutorial_api.html" />
+    <link rel="prev" title="Installation instructions" href="../installation.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -573,9 +573,42 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.config.Config">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.config.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">VALIDATE_OMEX_MANIFESTS=True,</span> <span class="pre">VALIDATE_SEDML=True,</span> <span class="pre">VALIDATE_SEDML_MODELS=True,</span> <span class="pre">VALIDATE_OMEX_METADATA=True,</span> <span class="pre">VALIDATE_IMAGES=True,</span> <span class="pre">VALIDATE_RESULTS=True,</span> <span class="pre">ALGORITHM_SUBSTITUTION_POLICY=AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES,</span> <span class="pre">COLLECT_COMBINE_ARCHIVE_RESULTS=False,</span> <span class="pre">COLLECT_SED_DOCUMENT_RESULTS=False,</span> <span class="pre">SAVE_PLOT_DATA=True,</span> <span class="pre">REPORT_FORMATS=[&lt;ReportFormat.h5:</span> <span class="pre">'h5'&gt;],</span> <span class="pre">VIZ_FORMATS=[&lt;VizFormat.pdf:</span> <span class="pre">'pdf'&gt;],</span> <span class="pre">H5_REPORTS_PATH='reports.h5',</span> <span class="pre">REPORTS_PATH='reports.zip',</span> <span class="pre">PLOTS_PATH='plots.zip',</span> <span class="pre">BUNDLE_OUTPUTS=True,</span> <span class="pre">KEEP_INDIVIDUAL_OUTPUTS=True,</span> <span class="pre">LOG=True,</span> <span class="pre">LOG_PATH='log.yml',</span> <span class="pre">BIOSIMULATORS_API_ENDPOINT='https://api.biosimulators.org/',</span> <span class="pre">RUNBIOSIMULATIONS_API_ENDPOINT='https://api.biosimulations.org/',</span> <span class="pre">VERBOSE=False,</span> <span class="pre">DEBUG=False</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/config.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.config.Config" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.config.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">OMEX_METADATA_INPUT_FORMAT=OmexMetadataInputFormat.rdfxml,</span> <span class="pre">OMEX_METADATA_OUTPUT_FORMAT=OmexMetadataOutputFormat.rdfxml_abbrev,</span> <span class="pre">OMEX_METADATA_SCHEMA=OmexMetadataSchema.rdf_triples,</span> <span class="pre">VALIDATE_OMEX_MANIFESTS=True,</span> <span class="pre">VALIDATE_SEDML=True,</span> <span class="pre">VALIDATE_SEDML_MODELS=True,</span> <span class="pre">VALIDATE_OMEX_METADATA=True,</span> <span class="pre">VALIDATE_IMAGES=True,</span> <span class="pre">VALIDATE_RESULTS=True,</span> <span class="pre">ALGORITHM_SUBSTITUTION_POLICY=AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES,</span> <span class="pre">COLLECT_COMBINE_ARCHIVE_RESULTS=False,</span> <span class="pre">COLLECT_SED_DOCUMENT_RESULTS=False,</span> <span class="pre">SAVE_PLOT_DATA=True,</span> <span class="pre">REPORT_FORMATS=[&lt;ReportFormat.h5:</span> <span class="pre">'h5'&gt;],</span> <span class="pre">VIZ_FORMATS=[&lt;VizFormat.pdf:</span> <span class="pre">'pdf'&gt;],</span> <span class="pre">H5_REPORTS_PATH='reports.h5',</span> <span class="pre">REPORTS_PATH='reports.zip',</span> <span class="pre">PLOTS_PATH='plots.zip',</span> <span class="pre">BUNDLE_OUTPUTS=True,</span> <span class="pre">KEEP_INDIVIDUAL_OUTPUTS=True,</span> <span class="pre">LOG=True,</span> <span class="pre">LOG_PATH='log.yml',</span> <span class="pre">BIOSIMULATORS_API_ENDPOINT='https://api.biosimulators.org/',</span> <span class="pre">RUNBIOSIMULATIONS_API_ENDPOINT='https://api.biosimulations.org/',</span> <span class="pre">VERBOSE=False,</span> <span class="pre">DEBUG=False</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/config.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.config.Config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Configuration</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.config.Config.OMEX_METADATA_INPUT_FORMAT">
+<span class="sig-name descname"><span class="pre">OMEX_METADATA_INPUT_FORMAT</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/config.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.config.Config.OMEX_METADATA_INPUT_FORMAT" title="Permalink to this definition">¶</a></dt>
+<dd><p>format to validate OMEX Metadata files against</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">OmexMetadataInputFormat</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.config.Config.OMEX_METADATA_OUTPUT_FORMAT">
+<span class="sig-name descname"><span class="pre">OMEX_METADATA_OUTPUT_FORMAT</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/config.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.config.Config.OMEX_METADATA_OUTPUT_FORMAT" title="Permalink to this definition">¶</a></dt>
+<dd><p>format to export OMEX Metadata files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">OmexMetadataOutputFormat</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="biosimulators_utils.config.Config.OMEX_METADATA_SCHEMA">
+<span class="sig-name descname"><span class="pre">OMEX_METADATA_SCHEMA</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/config.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.config.Config.OMEX_METADATA_SCHEMA" title="Permalink to this definition">¶</a></dt>
+<dd><p>schema to validate OMEX Metadata files against</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">OmexMetadataSchema</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.config.Config.VALIDATE_OMEX_MANIFESTS">
 <span class="sig-name descname"><span class="pre">VALIDATE_OMEX_MANIFESTS</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/config.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.config.Config.VALIDATE_OMEX_MANIFESTS" title="Permalink to this definition">¶</a></dt>
