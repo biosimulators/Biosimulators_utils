@@ -19,7 +19,7 @@ class BioSimulationsUtilsTestCase(unittest.TestCase):
         self.assertIsInstance(id, str)
         self.assertNotEqual(id, '')
 
-    def test_submit_project_to_runbiosimulations_by_urkl(self):
+    def test_submit_project_to_runbiosimulations_by_url(self):
         name = 'test'
         url = 'https://github.com/biosimulators/Biosimulators_utils/blob/dev/tests/fixtures/Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex?raw=true'
         simulator = 'copasi'

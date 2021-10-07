@@ -64,7 +64,6 @@ def submit_project_to_runbiosimulations(name, filename_or_url,
                     'file': ('project.omex', file, 'application/zip'),
                 },
                 headers={
-                    "Content-Type": "multipart/form-data",
                     "Accept": "application/json",
                 }
             )
