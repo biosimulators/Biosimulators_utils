@@ -141,7 +141,7 @@ class ValidateModelingProjectController(cement.Controller):
     """ Controller for validating modeling projects (COMBINE/OMEX archives) """
 
     class Meta:
-        label = 'validate'
+        label = 'validate-project'
         stacked_on = 'base'
         stacked_type = 'nested'
         help = "Validate a model project (COMBINE/OMEX archive)"

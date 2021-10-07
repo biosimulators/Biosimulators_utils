@@ -87,7 +87,7 @@ class CliTestCase(unittest.TestCase):
 
     def test_validate_modeling_project(self):
         with biosimulators_utils.__main__.App(argv=[
-            'validate',
+            'validate-project',
             os.path.join(os.path.dirname(__file__), 'fixtures', 'mock-file'),
         ]) as app:
             archive = CombineArchive(contents=[])
@@ -96,7 +96,7 @@ class CliTestCase(unittest.TestCase):
                     app.run()
 
         with biosimulators_utils.__main__.App(argv=[
-            'validate',
+            'validate-project',
             os.path.join(os.path.dirname(__file__), 'fixtures', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex'),
         ]) as app:
             with capturer.CaptureOutput(merged=False, relay=False) as captured:
@@ -106,7 +106,7 @@ class CliTestCase(unittest.TestCase):
 
         # warnings
         with biosimulators_utils.__main__.App(argv=[
-            'validate',
+            'validate-project',
             os.path.join(os.path.dirname(__file__), 'fixtures', 'mock-file'),
         ]) as app:
             archive = CombineArchive(contents=[CombineArchiveContent(), CombineArchiveContent()])
@@ -117,7 +117,7 @@ class CliTestCase(unittest.TestCase):
                             app.run()
 
         with biosimulators_utils.__main__.App(argv=[
-            'validate',
+            'validate-project',
             os.path.join(os.path.dirname(__file__), 'fixtures', 'mock-file'),
         ]) as app:
             archive = CombineArchive(contents=[])
@@ -128,14 +128,14 @@ class CliTestCase(unittest.TestCase):
 
         # error
         with biosimulators_utils.__main__.App(argv=[
-            'validate',
+            'validate-project',
             os.path.join(os.path.dirname(__file__), 'fixtures', 'not-a-file'),
         ]) as app:
             with self.assertRaisesRegex(SystemExit, 'is not a file'):
                 app.run()
 
         with biosimulators_utils.__main__.App(argv=[
-            'validate',
+            'validate-project',
             os.path.join(os.path.dirname(__file__), 'fixtures', 'mock-file'),
         ]) as app:
             archive = CombineArchive(contents=[CombineArchiveContent(), CombineArchiveContent()])
