@@ -115,7 +115,7 @@ class CliTestCase(unittest.TestCase):
             os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'BIOMD0000000673_sim.sedml'),
         ]) as app:
             app.run()
-            
+
         with biosimulators_utils.__main__.App(argv=[
             'validate-simulation',
             os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.sedml'),
@@ -124,20 +124,23 @@ class CliTestCase(unittest.TestCase):
 
         with biosimulators_utils.__main__.App(argv=[
             'validate-simulation',
-            os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint-invalid-model.sedml'),
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml',
+                         'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint-invalid-model.sedml'),
         ]) as app:
             app.run()
 
         with biosimulators_utils.__main__.App(argv=[
             'validate-simulation',
-            os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint-invalid-target.sedml'),
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml',
+                         'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint-invalid-target.sedml'),
         ]) as app:
             app.run()
 
         with self.assertRaisesRegex(SystemExit, 'is invalid.'):
             with biosimulators_utils.__main__.App(argv=[
                 'validate-simulation',
-                os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint-invalid-xpath.sedml'),
+                os.path.join(os.path.dirname(__file__), 'fixtures', 'sedml',
+                             'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint-invalid-xpath.sedml'),
             ]) as app:
                 app.run()
 
@@ -169,6 +172,44 @@ class CliTestCase(unittest.TestCase):
             ]) as app:
                 with mock.patch.object(biosimulators_utils.sedml.io.SedmlSimulationReader, 'run', side_effect=ValueError('Big error')):
                     app.run()
+
+    def test_validate_metadata(self):
+        with biosimulators_utils.__main__.App(argv=[
+            'validate-metadata',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'omex-metadata', 'biosimulations-abbrev.rdf'),
+        ]) as app:
+            with mock.patch.dict(os.environ, {'OMEX_METADATA_SCHEMA': 'BioSimulations'}):
+                app.run()
+
+        with biosimulators_utils.__main__.App(argv=[
+            'validate-metadata',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'omex-metadata', 'biosimulations-abbrev.rdf'),
+        ]) as app:
+            with mock.patch.dict(os.environ, {'OMEX_METADATA_SCHEMA': 'rdf_triples'}):
+                app.run()
+
+        with self.assertRaisesRegex(SystemExit, 'is invalid'):
+            with biosimulators_utils.__main__.App(argv=[
+                'validate-metadata',
+                os.path.join(os.path.dirname(__file__), 'fixtures', 'omex-metadata', 'malformed.rdf'),
+            ]) as app:
+                with mock.patch.dict(os.environ, {'OMEX_METADATA_SCHEMA': 'BioSimulations'}):
+                    app.run()
+
+        with self.assertRaisesRegex(SystemExit, 'is invalid'):
+            with biosimulators_utils.__main__.App(argv=[
+                'validate-metadata',
+                os.path.join(os.path.dirname(__file__), 'fixtures', 'omex-metadata', 'missing-required.rdf'),
+            ]) as app:
+                with mock.patch.dict(os.environ, {'OMEX_METADATA_SCHEMA': 'BioSimulations'}):
+                    app.run()
+
+        with biosimulators_utils.__main__.App(argv=[
+            'validate-metadata',
+            os.path.join(os.path.dirname(__file__), 'fixtures', 'omex-metadata', 'missing-required.rdf'),
+        ]) as app:
+            with mock.patch.dict(os.environ, {'OMEX_METADATA_SCHEMA': 'rdf_triples'}):
+                app.run()
 
     def test_validate_modeling_project(self):
         with biosimulators_utils.__main__.App(argv=[

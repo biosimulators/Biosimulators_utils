@@ -252,6 +252,44 @@ class ValidateSimulationController(cement.Controller):
             raise SystemExit(msg)
 
 
+class ValidateMetadataController(cement.Controller):
+    """ Controller for validating metadata (OMEX Metadata files) """
+
+    class Meta:
+        label = 'validate-metadata'
+        stacked_on = 'base'
+        stacked_type = 'nested'
+        help = "Validate metadata (OMEX Metadata file)"
+        description = "Validate metadata (OMEX Metadata file)"
+        arguments = [
+            (
+                ['filename'],
+                dict(
+                    type=str,
+                    help='Path to an OMEX Metadata file',
+                ),
+            ),
+        ]
+
+    @cement.ex(hide=True)
+    def _default(self):
+        import biosimulators_utils.omex_meta.io
+
+        args = self.app.pargs
+
+        _, errors, warnings = biosimulators_utils.omex_meta.io.read_omex_meta_file(args.filename)
+
+        if warnings:
+            msg = 'The OMEX Metadata file `{}` may be invalid.\n  {}'.format(
+                args.filename, flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
+            warn(msg, BioSimulatorsWarning)
+
+        if errors:
+            msg = 'The OMEX Metadata file `{}` is invalid.\n  {}'.format(
+                args.filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
+            raise SystemExit(msg)
+
+
 class ValidateModelingProjectController(cement.Controller):
     """ Controller for validating modeling projects (COMBINE/OMEX archives) """
 
@@ -692,6 +730,7 @@ class App(cement.App):
             BuildModelingProjectController,
             ValidateModelController,
             ValidateSimulationController,
+            ValidateMetadataController,
             ValidateModelingProjectController,
             ExecuteModelingProjectController,
             ConvertController,
