@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.128 documentation</title>
+    <title>biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.129 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -3985,7 +3985,7 @@ The function must implement the following interface:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.io.SedmlSimulationReader.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_semantics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_models_with_languages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.io.SedmlSimulationReader.run" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_semantics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_models_with_languages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_targets_with_model_sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.io.SedmlSimulationReader.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for reading a SED document</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3993,6 +3993,8 @@ The function must implement the following interface:</p>
 <li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to SED-ML document</p></li>
 <li><p><strong>validate_semantics</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, check that SED-ML is semantically valid</p></li>
 <li><p><strong>validate_models_with_languages</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, validate models</p></li>
+<li><p><strong>validate_targets_with_model_sources</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, validate targets against
+their models</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4053,7 +4055,7 @@ The function must implement the following interface:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.io.SedmlSimulationWriter.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_semantics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_models_with_languages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.io.SedmlSimulationWriter.run" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_semantics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_models_with_languages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_targets_with_model_sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.io.SedmlSimulationWriter.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save a SED document to an SED-ML XML file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4062,6 +4064,8 @@ The function must implement the following interface:</p>
 <li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – Path to save simulation experiment in SED-ML format</p></li>
 <li><p><strong>validate_semantics</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, check that SED-ML is semantically valid</p></li>
 <li><p><strong>validate_models_with_languages</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, validate models</p></li>
+<li><p><strong>validate_targets_with_model_sources</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, validate targets against
+their models</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -4896,7 +4900,7 @@ trees of their sources; required to resolve variables of functional ranges</p></
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.validation.validate_data_generator">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_data_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_generator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_etrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.validation.validate_data_generator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_data_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_generator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_etrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_targets_with_model_sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.validation.validate_data_generator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate a data generator</p>
 <ul class="simple">
 <li><p>Parameters have ids</p></li>
@@ -4911,6 +4915,7 @@ trees of their sources; required to resolve variables of functional ranges</p></
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_generator</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">DataGenerator</span></code>) – data generator</p></li>
 <li><p><strong>model_etrees</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – dictionary that maps models to XML element trees of their sources</p></li>
+<li><p><strong>validate_targets_with_model_sources</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – whether to validate the targets of the variables of the data generator</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4928,13 +4933,14 @@ trees of their sources; required to resolve variables of functional ranges</p></
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.validation.validate_data_generator_variables">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_data_generator_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_etrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.validation.validate_data_generator_variables" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_data_generator_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_etrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_targets_with_model_sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.validation.validate_data_generator_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check variables have a symbol or target</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variables</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code>) – variables</p></li>
 <li><p><strong>model_etrees</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – dictionary that maps models to XML element trees of their sources</p></li>
+<li><p><strong>validate_targets_with_model_sources</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – whether to validate the targets of the variables of the data generator</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4948,7 +4954,7 @@ trees of their sources; required to resolve variables of functional ranges</p></
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.validation.validate_doc">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_doc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_semantics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_models_with_languages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.validation.validate_doc" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_doc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_semantics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_models_with_languages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_targets_with_model_sources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.validation.validate_doc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate a SED document</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -4957,6 +4963,8 @@ trees of their sources; required to resolve variables of functional ranges</p></
 <li><p><strong>working_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – working directory (e.g., for referencing model files)</p></li>
 <li><p><strong>validate_semantics</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, check that SED-ML is semantically valid</p></li>
 <li><p><strong>validate_models_with_languages</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, validate models</p></li>
+<li><p><strong>validate_targets_with_model_sources</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, validate targets against
+their models</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
