@@ -9,6 +9,7 @@
 import collections
 import glob
 import os
+import re
 import subprocess
 import tempfile
 
@@ -83,7 +84,7 @@ def validate_model(filename,
     if result.returncode != 0:
         errors.append(['`{}` could not be validated.'.format(filename), [[stdout]]])
 
-    elif 'ERROR' in stdout:
+    elif re.search(r'\berror\b', stdout, re.IGNORECASE):
         errors.append(['`{}` is not a valid XPP file.'.format(filename), [[stdout]]])
 
     else:

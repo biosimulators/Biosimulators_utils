@@ -329,7 +329,6 @@ class XppValidationTestCase(unittest.TestCase):
             'plot': plot,
         })
 
-
     def test_from_directory_2(self):
         dirname = os.path.join(self.FIXTURE_DIRNAME, 'wilson-cowan-2')
         errors, warnings, model = validation.validate_model(dirname)
@@ -386,3 +385,9 @@ class XppValidationTestCase(unittest.TestCase):
             'simulation_method': simulation_method,
             'plot': plot,
         })
+
+    def test_cannot_parse_other_formats(self):
+        filename = os.path.join(self.FIXTURE_DIRNAME, '..', 'BIOMD0000000075.xml')
+        errors, warnings, model = validation.validate_model(filename)
+        self.assertNotEqual(errors, [])
+        self.assertEqual(warnings, [])
