@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.model_lang.neuroml package &#8212; BioSimulators utils 0.1.130 documentation</title>
+    <title>biosimulators_utils.model_lang.neuroml package &#8212; BioSimulators utils 0.1.131 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -352,6 +352,48 @@
 <li><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: nested list of errors (e.g., required ids missing or ids not unique)</p></li>
 <li><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: nested list of errors (e.g., required ids missing or ids not unique)</p></li>
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">neuroml.nml.nml.NeuroMLDocument</span></code>: model</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.neuroml.validation.validate_model_l1">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.neuroml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model_l1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/neuroml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.neuroml.validation.validate_model_l1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that a file is a valid NeuroML L1 model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to model</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>: whether the file is valid</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: error message</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.neuroml.validation.validate_model_l2">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.neuroml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model_l2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/neuroml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.neuroml.validation.validate_model_l2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that a file is a valid NeuroML L2 model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to model</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>: whether the file is valid</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: error message</p></li>
 </ul>
 </p>
 </dd>
