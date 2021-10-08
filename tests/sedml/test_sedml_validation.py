@@ -900,7 +900,7 @@ class ValidationTestCase(unittest.TestCase):
 
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'neuroml', 'invalid-model.nml')
         errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.NeuroML)
-        self.assertIn("Not a valid NeuroML 2 doc", flatten_nested_list_of_strings(errors))
+        self.assertIn("is not valid against the schema", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         # RBA
