@@ -40,3 +40,8 @@ class BgnlValidationTestCase(unittest.TestCase):
         errors, warnings, _ = validate_model(filename)
         self.assertIn('must be a path', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
+
+        filename = os.path.join(self.FIXTURE_DIR, '..', 'BIOMD0000000075.xml')
+        errors, warnings, _ = validate_model(filename)
+        self.assertIn('does not appear to a valid', flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])

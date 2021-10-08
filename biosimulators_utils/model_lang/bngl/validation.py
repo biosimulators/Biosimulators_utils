@@ -46,6 +46,10 @@ def validate_model(filename, name=None):
             model, temp_errors, stdout = read_model(bngl_filename, filename)
             errors.extend(temp_errors)
 
+            if model and not model.active_blocks:
+                msg = '`{}` does not appear to a valid BNGL or BNGL XML file because it does not have any BNGL blocks.'.format(filename)
+                errors.append([msg])
+
             # clean up temporary file
             if bngl_filename != filename:
                 os.remove(bngl_filename)
