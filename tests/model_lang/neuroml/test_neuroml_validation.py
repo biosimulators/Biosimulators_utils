@@ -13,5 +13,9 @@ class NeuroMlValidationTestCase(unittest.TestCase):
         self.assertEqual(warnings, [])
 
         errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'invalid-model.nml'))
-        self.assertIn("Not a valid NeuroML 2 doc", flatten_nested_list_of_strings(errors))
+        self.assertIn("is not valid against the schema", flatten_nested_list_of_strings(errors))
+        self.assertEqual(warnings, [])
+
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, '..', 'BIOMD0000000075.xml'))
+        self.assertIn("is not valid against the schema", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])

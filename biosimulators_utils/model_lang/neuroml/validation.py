@@ -6,8 +6,13 @@
 :License: MIT
 """
 
+from ...log.data_model import StandardOutputErrorCapturerLevel  # noqa: E402
+from ...log.utils import StandardOutputErrorCapturer  # noqa: E402
 from neuroml.loaders import NeuroMLLoader
-import warnings
+import pyneuroml.pynml
+
+
+__all__ = ['validate_model', 'validate_model_l1', 'validate_model_l2']
 
 
 def validate_model(filename, name=None):
@@ -24,14 +29,48 @@ def validate_model(filename, name=None):
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * :obj:`neuroml.nml.nml.NeuroMLDocument`: model
     """
-    with warnings.catch_warnings(record=True) as caught_warnings:
-        try:
-            model = NeuroMLLoader.load(filename)
-            error_messages = []
-        except Exception as exception:
-            model = None
-            error_messages = [[str(exception)]]
+    l1_valid, l1_output = validate_model_l1(filename)
+    if l1_valid:
+        return ([], [], NeuroMLLoader.load(filename))
 
-        warning_messages = [['{}: {}'.format(caught_warning.category, caught_warning.message)] for caught_warning in caught_warnings]
+    l2_valid, l2_output = validate_model_l2(filename)
+    if l2_valid:
+        return ([], [], NeuroMLLoader.load(filename))
 
-    return (error_messages, warning_messages, model)
+    return ([[l2_output]], [], None)
+
+
+def validate_model_l1(filename):
+    """ Check that a file is a valid NeuroML L1 model
+
+    Args:
+        filename (:obj:`str`): path to model
+
+    Returns:
+        :obj:`tuple`:
+
+            * :obj:`bool`: whether the file is valid
+            * :obj:`str`: error message
+    """
+    with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.python, relay=False) as captured:
+        valid = pyneuroml.pynml.validate_neuroml1(filename)
+        output = captured.get_text()
+    return (valid, output)
+
+
+def validate_model_l2(filename):
+    """ Check that a file is a valid NeuroML L2 model
+
+    Args:
+        filename (:obj:`str`): path to model
+
+    Returns:
+        :obj:`tuple`:
+
+            * :obj:`bool`: whether the file is valid
+            * :obj:`str`: error message
+    """
+    with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.python, relay=False) as captured:
+        valid = pyneuroml.pynml.validate_neuroml2(filename)
+        output = captured.get_text()
+    return (valid, output)
