@@ -17,6 +17,7 @@ except ModuleNotFoundError:
 
 
 class GurobiLicenseManager(LicenseManager):
+    """ Gurobi license manager """
     ENV_VAR_PREFIX = 'GRB'
 
     def __init__(self):
@@ -66,3 +67,15 @@ class GurobiLicenseManager(LicenseManager):
         """ Terminate usage of the software package with license keys """
         if self.is_package_available():
             gurobipy.Model = self.__gurobipy_Model
+
+    def save_keys_to_license_file(self, filename=os.path.expanduser(os.path.join('~', 'gurobi.lic'))):
+        """ Save license keys to a file
+
+        Args:
+            filename (:obj:`str`): path to save license
+        """
+        keys = self.get_keys_from_env_vars()
+        if keys and not os.path.isfile(filename):
+            with open(filename, 'w') as file:
+                for key, val in keys.items():
+                    file.write('{}={}\n'.format(key, val))
