@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.licensing package &#8212; BioSimulators utils 0.1.131 documentation</title>
+    <title>biosimulators_utils.licensing package &#8212; BioSimulators utils 0.1.132 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -410,6 +410,7 @@ If you want those, see the staticmethod builtin.</p>
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.gurobi.GurobiLicenseManager">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.licensing.gurobi.</span></span><span class="sig-name descname"><span class="pre">GurobiLicenseManager</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.licensing.core.LicenseManager" title="biosimulators_utils.licensing.core.LicenseManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.licensing.core.LicenseManager</span></code></a></p>
+<p>Gurobi license manager</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.gurobi.GurobiLicenseManager.ENV_VAR_PREFIX">
 <span class="sig-name descname"><span class="pre">ENV_VAR_PREFIX</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'GRB'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.ENV_VAR_PREFIX" title="Permalink to this definition">¶</a></dt>
@@ -445,6 +446,17 @@ If you want those, see the staticmethod builtin.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.licensing.gurobi.GurobiLicenseManager.save_keys_to_license_file">
+<span class="sig-name descname"><span class="pre">save_keys_to_license_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/home/runner/gurobi.lic'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.save_keys_to_license_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save license keys to a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to save license</p>
 </dd>
 </dl>
 </dd></dl>
