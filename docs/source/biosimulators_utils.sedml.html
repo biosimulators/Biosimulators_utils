@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.133 documentation</title>
+    <title>biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.134 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -4204,7 +4204,7 @@ COMBINE/OMEX archive</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.model_utils.get_parameters_variables_outputs_for_simulation">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.model_utils.</span></span><span class="sig-name descname"><span class="pre">get_parameters_variables_outputs_for_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">model_filename</span></em>, <em class="sig-param"><span class="pre">model_language</span></em>, <em class="sig-param"><span class="pre">simulation_type</span></em>, <em class="sig-param"><span class="pre">algorithm_kisao_id=None</span></em>, <em class="sig-param"><span class="pre">change_level=&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.SedDocument'&gt;</span></em>, <em class="sig-param"><span class="pre">native_ids=False</span></em>, <em class="sig-param"><span class="pre">native_data_types=False</span></em>, <em class="sig-param"><span class="pre">**model_language_options</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/model_utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.model_utils.get_parameters_variables_outputs_for_simulation" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.model_utils.</span></span><span class="sig-name descname"><span class="pre">get_parameters_variables_outputs_for_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">model_filename</span></em>, <em class="sig-param"><span class="pre">model_language</span></em>, <em class="sig-param"><span class="pre">simulation_type</span></em>, <em class="sig-param"><span class="pre">algorithm_kisao_id=None</span></em>, <em class="sig-param"><span class="pre">change_level=&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.SedDocument'&gt;</span></em>, <em class="sig-param"><span class="pre">native_ids=False</span></em>, <em class="sig-param"><span class="pre">native_data_types=False</span></em>, <em class="sig-param"><span class="pre">model_language_options=None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/model_utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.model_utils.get_parameters_variables_outputs_for_simulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the possible observables for a simulation of a model</p>
 <p>This method supports the following formats</p>
 <ul class="simple">
@@ -4224,7 +4224,9 @@ for CVODE)</p></li>
 <li><p><strong>native_ids</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – whether to return the raw id and name of each model component rather than the suggested name
 for the variable of an associated SED-ML data generator</p></li>
 <li><p><strong>native_data_types</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – whether to return new_values in their native data types</p></li>
-<li><p><strong>**model_language_options</strong> – additional options to pass to the methods for individual model formats</p></li>
+<li><p><strong>model_language_options</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>, optional) – additional options to pass to the methods for individual model formats.
+Dictionary that maps model languages (<code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelLanguage</span></code>) to dictionaries of optional keyword arguments for
+each language</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
