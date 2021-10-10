@@ -13,6 +13,7 @@ pint
 
 [neuroml]
 libneuroml
+pyneuroml
 
 # [rba]
 # rba
