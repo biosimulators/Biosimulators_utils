@@ -7,10 +7,11 @@
 """
 
 from ...sedml.data_model import (  # noqa: F401
-    ModelAttributeChange, Variable, Symbol,
+    SedDocument, ModelAttributeChange, Variable, Symbol,
     Simulation, OneStepSimulation, UniformTimeCourseSimulation,
     Algorithm, AlgorithmParameterChange,
-    DataGenerator, Plot2D, Plot3D, Curve, Surface, AxisScale
+    DataGenerator, Plot2D, Plot3D, Curve, Surface, AxisScale,
+    Task,
     )
 from ...utils.core import flatten_nested_list_of_strings
 from .data_model import SIMULATION_METHOD_KISAO_MAP
@@ -22,7 +23,7 @@ __all__ = ['get_parameters_variables_outputs_for_simulation']
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
                                                     set_filename=None, parameter_filename=None, initial_conditions_filename=None,
-                                                    native_ids=False, native_data_types=False):
+                                                    change_level=SedDocument, native_ids=False, native_data_types=False):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -35,6 +36,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         set_filename (:obj:`str`, optional): path to XPP set file
         parameter_filename (:obj:`str`, optional): path to XPP parameters file
         initial_conditions_filename (:obj:`str`, optional): path to XPP initial conditions file
+        change_level (:obj:`types.Type`, optional): level at which model changes will be made (:obj:`SedDocument` or :obj:`Task`)
         native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
             for the variable of an associated SED-ML data generator
         native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types

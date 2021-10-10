@@ -1,6 +1,6 @@
 from biosimulators_utils.model_lang.sbml.utils import get_parameters_variables_outputs_for_simulation, get_package_namespace
 from biosimulators_utils.sedml.data_model import (ModelLanguage, SteadyStateSimulation,
-                                                  OneStepSimulation, UniformTimeCourseSimulation, Symbol)
+                                                  OneStepSimulation, UniformTimeCourseSimulation, Symbol, Task)
 from unittest import mock
 import libsbml
 import os
@@ -182,6 +182,51 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         self.assertEqual(vars[-1].symbol, None)
         self.assertEqual(vars[-1].target, "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_TPI']/@flux")
         self.assertEqual(vars[-1].target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level3/version1/core'})
+
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000437',
+            change_level=Task,
+            native_ids=True, native_data_types=True)
+        self.assertNotIn('value_parameter_R_EX_glc__D_e_lower_bound', [param.id for param in params])
+        self.assertEqual(params[0].id, 'R_ACALD')
+        self.assertEqual(params[1].id, 'R_ACALD')
+        self.assertEqual(params[0].name, 'acetaldehyde dehydrogenase (acetylating)')
+        self.assertEqual(params[1].name, 'acetaldehyde dehydrogenase (acetylating)')
+        self.assertEqual(params[0].target, "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']/@fbc:lowerFluxBound")
+        self.assertEqual(params[1].target, "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']/@fbc:upperFluxBound")
+        target_namespaces = {
+            'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+            'fbc': 'http://www.sbml.org/sbml/level3/version1/fbc/version2',
+        }
+        self.assertEqual(params[0].target_namespaces, target_namespaces)
+        self.assertEqual(params[1].target_namespaces, target_namespaces)
+        self.assertEqual(params[0].new_value, -1000)
+        self.assertEqual(params[1].new_value, 1000)
+
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000437',
+            change_level=Task,
+            native_ids=False, native_data_types=False)
+        self.assertNotIn('value_parameter_R_EX_glc__D_e_lower_bound', [param.id for param in params])
+        self.assertEqual(params[0].id, 'lower_bound_reaction_R_ACALD')
+        self.assertEqual(params[1].id, 'upper_bound_reaction_R_ACALD')
+        self.assertEqual(params[0].name, 'Lower bound of reaction "acetaldehyde dehydrogenase (acetylating)"')
+        self.assertEqual(params[1].name, 'Upper bound of reaction "acetaldehyde dehydrogenase (acetylating)"')
+        self.assertEqual(params[0].target, "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']/@fbc:lowerFluxBound")
+        self.assertEqual(params[1].target, "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R_ACALD']/@fbc:upperFluxBound")
+        target_namespaces = {
+            'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+            'fbc': 'http://www.sbml.org/sbml/level3/version1/fbc/version2',
+        }
+        self.assertEqual(params[0].target_namespaces, target_namespaces)
+        self.assertEqual(params[1].target_namespaces, target_namespaces)
+        self.assertEqual(params[0].new_value, '-1000.0')
+        self.assertEqual(params[1].new_value, '1000.0')
+
+        with self.assertRaisesRegex(NotImplementedError, 'can only made at the SED document or task level'):
+            get_parameters_variables_outputs_for_simulation(
+                self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000437',
+                change_level=None)
 
     def test_fbc_steady_state_fva(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
@@ -460,8 +505,9 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
         self.assertEqual(param.target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level3/version1/core'})
 
     def test_fbc_steady_state_fba(self):
-        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000437',
-                                                                                    native_ids=True, native_data_types=True)
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000437',
+            native_ids=True, native_data_types=True)
 
         self.assertEqual(params[0].id, 'cobra_default_lb')
         self.assertEqual(params[0].name, None)

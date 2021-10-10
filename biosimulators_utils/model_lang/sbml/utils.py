@@ -7,9 +7,9 @@
 """
 
 from ...sedml.data_model import (  # noqa: F401
-    ModelAttributeChange, Variable, Symbol,
+    SedDocument, ModelAttributeChange, Variable, Symbol,
     Simulation, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation,
-    Algorithm
+    Algorithm, Task,
     )
 from ...utils.core import format_float, flatten_nested_list_of_strings
 from .validation import validate_model
@@ -22,6 +22,7 @@ __all__ = ['get_parameters_variables_outputs_for_simulation', 'get_package_names
 
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
+                                                    change_level=SedDocument,
                                                     native_ids=False, native_data_types=False,
                                                     include_model_parameters_in_simulation_variables=False,
                                                     include_compartment_sizes_in_simulation_variables=False,
@@ -35,6 +36,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
         algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000019``
             for CVODE)
+        change_level (:obj:`types.Type`, optional): level at which model changes will be made (:obj:`SedDocument` or :obj:`Task`)
         native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
             for the variable of an associated SED-ML data generator
         native_data_types (:obj:`bool`, optional): whether to return ``new_value`` in their native data types
@@ -56,6 +58,11 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     # check model file exists
     if not os.path.isfile(model_filename):
         raise FileNotFoundError('Model file `{}` does not exist'.format(model_filename))
+
+    # check change level
+    if change_level not in [SedDocument, Task]:
+        msg = 'Change level {} is not supported. Changes can only made at the SED document or task level.'.format(change_level)
+        raise NotImplementedError(msg)
 
     # read model
     errors, _, doc = validate_model(model_filename, validate_consistency=validate and validate_consistency)
@@ -131,19 +138,61 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         else:
             raise NotImplementedError('Algorithm with KiSAO id `{}` is not supported'.format(algorithm_kisao_id))
 
-        namespaces = {
-            'sbml': model.getURI(),
-        }
-        for parameter in model.getListOfParameters():
-            param_id = parameter.getId()
+        if change_level == SedDocument:
+            namespaces = {
+                'sbml': model.getURI(),
+            }
+            for parameter in model.getListOfParameters():
+                param_id = parameter.getId()
 
-            params.append(ModelAttributeChange(
-                id=param_id if native_ids else 'value_parameter_' + param_id,
-                name=parameter.getName() or None if native_ids else 'Value of parameter "{}"'.format(parameter.getName() or param_id),
-                target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='{}']/@value".format(param_id),
-                target_namespaces=namespaces,
-                new_value=parameter.getValue() if native_data_types else format_float(parameter.getValue()),
-            ))
+                params.append(ModelAttributeChange(
+                    id=param_id if native_ids else 'value_parameter_' + param_id,
+                    name=parameter.getName() or None if native_ids else 'Value of parameter "{}"'.format(parameter.getName() or param_id),
+                    target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='{}']/@value".format(param_id),
+                    target_namespaces=namespaces,
+                    new_value=parameter.getValue() if native_data_types else format_float(parameter.getValue()),
+                ))
+
+        elif change_level == Task:
+            namespaces = {
+                'sbml': model.getURI(),
+                'fbc': plugin.getURI(),
+            }
+            for reaction in model.getListOfReactions():
+                reaction_fbc = reaction.getPlugin('fbc')
+                lower_flux_bound = reaction_fbc.getLowerFluxBound()
+                upper_flux_bound = reaction_fbc.getUpperFluxBound()
+                lower_flux_bound_param = model.getParameter(lower_flux_bound)
+                upper_flux_bound_param = model.getParameter(upper_flux_bound)
+                lower_flux_bound = lower_flux_bound_param.getValue()
+                upper_flux_bound = upper_flux_bound_param.getValue()
+                if not native_data_types:
+                    lower_flux_bound = str(lower_flux_bound)
+                    upper_flux_bound = str(upper_flux_bound)
+
+                rxn_id = reaction.getId()
+                params.append(ModelAttributeChange(
+                    id=rxn_id if native_ids else 'lower_bound_reaction_' + rxn_id,
+                    name=(
+                        reaction.getName() or None
+                        if native_ids else
+                        'Lower bound of reaction "{}"'.format(reaction.getName() or rxn_id)
+                    ),
+                    target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/@fbc:lowerFluxBound".format(rxn_id),
+                    target_namespaces=namespaces,
+                    new_value=lower_flux_bound,
+                ))
+                params.append(ModelAttributeChange(
+                    id=rxn_id if native_ids else 'upper_bound_reaction_' + rxn_id,
+                    name=(
+                        reaction.getName() or None
+                        if native_ids else
+                        'Upper bound of reaction "{}"'.format(reaction.getName() or rxn_id)
+                    ),
+                    target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/@fbc:upperFluxBound".format(rxn_id),
+                    target_namespaces=namespaces,
+                    new_value=upper_flux_bound,
+                ))
 
         if has_flux:
             namespaces = {

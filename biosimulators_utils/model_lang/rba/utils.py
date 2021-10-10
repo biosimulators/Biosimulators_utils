@@ -7,9 +7,10 @@
 """
 
 from ...sedml.data_model import (  # noqa: F401
-    ModelAttributeChange, Variable,
+    SedDocument, ModelAttributeChange, Variable,
     Simulation, SteadyStateSimulation,
     Algorithm,
+    Task,
     )
 from ...utils.core import flatten_nested_list_of_strings
 from .validation import validate_model
@@ -20,7 +21,7 @@ __all__ = ['get_parameters_variables_outputs_for_simulation']
 
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
-                                                    native_ids=False, native_data_types=False):
+                                                    change_level=SedDocument, native_ids=False, native_data_types=False):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -29,6 +30,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         simulation_type (:obj:`types.Type`): subclass of :obj:`Simulation`
         algorithm_kisao_id (:obj:`str`, optional): KiSAO id of the algorithm for simulating the model (e.g., ``KISAO_0000669``
             for RBA)
+        change_level (:obj:`types.Type`, optional): level at which model changes will be made (:obj:`SedDocument` or :obj:`Task`)
         native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
             for the variable of an associated SED-ML data generator
         native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
