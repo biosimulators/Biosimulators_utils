@@ -19,9 +19,7 @@ __all__ = ['get_parameters_variables_outputs_for_simulation']
 
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
-                                                    native_ids=False, native_data_types=False,
-                                                    include_compartment_sizes_in_simulation_variables=False,
-                                                    include_model_parameters_in_simulation_variables=False):
+                                                    native_ids=False, native_data_types=False):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -33,10 +31,6 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
             for the variable of an associated SED-ML data generator
         native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
-        include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
-            non-constant SBML compartments with assignment rules among the returned SED variables
-        include_model_parameters_in_simulation_variables (:obj:`bool`, optional): whether to include the values of
-            non-constant SBML parameters with assignment rules among the returned SED variables
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values

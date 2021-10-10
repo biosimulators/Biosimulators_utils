@@ -142,6 +142,11 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
                                         "/sbml:listOfLocalParameters/sbml:localParameter[@id='k_PIP2hyd']/@value"))
         self.assertEqual(param.target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level3/version1/core'})
 
+    def test_core_time_course_l3(self):
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            self.CORE_FIXTURE_L3, ModelLanguage.SBML, UniformTimeCourseSimulation, 'KISAO_0000019',
+        )
+
     def test_fbc_steady_state_fba(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
             self.FBC_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000437')
@@ -332,6 +337,7 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
             self.CORE_FIXTURE, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000019',
             include_compartment_sizes_in_simulation_variables=True,
             include_model_parameters_in_simulation_variables=True,
+            include_reaction_fluxes_in_kinetic_simulation_variables=True,
             native_ids=True, native_data_types=True)
 
         self.assertEqual(params[0].id, 'Trim')
@@ -373,6 +379,12 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
 
         variable = next((variable for variable in vars if variable.id == 'kswe_prime'), None)
         self.assertEqual(variable, None)
+
+        variable = next(variable for variable in vars if variable.target ==
+                        "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']")
+        self.assertEqual(variable.id, 'R1')
+        self.assertEqual(variable.name, "Clb-Sic dissociation")
+        self.assertEqual(variable.target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
 
     def test_core_steady_state_with_more_params_and_vars(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(

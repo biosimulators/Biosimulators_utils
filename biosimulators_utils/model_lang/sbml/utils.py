@@ -23,8 +23,9 @@ __all__ = ['get_parameters_variables_outputs_for_simulation', 'get_package_names
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
                                                     native_ids=False, native_data_types=False,
-                                                    include_compartment_sizes_in_simulation_variables=False,
                                                     include_model_parameters_in_simulation_variables=False,
+                                                    include_compartment_sizes_in_simulation_variables=False,
+                                                    include_reaction_fluxes_in_kinetic_simulation_variables=False,
                                                     validate=True, validate_consistency=True):
     """ Get the possible observables for a simulation of a model
 
@@ -37,10 +38,12 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
             for the variable of an associated SED-ML data generator
         native_data_types (:obj:`bool`, optional): whether to return ``new_value`` in their native data types
-        include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
-            non-constant SBML compartments with assignment rules among the returned SED variables
         include_model_parameters_in_simulation_variables (:obj:`bool`, optional): whether to include the values of
             non-constant SBML parameters with assignment rules among the returned SED variables
+        include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
+            non-constant SBML compartments with assignment rules among the returned SED variables
+        include_reaction_fluxes_in_kinetic_simulation_variables (:obj:`bool`, optional): whether to include reaction fluxes
+            among the returned SED variables for kinetic simulations
         validate (:obj:`str`, optional): whether to validate the model
         validate_consistency (:obj:`str`, optional): whether to check the consistency of the model
 
@@ -363,8 +366,16 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                 and not model.getInitialAssignmentBySymbol(comp_id)
             ):
                 params.append(ModelAttributeChange(
-                    id=comp.getId() if native_ids else 'init_size_compartment_{}'.format(comp.getId()),
-                    name=comp.getName() or None if native_ids else 'Initial size of compartment "{}"'.format(comp.getName() or comp.getId()),
+                    id=(
+                        comp.getId()
+                        if native_ids else
+                        'init_size_compartment_{}'.format(comp.getId())
+                    ),
+                    name=(
+                        comp.getName() or None
+                        if native_ids else
+                        'Initial size of compartment "{}"'.format(comp.getName() or comp.getId())
+                    ),
                     target="/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='{}']/@size".format(comp_id),
                     target_namespaces=namespaces,
                     new_value=comp.getSize() if native_data_types else format_float(comp.getSize()),
@@ -452,6 +463,23 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                             target_namespaces=namespaces,
                         )
                         vars.append(var)
+
+            if include_reaction_fluxes_in_kinetic_simulation_variables:
+                var = Variable(
+                    id=(
+                        reaction_id
+                        if native_ids else
+                        'flux_reaction_' + reaction_id
+                    ),
+                    name=(
+                        reaction.getName() or None
+                        if native_ids else
+                        'Flux of reaction "{}"'.format(reaction.getName() or reaction_id)
+                    ),
+                    target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']".format(reaction_id),
+                    target_namespaces=namespaces,
+                )
+                vars.append(var)
 
     return (params, [sim], vars, [])
 

@@ -90,7 +90,8 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     )
 
 
-def build_combine_archive_for_model(model_filename, model_language, simulation_type, archive_filename, extra_contents=None):
+def build_combine_archive_for_model(model_filename, model_language, simulation_type, archive_filename, extra_contents=None,
+                                    **model_language_options):
     """ Build A COMBINE/OMEX archive with a SED-ML file for a model
 
     Args:
@@ -101,10 +102,12 @@ def build_combine_archive_for_model(model_filename, model_language, simulation_t
         extra_contents (:obj:`dict` of :obj:`str` -> :obj:`CombineArchiveContent`, optional): dictionary that maps the
             local paths of additional files to include in the COMBINE/OMEX archive to their intended locations within the
             COMBINE/OMEX archive
+        **model_language_options: additional options to pass to the methods for individual model formats
     """
 
     # make a SED-ML document for the model
-    params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type)
+    params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+        model_filename, model_language, simulation_type, **model_language_options)
 
     sedml_doc = SedDocument()
     model = Model(
