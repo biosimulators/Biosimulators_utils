@@ -26,7 +26,7 @@ __all__ = ['get_parameters_variables_outputs_for_simulation', 'build_combine_arc
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
                                                     change_level=SedDocument, native_ids=False, native_data_types=False,
-                                                    **model_language_options):
+                                                    model_language_options=None):
     """ Get the possible observables for a simulation of a model
 
     This method supports the following formats
@@ -45,7 +45,9 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
             for the variable of an associated SED-ML data generator
         native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
-        **model_language_options: additional options to pass to the methods for individual model formats
+        model_language_options (:obj:`dict`, optional): additional options to pass to the methods for individual model formats.
+            Dictionary that maps model languages (:obj:`ModelLanguage`) to dictionaries of optional keyword arguments for
+            each language
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
@@ -56,6 +58,9 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     Raises:
         :obj:`UnsupportedModelLanguageError`: if :obj:`model_language` is not a supported language
     """
+    if model_language_options is None:
+        model_language_options = {}
+
     # functions are imported here to only import libraries for required model languages
     if model_language and re.match(ModelLanguagePattern.BNGL.value, model_language):
         from biosimulators_utils.model_lang.bngl.utils import get_parameters_variables_outputs_for_simulation
@@ -87,7 +92,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     return get_parameters_variables_outputs_for_simulation(
         model_filename, model_language, simulation_type, algorithm_kisao_id=algorithm_kisao_id,
         change_level=change_level, native_ids=native_ids, native_data_types=native_data_types,
-        **model_language_options,
+        **model_language_options.get(model_language, {}),
     )
 
 
