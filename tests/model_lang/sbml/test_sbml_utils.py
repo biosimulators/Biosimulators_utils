@@ -29,13 +29,13 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         self.assertEqual(params[0].target, "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']/@initialConcentration")
         self.assertEqual(params[0].target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
 
-        self.assertEqual(params[-3].id, 'value_parameter_mu')
-        self.assertEqual(params[-3].new_value, '0.005')
+        self.assertEqual(params[-2].id, 'value_parameter_mu')
+        self.assertEqual(params[-2].new_value, '0.005')
 
-        self.assertEqual(params[-1].id, 'value_parameter_Swe1T')
-        self.assertEqual(params[-1].name, 'Value of parameter "Swe1T"')
+        self.assertEqual(params[-1].id, 'value_parameter_flag')
+        self.assertEqual(params[-1].name, 'Value of parameter "flag"')
         self.assertEqual(params[-1].new_value, '0')
-        self.assertEqual(params[-1].target, "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='Swe1T']/@value")
+        self.assertEqual(params[-1].target, "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='flag']/@value")
         self.assertEqual(params[-1].target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
 
         param = next(param for param in params if param.id == 'init_size_compartment_compartment')
@@ -77,18 +77,11 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         self.assertEqual(params[0].target, "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']/@initialAmount")
         self.assertEqual(params[0].target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
 
-        param = next(param for param in params if param.id == 'init_size_compartment_compartment')
-        self.assertEqual(param.name, 'Initial size of compartment "compartment"')
-        self.assertEqual(param.new_value, '1')
-        self.assertEqual(param.target, "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='compartment']/@size")
-        self.assertEqual(param.target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
+        param = next((param for param in params if param.id == 'init_size_compartment_compartment'), None)
+        self.assertEqual(param, None)
 
-        param = next(param for param in params if param.id == 'value_parameter_local_param')
-        self.assertEqual(param.name, 'Value of parameter "local_param" of reaction "Clb-Sic dissociation"')
-        self.assertEqual(param.new_value, '10')
-        self.assertEqual(param.target, ("/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']/sbml:kineticLaw"
-                                        "/sbml:listOfParameters/sbml:parameter[@id='local_param']/@value"))
-        self.assertEqual(param.target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
+        param = next((param for param in params if param.id == 'value_parameter_local_param'), None)
+        self.assertEqual(param, None)
 
         variable = next(variable for variable in vars if variable.id == 'size_compartment_compartment')
         self.assertEqual(variable.name, 'Size of compartment "compartment"')
@@ -108,7 +101,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
             include_compartment_sizes_in_simulation_variables=False,
             include_model_parameters_in_simulation_variables=False,
             validate=False)
-        self.assertNotEqual(next((param for param in params if param.id == 'init_size_compartment_compartment'), None), None)
+        self.assertEqual(next((param for param in params if param.id == 'init_size_compartment_compartment'), None), None)
         self.assertEqual(next((variable for variable in vars if variable.id == 'size_compartment_compartment'), None), None)
         self.assertEqual(next((variable for variable in vars if variable.id == 'value_parameter_local_param'), None), None)
 
@@ -295,13 +288,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         self.assertEqual(param.new_value, "1")
 
         param = next((param for param in params if param.id == 'init_size_compartment_main'), None)
-        self.assertEqual(param.name, 'Initial size of compartment "main"')
-        self.assertEqual(param.target,
-                         "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='main']/@size")
-        self.assertEqual(param.target_namespaces, {
-            'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
-        })
-        self.assertEqual(param.new_value, "2.5")
+        self.assertEqual(param, None)
 
         variable = next((variable for variable in vars if variable.id == 'size_compartment_main'), None)
         self.assertEqual(variable.name, 'Size of compartment "main"')
@@ -318,7 +305,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
             validate=False)
 
         self.assertNotEqual(next((param for param in params if param.id == 'init_level_species_erk'), None), None)
-        self.assertNotEqual(next((param for param in params if param.id == 'init_size_compartment_main'), None), None)
+        self.assertEqual(next((param for param in params if param.id == 'init_size_compartment_main'), None), None)
         self.assertEqual(next((variable for variable in vars if variable.id == 'size_compartment_main'), None), None)
 
     def test_qual_one_step(self):
@@ -403,13 +390,13 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
         self.assertEqual(params[0].target, "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']/@initialConcentration")
         self.assertEqual(params[0].target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
 
-        self.assertEqual(params[-3].id, 'mu')
-        self.assertEqual(params[-3].new_value, 0.005)
+        self.assertEqual(params[-2].id, 'mu')
+        self.assertEqual(params[-2].new_value, 0.005)
 
-        self.assertEqual(params[-1].id, 'Swe1T')
+        self.assertEqual(params[-1].id, 'flag')
         self.assertEqual(params[-1].name, None)
         self.assertEqual(params[-1].new_value, 0)
-        self.assertEqual(params[-1].target, "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='Swe1T']/@value")
+        self.assertEqual(params[-1].target, "/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='flag']/@value")
         self.assertEqual(params[-1].target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
 
         param = next(param for param in params if param.target ==
@@ -458,17 +445,13 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
         self.assertEqual(params[0].target, "/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']/@initialAmount")
         self.assertEqual(params[0].target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
 
-        param = next(param for param in params if param.target ==
-                     "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='compartment']/@size")
-        self.assertEqual(param.id, 'compartment')
-        self.assertEqual(param.new_value, 1)
+        param = next((param for param in params if param.target ==
+                      "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='compartment']/@size"), None)
+        self.assertEqual(param, None)
 
-        param = next(param for param in params if param.target == ("/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']/sbml:kineticLaw"
-                                                                   "/sbml:listOfParameters/sbml:parameter[@id='local_param']/@value"))
-        self.assertEqual(param.name, None)
-        self.assertEqual(param.new_value, 10)
-        self.assertEqual(param.id, 'local_param')
-        self.assertEqual(param.target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
+        param = next((param for param in params if param.target == ("/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']/sbml:kineticLaw"
+                                                                    "/sbml:listOfParameters/sbml:parameter[@id='local_param']/@value")), None)
+        self.assertEqual(param, None)
 
         variable = next(variable for variable in vars if variable.target ==
                         "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='compartment']/@size")
@@ -607,13 +590,7 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
 
         param = next((param for param in params if param.target ==
                       "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='main']/@size"), None)
-        self.assertEqual(param.name, None)
-        self.assertEqual(param.target,
-                         "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='main']/@size")
-        self.assertEqual(param.target_namespaces, {
-            'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
-        })
-        self.assertEqual(param.new_value, 2.5)
+        self.assertEqual(param, None)
 
         variable = next((variable for variable in vars if variable.target ==
                          "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='main']/@size"), None)

@@ -148,13 +148,14 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             for parameter in model.getListOfParameters():
                 param_id = parameter.getId()
 
-                params.append(ModelAttributeChange(
-                    id=param_id if native_ids else 'value_parameter_' + param_id,
-                    name=parameter.getName() or None if native_ids else 'Value of parameter "{}"'.format(parameter.getName() or param_id),
-                    target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='{}']/@value".format(param_id),
-                    target_namespaces=namespaces,
-                    new_value=parameter.getValue() if native_data_types else format_float(parameter.getValue()),
-                ))
+                if not model.getInitialAssignmentBySymbol(param_id) and not model.getAssignmentRuleByVariable(param_id):
+                    params.append(ModelAttributeChange(
+                        id=param_id if native_ids else 'value_parameter_' + param_id,
+                        name=parameter.getName() or None if native_ids else 'Value of parameter "{}"'.format(parameter.getName() or param_id),
+                        target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='{}']/@value".format(param_id),
+                        target_namespaces=namespaces,
+                        new_value=parameter.getValue() if native_data_types else format_float(parameter.getValue()),
+                    ))
 
         elif change_level == Task:
             namespaces = {
@@ -174,28 +175,36 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                     upper_flux_bound = str(upper_flux_bound)
 
                 rxn_id = reaction.getId()
-                params.append(ModelAttributeChange(
-                    id=rxn_id if native_ids else 'lower_bound_reaction_' + rxn_id,
-                    name=(
-                        reaction.getName() or None
-                        if native_ids else
-                        'Lower bound of reaction "{}"'.format(reaction.getName() or rxn_id)
-                    ),
-                    target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/@fbc:lowerFluxBound".format(rxn_id),
-                    target_namespaces=namespaces,
-                    new_value=lower_flux_bound,
-                ))
-                params.append(ModelAttributeChange(
-                    id=rxn_id if native_ids else 'upper_bound_reaction_' + rxn_id,
-                    name=(
-                        reaction.getName() or None
-                        if native_ids else
-                        'Upper bound of reaction "{}"'.format(reaction.getName() or rxn_id)
-                    ),
-                    target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/@fbc:upperFluxBound".format(rxn_id),
-                    target_namespaces=namespaces,
-                    new_value=upper_flux_bound,
-                ))
+                if (
+                    not model.getInitialAssignmentBySymbol(lower_flux_bound_param.getId())
+                    and not model.getAssignmentRuleByVariable(lower_flux_bound_param.getId())
+                ):
+                    params.append(ModelAttributeChange(
+                        id=rxn_id if native_ids else 'lower_bound_reaction_' + rxn_id,
+                        name=(
+                            reaction.getName() or None
+                            if native_ids else
+                            'Lower bound of reaction "{}"'.format(reaction.getName() or rxn_id)
+                        ),
+                        target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/@fbc:lowerFluxBound".format(rxn_id),
+                        target_namespaces=namespaces,
+                        new_value=lower_flux_bound,
+                    ))
+                if (
+                    not model.getInitialAssignmentBySymbol(upper_flux_bound_param.getId())
+                    and not model.getAssignmentRuleByVariable(upper_flux_bound_param.getId())
+                ):
+                    params.append(ModelAttributeChange(
+                        id=rxn_id if native_ids else 'upper_bound_reaction_' + rxn_id,
+                        name=(
+                            reaction.getName() or None
+                            if native_ids else
+                            'Upper bound of reaction "{}"'.format(reaction.getName() or rxn_id)
+                        ),
+                        target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/@fbc:upperFluxBound".format(rxn_id),
+                        target_namespaces=namespaces,
+                        new_value=upper_flux_bound,
+                    ))
 
         if has_flux:
             namespaces = {
@@ -285,20 +294,21 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             species_id = species.getId()
 
             if species.isSetInitialLevel():
-                params.append(ModelAttributeChange(
-                    id=species_id if native_ids else 'init_level_species_{}'.format(species_id),
-                    name=(
-                        species.getName() or None
-                        if native_ids else
-                        'Initial level of species "{}"'.format(species.getName() or species_id)
-                    ),
-                    target=(
-                        "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies"
-                        "/qual:qualitativeSpecies[@qual:id='{}']/@qual:initialLevel"
-                    ).format(species_id),
-                    target_namespaces=namespaces,
-                    new_value=species.getInitialLevel() if native_data_types else str(species.getInitialLevel()),
-                ))
+                if not model.getInitialAssignmentBySymbol(species_id) and not model.getAssignmentRuleByVariable(species_id):
+                    params.append(ModelAttributeChange(
+                        id=species_id if native_ids else 'init_level_species_{}'.format(species_id),
+                        name=(
+                            species.getName() or None
+                            if native_ids else
+                            'Initial level of species "{}"'.format(species.getName() or species_id)
+                        ),
+                        target=(
+                            "/sbml:sbml/sbml:model/qual:listOfQualitativeSpecies"
+                            "/qual:qualitativeSpecies[@qual:id='{}']/@qual:initialLevel"
+                        ).format(species_id),
+                        target_namespaces=namespaces,
+                        new_value=species.getInitialLevel() if native_data_types else str(species.getInitialLevel()),
+                    ))
 
             if not species.isSetConstant() or not species.getConstant():
                 var = Variable(
@@ -315,7 +325,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         for comp in model.getListOfCompartments():
             comp_id = comp.getId()
 
-            if comp.isSetSize():
+            if comp.isSetSize() and (not model.getInitialAssignmentBySymbol(comp_id) and not model.getAssignmentRuleByVariable(comp_id)):
                 params.append(ModelAttributeChange(
                     id=comp.getId() if native_ids else 'init_size_compartment_{}'.format(comp.getId()),
                     name=(
@@ -376,30 +386,31 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         for species in model.getListOfSpecies():
             species_id = species.getId()
 
-            if species.isSetInitialAmount():
-                params.append(ModelAttributeChange(
-                    id=species_id if native_ids else 'init_amount_species_{}'.format(species_id),
-                    name=(
-                        species.getName() or None
-                        if native_ids else
-                        'Initial amount of species "{}"'.format(species.getName() or species_id)
-                    ),
-                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']/@initialAmount".format(species_id),
-                    target_namespaces=namespaces,
-                    new_value=species.getInitialAmount() if native_data_types else format_float(species.getInitialAmount()),
-                ))
-            elif species.isSetInitialConcentration():
-                params.append(ModelAttributeChange(
-                    id=species_id if native_ids else 'init_conc_species_{}'.format(species_id),
-                    name=(
-                        species.getName() or None
-                        if native_ids else
-                        'Initial concentration of species "{}"'.format(species.getName() or species_id)
-                    ),
-                    target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']/@initialConcentration".format(species_id),
-                    target_namespaces=namespaces,
-                    new_value=species.getInitialConcentration() if native_data_types else format_float(species.getInitialConcentration()),
-                ))
+            if not model.getInitialAssignmentBySymbol(species_id) and not model.getAssignmentRuleByVariable(species_id):
+                if species.isSetInitialAmount():
+                    params.append(ModelAttributeChange(
+                        id=species_id if native_ids else 'init_amount_species_{}'.format(species_id),
+                        name=(
+                            species.getName() or None
+                            if native_ids else
+                            'Initial amount of species "{}"'.format(species.getName() or species_id)
+                        ),
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']/@initialAmount".format(species_id),
+                        target_namespaces=namespaces,
+                        new_value=species.getInitialAmount() if native_data_types else format_float(species.getInitialAmount()),
+                    ))
+                elif species.isSetInitialConcentration():
+                    params.append(ModelAttributeChange(
+                        id=species_id if native_ids else 'init_conc_species_{}'.format(species_id),
+                        name=(
+                            species.getName() or None
+                            if native_ids else
+                            'Initial concentration of species "{}"'.format(species.getName() or species_id)
+                        ),
+                        target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']/@initialConcentration".format(species_id),
+                        target_namespaces=namespaces,
+                        new_value=species.getInitialConcentration() if native_data_types else format_float(species.getInitialConcentration()),
+                    ))
 
             if not species.isSetConstant() or not species.getConstant():
                 var = Variable(
@@ -416,6 +427,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             if (
                 comp.isSetSize()
                 and not model.getInitialAssignmentBySymbol(comp_id)
+                and not model.getAssignmentRuleByVariable(comp_id)
             ):
                 params.append(ModelAttributeChange(
                     id=(
@@ -450,7 +462,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         for parameter in model.getListOfParameters():
             param_id = parameter.getId()
 
-            if not model.getInitialAssignmentBySymbol(param_id):
+            if not model.getInitialAssignmentBySymbol(param_id) and not model.getAssignmentRuleByVariable(param_id):
                 params.append(ModelAttributeChange(
                     id=param_id if native_ids else 'value_parameter_' + param_id,
                     name=parameter.getName() or None if native_ids else 'Value of parameter "{}"'.format(parameter.getName() or param_id),
@@ -480,18 +492,18 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                 for parameter in kinetic_law.getListOfParameters():
                     param_id = parameter.getId()
 
-                    if not model.getInitialAssignmentBySymbol(param_id):
-                        if model.getLevel() >= 3:
-                            target = (
-                                "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/sbml:kineticLaw"
-                                "/sbml:listOfLocalParameters/sbml:localParameter[@id='{}']/@value"
-                            ).format(reaction_id, param_id)
-                        else:
-                            target = (
-                                "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/sbml:kineticLaw"
-                                "/sbml:listOfParameters/sbml:parameter[@id='{}']/@value"
-                            ).format(reaction_id, param_id)
+                    if model.getLevel() >= 3:
+                        target = (
+                            "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/sbml:kineticLaw"
+                            "/sbml:listOfLocalParameters/sbml:localParameter[@id='{}']/@value"
+                        ).format(reaction_id, param_id)
+                    else:
+                        target = (
+                            "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='{}']/sbml:kineticLaw"
+                            "/sbml:listOfParameters/sbml:parameter[@id='{}']/@value"
+                        ).format(reaction_id, param_id)
 
+                    if not model.getInitialAssignmentBySymbol(param_id) and not model.getAssignmentRuleByVariable(param_id):
                         params.append(ModelAttributeChange(
                             id=param_id if native_ids else 'value_parameter_' + param_id,
                             name=parameter.getName() or None if native_ids else 'Value of parameter "{}" of reaction "{}"'.format(
