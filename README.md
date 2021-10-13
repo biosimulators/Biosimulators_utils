@@ -1,4 +1,7 @@
 [![Latest release](https://img.shields.io/github/v/release/biosimulators/Biosimulators_utils)](https://github.com/biosimulators/Biosimulators_utils/releases)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![PyPI](https://img.shields.io/pypi/v/biosimulators-utils)](https://pypi.org/project/biosimulators-utils/)
 [![CI status](https://github.com/biosimulators/Biosimulators_utils/workflows/Continuous%20integration/badge.svg)](https://github.com/biosimulators/Biosimulators_utils/actions?query=workflow%3A%22Continuous+integration%22)
 [![Test coverage](https://codecov.io/gh/biosimulators/Biosimulators_utils/branch/dev/graph/badge.svg)](https://codecov.io/gh/biosimulators/Biosimulators_utils)
@@ -118,3 +121,23 @@ This work was supported by National Institutes of Health award P41EB023912.
 
 ## Questions and comments
 Please contact the [BioSimulators Team](mailto:info@biosimulators.org) with any questions or comments.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="http://bshaikh.com"><img src="https://avatars.githubusercontent.com/u/32490144?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Bilal Shaikh</b></sub></a><br /><a href="https://github.com/biosimulators/Biosimulators_utils/issues?q=author%3Abilalshaikh42" title="Bug reports">🐛</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
