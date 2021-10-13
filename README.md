@@ -2,7 +2,7 @@
 [![PyPI](https://img.shields.io/pypi/v/biosimulators-utils)](https://pypi.org/project/biosimulators-utils/)
 [![CI status](https://github.com/biosimulators/Biosimulators_utils/workflows/Continuous%20integration/badge.svg)](https://github.com/biosimulators/Biosimulators_utils/actions?query=workflow%3A%22Continuous+integration%22)
 [![Test coverage](https://codecov.io/gh/biosimulators/Biosimulators_utils/branch/dev/graph/badge.svg)](https://codecov.io/gh/biosimulators/Biosimulators_utils)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/biosimulators/Biosimulators_tutorials/HEAD)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://tutorial.biosimulators.org/)
 
 
 # BioSimulators utils
@@ -99,7 +99,7 @@ The Dockerfile for this image is available [here](https://github.com/biosimulato
 A tutorial for the command-line interface is available [here](https://docs.biosimulators.org/Biosimulators_utils/).
 
 ### Python API
-Interactive tutorials for using BioSimulators-utils and Python APIs for simulation tools to execute simulations are available online from Binder [here](https://mybinder.org/v2/gh/biosimulators/Biosimulators_tutorials/HEAD). The Jupyter notebooks for these tutorials are also available [here](https://github.com/biosimulators/Biosimulators_tutorials).
+Interactive tutorials for using BioSimulators-utils and Python APIs for simulation tools to execute simulations are available online from Binder [here](https://tutorial.biosimulators.org/). The Jupyter notebooks for these tutorials are also available [here](https://github.com/biosimulators/Biosimulators_tutorials).
 
 ## API documentation
 API documentation is available [here](https://docs.biosimulators.org/Biosimulators_utils/).

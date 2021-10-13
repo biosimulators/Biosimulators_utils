@@ -10,7 +10,7 @@ Contents
    :maxdepth: 2
 
    installation.rst
-   Tutorials <https://mybinder.org/v2/gh/biosimulators/Biosimulators_tutorials/HEAD>
+   Tutorials <https://tutorial.biosimulators.org/>
    API documentation <source/biosimulators_utils.rst>
    about.rst
    genindex.rst
