@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "bilalshaikh42",
+      "name": "Bilal Shaikh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32490144?v=4",
+      "profile": "http://bshaikh.com",
+      "contributions": [
+        "bug"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "Biosimulators_utils",
+  "projectOwner": "biosimulators",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
