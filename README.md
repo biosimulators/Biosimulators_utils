@@ -123,11 +123,13 @@ BioSimulators-utils was developed with help from the following people:
 <table>
   <tr>
     <td align="center"><a href="http://bshaikh.com"><img src="https://avatars.githubusercontent.com/u/32490144?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Bilal Shaikh</b></sub></a><br /><a href="https://github.com/biosimulators/Biosimulators_utils/issues?q=author%3Abilalshaikh42" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://www.karrlab.org"><img src="https://avatars.githubusercontent.com/u/2848297?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jonathan Karr</b></sub></a><br /><a href="https://github.com/biosimulators/Biosimulators_utils/commits?author=jonrkarr" title="Code">💻</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 A key to these emojis is available [here](https://allcontributors.org/docs/en/emoji-key).
