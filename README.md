@@ -1,12 +1,9 @@
 [![Latest release](https://img.shields.io/github/v/release/biosimulators/Biosimulators_utils)](https://github.com/biosimulators/Biosimulators_utils/releases)
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![PyPI](https://img.shields.io/pypi/v/biosimulators-utils)](https://pypi.org/project/biosimulators-utils/)
 [![CI status](https://github.com/biosimulators/Biosimulators_utils/workflows/Continuous%20integration/badge.svg)](https://github.com/biosimulators/Biosimulators_utils/actions?query=workflow%3A%22Continuous+integration%22)
 [![Test coverage](https://codecov.io/gh/biosimulators/Biosimulators_utils/branch/dev/graph/badge.svg)](https://codecov.io/gh/biosimulators/Biosimulators_utils)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/biosimulators/Biosimulators_tutorials/HEAD)
-
+[![All Contributors](https://img.shields.io/github/all-contributors/biosimulators/Biosimulators_utils)](#contributors-)
 
 # BioSimulators utils
 Command-line application and high-level utilities for reading, writing, validating, and executing [COMBINE/OMEX format](https://combinearchive.org/) files that contain descriptions of simulations in [Simulation Experiment Description Markup Language](https://sed-ml.org/) (SED-ML) format with models in formats such as the [BioNetGen Language](https://bionetgen.org) (BNGL) and the [Systems Biology Markup Language](http://sbml.org) (SBML).
@@ -111,20 +108,14 @@ API documentation is available [here](https://docs.biosimulators.org/Biosimulato
 This package is released under the [MIT license](LICENSE).
 
 ## Development team
-This package was developed by the [Karr Lab](https://www.karrlab.org) at the Icahn School of Medicine at Mount Sinai in New York and the [Center for Reproducible Biomedical Modeling](http://reproduciblebiomodels.org).
+This package was developed by the [Karr Lab](https://www.karrlab.org) at the Icahn School of Medicine at Mount Sinai in New York and the [Center for Reproducible Biomedical Modeling](http://reproduciblebiomodels.org) with assistance from the contributors listed below.
 
 ## Contributing to BioSimulators utils
-We enthusiastically welcome contributions to BioSimulators utils! Please see the [guide to contributing](CONTRIBUTING.md) and the [developer's code of conduct](CODE_OF_CONDUCT.md).
+We enthusiastically welcome contributions to BioSimulators utils! Please see the [guide to contributing](CONTRIBUTING.md) and the [developer's code of conduct](CODE_OF_CONDUCT.md). 
 
-## Acknowledgements
-This work was supported by National Institutes of Health award P41EB023912.
+## Contributors
 
-## Questions and comments
-Please contact the [BioSimulators Team](mailto:info@biosimulators.org) with any questions or comments.
-
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+BioSimulators-utils was developed with help from the following people:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -137,7 +128,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+A key to these emojis is available [here](https://allcontributors.org/docs/en/emoji-key).
+
+## Funding
+This work was supported by National Institutes of Health award P41EB023912.
+
+## Questions and comments
+Please contact the [BioSimulators Team](mailto:info@biosimulators.org) with any questions or comments.
