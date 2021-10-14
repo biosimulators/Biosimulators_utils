@@ -3,7 +3,7 @@
 [![CI status](https://github.com/biosimulators/Biosimulators_utils/workflows/Continuous%20integration/badge.svg)](https://github.com/biosimulators/Biosimulators_utils/actions?query=workflow%3A%22Continuous+integration%22)
 [![Test coverage](https://codecov.io/gh/biosimulators/Biosimulators_utils/branch/dev/graph/badge.svg)](https://codecov.io/gh/biosimulators/Biosimulators_utils)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/biosimulators/Biosimulators_tutorials/HEAD)
-[![All Contributors](https://img.shields.io/github/all-contributors/biosimulators/Biosimulators_utils)](#contributors-)
+[![All Contributors](https://img.shields.io/github/all-contributors/biosimulators/Biosimulators_utils/HEAD)](#contributors-)
 
 # BioSimulators utils
 Command-line application and high-level utilities for reading, writing, validating, and executing [COMBINE/OMEX format](https://combinearchive.org/) files that contain descriptions of simulations in [Simulation Experiment Description Markup Language](https://sed-ml.org/) (SED-ML) format with models in formats such as the [BioNetGen Language](https://bionetgen.org) (BNGL) and the [Systems Biology Markup Language](http://sbml.org) (SBML).
