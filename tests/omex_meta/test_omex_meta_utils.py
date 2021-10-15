@@ -1,5 +1,6 @@
 from biosimulators_utils.omex_meta.data_model import OmexMetadataOutputFormat
-from biosimulators_utils.omex_meta.utils import build_omex_meta_file_for_model
+from biosimulators_utils.omex_meta.utils import (
+    build_omex_meta_file_for_model, get_local_combine_archive_content_uri, get_global_combine_archive_content_uri)
 import os
 import shutil
 import tempfile
@@ -53,3 +54,34 @@ class OmexMetaUtilsTestCase(unittest.TestCase):
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
         metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
         build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
+
+    def test_get_local_combine_archive_content_uri(self):
+        self.assertEqual(
+            get_local_combine_archive_content_uri('https://archives.org/archive.omex/thumb.png', 'https://archives.org/archive.omex'),
+            ('./thumb.png', 'https://archives.org/archive.omex'))
+        self.assertEqual(
+            get_local_combine_archive_content_uri('https://archives.org/archive.omex/./thumb.png', 'https://archives.org/archive.omex'),
+            ('./thumb.png', 'https://archives.org/archive.omex'))
+        self.assertEqual(
+            get_local_combine_archive_content_uri('https://archives.org/archive.omex', 'https://archives.org/archive.omex'),
+            ('.', 'https://archives.org/archive.omex'))
+        self.assertEqual(
+            get_local_combine_archive_content_uri('thumb.png', 'https://archives.org/archive.omex'),
+            ('thumb.png', None))
+        self.assertEqual(
+            get_local_combine_archive_content_uri('thumb.png'),
+            ('thumb.png', None))
+
+    def test_get_global_combine_archive_content_uri(self):
+        self.assertEqual(
+            get_global_combine_archive_content_uri('thumb.png', 'https://archives.org/archive.omex'),
+            'https://archives.org/archive.omex/thumb.png')
+        self.assertEqual(
+            get_global_combine_archive_content_uri('./thumb.png', 'https://archives.org/archive.omex'),
+            'https://archives.org/archive.omex/thumb.png'),
+        self.assertEqual(
+            get_global_combine_archive_content_uri('.', 'https://archives.org/archive.omex'),
+            'https://archives.org/archive.omex'),
+        self.assertEqual(
+            get_global_combine_archive_content_uri('thumb.png'),
+            'thumb.png')

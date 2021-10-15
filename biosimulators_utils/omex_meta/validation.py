@@ -9,6 +9,7 @@
 from ..combine.data_model import CombineArchiveContentFormatPattern
 from ..utils.identifiers_org import validate_identifiers_org_uri, InvalidIdentifiersOrgUri
 from .data_model import BIOSIMULATIONS_PREDICATE_TYPES, BIOSIMULATIONS_THUMBNAIL_FORMATS
+from .utils import get_global_combine_archive_content_uri
 import dateutil.parser
 import os
 import re
@@ -16,14 +17,62 @@ import validators
 
 __all__ = [
     'validate_biosimulations_metadata',
+    'validate_biosimulations_metadata_for_uri',
 ]
 
 
 def validate_biosimulations_metadata(metadata, archive=None, working_dir=None):
+    """ Validate BioSimulations metadata for a COMBINE/OMEX archive
+
+    Args:
+        metadata (:obj:`list` of :obj:`dict`): BioSimulations metadata about 1 or more URIs
+        archive (:obj:`CombineArchive`, optional): parent COMBINE archive
+        working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
+
+    Returns:
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: nested list of errors with the metadata
+            * nested :obj:`list` of :obj:`str`: nested list of warnings with the metadata
+    """
+    errors = []
+    warnings = []
+
+    has_archive_metadata = False
+    for el_metadata in metadata:
+        el_is_archive = el_metadata['uri'] == '.' and el_metadata['combine_archive_uri']
+        has_archive_metadata = has_archive_metadata or el_is_archive
+
+        temp_errors, temp_warnings = validate_biosimulations_metadata_for_uri(
+            el_metadata, validate_minimal_metadata=el_is_archive, archive=archive, working_dir=working_dir)
+
+        if temp_errors:
+            el_uri = get_global_combine_archive_content_uri(el_metadata['uri'], el_metadata['combine_archive_uri'])
+            errors.append(['The metadata for URI `{}` is invalid.'.format(
+                el_uri), temp_errors])
+
+        if temp_warnings:
+            el_uri = get_global_combine_archive_content_uri(el_metadata['uri'], el_metadata['combine_archive_uri'])
+            warnings.append(['The metadata for URI `{}` may be invalid.'.format(
+                el_uri),  temp_warnings])
+
+    if not has_archive_metadata:
+        errors.append([(
+            'The metadata does not contain information about a parent COMBINE/OMEX archive '
+            '(e.g., `rdf:about="http://omex-library.org/BioSim0001.omex"`). '
+            'Archive-level metadata is required for publication to BioSimulations.'
+        )])
+
+    return errors, warnings
+
+
+def validate_biosimulations_metadata_for_uri(metadata, validate_minimal_metadata=False, archive=None, working_dir=None):
     """ Validate BioSimulations metadata for a file in a COMBINE/OMEX archive
 
     Args:
         metadata (:obj:`dict`): BioSimulations metadata
+        validate_minimal_metadata (:obj:`bool`, optional): whether to check that all required metadata attributes
+            are defined
         archive (:obj:`CombineArchive`, optional): parent COMBINE archive
         working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
 
@@ -37,7 +86,7 @@ def validate_biosimulations_metadata(metadata, archive=None, working_dir=None):
     warnings = []
 
     # required attributes are present
-    if metadata['uri'] == '.':
+    if validate_minimal_metadata:
         for predicate_type in BIOSIMULATIONS_PREDICATE_TYPES.values():
             if predicate_type['required'] and (
                 (not predicate_type['multiple_allowed'] and metadata[predicate_type['attribute']] is None)
@@ -58,7 +107,7 @@ def validate_biosimulations_metadata(metadata, archive=None, working_dir=None):
             for object in objects:
                 if object and object['uri']:
                     if not validators.url(object['uri']):
-                        errors.append(['URI `{}` of attribute `{}` ({}) is not a valid URL.'.format(
+                        errors.append(['URI `{}` of attribute `{}` ({}) is not a valid URI.'.format(
                             object['uri'], predicate_type['attribute'], predicate_type['uri'])])
                     else:
                         match = re.match(r'^https?://identifiers\.org/(([^/:]+/[^/:]+|[^/:]+)[/:](.+))$', object['uri'])

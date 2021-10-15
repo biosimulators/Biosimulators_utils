@@ -1,7 +1,9 @@
 from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat
 from biosimulators_utils.combine.io import CombineArchiveReader
-from biosimulators_utils.combine.validation import validate, validate_format, validate_content, validate_omex_meta_file
+from biosimulators_utils.combine.validation import validate, validate_format, validate_content
 from biosimulators_utils.config import Config
+from biosimulators_utils.omex_meta.data_model import OmexMetadataSchema
+from biosimulators_utils.omex_meta.io import read_omex_meta_file
 from biosimulators_utils.sedml.data_model import SedDocument, Model, ModelLanguage
 from biosimulators_utils.sedml.io import SedmlSimulationReader, SedmlSimulationWriter
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
@@ -98,29 +100,31 @@ class ValidationTestCase(unittest.TestCase):
         self.assertNotEqual(validate_content(content, fixtures_dir, formats_to_validate=formats_to_validate), ([], []))
 
     def test_validate_omex_meta_file(self):
-        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'libcombine.rdf'),
-                                                   archive_dirname=self.tmp_dir)
+        config = Config(OMEX_METADATA_SCHEMA=OmexMetadataSchema.rdf_triples)
+
+        _, errors, warnings = read_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'libcombine.rdf'),
+                                                  working_dir=self.tmp_dir, config=config)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'biosimulations.rdf'),
-                                                   archive_dirname=self.tmp_dir)
+        _, errors, warnings = read_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'biosimulations.rdf'),
+                                                  working_dir=self.tmp_dir, config=config)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'warning.rdf'),
-                                                   archive_dirname=self.tmp_dir)
+        _, errors, warnings = read_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'warning.rdf'),
+                                                  working_dir=self.tmp_dir, config=config)
         self.assertIn("Unsupported version '1.2'", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'invalid.rdf'),
-                                                   archive_dirname=self.tmp_dir)
+        _, errors, warnings = read_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'invalid.rdf'),
+                                                  working_dir=self.tmp_dir, config=config)
         self.assertEqual(len(errors), 4)
         self.assertIn("XML parser error", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        errors, warnings = validate_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'malformed.rdf'),
-                                                   archive_dirname=self.tmp_dir)
+        _, errors, warnings = read_omex_meta_file(os.path.join(self.OMEX_META_FIXTURES_DIR, 'malformed.rdf'),
+                                                  working_dir=self.tmp_dir, config=config)
         self.assertEqual(len(errors), 3)
         self.assertIn("Opening and ending tag mismatch", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])

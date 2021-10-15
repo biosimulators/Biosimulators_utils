@@ -7,7 +7,7 @@
 """
 
 from ..config import get_config, Config  # noqa: F401
-from ..omex_meta.io import read_omex_meta_file
+from ..omex_meta.io import read_omex_meta_files_for_archive
 from ..sedml.io import SedmlSimulationReader
 from .data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat, CombineArchiveContentFormatPattern  # noqa: F401
 from .utils import get_sedml_contents
@@ -19,7 +19,6 @@ __all__ = [
     'validate',
     'validate_format',
     'validate_content',
-    'validate_omex_meta_file',
 ]
 
 
@@ -126,23 +125,11 @@ def validate(archive, archive_dirname,
             errors.extend(content_errors)
             warnings.extend(content_warnings)
 
+    # validate OMEX metadata files
     if config.VALIDATE_OMEX_METADATA and CombineArchiveContentFormat.OMEX_METADATA in formats_to_validate:
-        has_metadata = False
-        for content in archive.contents:
-            if (
-                isinstance(content, CombineArchiveContent)
-                and content.location
-                and content.format
-                and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format)
-            ):
-                has_metadata = True
-                break
-
-        if not has_metadata:
-            errors.append([(
-                'The COMBINE/OMEX does not contain an OMEX Metadata file. '
-                'Archives must contain metadata for publication to BioSimulations.'
-            )])
+        _, content_errors, content_warnings = read_omex_meta_files_for_archive(archive, archive_dirname, config=config)
+        errors.extend(content_errors)
+        warnings.extend(content_warnings)
 
     # return errors and warnings
     return (errors, warnings)
@@ -226,16 +213,6 @@ def validate_content(content, archive_dirname,
             errors = reader.errors or []
             warnings = reader.warnings or []
 
-    # validate OMEX metadata files
-    if config.VALIDATE_OMEX_METADATA:
-        if (
-            CombineArchiveContentFormat.OMEX_METADATA in formats_to_validate
-            and content.format
-            and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format)
-        ):
-            file_type = 'OMEX Metadata'
-            errors, warnings = validate_omex_meta_file(filename, archive_dirname, config=config)
-
     # validate images
     if config.VALIDATE_IMAGES:
         if (
@@ -303,25 +280,4 @@ def validate_content(content, archive_dirname,
             warnings,
         ]]
 
-    return (errors, warnings)
-
-
-def validate_omex_meta_file(filename, archive_dirname, config=None):
-    """ validate an OMEX Metadata file
-
-    Args:
-        filename (:obj:`str`): path to file
-        archive_dirname (:obj:`str`): directory with the content of the archive
-        config (:obj:`Config`, optional): configuration
-
-    Returns:
-        :obj:`tuple`:
-
-            * nested :obj:`list` of :obj:`str`: nested list of errors with the OMEX Metadata file
-            * nested :obj:`list` of :obj:`str`: nested list of warnings with the OMEX Metadata file
-    """
-    if config is None:
-        config = get_config()
-
-    _, errors, warnings = read_omex_meta_file(filename, working_dir=archive_dirname, config=config)
     return (errors, warnings)

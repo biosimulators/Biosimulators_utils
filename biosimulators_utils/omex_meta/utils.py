@@ -10,7 +10,7 @@ from .data_model import OmexMetadataOutputFormat
 import os
 import pyomexmeta
 
-__all__ = ['build_omex_meta_file_for_model']
+__all__ = ['build_omex_meta_file_for_model', 'get_local_combine_archive_content_uri', 'get_global_combine_archive_content_uri']
 
 
 def build_omex_meta_file_for_model(model_filename,
@@ -63,3 +63,47 @@ def build_omex_meta_file_for_model(model_filename,
         errors = ''.join([logger[i_message].get_message() for i_message in range(len(logger))])
         raise RuntimeError('OMEX metadata could not be saved to `{}` in `{}` format:\n  {}'.format(
             metadata_filename, metadata_format.value, errors.replace('\n', '\n  ')))
+
+
+def get_local_combine_archive_content_uri(content_uri, archive_uri=None):
+    """ Get the relative URI for a content item of a COMBINE/OMEX archive
+
+    Args:
+        content_uri (:obj:`str`): global URI for a content item of a COMBINE/OMEX archive
+        archive_uri (:obj:`str`, optional): URI for the parent COMBINE/OMEX archive
+
+    Returns:
+        :obj:`tuple:`
+
+            * :obj:`str`: global URI for the content item
+            * :obj:`str`: URI for the parent COMBINE/OMEX archive
+    """
+    if archive_uri:
+        if content_uri in [archive_uri, archive_uri + '/']:
+            return ('.', archive_uri)
+        if content_uri.startswith(archive_uri + '/'):
+            return ('./' + os.path.relpath(content_uri[len(archive_uri)+1:], '.'), archive_uri)
+        return (content_uri, None)
+    else:
+        return (content_uri, archive_uri)
+
+
+def get_global_combine_archive_content_uri(content_rel_uri, archive_uri=None):
+    """ Get a global URI for a content item of a COMBINE/OMEX archive
+
+    Args:
+        content_rel_uri (:obj:`str`): URI for a content item of a COMBINE/OMEX archive,
+            relative to its parent archive
+        archive_uri (:obj:`str`, optional): URI for the parent COMBINE/OMEX archive
+
+    Returns:
+        :obj:`str`: global URI for the content item
+    """
+    if archive_uri:
+        content_rel_uri = os.path.relpath(content_rel_uri, '.')
+        if content_rel_uri == '.':
+            return archive_uri
+        else:
+            return archive_uri + '/' + content_rel_uri
+    else:
+        return content_rel_uri

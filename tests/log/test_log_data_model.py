@@ -176,4 +176,4 @@ class ExecStatusDataModel(unittest.TestCase):
         plot2d_log.export()
         plot3d_log.export()
         with open(os.path.join(archive_log.out_dir, get_config().LOG_PATH), 'r') as file:
-            self.assertEqual(yaml.load(file), archive_log.to_json())
+            self.assertEqual(yaml.load(file, Loader=yaml.FullLoader), archive_log.to_json())

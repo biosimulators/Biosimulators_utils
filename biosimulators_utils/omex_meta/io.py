@@ -9,9 +9,9 @@
 from ..combine.data_model import CombineArchive, CombineArchiveContentFormatPattern  # noqa: F401
 from ..config import get_config, Config  # noqa: F401
 from .data_model import (Triple, OmexMetadataOutputFormat, OmexMetadataSchema,
-                         BIOSIMULATIONS_ROOT_URI_FORMAT,
                          BIOSIMULATIONS_ROOT_URI_PATTERN,
                          BIOSIMULATIONS_PREDICATE_TYPES)
+from .utils import get_local_combine_archive_content_uri, get_global_combine_archive_content_uri
 from .validation import validate_biosimulations_metadata
 import abc
 import json
@@ -32,11 +32,11 @@ __all__ = [
 ]
 
 
-def read_omex_meta_file(filename, archive=None, working_dir=None, config=None):
+def read_omex_meta_file(filename_or_filenames, archive=None, working_dir=None, config=None):
     """ Read an OMEX Metadata file
 
     Args:
-        filename (:obj:`str`): path to OMEX Metadata file
+        filename_or_filenames (:obj:`str` or :obj:`list` of :obj:`str`): path or paths to OMEX Metadata files
         archive (:obj:`CombineArchive`, optional): parent COMBINE archive
         working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
         config (:obj:`Config`, optional): configuration
@@ -56,10 +56,10 @@ def read_omex_meta_file(filename, archive=None, working_dir=None, config=None):
         config = get_config()
 
     if config.OMEX_METADATA_SCHEMA == OmexMetadataSchema.biosimulations:
-        return BiosimulationsOmexMetaReader().run(filename, archive=archive, working_dir=working_dir, config=config)
+        return BiosimulationsOmexMetaReader().run(filename_or_filenames, archive=archive, working_dir=working_dir, config=config)
 
     elif config.OMEX_METADATA_SCHEMA == OmexMetadataSchema.rdf_triples:
-        return TriplesOmexMetaReader().run(filename, archive=archive, working_dir=working_dir, config=config)
+        return TriplesOmexMetaReader().run(filename_or_filenames, archive=archive, working_dir=working_dir, config=config)
 
     else:
         errors.append(['Schema `{}` is not supported. The following schemas are supported:',
@@ -115,32 +115,32 @@ def read_omex_meta_files_for_archive(archive, archive_dirname, config=None):
     if config is None:
         config = get_config()
 
+    filenames = []
     for item in archive.contents:
         if item.format and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, item.format):
-            temp_content, temp_errors, temp_warnings = read_omex_meta_file(
-                os.path.join(archive_dirname, item.location),
-                archive=archive, working_dir=archive_dirname, config=config)
+            filenames.append(os.path.join(archive_dirname, item.location))
 
-            if temp_errors:
-                errors.append(['OMEX Metadata file `{}` is invalid.'.format(item.location), temp_errors])
-            else:
-                content.extend(temp_content)
-
-            if temp_warnings:
-                warnings.append(['OMEX Metadata file `{}` may be invalid.'.format(item.location), temp_warnings])
-
-    return (content, errors, warnings)
+    if filenames:
+        return read_omex_meta_file(filenames, archive=archive, working_dir=archive_dirname, config=config)
+    else:
+        content = []
+        errors = [[(
+            'The COMBINE/OMEX does not contain an OMEX Metadata file. '
+            'Archives must contain metadata for publication to BioSimulations.'
+        )]]
+        warnings = []
+        return (content, errors, warnings)
 
 
 class OmexMetaReader(abc.ABC):
     """ Base class for reading OMEX Metadata files """
 
     @ abc.abstractmethod
-    def run(self, filename, archive=None, working_dir=None, config=None):
+    def run(self, filename_or_filenames, archive=None, working_dir=None, config=None):
         """ Read an OMEX Metadata file
 
         Args:
-            filename (:obj:`str`): path to OMEX Metadata file
+            filename_or_filenames (:obj:`str` or :obj:`list` of :obj:`str`): path or paths to OMEX Metadata files
             archive (:obj:`CombineArchive`, optional): parent COMBINE archive
             working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
             config (:obj:`Config`, optional): configuration
@@ -154,7 +154,7 @@ class OmexMetaReader(abc.ABC):
         """
         pass  # pragma: no cover
 
-    @ classmethod
+    @classmethod
     def read_rdf(cls, filename, config=None):
         """ Read an RDF file
 
@@ -229,7 +229,7 @@ class OmexMetaReader(abc.ABC):
 
         return (rdf, errors, warnings)
 
-    @ classmethod
+    @classmethod
     def get_rdf_triples(cls, rdf):
         """ Read an RDF file
 
@@ -252,9 +252,10 @@ class OmexMetaReader(abc.ABC):
                 predicate=predicate,
                 object=object,
             ))
+
         return triples
 
-    @ classmethod
+    @classmethod
     def make_rdf_node(cls, node):
         """ Make an RDF node
 
@@ -292,11 +293,11 @@ class OmexMetaWriter(abc.ABC):
 class TriplesOmexMetaReader(OmexMetaReader):
     """ Utility for reading an OMEX Metadata file into a list of triples """
 
-    def run(self, filename, archive=None, working_dir=None, config=None):
+    def run(self, filename_or_filenames, archive=None, working_dir=None, config=None):
         """ Read an OMEX Metadata file into a list of triples
 
         Args:
-            filename (:obj:`str`): path to OMEX Metadata file
+            filename_or_filenames (:obj:`str` or :obj:`list` of :obj:`str`): path or paths to OMEX Metadata files
             archive (:obj:`CombineArchive`, optional): parent COMBINE archive
             working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
             config (:obj:`Config`, optional): configuration
@@ -315,9 +316,31 @@ class TriplesOmexMetaReader(OmexMetaReader):
         errors = []
         warnings = []
 
-        rdf, tmp_errors, tmp_warnings = self.read_rdf(filename, config=config)
-        errors.extend(tmp_errors)
-        warnings.extend(tmp_warnings)
+        if isinstance(filename_or_filenames, (tuple, list)):
+            filenames = filename_or_filenames
+        else:
+            filenames = [filename_or_filenames]
+
+        for filename in filenames:
+            rdf, temp_errors, temp_warnings = self.read_rdf(filename, config=config)
+
+            if working_dir:
+                error_filename = os.path.relpath(filename, working_dir)
+            else:
+                error_filename = filename
+
+            if temp_errors:
+                if isinstance(filename_or_filenames, (tuple, list)):
+                    errors.append(['The OMEX Metadata file at location `{}` is invalid.'.format(error_filename), temp_errors])
+                else:
+                    errors.extend(temp_errors)
+
+            if temp_warnings:
+                if isinstance(filename_or_filenames, (tuple, list)):
+                    warnings.append(['The OMEX Metadata file at location `{}` may be invalid.'.format(error_filename), temp_warnings])
+                else:
+                    warnings.extend(temp_warnings)
+
         if errors:
             return (triples, errors, warnings)
 
@@ -368,12 +391,12 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
     """ Utility for reading the metadata about a COMBINE/OMEX archive in an OMEX Metadata
     file into a dictionary with BioSimulations schema """
 
-    def run(self, filename, archive=None, working_dir=None, config=None):
+    def run(self, filename_or_filenames, archive=None, working_dir=None, config=None):
         """ Read the metadata about a COMBINE/OMEX archive in an OMEX Metadata file into a dictionary
          with BioSimulations schema
 
         Args:
-            filename (:obj:`str`): path to OMEX Metadata file
+            filename_or_filenames (:obj:`str` or :obj:`list` of :obj:`str`): path or paths to OMEX Metadata files
             archive (:obj:`CombineArchive`, optional): parent COMBINE archive
             working_dir (:obj:`str`, optional): working directory (e.g., directory of the parent COMBINE/OMEX archive)
             config (:obj:`Config`, optional): configuration
@@ -393,40 +416,56 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
         errors = []
         warnings = []
 
-        rdf, tmp_errors, tmp_warnings = self.read_rdf(filename, config=config)
-        errors.extend(tmp_errors)
-        warnings.extend(tmp_warnings)
-        if errors:
-            return (el_metadatas, errors, warnings)
+        if isinstance(filename_or_filenames, (tuple, list)):
+            filenames = filename_or_filenames
+        else:
+            filenames = [filename_or_filenames]
 
-        triples = self.get_rdf_triples(rdf)
+        triples = []
+        for filename in filenames:
+            rdf, temp_errors, temp_warnings = self.read_rdf(filename, config=config)
 
-        root_uri, tmp_errors, tmp_warnings = self.get_combine_archive_uri(triples)
-        errors.extend(tmp_errors)
-        warnings.extend(tmp_warnings)
-        if errors:
-            return (el_metadatas, errors, warnings)
-
-        el_metadatas, tmp_errors, tmp_warnings = self.parse_triples_to_schema(triples, root_uri)
-        errors.extend(tmp_errors)
-        warnings.extend(tmp_warnings)
-        if errors:
-            return (el_metadatas, errors, warnings)
-
-        for el_metadata in el_metadatas:
-            temp_errors, temp_warnings = validate_biosimulations_metadata(el_metadata, archive=archive, working_dir=working_dir)
+            if working_dir:
+                error_filename = os.path.relpath(filename, working_dir)
+            else:
+                error_filename = filename
 
             if temp_errors:
-                errors.append(['The metadata for URI `{}` is invalid.'.format(
-                    el_metadata['uri']), temp_errors])
+                if isinstance(filename_or_filenames, (tuple, list)):
+                    errors.append(['The OMEX Metadata file at location `{}` is invalid.'.format(error_filename), temp_errors])
+                else:
+                    errors.extend(temp_errors)
+            else:
+                triples.extend(self.get_rdf_triples(rdf))
 
             if temp_warnings:
-                warnings.append(['The metadata for URI `{}` may be invalid.'.format(
-                    el_metadata['uri']),  temp_warnings])
+                if isinstance(filename_or_filenames, (tuple, list)):
+                    warnings.append(['The OMEX Metadata file at location `{}` may be invalid.'.format(error_filename), temp_warnings])
+                else:
+                    warnings.extend(temp_warnings)
+
+        if errors:
+            return (el_metadatas, errors, warnings)
+
+        combine_archive_uri, temp_errors, temp_warnings = self.get_combine_archive_uri(triples)
+        errors.extend(temp_errors)
+        warnings.extend(temp_warnings)
+        if errors:
+            return (el_metadatas, errors, warnings)
+
+        el_metadatas, temp_errors, temp_warnings = self.parse_triples_to_schema(triples, combine_archive_uri)
+        errors.extend(temp_errors)
+        warnings.extend(temp_warnings)
+        if errors:
+            return (el_metadatas, errors, warnings)
+
+        temp_errors, temp_warnings = validate_biosimulations_metadata(el_metadatas, archive=archive, working_dir=working_dir)
+        errors.extend(temp_errors)
+        warnings.extend(temp_warnings)
 
         return (el_metadatas, errors, warnings)
 
-    @ classmethod
+    @classmethod
     def get_combine_archive_uri(cls, triples):
         """ Get the URI used to the describe the COMBINE/OMEX archive in a list of RDF triples
 
@@ -436,32 +475,31 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
         Returns:
             :obj:`str`: URI used to the describe the COMBINE/OMEX archive in the list of triples
         """
-        root_uris = set()
+        archive_uris = set()
         for triple in triples:
-            if (
-                isinstance(triple.subject, rdflib.term.URIRef)
-                and re.match(BIOSIMULATIONS_ROOT_URI_PATTERN, str(triple.subject))
-            ):
-                root_uris.add(str(triple.subject))
+            if isinstance(triple.subject, rdflib.term.URIRef):
+                archive_uri = re.match(BIOSIMULATIONS_ROOT_URI_PATTERN, str(triple.subject))
+                if archive_uri:
+                    archive_uris.add(archive_uri.group(1))
 
-        if len(root_uris) == 0:
+        if len(archive_uris) == 0:
             msg = 'File does not contain metadata about an OMEX archive.'
             return(None, [[msg]], [])
 
-        elif len(root_uris) > 1:
+        elif len(archive_uris) > 1:
             msg = 'File contains metadata about multiple OMEX archives. File must contains data about 1 archive.'
             return(None, [[msg]], [])
 
         else:
-            return (list(root_uris)[0], [], [])
+            return (list(archive_uris)[0], [], [])
 
     @classmethod
-    def parse_triples_to_schema(cls, triples, root_uri):
+    def parse_triples_to_schema(cls, triples, combine_archive_uri):
         """ Convert a graph of RDF triples into BioSimulations' metadata schema
 
         Args:
             triples (:obj:`list` of :obj:`dict`): representation of the OMEX Meta file as list of triples
-            root_uri (:obj:`str`): URI used to the describe the COMBINE/OMEX archive in the list of triples
+            combine_archive_uri (:obj:`str`): URI used to the describe the COMBINE/OMEX archive in the list of triples
 
         Returns:
             :obj:`list` of :obj:`object`: representation of the triples in BioSimulations' metadata schema
@@ -471,12 +509,6 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
 
         objects = {}
         for triple in triples:
-            if (
-                isinstance(triple.subject, rdflib.term.URIRef)
-                and re.match(BIOSIMULATIONS_ROOT_URI_PATTERN, str(triple.subject))
-            ):
-                root_uri = str(triple.subject)
-
             for node, is_subject in [(triple.subject, True), (triple.object, False)]:
                 object = objects.get(str(node), None)
                 if object is None:
@@ -515,12 +547,15 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
 
         el_metadatas = []
         for uri, raw_metadata in objects.items():
-            if (uri != root_uri and not uri.startswith(root_uri + '/')) or not raw_metadata['is_subject']:
+            if (
+                raw_metadata['type'] != 'URIRef'
+                or raw_metadata['uri'].startswith('local:')
+                or not raw_metadata['is_subject']
+            ):
                 continue
 
-            metadata = {
-                'uri': '.' + uri[len(root_uri):]
-            }
+            metadata = {}
+            metadata['uri'], metadata['combine_archive_uri'] = get_local_combine_archive_content_uri(uri, combine_archive_uri)
             el_metadatas.append(metadata)
             ignored_statements = []
             for predicate_uri, predicate_type in BIOSIMULATIONS_PREDICATE_TYPES.items():
@@ -547,7 +582,7 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
                         if value['label'] is None:
                             if el['value']['type'] != 'BNode':
                                 msg = '({}, {}, {}) does not contain an rdf:label.'.format(
-                                    root_uri, predicate_uri, el['value'].get('uri', None)
+                                    uri, predicate_uri, el['value'].get('uri', None)
                                 )
                                 ignored_statements.append([msg])
                         else:
@@ -557,7 +592,7 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
                             value = el['value'].get('uri', None)
                             if value is None:
                                 msg = '({}, {}) does not contain an URI.'.format(
-                                    root_uri, predicate_uri
+                                    uri, predicate_uri
                                 )
                                 ignored_statements.append([msg])
                             else:
@@ -572,7 +607,7 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
                             if value is None:
                                 if el['value']['type'] != 'BNode':
                                     msg = '({}, {}, {}) does not contain an rdf:label.'.format(
-                                        root_uri, predicate_uri, el['value'].get('uri', None)
+                                        uri, predicate_uri, el['value'].get('uri', None)
                                     )
                                     ignored_statements.append([msg])
                             else:
@@ -629,7 +664,7 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
                         value['value']['label'] = el['value']['label']
                 if value['attribute']['label'] is None or value['value']['label'] is None:
                     msg = '({}, {}, {}) does not contain an rdf:label.'.format(
-                        root_uri, other_md['predicate'],
+                        uri, other_md['predicate'],
                         other_md['value'].get('label', None)
                         if other_md['value']['type'] == 'Literal'
                         else other_md['value'].get('uri', None)
@@ -639,11 +674,11 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
                     metadata['other'].append(value)
 
             for i_thumbnail, thumbnail in enumerate(metadata['thumbnails']):
-                if thumbnail.startswith(root_uri):
-                    metadata['thumbnails'][i_thumbnail] = './' + thumbnail[len(root_uri)+1:]
+                if thumbnail.startswith(combine_archive_uri + '/'):
+                    metadata['thumbnails'][i_thumbnail] = './' + thumbnail[len(combine_archive_uri)+1:]
                 else:
                     msg = 'Thumbnail URIs must begin with the URI of their parent archive ({}), not `{}`'.format(
-                        root_uri, thumbnail)
+                        combine_archive_uri, thumbnail)
                     errors.append([msg])
 
         if ignored_statements:
@@ -674,7 +709,6 @@ class BiosimulationsOmexMetaWriter(OmexMetaWriter):
         # convert to triples
         triples = []
 
-        combine_archive_uri = BIOSIMULATIONS_ROOT_URI_FORMAT.format('archive')
         local_id = 0
 
         namespaces = {
@@ -687,7 +721,9 @@ class BiosimulationsOmexMetaWriter(OmexMetaWriter):
             namespaces[predicate_type['namespace']['prefix']] = rdflib.Namespace(predicate_type['namespace']['uri'])
 
         for el_metadata in el_metadatas:
-            file_uri_ref = rdflib.term.URIRef(combine_archive_uri + el_metadata['uri'][1:])
+            el_uri = get_global_combine_archive_content_uri(el_metadata['uri'], el_metadata['combine_archive_uri'])
+
+            file_uri_ref = rdflib.term.URIRef(el_uri)
             for predicate_type in BIOSIMULATIONS_PREDICATE_TYPES.values():
                 namespace = namespaces[predicate_type['namespace']['prefix']]
                 predicate = getattr(namespace, predicate_type['uri'].replace(predicate_type['namespace']['uri'], ''))
@@ -742,7 +778,7 @@ class BiosimulationsOmexMetaWriter(OmexMetaWriter):
 
                     elif predicate_type['has_uri']:
                         if predicate_type['uri'] == 'http://www.collex.org/schema#thumbnail':
-                            value = combine_archive_uri + '/' + value
+                            value = get_global_combine_archive_content_uri(value, el_metadata['combine_archive_uri'])
 
                         object = rdflib.term.URIRef(value)
 

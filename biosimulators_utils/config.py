@@ -18,7 +18,7 @@ __all__ = ['Config', 'get_config', 'Colors', 'get_app_dirs']
 
 DEFAULT_OMEX_METADATA_INPUT_FORMAT = OmexMetadataInputFormat.rdfxml
 DEFAULT_OMEX_METADATA_OUTPUT_FORMAT = OmexMetadataOutputFormat.rdfxml_abbrev
-DEFAULT_OMEX_METADATA_SCHEMA = OmexMetadataSchema.rdf_triples
+DEFAULT_OMEX_METADATA_SCHEMA = OmexMetadataSchema.biosimulations
 DEFAULT_ALGORITHM_SUBSTITUTION_POLICY = AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES
 DEFAULT_H5_REPORTS_PATH = 'reports.h5'
 DEFAULT_REPORTS_PATH = 'reports.zip'

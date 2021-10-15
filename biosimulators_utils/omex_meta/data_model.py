@@ -72,7 +72,7 @@ class OmexMetadataSchema(str, enum.Enum):
 
 
 BIOSIMULATIONS_ROOT_URI_FORMAT = 'http://omex-library.org/{}.omex'
-BIOSIMULATIONS_ROOT_URI_PATTERN = r'^http://omex-library\.org/.*?\.omex$'
+BIOSIMULATIONS_ROOT_URI_PATTERN = r'^(http://omex-library\.org/.*?\.omex)(/|$)'
 
 BIOSIMULATIONS_PREDICATE_TYPES = {
     'http://dublincore.org/specifications/dublin-core/dcmi-terms/title': {

@@ -627,8 +627,9 @@ class StandardOutputErrorCapturerTestCase(unittest.TestCase):
             self.assertEqual(captured_outter.get_text(), '')
 
         with self.assertWarns(StandardOutputNotLoggedWarning):
-            with utils.StandardOutputErrorCapturer(disabled=True):
+            with utils.StandardOutputErrorCapturer(disabled=True) as captured:
                 print('here ', end='')
                 sys.stdout.flush()
                 print('i am', end='', file=sys.stderr)
                 sys.stderr.flush()
+                self.assertEqual(captured.get_text(), None)

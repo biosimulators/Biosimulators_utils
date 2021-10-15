@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+    xmlns:dc="http://dublincore.org/specifications/dublin-core/dcmi-terms/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+  <rdf:Description rdf:about="http://omex-library.org/BioSim0001.omex">
+    <!-- name -->
+    <dc:title>Name</dc:title>
+  </rdf:Description>
+</rdf:RDF>

@@ -1,3 +1,4 @@
+from biosimulators_utils.config import Config
 from biosimulators_utils.simulator import utils
 from kisao import AlgorithmSubstitutionPolicy
 from unittest import mock
@@ -15,3 +16,6 @@ class SimulatorUtilsTestCase(unittest.TestCase):
         with mock.patch.dict(os.environ, {'ALGORITHM_SUBSTITUTION_POLICY': 'UNDEFINED'}):
             with self.assertRaises(ValueError):
                 utils.get_algorithm_substitution_policy()
+
+        with self.assertRaisesRegex(ValueError, 'is not a valid value'):
+            utils.get_algorithm_substitution_policy(config=Config(ALGORITHM_SUBSTITUTION_POLICY=None))
