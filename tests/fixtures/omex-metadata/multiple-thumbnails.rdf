@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+    xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+    xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+    xmlns:collex="http://www.collex.org/schema#"
+    xmlns:dc="http://dublincore.org/specifications/dublin-core/dcmi-terms/"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:om="http://ontology.eil.utoronto.ca/icity/OM/"
+    xmlns:prism="http://prismstandard.org/namespaces/basic/2.0/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:scoro="http://purl.org/spar/scoro/"
+>
+  <rdf:Description rdf:about="http://omex-library.org/BioSim0001.omex">
+    <!-- name -->
+    <dc:title>Name</dc:title>
+
+    <!-- short summary -->
+    <dc:abstract>Short summary</dc:abstract>
+
+    <!-- keywords -->
+    <prism:keyword>tag 1</prism:keyword>
+    <prism:keyword>tag 2</prism:keyword>
+
+    <!-- thumbnail image -->
+    <collex:thumbnail rdf:resource="http://omex-library.org/BioSim0001.omex/x.png"/>
+    <collex:thumbnail rdf:resource="http://omex-library.org/BioSim0001.omex/a.png"/>
+    <collex:thumbnail rdf:resource="http://omex-library.org/BioSim0001.omex/y.png"/>
+    <collex:thumbnail rdf:resource="http://omex-library.org/BioSim0001.omex/e.png"/>
+    <collex:thumbnail rdf:resource="http://omex-library.org/BioSim0001.omex/2.png"/>
+    <collex:thumbnail rdf:resource="http://omex-library.org/BioSim0001.omex/1.png"/>
+
+    <!-- long description -->
+    <dc:description>Description</dc:description>
+
+    <!-- taxon -->
+    <bqbiol:hasTaxon>
+      <rdf:Description>
+        <dc:identifier rdf:resource="https://identifiers.org/taxonomy/9606"/>
+        <rdfs:label>Homo sapiens</rdfs:label>
+      </rdf:Description>
+    </bqbiol:hasTaxon>
+
+    <!-- gene, RNA, protein, cell type, tissue, organ, disease -->
+    <bqbiol:encodes>
+      <rdf:Description>
+        <dc:identifier rdf:resource="https://identifiers.org/CL:0001057"/>
+        <rdfs:label>myeloid dendritic cell, human</rdfs:label>
+      </rdf:Description>
+    </bqbiol:encodes>
+
+    <!-- more information (i.e., domain specific information beyond recommended relationships and identifiers) -->
+    <om:temporalUnit>
+      <rdf:Description>
+        <dc:identifier rdf:resource="http://www.w3.org/2006/time#second"/>
+        <rdfs:label>second</rdfs:label>
+        <dc:description>Temporal unit</dc:description>
+      </rdf:Description>
+    </om:temporalUnit>
+
+    <!-- source from which model package was derived (e.g., GitHub repository) -->
+    <dc:source>
+      <rdf:Description>
+        <dc:identifier rdf:resource="https://github.org/lab/project"/>
+        <rdfs:label>Tsur 2019 model source code</rdfs:label>
+      </rdf:Description>
+    </dc:source>
+
+    <!-- ancestor(s) of this work -->
+    <bqmodel:isDerivedFrom>
+      <rdf:Description>
+        <dc:identifier rdf:resource="https://identifiers.org/biomodels.db:BIOMD0000000837"/>
+        <rdfs:label>Hanson2016 - Toxicity Management in CAR T cell therapy for B-ALL</rdfs:label>
+      </rdf:Description>
+    </bqmodel:isDerivedFrom>
+
+    <!-- successor(s) of this work -->
+    <scoro:successor>
+      <rdf:Description>
+        <dc:identifier rdf:resource="https://identifiers.org/biomodels.db:BIOMD0000000839"/>
+        <rdfs:label>Almeida2019 - Transcription-based circadian ...</rdfs:label>
+      </rdf:Description>
+    </scoro:successor>
+
+    <!-- related things to provide hyperlinks to -->
+    <rdfs:seeAlso>
+      <rdf:Description>
+        <dc:identifier rdf:resource="https://identifiers.org/biomodels.db:BIOMD0000000836"/>
+        <rdfs:label>Radosavljevic2009_BioterroristAttack_PanicProtection_1</rdfs:label>
+      </rdf:Description>
+    </rdfs:seeAlso>
+
+    <!-- other identifiers -->
+    <bqmodel:is>
+      <rdf:Description>
+        <dc:identifier rdf:resource="https://identifiers.org/biomodels.db:BIOMD0000000838"/>
+        <rdfs:label>biomodels.db:BIOMD0000000838</rdfs:label>
+      </rdf:Description>
+    </bqmodel:is>
+
+    <!-- authors(s) -->
+    <dc:creator>
+      <rdf:Description>
+        <foaf:accountName rdf:resource="https://orcid.org/0000-0001-8254-4958"/>
+        <foaf:name>Jonathan Karr</foaf:name>
+
+        <dc:identifier rdf:resource="https://identifiers.org/orcid:0000-0001-8254-4958"/>
+        <rdfs:label>Jonathan Karr</rdfs:label>
+      </rdf:Description>
+    </dc:creator>
+
+    <!-- contributor(s) -->
+    <dc:contributor>
+      <rdf:Description>
+        <foaf:name>Name of person with no ORCID account</foaf:name>
+
+        <rdfs:label>Name of person with no ORCID account</rdfs:label>
+      </rdf:Description>
+    </dc:contributor>
+
+    <!-- citations -->
+    <bqmodel:isDescribedBy>
+      <rdf:Description>
+        <dc:identifier rdf:resource="https://identifiers.org/doi:10.1016/j.copbio.2017.12.013"/>
+        <rdfs:label>Goldberg AP, Szigeti B, Chew YH, Sekar JA, Roth YD &amp; Karr JR. Emerging whole-cell modeling principles and methods. Curr Opin Biotechnol 2018, 51:97-102.</rdfs:label>
+      </rdf:Description>
+    </bqmodel:isDescribedBy>
+
+    <bqmodel:isDescribedBy>
+      <rdf:Description>
+        <dc:identifier rdf:resource="https://identifiers.org/pubmed:29275251"/>
+        <rdfs:label>Goldberg AP, Szigeti B, Chew YH, Sekar JA, Roth YD &amp; Karr JR. Emerging whole-cell modeling principles and methods. Curr Opin Biotechnol 2018, 51:97-102.</rdfs:label>
+      </rdf:Description>
+    </bqmodel:isDescribedBy>
+
+    <!-- license -->
+    <dc:license>
+      <rdf:Description>
+        <dc:identifier rdf:resource="https://identifiers.org/spdx:MIT"/>
+        <rdfs:label>MIT</rdfs:label>
+      </rdf:Description>
+    </dc:license>
+
+    <!-- funder -->
+    <scoro:funder>
+      <rdf:Description>
+        <dc:identifier rdf:resource="https://identifiers.org/doi:10.13039/100000001"/>
+        <rdfs:label>National Science Foundation</rdfs:label>
+      </rdf:Description>
+    </scoro:funder>
+
+    <!-- created -->
+    <dc:created>
+      <rdf:Description>
+        <dc:W3CDTF>2020-06-18</dc:W3CDTF>
+      </rdf:Description>
+    </dc:created>
+
+    <!-- modified -->
+    <dc:modified>
+      <dcterms:W3CDTF>
+        <rdf:value>2021-06-18</rdf:value>
+      </dcterms:W3CDTF>
+    </dc:modified>
+  </rdf:Description>
+</rdf:RDF>

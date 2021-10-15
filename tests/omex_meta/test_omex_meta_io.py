@@ -60,6 +60,24 @@ class OmexMetaIoTestCase(unittest.TestCase):
         self.assertGreater(len(triples), 1)
         self.assertIsInstance(triples[0], data_model.Triple)
 
+    def test_get_rdf_triples_ordered(self):
+        filename = os.path.join(self.FIXTURE_DIR, 'multiple-thumbnails.rdf')
+        rdf, errors, warnings = io.OmexMetaReader.read_rdf(filename)
+        triples = io.OmexMetaReader.get_rdf_triples(rdf)
+        thumbnails = [
+            str(triple.object).rpartition('/')[2].partition('.')[0]
+            for triple in triples
+            if str(triple.predicate) == 'http://www.collex.org/schema#thumbnail'
+        ]
+        self.assertEqual(thumbnails, ['x', 'a', 'y', 'e', '2', '1'])
+
+        md, _, _ = io.read_omex_meta_file(filename)
+        thumbnails = [
+            thumb.rpartition('/')[2].partition('.')[0]
+            for thumb in md[0]['thumbnails']
+        ]
+        self.assertEqual(thumbnails, ['x', 'a', 'y', 'e', '2', '1'])
+
     def test_TriplesOmexMetaReader_run(self):
         triples, errors, warnings = io.TriplesOmexMetaReader().run(self.FIXTURE)
         self.assertEqual(errors, [])
