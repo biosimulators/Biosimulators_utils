@@ -493,13 +493,13 @@ file into a dictionary with BioSimulations schema</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.omex_meta.io.BiosimulationsOmexMetaReader.parse_triples_to_schema">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">parse_triples_to_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">triples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_uri</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.io.BiosimulationsOmexMetaReader.parse_triples_to_schema" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">parse_triples_to_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">triples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_archive_uri</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.io.BiosimulationsOmexMetaReader.parse_triples_to_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a graph of RDF triples into BioSimulations’ metadata schema</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>triples</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>) – representation of the OMEX Meta file as list of triples</p></li>
-<li><p><strong>root_uri</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – URI used to the describe the COMBINE/OMEX archive in the list of triples</p></li>
+<li><p><strong>combine_archive_uri</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – URI used to the describe the COMBINE/OMEX archive in the list of triples</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -513,7 +513,7 @@ file into a dictionary with BioSimulations schema</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.omex_meta.io.BiosimulationsOmexMetaReader.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.io.BiosimulationsOmexMetaReader.run" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_filenames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.io.BiosimulationsOmexMetaReader.run" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Read the metadata about a COMBINE/OMEX archive in an OMEX Metadata file into a dictionary</dt><dd><p>with BioSimulations schema</p>
 </dd>
@@ -521,7 +521,7 @@ file into a dictionary with BioSimulations schema</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to OMEX Metadata file</p></li>
+<li><p><strong>filename_or_filenames</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path or paths to OMEX Metadata files</p></li>
 <li><p><strong>archive</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>, optional) – parent COMBINE archive</p></li>
 <li><p><strong>working_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – working directory (e.g., directory of the parent COMBINE/OMEX archive)</p></li>
 <li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p></li>
@@ -578,12 +578,12 @@ a COMBINE/OMEX archive in an OMEX Metadata file</p></li>
 <p>Utility for reading an OMEX Metadata file into a list of triples</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.omex_meta.io.TriplesOmexMetaReader.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.io.TriplesOmexMetaReader.run" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_filenames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.io.TriplesOmexMetaReader.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read an OMEX Metadata file into a list of triples</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to OMEX Metadata file</p></li>
+<li><p><strong>filename_or_filenames</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path or paths to OMEX Metadata files</p></li>
 <li><p><strong>archive</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>, optional) – parent COMBINE archive</p></li>
 <li><p><strong>working_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – working directory (e.g., directory of the parent COMBINE/OMEX archive)</p></li>
 <li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p></li>
@@ -629,12 +629,12 @@ a COMBINE/OMEX archive in an OMEX Metadata file</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.omex_meta.io.read_omex_meta_file">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.omex_meta.io.</span></span><span class="sig-name descname"><span class="pre">read_omex_meta_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.io.read_omex_meta_file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.omex_meta.io.</span></span><span class="sig-name descname"><span class="pre">read_omex_meta_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_filenames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.io.read_omex_meta_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read an OMEX Metadata file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to OMEX Metadata file</p></li>
+<li><p><strong>filename_or_filenames</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path or paths to OMEX Metadata files</p></li>
 <li><p><strong>archive</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>, optional) – parent COMBINE archive</p></li>
 <li><p><strong>working_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – working directory (e.g., directory of the parent COMBINE/OMEX archive)</p></li>
 <li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p></li>
@@ -729,6 +729,51 @@ add missing metadata ids to the model file.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.omex_meta.utils.get_global_combine_archive_content_uri">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.omex_meta.utils.</span></span><span class="sig-name descname"><span class="pre">get_global_combine_archive_content_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content_rel_uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.utils.get_global_combine_archive_content_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a global URI for a content item of a COMBINE/OMEX archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>content_rel_uri</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – URI for a content item of a COMBINE/OMEX archive,
+relative to its parent archive</p></li>
+<li><p><strong>archive_uri</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – URI for the parent COMBINE/OMEX archive</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>global URI for the content item</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.omex_meta.utils.get_local_combine_archive_content_uri">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.omex_meta.utils.</span></span><span class="sig-name descname"><span class="pre">get_local_combine_archive_content_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content_uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.utils.get_local_combine_archive_content_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the relative URI for a content item of a COMBINE/OMEX archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>content_uri</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – global URI for a content item of a COMBINE/OMEX archive</p></li>
+<li><p><strong>archive_uri</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – URI for the parent COMBINE/OMEX archive</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple:</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: global URI for the content item</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: URI for the parent COMBINE/OMEX archive</p></li>
+</ul>
+</div></blockquote>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-biosimulators_utils.omex_meta.validation">
 <span id="biosimulators-utils-omex-meta-validation-module"></span><h2>biosimulators_utils.omex_meta.validation module<a class="headerlink" href="#module-biosimulators_utils.omex_meta.validation" title="Permalink to this headline">¶</a></h2>
@@ -750,11 +795,38 @@ add missing metadata ids to the model file.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.omex_meta.validation.validate_biosimulations_metadata">
 <span class="sig-prename descclassname"><span class="pre">biosimulators_utils.omex_meta.validation.</span></span><span class="sig-name descname"><span class="pre">validate_biosimulations_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.validation.validate_biosimulations_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate BioSimulations metadata for a COMBINE/OMEX archive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metadata</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>) – BioSimulations metadata about 1 or more URIs</p></li>
+<li><p><strong>archive</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>, optional) – parent COMBINE archive</p></li>
+<li><p><strong>working_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – working directory (e.g., directory of the parent COMBINE/OMEX archive)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: nested list of errors with the metadata</p></li>
+<li><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: nested list of warnings with the metadata</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.omex_meta.validation.validate_biosimulations_metadata_for_uri">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.omex_meta.validation.</span></span><span class="sig-name descname"><span class="pre">validate_biosimulations_metadata_for_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_minimal_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.validation.validate_biosimulations_metadata_for_uri" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate BioSimulations metadata for a file in a COMBINE/OMEX archive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>metadata</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>) – BioSimulations metadata</p></li>
+<li><p><strong>validate_minimal_metadata</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – whether to check that all required metadata attributes
+are defined</p></li>
 <li><p><strong>archive</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>, optional) – parent COMBINE archive</p></li>
 <li><p><strong>working_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – working directory (e.g., directory of the parent COMBINE/OMEX archive)</p></li>
 </ul>
