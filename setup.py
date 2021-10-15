@@ -26,6 +26,8 @@ package_data = {
 
 # get package metadata
 md = pkg_utils.get_package_metadata(dirname, name, package_data_filename_patterns=package_data)
+with open(os.path.join(os.path.dirname(__file__), 'README.md'), 'r') as file:
+    long_description = file.read()
 
 # install package
 setuptools.setup(
@@ -35,7 +37,8 @@ setuptools.setup(
         "Command-line program and library for reading, writing, validating "
         "and executing modeling projects (COMBINE/OMEX archives with SED-ML files)."
     ),
-    long_description=md.long_description,
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url="https://github.com/biosimulators/Biosimulators_utils",
     download_url='https://github.com/biosimulators/Biosimulators_utils',
     author='Center for Reproducible Biomedical Modeling',
