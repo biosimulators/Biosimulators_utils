@@ -24,7 +24,7 @@ __all__ = ['get_parameters_variables_outputs_for_simulation', 'get_package_names
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
                                                     change_level=SedDocument,
                                                     native_ids=False, native_data_types=False,
-                                                    include_local_parameters_in_simulation_parameters=False,
+                                                    include_local_parameters_in_task_level_simulation_parameters=False,
                                                     include_model_parameters_in_simulation_variables=False,
                                                     include_compartment_sizes_in_simulation_variables=False,
                                                     include_reaction_fluxes_in_kinetic_simulation_variables=False,
@@ -41,8 +41,8 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
             for the variable of an associated SED-ML data generator
         native_data_types (:obj:`bool`, optional): whether to return ``new_value`` in their native data types
-        include_local_parameters_in_simulation_parameters (:obj:`bool`, optional): whether to include the local parameters
-            among the returned SED model changes
+        include_local_parameters_in_task_level_simulation_parameters (:obj:`bool`, optional): whether to include the local parameters
+            among the returned SED model changes for SED tasks
         include_model_parameters_in_simulation_variables (:obj:`bool`, optional): whether to include the values of
             non-constant SBML parameters with assignment rules among the returned SED variables
         include_compartment_sizes_in_simulation_variables (:obj:`bool`, optional): whether to include the sizes of
@@ -151,7 +151,11 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                 if not model.getInitialAssignmentBySymbol(param_id) and not model.getAssignmentRuleByVariable(param_id):
                     params.append(ModelAttributeChange(
                         id=param_id if native_ids else 'value_parameter_' + param_id,
-                        name=parameter.getName() or None if native_ids else 'Value of parameter "{}"'.format(parameter.getName() or param_id),
+                        name=(
+                            parameter.getName() or None
+                            if native_ids else
+                            'Value of parameter "{}"'.format(parameter.getName() or param_id)
+                        ),
                         target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='{}']/@value".format(param_id),
                         target_namespaces=namespaces,
                         new_value=parameter.getValue() if native_data_types else format_float(parameter.getValue()),
@@ -409,7 +413,11 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                         ),
                         target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='{}']/@initialConcentration".format(species_id),
                         target_namespaces=namespaces,
-                        new_value=species.getInitialConcentration() if native_data_types else format_float(species.getInitialConcentration()),
+                        new_value=(
+                            species.getInitialConcentration()
+                            if native_data_types else
+                            format_float(species.getInitialConcentration())
+                        ),
                     ))
 
             if not species.isSetConstant() or not species.getConstant():
@@ -488,7 +496,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         for reaction in model.getListOfReactions():
             reaction_id = reaction.getId()
             kinetic_law = reaction.getKineticLaw()
-            if kinetic_law and include_local_parameters_in_simulation_parameters:
+            if kinetic_law and (change_level == SedDocument or include_local_parameters_in_task_level_simulation_parameters):
                 for parameter in kinetic_law.getListOfParameters():
                     param_id = parameter.getId()
 

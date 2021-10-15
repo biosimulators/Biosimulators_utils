@@ -66,7 +66,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
     def test_core_steady_state_with_more_params_and_vars(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
             self.CORE_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000019',
-            include_local_parameters_in_simulation_parameters=True,
+            include_local_parameters_in_task_level_simulation_parameters=True,
             include_compartment_sizes_in_simulation_variables=True,
             include_model_parameters_in_simulation_variables=True,
             validate=False)
@@ -108,7 +108,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
     def test_core_steady_state_with_more_params_and_vars_no_local_parameters(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
             self.CORE_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000019',
-            include_local_parameters_in_simulation_parameters=False,
+            include_local_parameters_in_task_level_simulation_parameters=False,
             include_compartment_sizes_in_simulation_variables=True,
             include_model_parameters_in_simulation_variables=True,
             validate=False)
@@ -138,7 +138,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
     def test_core_time_course_l3(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
             self.CORE_FIXTURE_L3, ModelLanguage.SBML, UniformTimeCourseSimulation, 'KISAO_0000019',
-            include_local_parameters_in_simulation_parameters=True)
+            include_local_parameters_in_task_level_simulation_parameters=True)
 
         param = next(param for param in params if param.id == 'value_parameter_k_PIP2hyd')
         self.assertEqual(param.name, 'Value of parameter "k_PIP2hyd" of reaction "PIP2_hyd"')
@@ -433,7 +433,7 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
     def test_core_steady_state_with_more_params_and_vars(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
             self.CORE_FIXTURE_WITH_EXTRAS_PARAMS_VARS, ModelLanguage.SBML, SteadyStateSimulation, 'KISAO_0000019',
-            include_local_parameters_in_simulation_parameters=True,
+            include_local_parameters_in_task_level_simulation_parameters=True,
             include_compartment_sizes_in_simulation_variables=True,
             include_model_parameters_in_simulation_variables=True,
             validate=False,
@@ -492,7 +492,7 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
             self.CORE_FIXTURE_L3, ModelLanguage.SBML, UniformTimeCourseSimulation, 'KISAO_0000019',
             native_ids=True, native_data_types=True,
-            include_local_parameters_in_simulation_parameters=True)
+            include_local_parameters_in_task_level_simulation_parameters=True)
 
         param = next(param for param in params if param.target == ("/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='PIP2_hyd']/sbml:kineticLaw"
                                                                    "/sbml:listOfLocalParameters/sbml:localParameter[@id='k_PIP2hyd']/@value"))
