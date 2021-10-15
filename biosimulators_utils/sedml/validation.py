@@ -293,7 +293,13 @@ def validate_doc(doc, working_dir, validate_semantics=True,
 
                             if variable.target and variable.model and variable.model.language:
                                 temp_errors, temp_warnings = validate_target(
-                                    variable.target, variable.target_namespaces, Calculation, variable.model.language, variable.model.id)
+                                    variable.target, variable.target_namespaces, Calculation,
+                                    variable.model.language, variable.model.id,
+                                    check_in_model_source=(
+                                        not variable.model.changes
+                                        and not get_model_changes_for_task(task)
+                                    )
+                                )
                                 variable_errors.extend(temp_errors)
                                 variable_warnings.extend(temp_warnings)
 
@@ -438,7 +444,9 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                     if change.target:
                         if change.model and change.model.language:
                             temp_errors, temp_warnings = validate_target(
-                                change.target, change.target_namespaces, ModelChange, change.model.language, change.model.id)
+                                change.target, change.target_namespaces,
+                                ModelChange, change.model.language, change.model.id,
+                                check_in_model_source=False)
                             change_errors.extend(temp_errors)
                             change_warnings.extend(temp_warnings)
 
@@ -475,7 +483,9 @@ def validate_doc(doc, working_dir, validate_semantics=True,
 
                         if variable.target and variable.model and variable.model.language:
                             temp_errors, temp_warnings = validate_target(
-                                variable.target, variable.target_namespaces, Calculation, variable.model.language, variable.model.id)
+                                variable.target, variable.target_namespaces,
+                                Calculation, variable.model.language, variable.model.id,
+                                check_in_model_source=False)
                             variable_errors.extend(temp_errors)
                             variable_warnings.extend(temp_warnings)
 
@@ -953,7 +963,9 @@ def validate_model_changes(model):
 
         if change.target:
             if model.language:
-                temp_errors, temp_warnings = validate_target(change.target, change.target_namespaces, ModelChange, model.language, model.id)
+                temp_errors, temp_warnings = validate_target(change.target, change.target_namespaces,
+                                                             ModelChange, model.language, model.id,
+                                                             check_in_model_source=False)
                 change_errors.extend(temp_errors)
                 change_warnings.extend(temp_warnings)
 
@@ -984,7 +996,9 @@ def validate_model_changes(model):
 
                 if variable.target and variable.model and variable.model.language:
                     temp_errors, temp_warnings = validate_target(
-                        variable.target, variable.target_namespaces, Calculation, variable.model.language, variable.model.id)
+                        variable.target, variable.target_namespaces,
+                        Calculation, variable.model.language, variable.model.id,
+                        check_in_model_source=False)
                     variable_errors.extend(temp_errors)
                     variable_warnings.extend(temp_warnings)
 
@@ -1249,11 +1263,12 @@ def validate_data_generator_variables(variables, model_etrees=None, validate_tar
                     model_changes = model.changes or list(filter(lambda change: change.model == model,
                                                                  get_model_changes_for_task(variable.task)))
 
-                    temp_errors, temp_warnings = validate_target(variable.target, variable.target_namespaces,
-                                                                 DataGenerator, model.language,
-                                                                 model_id=model.id,
-                                                                 model_etree=model_etrees.get(model, None),
-                                                                 check_in_model_source=not model_changes and validate_targets_with_model_sources)
+                    temp_errors, temp_warnings = validate_target(
+                        variable.target, variable.target_namespaces,
+                        DataGenerator, model.language,
+                        model_id=model.id,
+                        model_etree=model_etrees.get(model, None),
+                        check_in_model_source=not model_changes and validate_targets_with_model_sources)
                     variable_errors.extend(temp_errors)
                     variable_warnings.extend(temp_warnings)
 
@@ -1523,6 +1538,9 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
                         errors.append(['XPath `{}` does not match any elements of model `{}`.'.format(xpath, model_id or '')])
                     elif len(objs) > 1:
                         errors.append(['XPath `{}` matches multiple elements of model `{}`.'.format(xpath, model_id or '')])
+
+                else:
+                    warnings.append(['XPath could not be validated.'])
 
             except lxml.etree.XPathEvalError as exception:
                 if 'Undefined namespace prefix' in str(exception):
