@@ -164,7 +164,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/949059?v=4",
       "profile": "https://github.com/fbergmann",
       "contributions": [
-        "ideas"
+        "ideas",
+        "tool"
       ]
     },
     {
@@ -291,6 +292,33 @@
       "name": "Zachary A. King",
       "avatar_url": "https://avatars.githubusercontent.com/u/1250400?v=4",
       "profile": "https://www.linkedin.com/in/zakandrewking/",
+      "contributions": [
+        "data"
+      ]
+    },
+    {
+      "login": "joncison",
+      "name": "Jon Ison",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1506863?v=4",
+      "profile": "https://github.com/joncison",
+      "contributions": [
+        "data"
+      ]
+    },
+    {
+      "login": "matuskalas",
+      "name": "Matúš Kalaš",
+      "avatar_url": "https://avatars.githubusercontent.com/u/992660?v=4",
+      "profile": "https://orcid.org/0000-0002-1509-4981",
+      "contributions": [
+        "data"
+      ]
+    },
+    {
+      "login": "mbdebian",
+      "name": "Manuel Bernal Llinares",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8855107?v=4",
+      "profile": "https://uk.linkedin.com/in/manuelbernal",
       "contributions": [
         "data"
       ]
