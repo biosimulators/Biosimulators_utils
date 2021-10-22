@@ -94,9 +94,23 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
         date = record['PubDate']
         year = date.partition(' ')[0]
 
+    pubmed_central_id = None
+    handle = Bio.Entrez.esearch(db="pmc", term=pubmed_id + '[pmid]', retmode="xml")
+    pmc_record = Bio.Entrez.read(handle)
+    handle.close()
+    if pmc_record['IdList']:
+        handle = Bio.Entrez.esummary(db="pmc", id=pmc_record['IdList'][0], retmode="xml")
+        pmc_records = list(Bio.Entrez.parse(handle))
+        handle.close()
+        if len(pmc_records) == 0:
+            raise ValueError('`{}` is not a valid PubMed Central id.'.format(
+                pmc_record['IdList'][0]))  # pragma: no cover # shouldn't be reachable
+        pmc_record = pmc_records[0]
+        pubmed_central_id = pmc_record['ArticleIds']['pmcid']
+
     return JournalArticle(
         pubmed_id=pubmed_id,
-        pubmed_central_id=record['ArticleIds'].get('pmc', None),
+        pubmed_central_id=pubmed_central_id,
         doi=doi,
         authors=record['AuthorList'],
         title=record['Title'].strip('.'),
