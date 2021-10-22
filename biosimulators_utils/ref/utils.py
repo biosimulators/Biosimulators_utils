@@ -68,7 +68,7 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
         if len(records) == 0:
             raise ValueError('`{}` is not a valid PubMed id.'.format(pubmed_id))
         record = records[0]
-        doi = record.get('DOI', None)
+        doi = str(record.get('DOI', None))
     else:
         handle = Bio.Entrez.esearch(db="pubmed", term=doi, retmode="xml")
         record = Bio.Entrez.read(handle)
@@ -77,7 +77,7 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
         if len(record['IdList']) == 0:
             return None
 
-        pubmed_id = record['IdList'][0]
+        pubmed_id = str(record['IdList'][0])
 
         handle = Bio.Entrez.esummary(db="pubmed", id=pubmed_id, retmode="xml")
         records = list(Bio.Entrez.parse(handle))
@@ -91,7 +91,7 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
         date = '{}-{:02d}-{:02d}'.format(pub_date.year, pub_date.month, pub_date.day)
         year = str(pub_date.year)
     except dateutil.parser._parser.ParserError:
-        date = record['PubDate']
+        date = str(record['PubDate'])
         year = date.partition(' ')[0]
 
     pubmed_central_id = None
@@ -106,18 +106,18 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
             raise ValueError('`{}` is not a valid PubMed Central id.'.format(
                 pmc_record['IdList'][0]))  # pragma: no cover # shouldn't be reachable
         pmc_record = pmc_records[0]
-        pubmed_central_id = pmc_record['ArticleIds']['pmcid']
+        pubmed_central_id = str(pmc_record['ArticleIds']['pmcid'])
 
     return JournalArticle(
         pubmed_id=pubmed_id,
         pubmed_central_id=pubmed_central_id,
         doi=doi,
-        authors=record['AuthorList'],
-        title=record['Title'].strip('.'),
-        journal=record['FullJournalName'],
-        volume=record['Volume'],
-        issue=record['Issue'],
-        pages=record['Pages'],
+        authors=[str(author) for author in record['AuthorList']],
+        title=str(record['Title']).strip('.') if record['Title'] else None,
+        journal=str(record['FullJournalName']) if record['FullJournalName'] else None,
+        volume=str(record['Volume']) if record['Volume'] else None,
+        issue=str(record['Issue']) if record['Issue'] else None,
+        pages=str(record['Pages']) if record['Pages'] else None,
         year=year,
         date=date,
     )
