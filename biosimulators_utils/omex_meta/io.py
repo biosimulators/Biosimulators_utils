@@ -10,10 +10,13 @@ from ..combine.data_model import CombineArchive, CombineArchiveContentFormatPatt
 from ..config import get_config, Config  # noqa: F401
 from .data_model import (Triple, OmexMetadataOutputFormat, OmexMetadataSchema,
                          BIOSIMULATIONS_ROOT_URI_PATTERN,
-                         BIOSIMULATIONS_PREDICATE_TYPES)
+                         BIOSIMULATIONS_PREDICATE_TYPES,
+                         BIOSIMULATIONS_NAMESPACE_PREFIX_MAP)
 from .utils import get_local_combine_archive_content_uri, get_global_combine_archive_content_uri
 from .validation import validate_biosimulations_metadata
+from lxml import etree
 import abc
+import collections
 import json
 import os
 import pyomexmeta
@@ -363,28 +366,88 @@ class TriplesOmexMetaWriter(OmexMetaWriter):
         if config is None:
             config = get_config()
 
-        graph = rdflib.Graph()
-        for prefix, namespace in (namespaces or {}).items():
-            graph.namespace_manager.bind(prefix, namespace)
-        # graph.namespace_manager.bind('omexLibrary', rdflib.Namespace('http://omex-library.org/'))
-        # graph.namespace_manager.bind('identifiers', rdflib.Namespace('http://identifiers.org/'))
+        if config.OMEX_METADATA_OUTPUT_FORMAT == OmexMetadataOutputFormat.turtle:
+            graph = rdflib.Graph()
+            for prefix, namespace in (namespaces or {}).items():
+                graph.namespace_manager.bind(prefix, namespace)
+            # graph.namespace_manager.bind('omexLibrary', rdflib.Namespace('http://omex-library.org/'))
+            # graph.namespace_manager.bind('identifiers', rdflib.Namespace('http://identifiers.org/'))
 
-        for triple in triples:
-            graph.add((triple.subject, triple.predicate, triple.object))
+            for triple in triples:
+                graph.add((triple.subject, triple.predicate, triple.object))
 
-        if config.OMEX_METADATA_OUTPUT_FORMAT == OmexMetadataOutputFormat.rdfxml:
-            graph.serialize(filename, format="xml")
-
-        elif config.OMEX_METADATA_OUTPUT_FORMAT == OmexMetadataOutputFormat.turtle:
             graph.serialize(filename, format="turtle")
 
         else:
-            graph.serialize(filename, format="xml", version="1.0")
+            def get_uri_namespace_id(uri):
+                if '#' in uri:
+                    namespace, _, id = uri.rpartition('#')
+                    namespace += '#'
+                    return (namespace, id)
+                elif '/' in uri:
+                    namespace, _, id = uri.rpartition('/')
+                    namespace += '/'
+                    return (namespace, id)
+                raise ValueError('URI `{}` does not belong to a namespace'.format(uri))
 
-            rdf = pyomexmeta.RDF.from_file(filename, 'rdfxml')
-            if rdf.to_file(filename, config.OMEX_METADATA_OUTPUT_FORMAT.value) != 0:
-                raise RuntimeError('Metadata could not be saved to `{}` in `{}` format.'.format(
-                    filename, config.OMEX_METADATA_OUTPUT_FORMAT.value))
+            namespace_prefix_map = dict(BIOSIMULATIONS_NAMESPACE_PREFIX_MAP)
+            namespaces = namespaces or {}
+            namespaces['rdf'] = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+
+            bnode_ids = collections.OrderedDict()
+
+            for triple in triples:
+                namespace, _ = get_uri_namespace_id(str(triple.predicate))
+                if namespace in namespace_prefix_map:
+                    prefix = namespace_prefix_map[namespace]
+                else:
+                    prefix = 'ns{}'.format(len(namespaces))
+                    namespace_prefix_map[namespace] = prefix
+                namespaces[prefix] = namespace
+
+                if isinstance(triple.subject, rdflib.term.BNode) and triple.subject not in bnode_ids:
+                    bnode_ids[triple.subject] = '{:07d}'.format(len(bnode_ids))
+
+                if isinstance(triple.object, rdflib.term.BNode) and triple.object not in bnode_ids:
+                    bnode_ids[triple.object] = '{:07d}'.format(len(bnode_ids))
+
+            root = etree.Element("{{{}}}RDF".format(namespaces['rdf']), nsmap=namespaces)
+
+            for id, node in bnode_ids.items():
+                node = etree.Element("{{{}}}Description".format(namespaces['rdf']), nsmap=namespaces)
+                root.append(node)
+
+            for triple in triples:
+                subject = etree.Element("{{{}}}Description".format(namespaces['rdf']), nsmap=namespaces)
+                if isinstance(triple.subject, rdflib.term.URIRef):
+                    subject.attrib["{{{}}}about".format(namespaces['rdf'])] = str(triple.subject)
+                else:
+                    subject.attrib["{{{}}}nodeID".format(namespaces['rdf'])] = bnode_ids[triple.subject]
+                root.append(subject)
+
+                namespace, id = get_uri_namespace_id(str(triple.predicate))
+                predicate = etree.Element("{{{}}}{}".format(namespace, id), nsmap=namespaces)
+
+                if isinstance(triple.object, rdflib.term.URIRef):
+                    predicate.attrib["{{{}}}resource".format(namespaces['rdf'])] = str(triple.object)
+                if isinstance(triple.object, rdflib.term.BNode):
+                    predicate.attrib["{{{}}}nodeID".format(namespaces['rdf'])] = bnode_ids[triple.object]
+                else:
+                    predicate.text = str(triple.object)
+
+                subject.append(predicate)
+
+            etree.ElementTree(root).write(filename,
+                                          xml_declaration=True,
+                                          encoding="utf-8",
+                                          standalone=False,
+                                          pretty_print=True)
+
+            if config.OMEX_METADATA_OUTPUT_FORMAT != OmexMetadataOutputFormat.rdfxml:
+                rdf = pyomexmeta.RDF.from_file(filename, 'rdfxml')
+                if rdf.to_file(filename, config.OMEX_METADATA_OUTPUT_FORMAT.value) != 0:
+                    raise RuntimeError('Metadata could not be saved to `{}` in `{}` format.'.format(
+                        filename, config.OMEX_METADATA_OUTPUT_FORMAT.value))
 
 
 class BiosimulationsOmexMetaReader(OmexMetaReader):
@@ -484,11 +547,11 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
 
         if len(archive_uris) == 0:
             msg = 'File does not contain metadata about an OMEX archive.'
-            return(None, [[msg]], [])
+            return (None, [[msg]], [])
 
         elif len(archive_uris) > 1:
-            msg = 'File contains metadata about multiple OMEX archives. File must contains data about 1 archive.'
-            return(None, [[msg]], [])
+            msg = 'File contains metadata about multiple OMEX archives. File must contain data about 1 archive.'
+            return (None, [[msg, [[uri] for uri in archive_uris]]], [])
 
         else:
             return (list(archive_uris)[0], [], [])
