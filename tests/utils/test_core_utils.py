@@ -289,11 +289,17 @@ class TestCase(unittest.TestCase):
             'version': 'x2',
             'image': {
                 'url': 'y2',
+                'digest': 'z2',
             },
             'algorithms': {
                 1: {
                     'kisaoId': {
                         'id': 'KISAO_XXXXXXX'
+                    }
+                },
+                4: {
+                    'kisaoId': {
+                        'id': 'KISAO_YYYYYYY'
                     }
                 }
             },
@@ -303,11 +309,19 @@ class TestCase(unittest.TestCase):
         expected_dictionary = copy.deepcopy(dictionary)
         expected_dictionary['version'] = 'x2'
         expected_dictionary['image']['url'] = 'y2'
+        expected_dictionary['image']['digest'] = 'z2'
         expected_dictionary['algorithms'][1]['kisaoId']['id'] = 'KISAO_XXXXXXX'
+        expected_dictionary['algorithms'].append(None)
+        expected_dictionary['algorithms'].append({
+            'kisaoId': {
+                'id': 'KISAO_YYYYYYY'
+            }
+        })
         expected_dictionary['authors'] = ['A', 'B', 'C', 'D']
 
         utils.patch_dict(dictionary, patch)
 
+        print(dictionary['algorithms'])
         self.assertEqual(dictionary, expected_dictionary)
 
     def test_flatten_nested_list_of_strings(self):

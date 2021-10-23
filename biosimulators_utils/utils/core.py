@@ -271,7 +271,15 @@ def patch_dict(dictionary, patch):
     while patch_queue:
         props, props_patch = patch_queue.pop()
         for key, new_val in props_patch.items():
-            value = props[key]
+            if isinstance(props, dict):
+                value = props.get(key, None)
+            else:
+                if key >= len(props):
+                    props.extend([None] * (key + 1 - len(props)))
+                    value = None
+                else:
+                    value = props[key]
+
             if isinstance(value, dict):
                 patch_queue.append((props[key], new_val))
 
