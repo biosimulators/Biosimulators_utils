@@ -97,9 +97,9 @@ def validate_biosimulations_api_response(response, failure_introductory_message)
 
     except requests.RequestException as exception:
         try:
-            errors = response.json()['errors']
-        except simplejson.errors.JSONDecodeError:
-            raise
+            errors = response.json()['error']
+        except (simplejson.errors.JSONDecodeError, KeyError):
+            raise exception
 
         error_messages = []
         for error in errors:
