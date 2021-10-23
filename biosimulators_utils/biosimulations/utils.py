@@ -9,6 +9,7 @@ from ..config import get_config, Config  # noqa: F401
 import json
 import os
 import requests
+import simplejson.errors
 
 __all__ = [
     'submit_project_to_runbiosimulations',
@@ -95,8 +96,13 @@ def validate_biosimulations_api_response(response, failure_introductory_message)
         response.raise_for_status()
 
     except requests.RequestException as exception:
+        try:
+            errors = response.json()
+        except simplejson.errors.JSONDecodeError:
+            raise
+
         error_messages = []
-        for error in response.json()['error']:
+        for error in errors:
             pointer = error.get('source', {}).get('pointer', None)
             error_messages.append('{} ({}):{}{}'.format(
                 error['title'], error['status'],
