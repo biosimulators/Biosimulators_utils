@@ -91,7 +91,7 @@ class Log(object):
 
         if self.exception:
             value['exception'] = {
-                'type': self.exception.__class__.__name__,
+                'category': self.exception.__class__.__name__,
                 'message': str(self.exception),
             }
         else:
@@ -99,7 +99,7 @@ class Log(object):
 
         if self.skip_reason:
             value['skipReason'] = {
-                'type': self.skip_reason.__class__.__name__,
+                'category': self.skip_reason.__class__.__name__,
                 'message': str(self.skip_reason),
             }
         else:
