@@ -188,11 +188,11 @@ class ValidateModelController(cement.Controller):
 
         try:
             language = ModelLanguage[args.language]
-            assert language in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES
+            assert language in VALIDATE_MODEL_LANGUAGES
         except (KeyError, AssertionError):
             raise SystemExit('Model language must be one of {}, or {}, not `{}`.'.format(
-                ', '.join('`{}`'.format(lang.name) for lang in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES[0:-1]),
-                ', '.join('`{}`'.format(lang.name) for lang in BUILD_COMBINE_ARCHIVE_MODEL_LANGUAGES[-1:]),
+                ', '.join('`{}`'.format(lang.name) for lang in VALIDATE_MODEL_LANGUAGES[0:-1]),
+                ', '.join('`{}`'.format(lang.name) for lang in VALIDATE_MODEL_LANGUAGES[-1:]),
                 args.language,
             ))
 
@@ -209,6 +209,8 @@ class ValidateModelController(cement.Controller):
             msg = 'The model file `{}` is invalid.\n  {}'.format(
                 filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
             raise SystemExit(msg)
+
+        print('The model file `{}` is valid.'.format(filename))
 
 
 class ValidateSimulationController(cement.Controller):
@@ -253,6 +255,8 @@ class ValidateSimulationController(cement.Controller):
                 args.filename, flatten_nested_list_of_strings(reader.errors).replace('\n', '\n  '))
             raise SystemExit(msg)
 
+        print('The SED-ML file `{}` is likely valid.'.format(args.filename))
+
 
 class ValidateMetadataController(cement.Controller):
     """ Controller for validating metadata (OMEX Metadata files) """
@@ -290,6 +294,8 @@ class ValidateMetadataController(cement.Controller):
             msg = 'The OMEX Metadata file `{}` is invalid.\n  {}'.format(
                 args.filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  '))
             raise SystemExit(msg)
+
+        print('The OMEX metadata file `{}` is valid.'.format(args.filename))
 
 
 class ValidateModelingProjectController(cement.Controller):
