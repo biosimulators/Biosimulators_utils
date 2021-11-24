@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.model_lang.lems package &#8212; BioSimulators utils 0.1.141 documentation</title>
+    <title>biosimulators_utils.model_lang.lems package &#8212; BioSimulators utils 0.1.142 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -363,23 +363,21 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.model_lang.lems.validation.validate_neuroml2_lems_file">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.lems.validation.</span></span><span class="sig-name descname"><span class="pre">validate_neuroml2_lems_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nml2_lems_file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'400M'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/lems/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.lems.validation.validate_neuroml2_lems_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate a NeuroML 2 LEMS file using jNeuroML.</p>
-<p>Note that this uses jNeuroML and so is aware of the standard NeuroML LEMS
-definitions.</p>
-<p>TODO: allow inclusion of other paths for user-defined LEMS definitions
-(does the -norun option allow the use of -I?)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nml2_lems_file_name</strong> (<em>str</em>) – name of file to validate</p></li>
-<li><p><strong>max_memory</strong> (<em>str</em>) – memory to use for the Java virtual machine</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if valid, False if invalid</p>
-</dd>
-</dl>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.lems.validation.</span></span><span class="sig-name descname"><span class="pre">validate_neuroml2_lems_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/lems/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.lems.validation.validate_neuroml2_lems_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a NeuroML 2 LEMS file using jNeuroML.
+Note that this uses jNeuroML and so is aware of the standard NeuroML LEMS
+definitions.
+TODO: allow inclusion of other paths for user-defined LEMS definitions
+(does the -norun option allow the use of -I?)
+:param nml2_lems_file_name: name of file to validate
+:type nml2_lems_file_name: str
+:param max_memory: memory to use for the Java virtual machine
+:type max_memory: str
+:param exit_on_fail: toggle whether command should exit if jnml fails
+:type exit_on_fail: bool
+:param return_string: toggle whether the output string should be returned
+:type return_string: bool
+:returns: Either a bool, or a tuple (bool, str): True if jnml ran without errors, false if jnml fails; along with the message returned by jnml</p>
 </dd></dl>
 
 </section>
