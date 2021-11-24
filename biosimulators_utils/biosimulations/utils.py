@@ -82,12 +82,13 @@ def submit_project_to_runbiosimulations(name, filename_or_url,
     return response.json()['id']
 
 
-def validate_biosimulations_api_response(response, failure_introductory_message):
+def validate_biosimulations_api_response(response, failure_introductory_message, exception_type=None):
     """ Validate a response from one of BioSimulation's APIs.
 
     Args:
         response (:obj:`requests.models.Response`): API response
         failure_introductory_message (:obj:`str`): introductory message for failures
+        exception_type (:obj:`type`, optional): type of exception to throw
 
     Raises:
         :obj:`requests.RequestException`
@@ -116,4 +117,7 @@ def validate_biosimulations_api_response(response, failure_introductory_message)
 
         exception.args = (error_message,)
 
-        raise
+        if exception_type:
+            raise exception_type(error_message)
+        else:
+            raise

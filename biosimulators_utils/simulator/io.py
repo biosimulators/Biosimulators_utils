@@ -76,7 +76,7 @@ def read_simulator_specs(path_or_url, patch=None, validate=True):
             "BioSimulators' schema is available in both JSON Schema and Open API Specifications formats. ",
             "Documentation is available at {}.".format(api_endpoint)
         ])
-        validate_biosimulations_api_response(response, intro_failure_msg)
+        validate_biosimulations_api_response(response, intro_failure_msg, ValueError)
 
         kisao = Kisao()
         for i_alg, alg_specs in enumerate(specs['algorithms']):

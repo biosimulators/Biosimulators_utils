@@ -28,7 +28,7 @@ class SimulatorIoTestCase(unittest.TestCase):
                 param_specs['kisaoId']['id'] = 'KISAO_0000107'
         with open(filename, 'w') as file:
             json.dump(specs, file)
-        with self.assertRaisesRegex(ValueError, 'must be a term for an algorithm parameter,'):
+        with self.assertRaisesRegex(ValueError, 'not an id of a child term of KISAO_0000201'):
             read_simulator_specs(filename)
 
         specs = response.json()
@@ -36,7 +36,7 @@ class SimulatorIoTestCase(unittest.TestCase):
             alg_specs['kisaoId']['id'] = 'KISAO_0000107'
         with open(filename, 'w') as file:
             json.dump(specs, file)
-        with self.assertRaisesRegex(ValueError, 'must be a term for an algorithm,'):
+        with self.assertRaisesRegex(ValueError, 'not an id of a child term of KISAO_0000000'):
             read_simulator_specs(filename)
 
         os.remove(filename)
