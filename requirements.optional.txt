@@ -13,10 +13,10 @@ pint
 
 [neuroml]
 libneuroml
-pyneuroml
+pyneuroml >= 0.5.18
 
 # [rba]
-# rba
+# python -m pip install git+https://github.com/biosimulators/RBApy.git#egg=rbapy
 
 [sbml]
 python_libsbml

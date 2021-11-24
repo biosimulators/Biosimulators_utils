@@ -34,11 +34,10 @@ def validate_model(filename, name=None):
     warnings = []
     model = None
 
-    with StandardOutputErrorCapturer(relay=False, level=StandardOutputErrorCapturerLevel.python) as captured:
-        try:
-            validate_neuroml2_lems_file(filename)
-        except SystemExit:
-            errors.append(['`{}` is not a valid LEMS file.'.format(filename), [[captured.get_text() or '']]])
+    with StandardOutputErrorCapturer(relay=False, level=StandardOutputErrorCapturerLevel.c):
+        valid, output = validate_neuroml2_lems_file(filename, exit_on_fail=False, return_string=True)
+        if not valid:
+            errors.append(['`{}` is not a valid LEMS file.'.format(filename), [[output]]])
             return (errors, warnings, model)
 
     core_types_dir = tempfile.mkdtemp()
@@ -55,22 +54,24 @@ def validate_model(filename, name=None):
     return (errors, warnings, model)
 
 
-def validate_neuroml2_lems_file(nml2_lems_file_name, max_memory=DEFAULTS['default_java_max_memory']):
-    # type (str, str) -> bool
+def validate_neuroml2_lems_file(
+    nml2_lems_file_name, max_memory=DEFAULTS["default_java_max_memory"], exit_on_fail=True, return_string=False,
+):
+    # type: (str, str) -> bool
     """Validate a NeuroML 2 LEMS file using jNeuroML.
-
     Note that this uses jNeuroML and so is aware of the standard NeuroML LEMS
     definitions.
-
     TODO: allow inclusion of other paths for user-defined LEMS definitions
     (does the -norun option allow the use of -I?)
-
     :param nml2_lems_file_name: name of file to validate
     :type nml2_lems_file_name: str
     :param max_memory: memory to use for the Java virtual machine
     :type max_memory: str
-    :returns: True if valid, False if invalid
-
+    :param exit_on_fail: toggle whether command should exit if jnml fails
+    :type exit_on_fail: bool
+    :param return_string: toggle whether the output string should be returned
+    :type return_string: bool
+    :returns: Either a bool, or a tuple (bool, str): True if jnml ran without errors, false if jnml fails; along with the message returned by jnml
     """
     post_args = ""
     post_args += "-norun"
@@ -82,4 +83,6 @@ def validate_neuroml2_lems_file(nml2_lems_file_name, max_memory=DEFAULTS['defaul
         max_memory=max_memory,
         verbose=False,
         report_jnml_output=True,
-        exit_on_fail=True)
+        exit_on_fail=exit_on_fail,
+        return_string=return_string,
+    )

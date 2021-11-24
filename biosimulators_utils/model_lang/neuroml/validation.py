@@ -52,9 +52,8 @@ def validate_model_l1(filename):
             * :obj:`bool`: whether the file is valid
             * :obj:`str`: error message
     """
-    with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.python, relay=False) as captured:
-        valid = pyneuroml.pynml.validate_neuroml1(filename)
-        output = captured.get_text()
+    with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.c, relay=False):
+        valid, output = pyneuroml.pynml.validate_neuroml1(filename, return_string=True)
     return (valid, output)
 
 
@@ -70,7 +69,6 @@ def validate_model_l2(filename):
             * :obj:`bool`: whether the file is valid
             * :obj:`str`: error message
     """
-    with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.python, relay=False) as captured:
-        valid = pyneuroml.pynml.validate_neuroml2(filename)
-        output = captured.get_text()
+    with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.c, relay=False):
+        valid, output = pyneuroml.pynml.validate_neuroml2(filename, return_string=True)
     return (valid, output)
