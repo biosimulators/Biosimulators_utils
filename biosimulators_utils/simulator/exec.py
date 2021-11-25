@@ -46,12 +46,21 @@ def exec_sedml_docs_in_archive_with_simulator_cli(archive_filename, out_dir, sim
         raise RuntimeError("The command '{}' could not be found".format(simulator_command))
 
     except subprocess.CalledProcessError as exception:
-        raise RuntimeError("The command '{}' could not execute the archive:\n\n  {}".format(
-            simulator_command, exception.stderr.replace('\n', '\n  ')))
+        msg = "The command '{}' could not execute the archive{}".format(
+            simulator_command,
+            ':\n\n  ' + exception.stderr.replace('\n', '\n  ')
+            if exception.stderr else
+            '.'
+        )
+        raise RuntimeError(msg)
 
     except Exception as exception:
-        raise RuntimeError("The command '{}' could not execute the archive:\n\n  {}".format(
-            simulator_command, str(exception).replace('\n', '\n  ')))
+        raise RuntimeError("The command '{}' could not execute the archive{}".format(
+            simulator_command,
+            ':\n\n  ' + str(exception).replace('\n', '\n  '))
+            if str(exception) else
+            '.'
+        )
 
 
 def exec_sedml_docs_in_archive_with_containerized_simulator(
