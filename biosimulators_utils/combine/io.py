@@ -265,14 +265,35 @@ class CombineArchiveReader(object):
 
         # read metadata files skipped by libCOMBINE
         content_locations = set(os.path.relpath(content.location, '.') for content in archive.contents)
+        manifest_contents = self.read_manifest(os.path.join(out_dir, 'manifest.xml'), in_file, config=config)
+
         if include_omex_metadata_files:
-            for manifest_content in self.read_manifest(os.path.join(out_dir, 'manifest.xml'), in_file, config=config):
+            for manifest_content in manifest_contents:
                 if (
                     manifest_content.format
                     and re.match(CombineArchiveContentFormatPattern.OMEX_METADATA.value, manifest_content.format)
                     and os.path.relpath(manifest_content.location, '.') not in content_locations
                 ):
                     archive.contents.append(manifest_content)
+
+        if config.VALIDATE_OMEX_MANIFESTS:
+            manifest_includes_archive = False
+            for manifest_content in manifest_contents:
+                if os.path.relpath(manifest_content.location, '.') == '.':
+                    if manifest_content.format:
+                        if re.match(CombineArchiveContentFormatPattern.OMEX, manifest_content.format):
+                            manifest_includes_archive = True
+                        else:
+                            msg = 'The format of the archive must be `{}`, not `{}`.'.format(
+                                CombineArchiveContentFormat.OMEX, manifest_content.format)
+                            self.errors.append([msg])
+
+            if not manifest_includes_archive:
+                msg = (
+                    'The manifest does not include its parent COMBINE/OMEX archive. '
+                    'Manifests should include their parent COMBINE/OMEX archives.'
+                )
+                self.warnings.append([msg])
 
         # raise warnings and errors
         if self.warnings:
@@ -306,7 +327,9 @@ class CombineArchiveReader(object):
                 return []
             else:
                 try:
-                    return CombineArchiveZipReader().run(archive_filename).contents
+                    contents = CombineArchiveZipReader().run(archive_filename).contents
+                    contents.append(CombineArchiveContent(location='.', format=CombineArchiveContentFormat.ZIP))
+                    return contents
                 except ValueError:
                     msg = "`{}` is not a valid zip file.".format(archive_filename)
                     self.errors.append([msg])
@@ -321,7 +344,9 @@ class CombineArchiveReader(object):
         else:
             if errors:
                 try:
-                    return CombineArchiveZipReader().run(archive_filename).contents
+                    contents = CombineArchiveZipReader().run(archive_filename).contents
+                    contents.append(CombineArchiveContent(location='.', format=CombineArchiveContentFormat.ZIP))
+                    return contents
                 except ValueError:
                     msg = "`{}` is not a valid zip file.".format(archive_filename)
                     self.errors.append([msg])
@@ -341,6 +366,7 @@ class CombineArchiveReader(object):
                 content.master = content_comb.getMaster()
 
             contents.append(content)
+
         return contents
 
     def _read_metadata(self, archive_comb, filename, obj):

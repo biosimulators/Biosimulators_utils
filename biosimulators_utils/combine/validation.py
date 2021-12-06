@@ -121,12 +121,6 @@ def validate(archive, archive_dirname,
     # validate files
     for content in archive.contents:
         if isinstance(content, CombineArchiveContent) and content.location and content.format:
-            if re.match(CombineArchiveContentFormatPattern.OMEX_MANIFEST, content.format) and content.location != 'manifest.xml':
-                errors.append([(
-                    'COMBINE/OMEX archives should not contain a manifest at location `{}`. '
-                    'COMBINE/OMEX archives should only contain a single manifest at location `manifest.xml`.'
-                ).format(content.location)])
-
             content_errors, content_warnings = validate_content(
                 content, archive_dirname,
                 formats_to_validate=formats_to_validate,

@@ -157,6 +157,16 @@ class ReadWriteTestCase(unittest.TestCase):
             with mock.patch('biosimulators_utils.combine.io.get_combine_errors_warnings', return_value=([], [['my warning']])):
                 io.CombineArchiveWriter().run(archive, self.temp_dir, archive_file)
 
+        archive_file = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'invalid-parent-format-in-manifest.omex')
+        out_dir = os.path.join(self.temp_dir, 'out-1')
+        with self.assertRaisesRegex(ValueError, 'format of the archive must be'):
+            io.CombineArchiveReader().run(archive_file, out_dir, include_omex_metadata_files=False)
+
+        archive_file = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'missing-parent-in-manifest.omex')
+        out_dir = os.path.join(self.temp_dir, 'out-2')
+        with self.assertWarnsRegex(BioSimulatorsWarning, 'Manifests should include their parent COMBINE/OMEX archives'):
+            io.CombineArchiveReader().run(archive_file, out_dir, include_omex_metadata_files=False)
+
     def test_read_from_plain_zip_archive(self):
         in_dir = os.path.join(self.temp_dir, 'in')
         os.mkdir(in_dir)
@@ -326,7 +336,7 @@ class ReadWriteTestCase(unittest.TestCase):
 
         config = Config(VALIDATE_OMEX_MANIFESTS=False)
         archive.contents = io.CombineArchiveReader().read_manifest(manifest_filename, archive_filename, config=config)
-        self.assertEqual(len(archive.contents), 2)
+        self.assertEqual(len(archive.contents), 3)
 
         config = Config(VALIDATE_OMEX_MANIFESTS=True)
         archive.contents = io.CombineArchiveReader().read_manifest(manifest_filename, archive_filename, config=config)

@@ -234,7 +234,7 @@ class ValidationTestCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'out')
         archive = CombineArchiveReader().run(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'multiple-manifests.omex'), out_dir)
         errors, warnings = validate(archive, out_dir)
-        self.assertIn('should not contain a manifest at location', flatten_nested_list_of_strings(errors))
+        self.assertEqual(errors, [])
         self.assertIn('manifests should not contain content entries for themselves', flatten_nested_list_of_strings(warnings))
 
     def test_no_validation(self):
