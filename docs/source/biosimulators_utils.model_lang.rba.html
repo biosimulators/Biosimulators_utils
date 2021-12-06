@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.model_lang.rba package &#8212; BioSimulators utils 0.1.143 documentation</title>
+    <title>biosimulators_utils.model_lang.rba package &#8212; BioSimulators utils 0.1.144 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -282,12 +282,12 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#biosimulators-utils-model-lang-rba-utils-module">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.model_lang.rba.utils">
    biosimulators_utils.model_lang.rba.utils module
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#biosimulators-utils-model-lang-rba-validation-module">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.model_lang.rba.validation">
    biosimulators_utils.model_lang.rba.validation module
   </a>
  </li>
@@ -324,11 +324,96 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </section>
-<section id="biosimulators-utils-model-lang-rba-utils-module">
-<h2>biosimulators_utils.model_lang.rba.utils module<a class="headerlink" href="#biosimulators-utils-model-lang-rba-utils-module" title="Permalink to this headline">¶</a></h2>
+<section id="module-biosimulators_utils.model_lang.rba.utils">
+<span id="biosimulators-utils-model-lang-rba-utils-module"></span><h2>biosimulators_utils.model_lang.rba.utils module<a class="headerlink" href="#module-biosimulators_utils.model_lang.rba.utils" title="Permalink to this headline">¶</a></h2>
+<p>Utilities for working with RBA models</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2021-08-28</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2021, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.rba.utils.get_parameters_variables_outputs_for_simulation">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.rba.utils.</span></span><span class="sig-name descname"><span class="pre">get_parameters_variables_outputs_for_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_kisao_id=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_level=&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.SedDocument'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_ids=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_data_types=False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/rba/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.rba.utils.get_parameters_variables_outputs_for_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the possible observables for a simulation of a model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to model file</p></li>
+<li><p><strong>model_language</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – model language (e.g., <code class="docutils literal notranslate"><span class="pre">urn:sedml:language:rba</span></code>)</p></li>
+<li><p><strong>simulation_type</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.Type</span></code>) – subclass of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Simulation</span></code></p></li>
+<li><p><strong>algorithm_kisao_id</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – KiSAO id of the algorithm for simulating the model (e.g., <code class="docutils literal notranslate"><span class="pre">KISAO_0000669</span></code>
+for RBA)</p></li>
+<li><p><strong>change_level</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.Type</span></code>, optional) – level at which model changes will be made (<code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocument</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code>)</p></li>
+<li><p><strong>native_ids</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – whether to return the raw id and name of each model component rather than the suggested name
+for the variable of an associated SED-ML data generator</p></li>
+<li><p><strong>native_data_types</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – whether to return new_values in their native data types</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>possible attributes of a model that can be changed and their default values
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Simulation</span></code>: simulations of the model
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code>: possible observables for a simulation of the model
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot</span></code>: possible plots of the results of a simulation of the model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelAttributeChange</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="biosimulators-utils-model-lang-rba-validation-module">
-<h2>biosimulators_utils.model_lang.rba.validation module<a class="headerlink" href="#biosimulators-utils-model-lang-rba-validation-module" title="Permalink to this headline">¶</a></h2>
+<section id="module-biosimulators_utils.model_lang.rba.validation">
+<span id="biosimulators-utils-model-lang-rba-validation-module"></span><h2>biosimulators_utils.model_lang.rba.validation module<a class="headerlink" href="#module-biosimulators_utils.model_lang.rba.validation" title="Permalink to this headline">¶</a></h2>
+<p>Methods for validating RBA files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>2021-08-28</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>2021, Center for Reproducible Biomedical Modeling</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.rba.validation.validate_model">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.rba.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/rba/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.rba.validation.validate_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that a model is valid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to model</p></li>
+<li><p><strong>name</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – name of model for use in error messages</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: nested list of errors (e.g., required ids missing or ids not unique)</p></li>
+<li><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: nested list of errors (e.g., required ids missing or ids not unique)</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rba.model.RbaModel</span></code>: RBA model</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
