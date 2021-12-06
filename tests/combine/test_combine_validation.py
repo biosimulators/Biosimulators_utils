@@ -224,6 +224,19 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn('may be invalid', flatten_nested_list_of_strings(warnings))
         self.assertIn('my warning', flatten_nested_list_of_strings(warnings))
 
+    def test_manifest_in_manifest(self):
+        out_dir = os.path.join(self.tmp_dir, 'out')
+        archive = CombineArchiveReader().run(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'manifest-in-manifest.omex'), out_dir)
+        errors, warnings = validate(archive, out_dir)
+        self.assertEqual(errors, [])
+        self.assertIn('manifests should not contain content entries for themselves', flatten_nested_list_of_strings(warnings))
+
+        out_dir = os.path.join(self.tmp_dir, 'out')
+        archive = CombineArchiveReader().run(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'multiple-manifests.omex'), out_dir)
+        errors, warnings = validate(archive, out_dir)
+        self.assertIn('should not contain a manifest at location', flatten_nested_list_of_strings(errors))
+        self.assertIn('manifests should not contain content entries for themselves', flatten_nested_list_of_strings(warnings))
+
     def test_no_validation(self):
         archive_dirname = os.path.join(self.tmp_dir, 'archive')
         os.mkdir(archive_dirname)

@@ -267,6 +267,33 @@ class ReadWriteTestCase(unittest.TestCase):
         archive_2 = data_model.CombineArchive(contents=contents_2)
         self.assertTrue(archive_2.is_equal(archive))
 
+    def test_write_read_manifest_with_manifest(self):
+        manifest_filename = os.path.join(self.temp_dir, 'test.xml')
+        contents = [
+            data_model.CombineArchiveContent(
+                location='1.txt',
+                format='http://purl.org/NET/mediatypes/plain/text',
+                master=False,
+            ),
+            data_model.CombineArchiveContent(
+                location='2.jpg',
+                format='http://purl.org/NET/mediatypes/image/jpeg',
+                master=True,
+            ),
+            data_model.CombineArchiveContent(
+                location='manifest.xml',
+                format=data_model.CombineArchiveContentFormat.OMEX_MANIFEST,
+                master=False,
+            ),
+        ]
+
+        io.CombineArchiveWriter().write_manifest(contents, manifest_filename)
+        contents_2 = io.CombineArchiveReader().read_manifest(manifest_filename)
+
+        archive = data_model.CombineArchive(contents=contents)
+        archive_2 = data_model.CombineArchive(contents=contents_2)
+        self.assertTrue(archive_2.is_equal(archive))
+
     def test_read_manifest_from_plain_zip(self):
         in_dir = os.path.join(self.temp_dir, 'in')
         os.mkdir(in_dir)

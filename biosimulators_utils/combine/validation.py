@@ -61,7 +61,7 @@ def validate(archive, archive_dirname,
             errors.append(['Archive must have at least one content element.'])
 
         # check that locations are listed once per manifest
-        locations = set(['manifest.xml'])
+        locations = set()
         duplicate_locations = set()
         for content in archive.contents:
             if content and content.location:
@@ -70,6 +70,10 @@ def validate(archive, archive_dirname,
                     duplicate_locations.add(location)
                 else:
                     locations.add(location)
+        if 'manifest.xml' in locations:
+            warnings.append(['OMEX manifests should not contain content entries for themselves.'])
+        else:
+            locations.add('manifest.xml')
         if duplicate_locations:
             errors.append(['The manifest contains repeated content items for these locations:', [
                 [location] for location in sorted(duplicate_locations)]])
@@ -117,6 +121,12 @@ def validate(archive, archive_dirname,
     # validate files
     for content in archive.contents:
         if isinstance(content, CombineArchiveContent) and content.location and content.format:
+            if re.match(CombineArchiveContentFormatPattern.OMEX_MANIFEST, content.format) and content.location != 'manifest.xml':
+                errors.append([(
+                    'COMBINE/OMEX archives should not contain a manifest at location `{}`. '
+                    'COMBINE/OMEX archives should only contain a single manifest at location `manifest.xml`.'
+                ).format(content.location)])
+
             content_errors, content_warnings = validate_content(
                 content, archive_dirname,
                 formats_to_validate=formats_to_validate,
