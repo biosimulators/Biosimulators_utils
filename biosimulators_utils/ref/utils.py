@@ -36,8 +36,10 @@ def get_reference(pubmed_id=None, doi=None, cross_ref_session=requests):
     pubmed_ref = get_reference_from_pubmed(pubmed_id=pubmed_id, doi=doi)
     if pubmed_ref:
         doi = doi or pubmed_ref.doi
-
-    if doi is not None:
+    
+    doi_ref=None
+    # get_reference_from_pubmed can return a ref that has the text "None" in the doi field 
+    if doi is not None and doi!="None": 
         doi_ref = get_reference_from_crossref(doi, session=cross_ref_session)
 
     ref = pubmed_ref or doi_ref
