@@ -34,6 +34,9 @@ class RefUtilsTestCase(unittest.TestCase):
         ref = utils.get_reference_from_pubmed(pubmed_id=None, doi='10.1103/PhysRevLett.127.104301x')
         self.assertEqual(ref, None)
 
+        with self.assertRaisesRegex(ValueError, 'not a valid PubMed id'):
+            utils.get_reference_from_pubmed(pubmed_id='abc')
+
         with self.assertRaises(ValueError):
             utils.get_reference_from_pubmed('000')
 
