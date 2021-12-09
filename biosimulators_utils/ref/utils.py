@@ -62,9 +62,14 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
         :obj:`JournalArticle`: data about a reference
     """
     if pubmed_id:
-        handle = Bio.Entrez.esummary(db="pubmed", id=pubmed_id, retmode="xml")
-        records = list(Bio.Entrez.parse(handle))
-        handle.close()
+        try:
+            handle = Bio.Entrez.esummary(db="pubmed", id=pubmed_id, retmode="xml")
+            records = list(Bio.Entrez.parse(handle))
+            handle.close()
+        except Exception as e:
+            print(e)
+            records=[]
+            
         if len(records) == 0:
             raise ValueError('`{}` is not a valid PubMed id.'.format(pubmed_id))
         record = records[0]
