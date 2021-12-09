@@ -96,7 +96,10 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
 
     pubmed_central_id = None
     handle = Bio.Entrez.esearch(db="pmc", term=pubmed_id + '[pmid]', retmode="xml")
-    pmc_record = Bio.Entrez.read(handle)
+    try:
+        pmc_record = Bio.Entrez.read(handle)
+    except Exception as e:
+        pmc_record = {'IdList': None}
     handle.close()
     if pmc_record['IdList']:
         handle = Bio.Entrez.esummary(db="pmc", id=pmc_record['IdList'][0], retmode="xml")
