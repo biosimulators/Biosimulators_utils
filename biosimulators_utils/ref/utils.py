@@ -143,7 +143,7 @@ def get_reference_from_crossref(id, session=requests):
         doi=id,
         authors=[
             author.get('name', (author.get('given', '') + ' ' + author.get('family', '')).strip())
-            for author in record['author']
+            for author in (record.get('author', None) or [])
         ],
         title=record['title'][0].strip('.') if record['title'] else None,
         journal=record['container-title'][0],
