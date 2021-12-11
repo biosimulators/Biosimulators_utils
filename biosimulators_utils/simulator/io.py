@@ -9,9 +9,6 @@
 from ..biosimulations.utils import validate_biosimulations_api_response
 from ..config import get_config
 from ..utils.core import patch_dict
-from kisao import Kisao
-from kisao.data_model import TermType as KisaoTermType
-from kisao.utils import get_term_type as get_kisao_term_type
 import json
 import os
 import requests
