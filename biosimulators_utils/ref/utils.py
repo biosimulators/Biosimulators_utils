@@ -37,14 +37,15 @@ def get_reference(pubmed_id=None, doi=None, cross_ref_session=requests):
     pubmed_ref = get_reference_from_pubmed(pubmed_id=pubmed_id, doi=doi)
     if pubmed_ref:
         doi = doi or pubmed_ref.doi
-    
-    doi_ref=None
-    # get_reference_from_pubmed can return a ref that has the text "None" in the doi field 
-    if doi is not None and doi!="None": 
+
+    if doi is None:
+        doi_ref = None
+    else:
         doi_ref = get_reference_from_crossref(doi, session=cross_ref_session)
 
     ref = pubmed_ref or doi_ref
-    ref.doi = doi
+    if ref:
+        ref.doi = doi
     if doi_ref:
         if len(doi_ref.authors) >= len(ref.authors):
             ref.authors = doi_ref.authors
@@ -66,7 +67,9 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
     """
     if pubmed_id:
         record = get_entrez_record('pubmed', pubmed_id)
-        doi = str(record.get('DOI', None))
+        doi = record.get('DOI', None)
+        if doi:
+            doi = str(doi)
     elif doi:
         record = search_entrez_records("pubmed", doi)
 

@@ -118,6 +118,9 @@ class RefUtilsTestCase(unittest.TestCase):
         self.assertEqual(ref.pubmed_central_id, 'PMC5813803')
         self.assertEqual(ref.doi, '10.1542/peds.2012-2758')
 
+        ref = utils.get_reference(pubmed_id='1234')
+        self.assertEqual(ref.doi, None)
+
         with self.assertRaises(ValueError):
             utils.get_reference()
 
