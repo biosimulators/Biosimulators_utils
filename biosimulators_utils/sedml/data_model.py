@@ -1255,7 +1255,7 @@ class FunctionalRange(Range, Calculation):
         name (:obj:`str`): name
         range (:obj:`Range`): range
         variables (:obj:`list` of :obj:`Variable`): variables
-        parameters (:obj:`list` of :obj:`Parameter`): variables
+        parameters (:obj:`list` of :obj:`Parameter`): parameters
         math (:obj:`str`): mathematical expression
     """
 
@@ -1266,7 +1266,7 @@ class FunctionalRange(Range, Calculation):
             name (:obj:`str`, optional): name
             range (:obj:`Range`, optional): range
             variables (:obj:`list` of :obj:`Variable`, optional): variables
-            parameters (:obj:`list` of :obj:`Parameter`, optional): variables
+            parameters (:obj:`list` of :obj:`Parameter`, optional): parameters
             math (:obj:`str`, optional): mathematical expression
         """
         Range.__init__(self, id=id, name=name)
@@ -1307,7 +1307,7 @@ class DataGenerator(Calculation, SedIdGroupMixin):
         id (:obj:`str`): id
         name (:obj:`str`): name
         variables (:obj:`list` of :obj:`Variable`): variables
-        parameters (:obj:`list` of :obj:`Parameter`): variables
+        parameters (:obj:`list` of :obj:`Parameter`): parameters
         math (:obj:`str`): mathematical expression
     """
 
@@ -1317,7 +1317,7 @@ class DataGenerator(Calculation, SedIdGroupMixin):
             id (:obj:`str`, optional): id
             name (:obj:`str`, optional): name
             variables (:obj:`list` of :obj:`Variable`, optional): variables
-            parameters (:obj:`list` of :obj:`Parameter`, optional): variables
+            parameters (:obj:`list` of :obj:`Parameter`, optional): parameters
             math (:obj:`str`, optional): mathematical expression
         """
         SedIdGroupMixin.__init__(self, id=id, name=name)
