@@ -3,3 +3,4 @@ max-line-length = 150
 exclude =
     tests/*
     docs-src/*
+    build/*
