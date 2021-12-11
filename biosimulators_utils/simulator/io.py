@@ -78,23 +78,5 @@ def read_simulator_specs(path_or_url, patch=None, validate=True):
         ])
         validate_biosimulations_api_response(response, intro_failure_msg, ValueError)
 
-        kisao = Kisao()
-        for i_alg, alg_specs in enumerate(specs['algorithms']):
-            alg_term = kisao.get_term(alg_specs['kisaoId']['id'])
-            alg_term_type = get_kisao_term_type(alg_term)
-            if alg_term_type != KisaoTermType.algorithm:
-                msg = 'KiSAO term `{}` of algorithm {} must be a term for an algorithm, not a `{}` term.'.format(
-                    alg_specs['kisaoId']['id'], i_alg + 1, alg_term_type.name)
-                raise ValueError(msg)
-
-            for i_param, param_specs in enumerate(alg_specs['parameters']):
-                param_term = kisao.get_term(param_specs['kisaoId']['id'])
-                param_term_type = get_kisao_term_type(param_term)
-                if param_term_type != KisaoTermType.algorithm_parameter:
-                    msg = (
-                        'KiSAO term `{}` of parameter {} of algorithm {} must be a term for an algorithm parameter, not a `{}` term.'
-                    ).format(param_specs['kisaoId']['id'], i_param + 1, i_alg + 1, param_term_type.name)
-                    raise ValueError(msg)
-
     # return validated specifications
     return specs
