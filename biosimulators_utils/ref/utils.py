@@ -126,8 +126,8 @@ def search_entrez_records(db, term):
         db (:obj:`str`): database such as `pmc` for PubMed Central
         term (:obj:`str`): term to search the database
     """
-    if not isinstance(term, str):
-        raise TypeError('Search term must be a string')
+    if not isinstance(term, str) or not term:
+        raise TypeError('Search term must be a non-empty string')
     handle = Bio.Entrez.esearch(db=db, term=term, retmode="xml")
     record = Bio.Entrez.read(handle)
     handle.close()
@@ -144,7 +144,10 @@ def get_entrez_record(db, id):
     if not isinstance(id, str):
         raise TypeError('Id must be a string')
     handle = Bio.Entrez.esummary(db=db, id=id, retmode="xml")
-    records = list(Bio.Entrez.parse(handle))
+    try:
+        records = list(Bio.Entrez.parse(handle))
+    except RuntimeError:
+        raise ValueError('`{}` is not a valid id for a record of `{}`.'.format(id, db))
     handle.close()
     if len(records) != 1:
         raise ValueError('No record for `{}` from `{}` could be obtained.'.format(id, db))
