@@ -14,6 +14,7 @@ import glob
 import lxml.etree
 import os
 import requests
+import shutil
 import tarfile
 
 __all__ = ['get_reference', 'get_pubmed_central_open_access_graphics']
@@ -62,33 +63,19 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
         :obj:`JournalArticle`: data about a reference
     """
     if pubmed_id:
-        handle = Bio.Entrez.esummary(db="pubmed", id=pubmed_id, retmode="xml")
-        try:
-            records = list(Bio.Entrez.parse(handle))
-        except RuntimeError:
-            records = []
-        handle.close()
-
-        if len(records) == 0:
-            raise ValueError('`{}` is not a valid PubMed id.'.format(pubmed_id))
-        record = records[0]
+        record = get_entrez_record('pubmed', pubmed_id)
         doi = str(record.get('DOI', None))
-    else:
-        handle = Bio.Entrez.esearch(db="pubmed", term=doi, retmode="xml")
-        record = Bio.Entrez.read(handle)
-        handle.close()
+    elif doi:
+        record = search_entrez_records("pubmed", doi)
 
-        if len(record['IdList']) == 0:
+        if len(record.get('IdList', [])) == 0:
             return None
 
         pubmed_id = str(record['IdList'][0])
 
-        handle = Bio.Entrez.esummary(db="pubmed", id=pubmed_id, retmode="xml")
-        records = list(Bio.Entrez.parse(handle))
-        handle.close()
-        if len(records) == 0:
-            raise ValueError('`{}` is not a valid PubMed id.'.format(pubmed_id))  # pragma: no cover # shouldn't be reachable
-        record = records[0]
+        record = get_entrez_record('pubmed', pubmed_id)
+    else:
+        return None
 
     try:
         pub_date = dateutil.parser.parse(record['PubDate'])
@@ -98,19 +85,7 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
         date = str(record['PubDate'])
         year = date.partition(' ')[0]
 
-    pubmed_central_id = None
-    handle = Bio.Entrez.esearch(db="pmc", term=pubmed_id + '[pmid]', retmode="xml")
-    pmc_record = Bio.Entrez.read(handle)
-    handle.close()
-    if pmc_record['IdList']:
-        handle = Bio.Entrez.esummary(db="pmc", id=pmc_record['IdList'][0], retmode="xml")
-        pmc_records = list(Bio.Entrez.parse(handle))
-        handle.close()
-        if len(pmc_records) == 0:
-            raise ValueError('`{}` is not a valid PubMed Central id.'.format(
-                pmc_record['IdList'][0]))  # pragma: no cover # shouldn't be reachable
-        pmc_record = pmc_records[0]
-        pubmed_central_id = str(pmc_record['ArticleIds']['pmcid'])
+    pubmed_central_id = get_pubmed_central_id(pubmed_id)
 
     return JournalArticle(
         pubmed_id=pubmed_id,
@@ -125,6 +100,58 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
         year=year,
         date=date,
     )
+
+
+def get_pubmed_central_id(pubmed_id):
+    """ Get the PubMed Central id for a PubMed record
+
+    Args:
+        pubmed_id (:obj:`str`): PubMed id
+
+    Returns:
+        :obj:`str`: PubMed Central id
+    """
+    record = search_entrez_records('pmc', f'{pubmed_id}[pmid]')
+    id_list = record.get('IdList', [])
+    if id_list:
+        record = get_entrez_record('pmc', id_list[0])
+        return str(record['ArticleIds']['pmcid'])
+    return None
+
+
+def search_entrez_records(db, term):
+    """ Search an Entrez database for a term
+
+    Args:
+        db (:obj:`str`): database such as `pmc` for PubMed Central
+        term (:obj:`str`): term to search the database
+    """
+    if not isinstance(term, str) or not term:
+        raise TypeError('Search term must be a non-empty string')
+    handle = Bio.Entrez.esearch(db=db, term=term, retmode="xml")
+    record = Bio.Entrez.read(handle)
+    handle.close()
+    return record
+
+
+def get_entrez_record(db, id):
+    """ Get a record from an Entrez database
+
+    Args:
+        db (:obj:`str`): database such as `pmc` for PubMed Central
+        id (:obj:`str`): id of the record
+    """
+    if not isinstance(id, str):
+        raise TypeError('Id must be a string')
+    handle = Bio.Entrez.esummary(db=db, id=id, retmode="xml")
+    try:
+        records = list(Bio.Entrez.parse(handle))
+    except RuntimeError:
+        raise ValueError('`{}` is not a valid id for a record of `{}`.'.format(id, db))
+    handle.close()
+    if len(records) != 1:
+        raise ValueError('No record for `{}` from `{}` could be obtained.'.format(id, db))
+    return records[0]
 
 
 def get_reference_from_crossref(id, session=requests):
@@ -159,7 +186,7 @@ def get_reference_from_crossref(id, session=requests):
     )
 
 
-def get_pubmed_central_open_access_graphics(id, dirname, session=requests, max_num_ftp_tries=3):
+def get_pubmed_central_open_access_graphics(id, dirname, session=requests):
     """ Get the open access graphics for a publication in PubMed Central
 
     Args:
@@ -183,24 +210,7 @@ def get_pubmed_central_open_access_graphics(id, dirname, session=requests, max_n
     tgz_path = tgz_url.partition('ftp://')[2].partition('/')[2]
     tgz_filename = os.path.join(dirname, os.path.basename(tgz_path))
 
-    for iter in range(max_num_ftp_tries):
-        if not os.path.isfile(tgz_filename):
-            ftp = ftplib.FTP('ftp.ncbi.nlm.nih.gov')
-            ftp.login()
-            with open(tgz_filename, 'wb') as file:
-                ftp.retrbinary('RETR ' + tgz_path, file.write)
-            ftp.quit()
-
-        if not os.path.isdir(os.path.join(dirname, id)):
-            try:
-                with tarfile.open(tgz_filename) as file:
-                    file.extractall(path=dirname)
-                break
-            except tarfile.ReadError:
-                os.remove(tgz_filename)
-
-        else:
-            break
+    download_pubmed_central_record(id, tgz_path, tgz_filename, dirname)
 
     nxml_filename = glob.glob(os.path.join(dirname, id, "*.nxml"))[0]
     oa_id = os.path.basename(nxml_filename)[0:-5]
@@ -229,3 +239,37 @@ def get_pubmed_central_open_access_graphics(id, dirname, session=requests, max_n
         ))
 
     return graphics
+
+
+def download_pubmed_central_record(id, ftp_path, local_filename, local_dirname, max_num_ftp_tries=3):
+    """ Download and unpack the files for a PubMed Central record
+
+    Args:
+        id (:obj:`str`): PubMed Central id
+        ftp_path (:obj:`str`) path to tar file for record within ftp.ncbi.nlm.nih.gov
+        local_filename (:obj:`str`) local path to save tar file
+        local_dirname (:obj:`str`): local directory to unpack the contents of the tar file
+        max_num_ftp_tries (:obj:`int`, optional): maximum number of times to retry downloading the record
+    """
+    for iter in range(max_num_ftp_tries):
+        # download record
+        if not os.path.isfile(local_filename):
+            ftp = ftplib.FTP('ftp.ncbi.nlm.nih.gov')
+            ftp.login()
+            with open(local_filename, 'wb') as file:
+                ftp.retrbinary('RETR ' + ftp_path, file.write)
+            ftp.quit()
+
+        # unpack record
+        if not os.path.isdir(os.path.join(local_dirname, id)):
+            try:
+                with tarfile.open(local_filename) as file:
+                    file.extractall(path=local_dirname)
+                return
+            except tarfile.ReadError:
+                os.remove(local_filename)
+                if os.path.isdir(os.path.join(local_dirname, id)):
+                    shutil.rmtree(os.path.join(local_dirname, id))
+
+    if not os.path.isdir(os.path.join(local_dirname, id)):
+        raise Exception('PubMed Central record `{}` could not be downloaded in {} attempts'.format(id, max_num_ftp_tries))
