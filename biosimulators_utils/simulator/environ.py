@@ -103,7 +103,7 @@ ENVIRONMENT_VARIABLES = {
         options=[policy.value for policy, _ in sorted(ALGORITHM_SUBSTITUTION_POLICY_LEVELS.items(),
                                                       key=lambda policy_level: policy_level[1])],
         default=AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES.value,
-        more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
+        more_info_url='https://docs.biosimulations.org/concepts/conventions/simulator-interfaces/',
     ),
 
     # reports
@@ -220,7 +220,7 @@ ENVIRONMENT_VARIABLES = {
         description='Whether to print additional information about simulation runs.',
         options=['0', '1'],
         default='1' if config.VERBOSE else '0',
-        more_info_url='https://biosimulators.org/conventions/simulator-interfaces',
+        more_info_url='https://docs.biosimulations.org/concepts/conventions/simulator-interfaces/',
     ),
 
     # debugging
