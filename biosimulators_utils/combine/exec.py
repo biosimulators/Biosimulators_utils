@@ -141,7 +141,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                 raise NoSedmlError(msg)
 
             # print summary of SED documents
-            print(get_summary_sedml_contents(archive, archive_tmp_dir))
+            print(get_summary_sedml_contents(archive, archive_tmp_dir, config=config))
 
         except Exception as exception:
             shutil.rmtree(archive_tmp_dir)
@@ -152,7 +152,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             if config.LOG:
                 log = init_combine_archive_log(archive, archive_tmp_dir,
                                                supported_features=supported_features,
-                                               logged_features=logged_features)
+                                               logged_features=logged_features,
+                                               config=config)
 
                 log.status = Status.FAILED
                 log.out_dir = out_dir
@@ -176,7 +177,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         if config.LOG:
             log = init_combine_archive_log(archive, archive_tmp_dir,
                                            supported_features=supported_features,
-                                           logged_features=logged_features)
+                                           logged_features=logged_features,
+                                           config=config)
             log.status = Status.RUNNING
             log.out_dir = out_dir
             log.export()

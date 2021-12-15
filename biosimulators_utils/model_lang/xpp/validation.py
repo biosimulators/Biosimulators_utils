@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ...config import Config  # noqa: F401
 import collections
 import glob
 import os
@@ -19,7 +20,7 @@ __all__ = ['validate_model', 'get_xpp_input_configuration_from_directory']
 
 def validate_model(filename,
                    set_filename=None, parameter_filename=None, initial_conditions_filename=None,
-                   name=None):
+                   name=None, config=None):
     """ Check that a model is valid
 
     Args:
@@ -29,6 +30,7 @@ def validate_model(filename,
         parameter_filename (:obj:`str`, optional): path to XPP parameters file
         initial_conditions_filename (:obj:`str`, optional): path to XPP initial conditions file
         name (:obj:`str`, optional): name of model for use in error messages
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:

@@ -8,6 +8,7 @@
 
 from ...log.data_model import StandardOutputErrorCapturerLevel
 from ...log.utils import StandardOutputErrorCapturer
+from ...config import Config, get_config  # noqa: F401
 from lems.model.model import Model
 from pyneuroml.pynml import get_path_to_jnml_jar, run_jneuroml, DEFAULTS
 import os
@@ -16,12 +17,13 @@ import tempfile
 import zipfile
 
 
-def validate_model(filename, name=None):
+def validate_model(filename, name=None, config=None):
     """ Check that a model is valid
 
     Args:
         filename (:obj:`str`): path to model
         name (:obj:`str`, optional): name of model for use in error messages
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:
@@ -30,6 +32,8 @@ def validate_model(filename, name=None):
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * :obj:`Model`: model
     """
+    config = config or get_config()
+
     errors = []
     warnings = []
     model = None
@@ -46,7 +50,7 @@ def validate_model(filename, name=None):
         neuroml2_core_type_members = (name for name in jar_file.namelist() if name.startswith('NeuroML2CoreTypes/'))
         jar_file.extractall(core_types_dir, members=neuroml2_core_type_members)
 
-    model = Model(include_includes=True, fail_on_missing_includes=True)
+    model = Model(include_includes=True, fail_on_missing_includes=config.VALIDATE_NEUROML_INCLUDES)
     model.add_include_directory(os.path.join(core_types_dir, 'NeuroML2CoreTypes'))
     model.import_from_file(filename)
     shutil.rmtree(core_types_dir)

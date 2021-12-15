@@ -6,18 +6,7 @@
 :License: MIT
 """
 
-# TODO: remove once Smoldyn updated to BioSimulators-utils >= 0.1.96
-import biosimulators_utils.viz
-import biosimulators_utils.viz.data_model
-import biosimulators_utils.viz.io
-import biosimulators_utils.viz.warnings
-import sys
-sys.modules['biosimulators_utils.plot'] = sys.modules['biosimulators_utils.viz']
-sys.modules['biosimulators_utils.plot.data_model'] = sys.modules['biosimulators_utils.viz.data_model']
-sys.modules['biosimulators_utils.plot.io'] = sys.modules['biosimulators_utils.viz.io']
-sys.modules['biosimulators_utils.plot.warnings'] = sys.modules['biosimulators_utils.viz.warnings']
-biosimulators_utils.viz.data_model.PlotFormat = biosimulators_utils.viz.data_model.VizFormat
-
+from ...config import Config  # noqa: F401
 from ...log.data_model import StandardOutputErrorCapturerLevel  # noqa: E402
 from ...log.utils import StandardOutputErrorCapturer  # noqa: E402
 from smoldyn.biosimulators.combine import (  # noqa: E402
@@ -30,12 +19,13 @@ import os  # noqa: E402
 import tempfile  # noqa: E402
 
 
-def validate_model(filename, name=None):
+def validate_model(filename, name=None, config=None):
     """ Check that a model is valid
 
     Args:
         filename (:obj:`str`): path to model
         name (:obj:`str`, optional): name of model for use in error messages
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:

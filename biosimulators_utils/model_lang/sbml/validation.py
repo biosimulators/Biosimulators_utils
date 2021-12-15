@@ -6,17 +6,19 @@
 :License: MIT
 """
 
+from ...config import Config  # noqa: F401
 import libsbml
 import os
 
 
-def validate_model(filename, name=None, validate_consistency=True):
+def validate_model(filename, name=None, validate_consistency=True, config=None):
     """ Check that a model is valid
 
     Args:
         filename (:obj:`str`): path to model
         name (:obj:`str`, optional): name of model for use in error messages
         validate_consistency (:obj:`str`, optional): whether to check the consistency of the model
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:

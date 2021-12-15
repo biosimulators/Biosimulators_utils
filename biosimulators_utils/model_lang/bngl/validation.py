@@ -8,18 +8,20 @@
 
 from ...log.data_model import StandardOutputErrorCapturerLevel
 from ...log.utils import StandardOutputErrorCapturer
+from ...config import Config  # noqa: F401
 import bionetgen
 import os
 import shutil
 import tempfile
 
 
-def validate_model(filename, name=None):
+def validate_model(filename, name=None, config=None):
     """ Check that a model is valid
 
     Args:
         filename (:obj:`str`): path to model
         name (:obj:`str`, optional): name of model for use in error messages
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:

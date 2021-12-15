@@ -8,6 +8,7 @@
 
 from ..combine.data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat
 from ..combine.io import CombineArchiveWriter
+from ..config import Config  # noqa: F401
 from .data_model import (  # noqa: F401
     SedDocument, Model, ModelLanguage, ModelLanguagePattern, ModelAttributeChange, Simulation,
     Task, Variable, DataGenerator, Report, DataSet, Plot, Plot2D, Curve, Surface)
@@ -97,6 +98,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
 
 
 def build_combine_archive_for_model(model_filename, model_language, simulation_type, archive_filename, extra_contents=None,
+                                    config=None,
                                     **model_language_options):
     """ Build A COMBINE/OMEX archive with a SED-ML file for a model
 
@@ -108,6 +110,7 @@ def build_combine_archive_for_model(model_filename, model_language, simulation_t
         extra_contents (:obj:`dict` of :obj:`str` -> :obj:`CombineArchiveContent`, optional): dictionary that maps the
             local paths of additional files to include in the COMBINE/OMEX archive to their intended locations within the
             COMBINE/OMEX archive
+        config (:obj:`Config`, optional): whether to fail on missing includes
         **model_language_options: additional options to pass to the methods for individual model formats
     """
 
@@ -213,7 +216,7 @@ def build_combine_archive_for_model(model_filename, model_language, simulation_t
     archive_dirname = tempfile.mkdtemp()
     shutil.copyfile(model_filename, os.path.join(archive_dirname, os.path.basename(model_filename)))
 
-    SedmlSimulationWriter().run(sedml_doc, os.path.join(archive_dirname, 'simulation.sedml'))
+    SedmlSimulationWriter().run(sedml_doc, os.path.join(archive_dirname, 'simulation.sedml'), config=config)
 
     # form a description of the archive
     archive = CombineArchive()

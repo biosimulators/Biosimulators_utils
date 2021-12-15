@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ...config import Config  # noqa: F401
 from ...sedml.data_model import (  # noqa: F401
     SedDocument, ModelAttributeChange, Variable, Symbol,
     Simulation, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation,
@@ -28,7 +29,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                                                     include_model_parameters_in_simulation_variables=False,
                                                     include_compartment_sizes_in_simulation_variables=False,
                                                     include_reaction_fluxes_in_kinetic_simulation_variables=False,
-                                                    validate=True, validate_consistency=True):
+                                                    validate=True, validate_consistency=True, config=None):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -51,6 +52,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             among the returned SED variables for kinetic simulations
         validate (:obj:`str`, optional): whether to validate the model
         validate_consistency (:obj:`str`, optional): whether to check the consistency of the model
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
@@ -68,7 +70,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         raise NotImplementedError(msg)
 
     # read model
-    errors, _, doc = validate_model(model_filename, validate_consistency=validate and validate_consistency)
+    errors, _, doc = validate_model(model_filename, validate_consistency=validate and validate_consistency, config=config)
     if not doc or (validate and errors):
         raise ValueError('Model file `{}` is not a valid SBML file.\n  {}'.format(
             model_filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  ')))

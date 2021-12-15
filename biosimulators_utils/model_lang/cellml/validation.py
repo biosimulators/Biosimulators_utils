@@ -6,19 +6,21 @@
 :License: MIT
 """
 
+from ...config import Config  # noqa: F401
 import libcellml
 import lxml.etree
 import os
 import pkg_resources
 
 
-def validate_model(filename, name=None, resolve_imports=True):
+def validate_model(filename, name=None, resolve_imports=True, config=None):
     """ Check that a file is a valid CellML model
 
     Args:
         filename (:obj:`str`): path to model
         name (:obj:`str`, optional): name of model for use in error messages
         resolve_imports (:obj:`bool`, optional): whether to resolve imports
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:

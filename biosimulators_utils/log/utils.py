@@ -8,6 +8,7 @@
 
 from ..combine.data_model import CombineArchive  # noqa: F401
 from ..combine.utils import get_sedml_contents
+from ..config import Config  # noqa: F401
 from ..sedml.data_model import SedDocument, Task, Output, Report, Plot2D, Plot3D, DataSet, Curve, Surface
 from ..sedml.io import SedmlSimulationReader
 from ..warnings import warn
@@ -39,7 +40,8 @@ __all__ = [
 
 def init_combine_archive_log(archive, archive_dir,
                              supported_features=(SedDocument, Task, Report, Plot2D, Plot3D, DataSet, Curve, Surface),
-                             logged_features=(SedDocument, Task, Report, Plot2D, Plot3D, DataSet, Curve, Surface)):
+                             logged_features=(SedDocument, Task, Report, Plot2D, Plot3D, DataSet, Curve, Surface),
+                             config=None):
     """ Initialize a log of a COMBINE/OMEX archive
 
     Args:
@@ -51,6 +53,7 @@ def init_combine_archive_log(archive, archive_dir,
         logged_features (:obj:`list` of :obj:`type`, optional): list of elements which
             will be logged. Default: COMBINE/OMEX archives and SED documents, tasks, reports, plots,
             data sets, curves, and surfaces.
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`CombineArchiveLog`: initialized log of a COMBINE/OMEX archive
@@ -63,7 +66,8 @@ def init_combine_archive_log(archive, archive_dir,
         log.sed_documents = {}
         for content in contents:
             content_filename = os.path.join(archive_dir, content.location)
-            doc = SedmlSimulationReader().run(content_filename, validate_semantics=False, validate_models_with_languages=False)
+            doc = SedmlSimulationReader().run(content_filename, validate_semantics=False, validate_models_with_languages=False,
+                                              config=config)
 
             doc_log = init_sed_document_log(doc, supported_features=supported_features, logged_features=logged_features)
             doc_log.location = os.path.relpath(content.location, '.')

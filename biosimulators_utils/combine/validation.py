@@ -209,7 +209,8 @@ def validate_content(content, archive_dirname,
             file_type = 'SED-ML'
             reader = SedmlSimulationReader()
             try:
-                reader.run(filename, validate_models_with_languages=validate_models_with_languages and config.VALIDATE_SEDML_MODELS)
+                reader.run(filename, validate_models_with_languages=validate_models_with_languages and config.VALIDATE_SEDML_MODELS,
+                           config=config)
             except Exception:
                 if not reader.errors:
                     raise

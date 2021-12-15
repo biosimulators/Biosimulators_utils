@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ...config import Config  # noqa: F401
 from ...sedml.data_model import (  # noqa: F401
     SedDocument, ModelAttributeChange, Variable, Symbol,
     Simulation, OneStepSimulation, UniformTimeCourseSimulation,
@@ -22,7 +23,8 @@ __all__ = ['get_parameters_variables_outputs_for_simulation']
 
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
-                                                    change_level=SedDocument, native_ids=False, native_data_types=False):
+                                                    change_level=SedDocument, native_ids=False, native_data_types=False,
+                                                    config=None):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -35,6 +37,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
             for the variable of an associated SED-ML data generator
         native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
@@ -49,7 +52,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     if not os.path.isfile(model_filename):
         raise FileNotFoundError('Model file `{}` does not exist.'.format(model_filename))
 
-    errors, _, (model, root) = validate_model(model_filename, resolve_imports=False)
+    errors, _, (model, root) = validate_model(model_filename, resolve_imports=False, config=config)
     if errors:
         raise ValueError('Model file `{}` is not a valid CellML file.\n  {}'.format(
             model_filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  ')))

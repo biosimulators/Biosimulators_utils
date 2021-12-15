@@ -215,7 +215,7 @@ class ValidationTestCase(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'other error'):
                 validate(archive, self.tmp_dir)
 
-        def side_effect(self, filename, validate_models_with_languages=False):
+        def side_effect(self, filename, validate_models_with_languages=False, config=None):
             self.warnings = [['my warning']]
         with mock.patch.object(SedmlSimulationReader, 'run', side_effect):
             errors, warnings = validate(archive, self.tmp_dir)

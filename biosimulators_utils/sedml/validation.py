@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ..config import Config  # noqa: F401
 from ..kisao.utils import get_term as get_kisao_term, get_term_type as get_kisao_term_type
 from ..xml.utils import validate_xpaths_ref_to_unique_objects, eval_xpath
 from .data_model import (SedIdGroupMixin, AbstractTask, Task, RepeatedTask,  # noqa: F401
@@ -61,7 +62,8 @@ __all__ = [
 
 def validate_doc(doc, working_dir, validate_semantics=True,
                  validate_models_with_languages=True,
-                 validate_targets_with_model_sources=True):
+                 validate_targets_with_model_sources=True,
+                 config=None):
     """ Validate a SED document
 
     Args:
@@ -71,6 +73,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
         validate_targets_with_model_sources (:obj:`bool`, optional): if :obj:`True`, validate targets against
             their models
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:
@@ -132,7 +135,8 @@ def validate_doc(doc, working_dir, validate_semantics=True,
         model_ids = [model.id for model in doc.models]
         for i_model, model in enumerate(doc.models):
             model_errors, model_warnings = validate_model(model, model_ids, working_dir,
-                                                          validate_models_with_languages=validate_models_with_languages)
+                                                          validate_models_with_languages=validate_models_with_languages,
+                                                          config=config)
 
             # append errors/warnings to global lists of errors and warnings
             model_id = '`' + model.id + '`' if model and model.id else str(i_model + 1)
@@ -745,7 +749,7 @@ def validate_repeated_task_has_one_model(task):
     return (errors, warnings)
 
 
-def validate_model(model, model_ids, working_dir, validate_models_with_languages=True):
+def validate_model(model, model_ids, working_dir, validate_models_with_languages=True, config=None):
     """ Check a model
 
     Args:
@@ -753,6 +757,7 @@ def validate_model(model, model_ids, working_dir, validate_models_with_languages
         model_ids (:obj:`list` of :obj:`str`): ids of models
         working_dir (:obj:`str`): working directory (e.g., for referencing model files)
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:
@@ -769,7 +774,8 @@ def validate_model(model, model_ids, working_dir, validate_models_with_languages
 
     # check source
     tmp_errors, tmp_warnings = validate_model_source(
-        model, model_ids, working_dir, validate_models_with_languages=validate_models_with_languages)
+        model, model_ids, working_dir, validate_models_with_languages=validate_models_with_languages,
+        config=config)
     errors.extend(tmp_errors)
     warnings.extend(tmp_warnings)
 
@@ -819,7 +825,7 @@ def validate_model_language(language, valid_languages):
     return errors
 
 
-def validate_model_source(model, model_ids, working_dir, validate_models_with_languages=True):
+def validate_model_source(model, model_ids, working_dir, validate_models_with_languages=True, config=None):
     """ Check the source of a model
 
     Args:
@@ -827,6 +833,7 @@ def validate_model_source(model, model_ids, working_dir, validate_models_with_la
         model_ids (:obj:`list` of :obj:`str`): ids of models
         working_dir (:obj:`str`): working directory (e.g., for referencing model files)
         validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:
@@ -861,7 +868,8 @@ def validate_model_source(model, model_ids, working_dir, validate_models_with_la
             model_source = os.path.join(working_dir, model.source)
 
         if validate_models_with_languages:
-            model_source_errors, model_source_warnings, _ = validate_model_with_language(model_source, model.language, name=model.id)
+            model_source_errors, model_source_warnings, _ = validate_model_with_language(
+                model_source, model.language, name=model.id, config=config)
             if model_source_errors:
                 errors.append(['The model file `{}` is invalid.'.format(model.source), model_source_errors])
             if model_source_warnings:
@@ -870,13 +878,14 @@ def validate_model_source(model, model_ids, working_dir, validate_models_with_la
     return (errors, warnings)
 
 
-def validate_model_with_language(source, language, name=None):
+def validate_model_with_language(source, language, name=None, config=None):
     """ Check that a model is valid
 
     Args:
         source (:obj:`str`): path to model
         language (:obj:`ModelLanguage`): language
         name (:obj:`str`, optional): name of model for use in error messages
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:
@@ -916,7 +925,7 @@ def validate_model_with_language(source, language, name=None):
         warnings.append(['No validation is available for models encoded in `{}`'.format(getattr(language, 'name', language) or '')])
         return (errors, warnings, None)
 
-    return validate_model(source, name=name)
+    return validate_model(source, name=name, config=config)
 
 
 def validate_model_change_types(changes, types=(ModelChange, )):

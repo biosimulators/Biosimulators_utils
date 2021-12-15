@@ -11,6 +11,7 @@ from .utils import add_namespaces_to_xml_node, convert_xml_node_to_string, get_n
 from .validation import validate_doc
 from .warnings import SedmlFeatureNotSupportedWarning
 from ..biosimulations.data_model import Metadata, ExternalReferences, Citation
+from ..config import Config  # noqa: F401
 from ..data_model import Person, Identifier, OntologyTerm
 from ..warnings import warn, BioSimulatorsWarning
 from ..utils.core import flatten_nested_list_of_strings
@@ -41,7 +42,8 @@ class SedmlSimulationWriter(object):
         self._doc_sed = None
         self._obj_to_sed_obj_map = None
 
-    def run(self, doc, filename, validate_semantics=True, validate_models_with_languages=True, validate_targets_with_model_sources=True):
+    def run(self, doc, filename, validate_semantics=True, validate_models_with_languages=True, validate_targets_with_model_sources=True,
+            config=None):
         """ Save a SED document to an SED-ML XML file
 
         Args:
@@ -51,6 +53,7 @@ class SedmlSimulationWriter(object):
             validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
             validate_targets_with_model_sources (:obj:`bool`, optional): if :obj:`True`, validate targets against
                 their models
+            config (:obj:`Config`, optional): whether to fail on missing includes
 
         Raises:
             :obj:`NotImplementedError`: document uses an supported type of task or output
@@ -59,7 +62,8 @@ class SedmlSimulationWriter(object):
                                         working_dir=os.path.dirname(filename),
                                         validate_semantics=validate_semantics,
                                         validate_models_with_languages=validate_models_with_languages,
-                                        validate_targets_with_model_sources=validate_targets_with_model_sources)
+                                        validate_targets_with_model_sources=validate_targets_with_model_sources,
+                                        config=config)
         if warnings:
             msg = 'The SED document is potentially incorrect.\n  {}'.format(flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
             warn(msg, BioSimulatorsWarning)
@@ -982,7 +986,8 @@ class SedmlSimulationReader(object):
         self.errors = None
         self.warnings = None
 
-    def run(self, filename, validate_semantics=True, validate_models_with_languages=True, validate_targets_with_model_sources=True):
+    def run(self, filename, validate_semantics=True, validate_models_with_languages=True, validate_targets_with_model_sources=True,
+            config=None):
         """ Base class for reading a SED document
 
         Args:
@@ -991,6 +996,7 @@ class SedmlSimulationReader(object):
             validate_models_with_languages (:obj:`bool`, optional): if :obj:`True`, validate models
             validate_targets_with_model_sources (:obj:`bool`, optional): if :obj:`True`, validate targets against
                 their models
+            config (:obj:`Config`, optional): whether to fail on missing includes
 
         Returns:
             :obj:`data_model.SedDocument`: SED document
@@ -1360,7 +1366,8 @@ class SedmlSimulationReader(object):
                                         working_dir=os.path.dirname(filename),
                                         validate_semantics=validate_semantics,
                                         validate_models_with_languages=validate_models_with_languages,
-                                        validate_targets_with_model_sources=validate_targets_with_model_sources)
+                                        validate_targets_with_model_sources=validate_targets_with_model_sources,
+                                        config=config)
         self.errors.extend(errors)
         self.warnings.extend(warnings)
         if self.warnings:

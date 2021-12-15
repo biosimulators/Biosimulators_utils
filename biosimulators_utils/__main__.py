@@ -148,7 +148,8 @@ class BuildModelingProjectController(cement.Controller):
                 args.simulation_type,
             ))
 
-        build_combine_archive_for_model(model_filename, model_lang, sim_type, args.archive_filename)
+        config = get_config()
+        build_combine_archive_for_model(model_filename, model_lang, sim_type, args.archive_filename, config=config)
 
 
 class ValidateModelController(cement.Controller):
@@ -198,7 +199,8 @@ class ValidateModelController(cement.Controller):
 
         filename = args.filename
 
-        errors, warnings, _ = biosimulators_utils.sedml.validation.validate_model_with_language(filename, language)
+        config = get_config()
+        errors, warnings, _ = biosimulators_utils.sedml.validation.validate_model_with_language(filename, language, config=config)
 
         if warnings:
             msg = 'The model file `{}` may be invalid.\n  {}'.format(
@@ -238,9 +240,10 @@ class ValidateSimulationController(cement.Controller):
 
         args = self.app.pargs
 
+        config = get_config()
         reader = biosimulators_utils.sedml.io.SedmlSimulationReader()
         try:
-            reader.run(args.filename, validate_models_with_languages=False, validate_targets_with_model_sources=False)
+            reader.run(args.filename, validate_models_with_languages=False, validate_targets_with_model_sources=False, config=config)
         except Exception:
             if not reader.errors:
                 raise
@@ -354,7 +357,7 @@ class ValidateModelingProjectController(cement.Controller):
             raise SystemExit(msg)
 
         # print summary
-        print(biosimulators_utils.combine.utils.get_summary_sedml_contents(archive, archive_dirname))
+        print(biosimulators_utils.combine.utils.get_summary_sedml_contents(archive, archive_dirname, config=config))
 
         # clean up
         shutil.rmtree(archive_dirname)

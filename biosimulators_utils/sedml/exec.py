@@ -106,7 +106,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
 
     # process arguments
     if not isinstance(doc, SedDocument):
-        doc = SedmlSimulationReader().run(doc)
+        doc = SedmlSimulationReader().run(doc, config=config)
     else:
         doc = copy.deepcopy(doc)
 

@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from ..config import Config  # noqa: F401
 from ..sedml.data_model import Report, Plot, Plot2D, Plot3D
 from ..sedml.io import SedmlSimulationReader
 from .data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormatPattern  # noqa: F401
@@ -57,7 +58,8 @@ def get_sedml_contents(archive,
 
 def get_summary_sedml_contents(archive, archive_dir,
                                include_all_sed_docs_when_no_sed_doc_is_master=True,
-                               always_include_all_sed_docs=False):
+                               always_include_all_sed_docs=False,
+                               config=None):
     """ Get a summary of the SED-ML content in a COMBINE/OMEX archive
 
     Args:
@@ -67,6 +69,7 @@ def get_summary_sedml_contents(archive, archive_dir,
             and no SED document has ``master="true"``, return all SED documents.
         always_include_all_sed_docs (:obj:`bool`, optional): if :obj:`true`,
             return all SED documents, regardless of whether they have ``master="true"`` or not.
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`str`: summary of the SED-ML content in a COMBINE/OMEX archive
@@ -85,7 +88,7 @@ def get_summary_sedml_contents(archive, archive_dir,
         n_docs += 1
 
         content_filename = os.path.join(archive_dir, content.location)
-        doc = SedmlSimulationReader().run(content_filename, validate_models_with_languages=False)
+        doc = SedmlSimulationReader().run(content_filename, validate_models_with_languages=False, config=config)
 
         n_models += len(doc.models)
         n_simulations += len(doc.simulations)
@@ -100,7 +103,7 @@ def get_summary_sedml_contents(archive, archive_dir,
 
     for i_content, content in enumerate(sorted(contents, key=lambda content: content.location)):
         content_filename = os.path.join(archive_dir, content.location)
-        doc = SedmlSimulationReader().run(content_filename, validate_models_with_languages=False)
+        doc = SedmlSimulationReader().run(content_filename, validate_models_with_languages=False, config=config)
         content_id = os.path.relpath(content_filename, archive_dir)
         summary += '  {}:\n'.format(content_id)
 
