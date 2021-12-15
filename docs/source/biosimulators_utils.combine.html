@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.combine package &#8212; BioSimulators utils 0.1.146 documentation</title>
+    <title>biosimulators_utils.combine package &#8212; BioSimulators utils 0.1.147 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -1513,7 +1513,7 @@ return all SED documents, regardless of whether they have <code class="docutils 
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.utils.get_summary_sedml_contents">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.utils.</span></span><span class="sig-name descname"><span class="pre">get_summary_sedml_contents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_sed_docs_when_no_sed_doc_is_master</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_include_all_sed_docs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.utils.get_summary_sedml_contents" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.utils.</span></span><span class="sig-name descname"><span class="pre">get_summary_sedml_contents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_sed_docs_when_no_sed_doc_is_master</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_include_all_sed_docs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.utils.get_summary_sedml_contents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a summary of the SED-ML content in a COMBINE/OMEX archive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1524,6 +1524,7 @@ return all SED documents, regardless of whether they have <code class="docutils 
 and no SED document has <code class="docutils literal notranslate"><span class="pre">master=&quot;true&quot;</span></code>, return all SED documents.</p></li>
 <li><p><strong>always_include_all_sed_docs</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">true</span></code>,
 return all SED documents, regardless of whether they have <code class="docutils literal notranslate"><span class="pre">master=&quot;true&quot;</span></code> or not.</p></li>
+<li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – whether to fail on missing includes</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
