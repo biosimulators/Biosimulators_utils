@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ...config import Config  # noqa: F401
+from ...config import Config, get_config  # noqa: F401
 import libcellml
 import lxml.etree
 import os
@@ -49,13 +49,13 @@ def validate_model(filename, name=None, resolve_imports=True, config=None):
     root = doc.getroot()
     default_ns = root.nsmap.get(None, '')
     if default_ns.startswith('http://www.cellml.org/cellml/1.0'):
-        v_errors, v_warnings, model = validate_model_version_1_0(filename, doc, resolve_imports=resolve_imports)
+        v_errors, v_warnings, model = validate_model_version_1_0(filename, doc, resolve_imports=resolve_imports, config=config)
 
     elif default_ns.startswith('http://www.cellml.org/cellml/1.1'):
-        v_errors, v_warnings, model = validate_model_version_1_1(filename, doc, resolve_imports=resolve_imports)
+        v_errors, v_warnings, model = validate_model_version_1_1(filename, doc, resolve_imports=resolve_imports, config=config)
 
     elif default_ns.startswith('http://www.cellml.org/cellml/2'):
-        v_errors, v_warnings, model = validate_model_version_2(filename, doc, resolve_imports=resolve_imports)
+        v_errors, v_warnings, model = validate_model_version_2(filename, doc, resolve_imports=resolve_imports, config=config)
 
     else:
         v_errors = [[(
@@ -69,13 +69,14 @@ def validate_model(filename, name=None, resolve_imports=True, config=None):
     return (errors, warnings, (model, root))
 
 
-def validate_model_version_1_0(filename, doc, resolve_imports=True):
+def validate_model_version_1_0(filename, doc, resolve_imports=True, config=None):
     """ Check that a file is a valid CellML 2.0 model
 
     Args:
         filename (:obj:`str`): path to model
         doc (:obj:`lxml.etree._ElementTree`): XML document for file
         resolve_imports (:obj:`bool`, optional): whether to resolve imports
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:
@@ -119,13 +120,14 @@ def validate_model_version_1_0(filename, doc, resolve_imports=True):
     return (errors, warnings, None)
 
 
-def validate_model_version_1_1(filename, doc, resolve_imports=True):
+def validate_model_version_1_1(filename, doc, resolve_imports=True, config=None):
     """ Check that a file is a valid CellML 2.0 model
 
     Args:
         filename (:obj:`str`): path to model
         doc (:obj:`lxml.etree._ElementTree`): XML document for file
         resolve_imports (:obj:`bool`, optional): whether to resolve imports
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:
@@ -142,13 +144,14 @@ def validate_model_version_1_1(filename, doc, resolve_imports=True):
     return (errors, warnings, None)
 
 
-def validate_model_version_2(filename, doc, resolve_imports=True):
+def validate_model_version_2(filename, doc, resolve_imports=True, config=None):
     """ Check that a file is a valid CellML 2.0 model
 
     Args:
         filename (:obj:`str`): path to model
         doc (:obj:`lxml.etree._ElementTree`): XML document for file
         resolve_imports (:obj:`bool`, optional): whether to resolve imports
+        config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
         :obj:`tuple`:
@@ -157,6 +160,8 @@ def validate_model_version_2(filename, doc, resolve_imports=True):
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * :obj:`libcellml.model.Model`: model
     """
+    config = config or get_config()
+
     errors = []
     warnings = []
 
@@ -177,7 +182,7 @@ def validate_model_version_2(filename, doc, resolve_imports=True):
         return (errors, warnings, model)
 
     # import imported models
-    if resolve_imports:
+    if resolve_imports and config.VALIDATE_IMPORTED_MODEL_FILES:
         importer = libcellml.Importer()
         if not importer.resolveImports(model, os.path.dirname(filename) + os.path.sep):
             for i_error in range(importer.errorCount()):

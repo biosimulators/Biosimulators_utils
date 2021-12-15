@@ -50,7 +50,7 @@ def validate_model(filename, name=None, config=None):
         neuroml2_core_type_members = (name for name in jar_file.namelist() if name.startswith('NeuroML2CoreTypes/'))
         jar_file.extractall(core_types_dir, members=neuroml2_core_type_members)
 
-    model = Model(include_includes=True, fail_on_missing_includes=config.VALIDATE_IMPORTED_MODEL_FILES)
+    model = Model(include_includes=True, fail_on_missing_includes=config.VALIDATE_NEUROML_INCLUDES)
     model.add_include_directory(os.path.join(core_types_dir, 'NeuroML2CoreTypes'))
     model.import_from_file(filename)
     shutil.rmtree(core_types_dir)
