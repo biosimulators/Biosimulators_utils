@@ -38,7 +38,7 @@ class Config(object):
         VALIDATE_OMEX_MANIFESTS (:obj:`bool`): whether to validate OMEX manifests during the validation of COMBINE/OMEX archives
         VALIDATE_SEDML (:obj:`bool`): whether to validate SED-ML files during the validation of COMBINE/OMEX archives
         VALIDATE_SEDML_MODELS (:obj:`bool`): whether to validate models referenced by SED-ML files during the validation of COMBINE/OMEX archives
-        VALIDATE_NEUROML_INCLUDES (:obj:`bool`): whether to validate files included in NeuroML and LEMS files
+        VALIDATE_IMPORTED_MODEL_FILES (:obj:`bool`): whether to validate files imported from models
         VALIDATE_OMEX_METADATA (:obj:`bool`): whether to validate OMEX metadata (RDF files) during the validation of COMBINE/OMEX archives
         VALIDATE_IMAGES (:obj:`bool`): whether to validate the images in COMBINE/OMEX archives during their validation
         VALIDATE_RESULTS (:obj:`bool`): whether to validate the results of simulations following their execution
@@ -70,7 +70,7 @@ class Config(object):
                  VALIDATE_OMEX_MANIFESTS=True,
                  VALIDATE_SEDML=True,
                  VALIDATE_SEDML_MODELS=True,
-                 VALIDATE_NEUROML_INCLUDES=True,
+                 VALIDATE_IMPORTED_MODEL_FILES=True,
                  VALIDATE_OMEX_METADATA=True,
                  VALIDATE_IMAGES=True,
                  VALIDATE_RESULTS=True,
@@ -100,7 +100,7 @@ class Config(object):
             VALIDATE_SEDML (:obj:`bool`, optional): whether to validate SED-ML files during the execution of COMBINE/OMEX archives
             VALIDATE_SEDML_MODELS (:obj:`bool`, optional): whether to validate models referenced by SED-ML files during the execution
                 of COMBINE/OMEX archives
-            VALIDATE_NEUROML_INCLUDES (:obj:`bool`, optional): whether to validate files included in NeuroML and LEMS files
+            VALIDATE_IMPORTED_MODEL_FILES (:obj:`bool`, optional): whether to validate files imported from models
             VALIDATE_OMEX_METADATA (:obj:`bool`, optional): whether to validate OMEX metadata (RDF files) during the execution of
                 COMBINE/OMEX archives
             VALIDATE_IMAGES (:obj:`bool`, optional): whether to validate the images in COMBINE/OMEX archives during their execution
@@ -131,7 +131,7 @@ class Config(object):
         self.VALIDATE_OMEX_MANIFESTS = VALIDATE_OMEX_MANIFESTS
         self.VALIDATE_SEDML = VALIDATE_SEDML
         self.VALIDATE_SEDML_MODELS = VALIDATE_SEDML_MODELS
-        self.VALIDATE_NEUROML_INCLUDES = VALIDATE_NEUROML_INCLUDES
+        self.VALIDATE_IMPORTED_MODEL_FILES = VALIDATE_IMPORTED_MODEL_FILES
         self.VALIDATE_OMEX_METADATA = VALIDATE_OMEX_METADATA
         self.VALIDATE_IMAGES = VALIDATE_IMAGES
         self.VALIDATE_RESULTS = VALIDATE_RESULTS
@@ -182,7 +182,7 @@ def get_config():
         VALIDATE_OMEX_MANIFESTS=os.environ.get('VALIDATE_OMEX_MANIFESTS', '1').lower() in ['1', 'true'],
         VALIDATE_SEDML=os.environ.get('VALIDATE_SEDML', '1').lower() in ['1', 'true'],
         VALIDATE_SEDML_MODELS=os.environ.get('VALIDATE_SEDML_MODELS', '1').lower() in ['1', 'true'],
-        VALIDATE_NEUROML_INCLUDES=os.environ.get('VALIDATE_NEUROML_INCLUDES', '1').lower() in ['1', 'true'],
+        VALIDATE_IMPORTED_MODEL_FILES=os.environ.get('VALIDATE_IMPORTED_MODEL_FILES', '1').lower() in ['1', 'true'],
         VALIDATE_OMEX_METADATA=os.environ.get('VALIDATE_OMEX_METADATA', '1').lower() in ['1', 'true'],
         VALIDATE_IMAGES=os.environ.get('VALIDATE_IMAGES', '1').lower() in ['1', 'true'],
         VALIDATE_RESULTS=os.environ.get('VALIDATE_RESULTS', '1').lower() in ['1', 'true'],

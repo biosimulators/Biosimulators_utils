@@ -72,6 +72,14 @@ ENVIRONMENT_VARIABLES = {
         more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
     ),
 
+    'VALIDATE_IMPORTED_MODEL_FILES': EnvironmentVariable(
+        name='VALIDATE_IMPORTED_MODEL_FILES',
+        description='Whether to validate files imported from models.',
+        options=['0', '1'],
+        default='1' if config.VALIDATE_IMPORTED_MODEL_FILES else '0',
+        more_info_url='https://docs.biosimulators.org/Biosimulators_utils/source/biosimulators_utils.html',
+    ),
+
     'VALIDATE_OMEX_METADATA': EnvironmentVariable(
         name='VALIDATE_OMEX_METADATA',
         description='Whether to validate OMEX metadata (RDF files) during the validation of COMBINE/OMEX archives.',
