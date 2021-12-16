@@ -20,7 +20,9 @@ __all__ = [
 def submit_project_to_runbiosimulations(name, filename_or_url,
                                         simulator, simulator_version='latest',
                                         cpus=1, memory=8, max_time=20, env_vars=None,
-                                        email=None, public=False,
+                                        purpose='other',
+                                        email=None,
+                                        project_id=None,
                                         config=None):
     """ Submit a simulation project (COMBINE/OMEX archive) to runBioSimulations and, optionally, BioSimulations
 
@@ -34,8 +36,9 @@ def submit_project_to_runbiosimulations(name, filename_or_url,
         max_time (:obj:`float`, optional): maximum execution time in minutes
         env_vars (:obj:`list` of :obj:`dict`, optional): environment variables to execute the COMBINE/OMEX archive. Each
             element should have two string-valued keys ``key`` and ``value``
+        purpose (:obj:`str`, optional): purpose (``academic`` or ``other``)
         email (:obj:`str`, optional): email to receive a notification upon completion of the simulation run
-        public (:obj:`bool`, optional): whether to publish the simulation run to BioSimulations
+        project_id (:obj:`str`, optional): id to publish the run as to BioSimulations
         config (:obj:`Config`, optional): configuration
 
     Returns:
@@ -51,9 +54,12 @@ def submit_project_to_runbiosimulations(name, filename_or_url,
         "memory": memory,
         "maxTime": max_time,
         "envVars": env_vars or [],
+        "purpose": purpose,
         "email": email,
-        "public": public,
     }
+    if project_id:
+        run["projectId"] = project_id
+
     if os.path.isfile(filename_or_url):
         with open(filename_or_url, 'rb') as file:
             response = requests.post(
