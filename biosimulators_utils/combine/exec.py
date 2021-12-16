@@ -144,6 +144,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             print(get_summary_sedml_contents(archive, archive_tmp_dir, config=config))
 
         except Exception as exception:
+            if config.DEBUG:
+                raise
             shutil.rmtree(archive_tmp_dir)
 
             archive = CombineArchive()

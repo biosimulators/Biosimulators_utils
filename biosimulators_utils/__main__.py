@@ -474,6 +474,9 @@ class ExecuteModelingProjectController(cement.Controller):
                 user_to_exec_within_container=args.user, allocate_tty=not args.no_tty, remove_docker_container=not args.keep_container)
 
         except Exception as exception:
+            config = get_config()
+            if config.DEBUG:
+                raise
             raise SystemExit(str(exception))
 
 
