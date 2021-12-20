@@ -14,7 +14,7 @@ class BioSimulationsUtilsTestCase(unittest.TestCase):
         name = 'test'
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex')
         simulator = 'copasi'
-        with mock.patch('requests.post', return_value=mock.Mock(
+        with mock.patch.object(requests.Session, 'post', return_value=mock.Mock(
             raise_for_status=lambda: None,
             json=lambda: {
                 'id': '*' * 30
@@ -28,7 +28,7 @@ class BioSimulationsUtilsTestCase(unittest.TestCase):
         name = 'test'
         url = 'https://github.com/biosimulators/Biosimulators_utils/blob/dev/tests/fixtures/Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex?raw=true'
         simulator = 'copasi'
-        with mock.patch('requests.post', return_value=mock.Mock(
+        with mock.patch.object(requests.Session, 'post', return_value=mock.Mock(
             raise_for_status=lambda: None,
             json=lambda: {
                 'id': '*' * 30
@@ -42,17 +42,17 @@ class BioSimulationsUtilsTestCase(unittest.TestCase):
         def raise_for_status():
             raise Exception('invalid')
 
-        with mock.patch('requests.get', return_value=mock.Mock(
+        with mock.patch.object(requests.Session, 'get', return_value=mock.Mock(
             raise_for_status=raise_for_status,
             status_code=404,
         )):
-            with mock.patch('requests.post', return_value=mock.Mock(
+            with mock.patch.object(requests.Session, 'post', return_value=mock.Mock(
                 raise_for_status=lambda: None,
                 status_code=200,
             )):
                 publish_simulation_project('xxx', 'test', auth='aaa bbb')
 
-        with mock.patch('requests.get', return_value=mock.Mock(
+        with mock.patch.object(requests.Session, 'get', return_value=mock.Mock(
             raise_for_status=lambda: None,
             status_code=200,
             json=lambda: {
@@ -60,14 +60,14 @@ class BioSimulationsUtilsTestCase(unittest.TestCase):
                 'simulationRun': 'xxx',
             }
         )):
-            with mock.patch('requests.put', return_value=mock.Mock(
+            with mock.patch.object(requests.Session, 'put', return_value=mock.Mock(
                 raise_for_status=lambda: None,
                 status_code=200,
             )):
                 publish_simulation_project('xxx', 'test')
 
     def test_get_published_project(self):
-        with mock.patch('requests.get', return_value=mock.Mock(
+        with mock.patch.object(requests.Session, 'get', return_value=mock.Mock(
             raise_for_status=lambda: None,
             status_code=200,
             json=lambda: {
@@ -84,7 +84,7 @@ class BioSimulationsUtilsTestCase(unittest.TestCase):
         def raise_for_status():
             raise Exception('invalid')
 
-        with mock.patch('requests.get', return_value=mock.Mock(
+        with mock.patch.object(requests.Session, 'get', return_value=mock.Mock(
             raise_for_status=raise_for_status,
             status_code=404,
             json=lambda: {

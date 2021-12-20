@@ -6,6 +6,8 @@
 :License: MIT
 """
 from ..config import get_config, Config  # noqa: F401
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import json
 import os
 import requests
@@ -16,6 +18,7 @@ __all__ = [
     'publish_simulation_project',
     'get_published_project',
     'get_authorization_for_client',
+    'get_api_session',
     'validate_biosimulations_api_response',
 ]
 
@@ -51,6 +54,7 @@ def run_simulation_project(name, filename_or_url,
         :obj:`str`: runBioSimulations id
     """
     config = config or get_config()
+    session = get_api_session(config)
     endpoint = config.BIOSIMULATIONS_API_ENDPOINT + 'runs'
     run = {
         "name": name,
@@ -73,7 +77,7 @@ def run_simulation_project(name, filename_or_url,
             }
             if auth:
                 headers['Authorization'] = auth
-            response = requests.post(
+            response = session.post(
                 endpoint,
                 data={
                     'simulationRun': json.dumps(run),
@@ -91,7 +95,7 @@ def run_simulation_project(name, filename_or_url,
         }
         if auth:
             headers['Authorization'] = auth
-        response = requests.post(
+        response = session.post(
             endpoint,
             json=run,
             headers=headers,
@@ -114,16 +118,17 @@ def publish_simulation_project(run_id, project_id, overwrite=True, auth=None, co
     """
     config = config or get_config()
     endpoint = config.BIOSIMULATIONS_API_ENDPOINT + 'projects/{}'.format(project_id)
+    session = get_api_session(config)
 
     headers = {}
     if auth:
         headers['Authorization'] = auth
 
-    method = requests.post
+    method = session.post
     if overwrite:
         project = get_published_project(project_id)
         if project:
-            method = requests.put
+            method = session.put
 
     response = method(
         endpoint,
@@ -150,7 +155,8 @@ def get_published_project(project_id, config=None):
     """
     config = config or get_config()
     endpoint = config.BIOSIMULATIONS_API_ENDPOINT + 'projects/{}'.format(project_id)
-    response = requests.get(endpoint)
+    session = get_api_session(config)
+    response = session.get(endpoint)
 
     if response.status_code == 200:
         return response.json()
@@ -181,6 +187,29 @@ def get_authorization_for_client(id, secret, config=None):
     response.raise_for_status()
     response_data = response.json()
     return response_data['token_type'] + ' ' + response_data['access_token']
+
+
+def get_api_session(config=None):
+    """ Get a session for the BioSimulations API with retrying
+
+    Args
+        config (:obj:`Config`, optional): configuration
+
+    returns:
+        :obj:`requests.Session`: session
+    """
+    config = config or get_config()
+
+    retry_strategy = Retry(
+        total=5,
+        backoff_factor=10,
+        allowed_methods=['GET', 'PUT', 'POST'],
+        status_forcelist=[500, 502, 503],
+    )
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+    session = requests.Session()
+    session.mount(config.BIOSIMULATIONS_API_ENDPOINT, adapter)
+    return session
 
 
 def validate_biosimulations_api_response(response, failure_introductory_message, exception_type=None):
