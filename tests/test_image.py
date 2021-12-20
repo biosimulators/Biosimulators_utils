@@ -86,5 +86,6 @@ class ImageTestCase(unittest.TestCase):
 
         tmpdir = tempfile.mkdtemp()
         singularity_filename = os.path.join(tmpdir, 'subdir-1', 'subdir-2', 'test.sif')
-        image.convert_docker_image_to_singularity('hello-world', singularity_filename=singularity_filename)
+        with mock.patch('subprocess.check_call', side_effect=side_effect):
+            image.convert_docker_image_to_singularity('hello-world', singularity_filename=singularity_filename)
         shutil.rmtree(tmpdir)
