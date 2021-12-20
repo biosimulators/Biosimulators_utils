@@ -25,7 +25,9 @@ DEFAULT_REPORTS_PATH = 'reports.zip'
 DEFAULT_PLOTS_PATH = 'plots.zip'
 DEFAULT_LOG_PATH = 'log.yml'
 DEFAULT_BIOSIMULATORS_API_ENDPOINT = 'https://api.biosimulators.org/'
-DEFAULT_RUNBIOSIMULATIONS_API_ENDPOINT = 'https://api.biosimulations.org/'
+DEFAULT_BIOSIMULATIONS_API_ENDPOINT = 'https://api.biosimulations.org/'
+DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT = 'https://auth.biosimulations.org/oauth/token'
+DEFAULT_BIOSIMULATIONS_API_AUDIENCE = 'api.biosimulations.org'
 
 
 class Config(object):
@@ -58,7 +60,9 @@ class Config(object):
         LOG (:obj:`bool`): whether to log the execution of a COMBINE/OMEX archive
         LOG_PATH (:obj:`str`): path to save the execution log of a COMBINE/OMEX archive
         BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
-        RUNBIOSIMULATIONS_API_ENDPOINT (:obj:`str`): URL for runBioSimulations API
+        BIOSIMULATIONS_API_ENDPOINT (:obj:`str`): URL for runBioSimulations API
+        BIOSIMULATIONS_API_AUTH_ENDPOINT (:obj:`str`): authorization endpoint for the BioSimulations API
+        BIOSIMULATIONS_API_AUDIENCE (:obj:`str`): audience for the BioSimulations API
         VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
         DEBUG (:obj:`bool`): whether to raise exceptions rather than capturing them
     """
@@ -88,7 +92,9 @@ class Config(object):
                  LOG=True,
                  LOG_PATH=DEFAULT_LOG_PATH,
                  BIOSIMULATORS_API_ENDPOINT=DEFAULT_BIOSIMULATORS_API_ENDPOINT,
-                 RUNBIOSIMULATIONS_API_ENDPOINT=DEFAULT_RUNBIOSIMULATIONS_API_ENDPOINT,
+                 BIOSIMULATIONS_API_ENDPOINT=DEFAULT_BIOSIMULATIONS_API_ENDPOINT,
+                 BIOSIMULATIONS_API_AUTH_ENDPOINT=DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT,
+                 BIOSIMULATIONS_API_AUDIENCE=DEFAULT_BIOSIMULATIONS_API_AUDIENCE,
                  VERBOSE=False,
                  DEBUG=False):
         """
@@ -121,7 +127,9 @@ class Config(object):
             LOG (:obj:`bool`, optional): whether to log the execution of a COMBINE/OMEX archive
             LOG_PATH (:obj:`str`, optional): path to save the execution status of a COMBINE/OMEX archive
             BIOSIMULATORS_API_ENDPOINT (:obj:`str`, optional): URL for BioSimulators API
-            RUNBIOSIMULATIONS_API_ENDPOINT (:obj:`str`, optional): URL for runBioSimulations API
+            BIOSIMULATIONS_API_ENDPOINT (:obj:`str`, optional): URL for runBioSimulations API
+            BIOSIMULATIONS_API_AUTH_ENDPOINT (:obj:`str`, optional): authorization endpoint for the BioSimulations API
+            BIOSIMULATIONS_API_AUDIENCE (:obj:`str`, optional): audience for the BioSimulations API
             VERBOSE (:obj:`bool`, optional): whether to display the detailed output of the execution of each task
             DEBUG (:obj:`bool`, optional): whether to raise exceptions rather than capturing them
         """
@@ -149,7 +157,9 @@ class Config(object):
         self.LOG = LOG
         self.LOG_PATH = LOG_PATH
         self.BIOSIMULATORS_API_ENDPOINT = BIOSIMULATORS_API_ENDPOINT
-        self.RUNBIOSIMULATIONS_API_ENDPOINT = RUNBIOSIMULATIONS_API_ENDPOINT
+        self.BIOSIMULATIONS_API_ENDPOINT = BIOSIMULATIONS_API_ENDPOINT
+        self.BIOSIMULATIONS_API_AUTH_ENDPOINT = BIOSIMULATIONS_API_AUTH_ENDPOINT
+        self.BIOSIMULATIONS_API_AUDIENCE = BIOSIMULATIONS_API_AUDIENCE
         self.VERBOSE = VERBOSE
         self.DEBUG = DEBUG
 
@@ -201,7 +211,9 @@ def get_config():
         LOG=os.environ.get('LOG', '1').lower() in ['1', 'true'],
         LOG_PATH=os.environ.get('LOG_PATH', DEFAULT_LOG_PATH),
         BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', DEFAULT_BIOSIMULATORS_API_ENDPOINT),
-        RUNBIOSIMULATIONS_API_ENDPOINT=os.environ.get('RUNBIOSIMULATIONS_API_ENDPOINT', DEFAULT_RUNBIOSIMULATIONS_API_ENDPOINT),
+        BIOSIMULATIONS_API_ENDPOINT=os.environ.get('BIOSIMULATIONS_API_ENDPOINT', DEFAULT_BIOSIMULATIONS_API_ENDPOINT),
+        BIOSIMULATIONS_API_AUTH_ENDPOINT=os.environ.get('BIOSIMULATIONS_API_AUTH_ENDPOINT', DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT),
+        BIOSIMULATIONS_API_AUDIENCE=os.environ.get('BIOSIMULATIONS_API_AUDIENCE', DEFAULT_BIOSIMULATIONS_API_AUDIENCE),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
     )

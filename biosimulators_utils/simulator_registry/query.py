@@ -29,9 +29,9 @@ def get_simulator_version_specs(id):
 
     try:
         intro_failure_msg = "The specifications of the versions of `{}` could not be retrieved from the BioSimulators registry.".format(id)
-        validate_biosimulations_api_response(response, intro_failure_msg)
+        validate_biosimulations_api_response(response, intro_failure_msg, ValueError)
         version_specs = response.json()
-    except requests.exceptions.HTTPError:
+    except ValueError:
         if response.status_code != 404:
             raise
         version_specs = []

@@ -12,18 +12,22 @@ import requests
 import simplejson.errors
 
 __all__ = [
-    'submit_project_to_runbiosimulations',
+    'run_simulation_project',
+    'publish_simulation_project',
+    'get_published_project',
+    'get_authorization_for_client',
     'validate_biosimulations_api_response',
 ]
 
 
-def submit_project_to_runbiosimulations(name, filename_or_url,
-                                        simulator, simulator_version='latest',
-                                        cpus=1, memory=8, max_time=20, env_vars=None,
-                                        purpose='other',
-                                        email=None,
-                                        project_id=None,
-                                        config=None):
+def run_simulation_project(name, filename_or_url,
+                           simulator, simulator_version='latest',
+                           cpus=1, memory=8, max_time=20, env_vars=None,
+                           purpose='other',
+                           email=None,
+                           project_id=None,
+                           auth=None,
+                           config=None):
     """ Submit a simulation project (COMBINE/OMEX archive) to runBioSimulations and, optionally, BioSimulations
 
     Args:
@@ -39,13 +43,15 @@ def submit_project_to_runbiosimulations(name, filename_or_url,
         purpose (:obj:`str`, optional): purpose (``academic`` or ``other``)
         email (:obj:`str`, optional): email to receive a notification upon completion of the simulation run
         project_id (:obj:`str`, optional): id to publish the run as to BioSimulations
+        auth (obj:`str`, optional): authorization for the BioSimulations; needed to claim edit the published project in
+            the future
         config (:obj:`Config`, optional): configuration
 
     Returns:
         :obj:`str`: runBioSimulations id
     """
     config = config or get_config()
-    endpoint = config.RUNBIOSIMULATIONS_API_ENDPOINT + 'runs'
+    endpoint = config.BIOSIMULATIONS_API_ENDPOINT + 'runs'
     run = {
         "name": name,
         "simulator": simulator,
@@ -62,6 +68,11 @@ def submit_project_to_runbiosimulations(name, filename_or_url,
 
     if os.path.isfile(filename_or_url):
         with open(filename_or_url, 'rb') as file:
+            headers = {
+                "Accept": "application/json",
+            }
+            if auth:
+                headers['Authorization'] = auth
             response = requests.post(
                 endpoint,
                 data={
@@ -70,22 +81,106 @@ def submit_project_to_runbiosimulations(name, filename_or_url,
                 files={
                     'file': ('project.omex', file, 'application/zip'),
                 },
-                headers={
-                    "Accept": "application/json",
-                }
+                headers=headers,
             )
     else:
         run['url'] = filename_or_url
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+        if auth:
+            headers['Authorization'] = auth
         response = requests.post(
             endpoint,
             json=run,
-            headers={
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            }
+            headers=headers,
         )
-    response.raise_for_status()
+
+    validate_biosimulations_api_response(response, 'Run could not be submitted.', RuntimeError)
+
     return response.json()['id']
+
+
+def publish_simulation_project(run_id, project_id, overwrite=True, auth=None, config=None):
+    """ Publish a project to BioSimulations
+
+    Args:
+        run_id (:obj:`str`): id of the simulation run to publish
+        project_id (:obj:`str`): desired id for the published project
+        auth (obj:`str`, optional): authorization for the BioSimulations; needed to claim edit the published project in
+            the future
+        config (:obj:`Config`, optional): configuration
+    """
+    config = config or get_config()
+    endpoint = config.BIOSIMULATIONS_API_ENDPOINT + 'projects/{}'.format(project_id)
+
+    headers = {}
+    if auth:
+        headers['Authorization'] = auth
+
+    method = requests.post
+    if overwrite:
+        project = get_published_project(project_id)
+        if project:
+            method = requests.put
+
+    response = method(
+        endpoint,
+        json={
+            'id': project_id,
+            'simulationRun': run_id,
+        },
+        headers=headers,
+    )
+    validate_biosimulations_api_response(response,
+                                         'Project `{}` for run `{}` could not be published.'.format(project_id, run_id),
+                                         ValueError)
+
+
+def get_published_project(project_id, config=None):
+    """ Publish a project to BioSimulations
+
+    Args:
+        project_id (:obj:`str`): desired id for the published project
+        config (:obj:`Config`, optional): configuration
+
+    Returns:
+        :obj:`dict`: in schema ``Project`` or :obj:`None` if the project doesn't exist
+    """
+    config = config or get_config()
+    endpoint = config.BIOSIMULATIONS_API_ENDPOINT + 'projects/{}'.format(project_id)
+    response = requests.get(endpoint)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+
+
+def get_authorization_for_client(id, secret, config=None):
+    """ Get the authorization for a client of the BioSimulations API
+
+    Args:
+        id (:obj:`str`): id of the API client
+        secret (:obj:`str`): secret for API client
+        config (:obj:`Config`, optional): configuration
+
+    Returns:
+        :obj:`str`: authorization for the client
+    """
+    config = config or get_config()
+
+    response = requests.post(config.BIOSIMULATIONS_API_AUTH_ENDPOINT,
+                             json={
+                                 'client_id': id,
+                                 'client_secret': secret,
+                                 'audience': config.BIOSIMULATIONS_API_AUDIENCE,
+                                 "grant_type": "client_credentials",
+                             })
+    response.raise_for_status()
+    response_data = response.json()
+    return response_data['token_type'] + ' ' + response_data['access_token']
 
 
 def validate_biosimulations_api_response(response, failure_introductory_message, exception_type=None):

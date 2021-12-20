@@ -48,5 +48,5 @@ class QuerySimulatorRegistryTestCase(unittest.TestCase):
             )
 
         with mock.patch('requests.get', side_effect=requests_get):
-            with self.assertRaises(requests.exceptions.HTTPError):
+            with self.assertRaises(ValueError):
                 self.assertEqual(get_simulator_version_specs('tellurium'), [])
