@@ -192,7 +192,7 @@ def get_authorization_for_client(id, secret, config=None):
 def get_api_session(num_retries=5, backoff_factor=10, config=None):
     """ Get a session for the BioSimulations API with retrying
 
-    Args        
+    Args:
         num_retries (:obj:`int`): number of times to retry each query
         backoff_factor (:obj:`float`): initial delay between retries
         config (:obj:`Config`, optional): configuration
