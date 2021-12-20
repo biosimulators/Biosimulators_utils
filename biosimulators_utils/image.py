@@ -82,8 +82,9 @@ def pull_docker_image(docker_client, url):
     except docker.errors.NotFound:
         raise docker.errors.NotFound('{} is not a tag or URL for a Docker image.'.format(url))
     except Exception as error:
-        raise Exception('Image {} could not be pulled.\n\n  {}'.format(
-            url, str(error).replace('\n', '\n  ')))
+        msg = 'Image {} could not be pulled.\n\n  {}'.format(
+            url, str(error).replace('\n', '\n  '))
+        raise Exception(msg)
 
 
 def tag_and_push_docker_image(docker_client, image, tag):
@@ -96,6 +97,7 @@ def tag_and_push_docker_image(docker_client, image, tag):
     """
     assert image.tag(tag)
     response = docker_client.images.push(tag)
+    print(response)
     response = json.loads(response.rstrip().split('\n')[-1])
     if 'error' in response:
         raise Exception('Unable to push image to {}\n  {}'.format(
