@@ -54,7 +54,7 @@ def run_simulation_project(name, filename_or_url,
         :obj:`str`: runBioSimulations id
     """
     config = config or get_config()
-    session = get_api_session(config)
+    session = get_api_session(config=config)
     endpoint = config.BIOSIMULATIONS_API_ENDPOINT + 'runs'
     run = {
         "name": name,
@@ -118,7 +118,7 @@ def publish_simulation_project(run_id, project_id, overwrite=True, auth=None, co
     """
     config = config or get_config()
     endpoint = config.BIOSIMULATIONS_API_ENDPOINT + 'projects/{}'.format(project_id)
-    session = get_api_session(config)
+    session = get_api_session(config=config)
 
     headers = {}
     if auth:
@@ -155,7 +155,7 @@ def get_published_project(project_id, config=None):
     """
     config = config or get_config()
     endpoint = config.BIOSIMULATIONS_API_ENDPOINT + 'projects/{}'.format(project_id)
-    session = get_api_session(config)
+    session = get_api_session(config=config)
     response = session.get(endpoint)
 
     if response.status_code == 200:
@@ -189,10 +189,12 @@ def get_authorization_for_client(id, secret, config=None):
     return response_data['token_type'] + ' ' + response_data['access_token']
 
 
-def get_api_session(config=None):
+def get_api_session(num_retries=5, backoff_factor=10, config=None):
     """ Get a session for the BioSimulations API with retrying
 
-    Args
+    Args        
+        num_retries (:obj:`int`): number of times to retry each query
+        backoff_factor (:obj:`float`): initial delay between retries
         config (:obj:`Config`, optional): configuration
 
     returns:
@@ -201,8 +203,8 @@ def get_api_session(config=None):
     config = config or get_config()
 
     retry_strategy = Retry(
-        total=5,
-        backoff_factor=10,
+        total=num_retries,
+        backoff_factor=backoff_factor,
         allowed_methods=['GET', 'PUT', 'POST'],
         status_forcelist=[500, 502, 503],
     )
