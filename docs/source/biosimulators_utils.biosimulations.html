@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.biosimulations package &#8212; BioSimulators utils 0.1.149 documentation</title>
+    <title>biosimulators_utils.biosimulations package &#8212; BioSimulators utils 0.1.150 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -613,6 +613,27 @@
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.get_api_session">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_api_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_retries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backoff_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_api_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a session for the BioSimulations API with retrying</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_retries</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – number of times to retry each query</p></li>
+<li><p><strong>backoff_factor</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – initial delay between retries</p></li>
+<li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>session</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">requests.Session</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.get_authorization_for_client">
 <span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_authorization_for_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_authorization_for_client" title="Permalink to this definition">¶</a></dt>
