@@ -231,7 +231,7 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'multiple_allowed': True,
         'has_uri': True,
         'has_label': True,
-        'required': True,
+        'required': False,
     },
     'http://dublincore.org/specifications/dublin-core/dcmi-terms/contributor': {
         'namespace': {
