@@ -189,7 +189,7 @@ def get_authorization_for_client(id, secret, config=None):
     return response_data['token_type'] + ' ' + response_data['access_token']
 
 
-def get_api_session(num_retries=5, backoff_factor=10, config=None):
+def get_api_session(num_retries=10, backoff_factor=0.25, config=None):
     """ Get a session for the BioSimulations API with retrying
 
     Args:
@@ -206,7 +206,7 @@ def get_api_session(num_retries=5, backoff_factor=10, config=None):
         total=num_retries,
         backoff_factor=backoff_factor,
         allowed_methods=['GET', 'PUT', 'POST'],
-        status_forcelist=[500, 502, 503],
+        status_forcelist=[429, 500, 502, 503, 504],
     )
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session = requests.Session()
