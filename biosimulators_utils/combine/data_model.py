@@ -22,14 +22,7 @@ __all__ = [
 
 
 class CombineArchiveBase(abc.ABC):
-    """ A COMBINE/OMEX archive
-
-    Attributes:
-        description (:obj:`str`): description
-        authors (:obj:`list` of :obj:`Person`): authors
-        created (:obj:`datetime.datetime`): created date
-        updated (:obj:`datetime.datetime`): updated date
-    """
+    """ A COMBINE/OMEX archive """
     pass
 
 
@@ -38,26 +31,14 @@ class CombineArchive(CombineArchiveBase):
 
     Attributes:
         contents (:obj:`list` of :obj:`CombineArchiveContent`): contents of the archive
-        description (:obj:`str`): description
-        authors (:obj:`list` of :obj:`Person`): authors
-        created (:obj:`datetime.datetime`): created date
-        updated (:obj:`datetime.datetime`): updated date
     """
 
-    def __init__(self, contents=None, description=None, authors=None, created=None, updated=None):
+    def __init__(self, contents=None):
         """
         Args:
             contents (:obj:`list` of :obj:`CombineArchiveContent`, optional): contents of the archive
-            description (:obj:`str`, optional): description
-            authors (:obj:`list` of :obj:`Person`, optional): authors
-            created (:obj:`datetime.datetime`, optional): created date
-            updated (:obj:`datetime.datetime`, optional): updated date
         """
         self.contents = contents or []
-        self.description = description
-        self.authors = authors or []
-        self.created = created
-        self.updated = updated
 
     def get_master_content(self):
         """ Get the master content of an archive
@@ -78,8 +59,7 @@ class CombineArchive(CombineArchiveBase):
             :obj:`tuple` of :obj:`str`: tuple representation of a COMBINE/OMEX archive
         """
         contents = tuple(none_sorted(content.to_tuple() for content in self.contents))
-        authors = tuple(none_sorted(author.to_tuple() for author in self.authors))
-        return (contents, self.description, authors, self.created, self.updated)
+        return (contents)
 
     def is_equal(self, other):
         """ Determine if two content items are equal
@@ -91,11 +71,7 @@ class CombineArchive(CombineArchiveBase):
             :obj:`bool`: :obj:`True`, if two archives are equal
         """
         return self.__class__ == other.__class__ \
-            and are_lists_equal(self.contents, other.contents) \
-            and self.description == other.description \
-            and are_lists_equal(self.authors, other.authors) \
-            and self.created == other.created \
-            and self.updated == other.updated
+            and are_lists_equal(self.contents, other.contents)
 
 
 class CombineArchiveContent(CombineArchiveBase):
@@ -105,30 +81,18 @@ class CombineArchiveContent(CombineArchiveBase):
         location (:obj:`str`): path to the content
         format (:obj:`str`): URL for the specification of the format of the content
         master (:obj:`bool`): :obj:`True`, if the content is the "primary" content of the parent archive
-        description (:obj:`str`): description
-        authors (:obj:`list` of :obj:`Person`): authors
-        created (:obj:`datetime.datetime`): created date
-        updated (:obj:`datetime.datetime`): updated date
     """
 
-    def __init__(self, location=None, format=None, master=False, description=None, authors=None, created=None, updated=None):
+    def __init__(self, location=None, format=None, master=False):
         """
         Args:
             location (:obj:`str`, optional): path to the content
             format (:obj:`str`, optional): URL for the specification of the format of the content
             master (:obj:`bool`, optional): :obj:`True`, if the content is the "primary" content of the parent archive
-            description (:obj:`str`, optional): description
-            authors (:obj:`list` of :obj:`Person`, optional): authors
-            created (:obj:`datetime.datetime`, optional): created date
-            updated (:obj:`datetime.datetime`, optional): updated date
         """
         self.location = location
         self.format = format
         self.master = master
-        self.description = description
-        self.authors = authors or []
-        self.created = created
-        self.updated = updated
 
     def to_tuple(self):
         """ Tuple representation of a content item of a COMBINE/OMEX archive
@@ -136,8 +100,7 @@ class CombineArchiveContent(CombineArchiveBase):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation of a content item of a COMBINE/OMEX archive
         """
-        authors = tuple(none_sorted(author.to_tuple() for author in self.authors))
-        return (self.location, self.format, self.master, self.description, authors, self.created, self.updated)
+        return (self.location, self.format, self.master)
 
     def is_equal(self, other):
         """ Determine if two content items are equal
@@ -151,11 +114,7 @@ class CombineArchiveContent(CombineArchiveBase):
         return self.__class__ == other.__class__ \
             and self.location == other.location \
             and self.format == other.format \
-            and self.master == other.master \
-            and self.description == other.description \
-            and are_lists_equal(self.authors, other.authors) \
-            and self.created == other.created \
-            and self.updated == other.updated
+            and self.master == other.master
 
 
 class CombineArchiveContentFormat(str, enum.Enum):

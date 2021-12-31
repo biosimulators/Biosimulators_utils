@@ -57,9 +57,6 @@ class CombineArchiveWriter(object):
         # instantiate archive
         archive_comb = libcombine.CombineArchive()
 
-        # set metadata about archive
-        self._write_metadata(archive, archive_comb, '.')
-
         # add files to archive
         for i_content, content in enumerate(archive.contents):
             if not archive_comb.addFile(
@@ -72,7 +69,6 @@ class CombineArchiveWriter(object):
                 msg = 'Content element {} could not be added to the archive.'.format(content_id)
                 self.errors.append([msg])
                 raise Exception(msg)
-            self._write_metadata(content, archive_comb, content.location)
 
         # save archive to a file
         if not archive_comb.writeToFile(out_file):
@@ -119,55 +115,6 @@ class CombineArchiveWriter(object):
             raise ValueError(msg)
 
         libcombine.writeOMEXToFile(manifest, filename)
-
-    def _write_metadata(self, obj, archive_comb, filename):
-        """ Write metadata about an archive or a file in an archive
-
-        Args:
-            obj (:obj:`CombineArchiveBase`): archive or file in an archive
-            archive_comb (:obj:`libcombine.CombineArchive`): archive
-            filename (:obj:`str`): path of object with archive
-
-        Raises:
-            :obj:`NotImplementedError`: of the updated date is not defined
-        """
-        desc_comb = libcombine.OmexDescription()
-        desc_comb.setAbout(filename)
-        set_attributes = set()
-
-        if obj.description:
-            set_attributes.add('description')
-            desc_comb.setDescription(obj.description)
-
-        for author in obj.authors:
-            set_attributes.add('authors')
-            creator_comb = libcombine.VCard()
-            if author.given_name:
-                creator_comb.setGivenName(author.given_name)
-            if author.family_name:
-                creator_comb.setFamilyName(author.family_name)
-            desc_comb.addCreator(creator_comb)
-
-        if obj.created:
-            set_attributes.add('created')
-            date_comb = libcombine.Date()
-            date_comb.setDateAsString(obj.created.strftime('%Y-%m-%dT%H:%M:%SZ'))
-            desc_comb.setCreated(date_comb)
-
-        if obj.updated:
-            set_attributes.add('updated')
-            date_comb = libcombine.Date()
-            date_comb.setDateAsString(obj.updated.strftime('%Y-%m-%dT%H:%M:%SZ'))
-            desc_comb.getModified().append(date_comb)
-
-        if set_attributes:
-            if desc_comb.isEmpty():
-                msg = 'libCOMBINE requires additional metadata. Only the following attributes are set:\n  {}'.format(
-                    '\n  '.join(sorted(set_attributes)))
-                self.errors.append([msg])
-                raise ValueError(msg)
-
-            archive_comb.addMetadata(filename, desc_comb)
 
 
 class CombineArchiveReader(object):
@@ -239,9 +186,6 @@ class CombineArchiveReader(object):
         # instantiate archive
         archive = CombineArchive()
 
-        # read metadata
-        self._read_metadata(archive_comb, '.', archive)
-
         # read files
         for location in archive_comb.getAllLocations():
             location = location.c_str()
@@ -257,7 +201,6 @@ class CombineArchiveReader(object):
                 format=format,
                 master=file_comb.isSetMaster() and file_comb.getMaster(),
             )
-            self._read_metadata(archive_comb, location, content)
             archive.contents.append(content)
 
         # extract files
@@ -368,38 +311,6 @@ class CombineArchiveReader(object):
             contents.append(content)
 
         return contents
-
-    def _read_metadata(self, archive_comb, filename, obj):
-        """ Read metadata about an archive or a file in an archive
-
-        Args:
-            archive_comb (:obj:`libcombine.CombineArchive`): archive
-            filename (:obj:`str`): path to object within archive
-            obj (:obj:`CombineArchiveBase`): object to add metadata to
-        """
-        desc_comb = archive_comb.getMetadataForLocation(filename)
-        if not desc_comb.isEmpty():
-            obj.description = desc_comb.getDescription() or None
-
-            for creator_comb in desc_comb.getCreators():
-                obj.authors.append(Person(
-                    given_name=creator_comb.getGivenName() or None,
-                    family_name=creator_comb.getFamilyName() or None,
-                ))
-
-            created_comb = desc_comb.getCreated().getDateAsString()
-            if created_comb == self.NONE_DATETIME:
-                obj.created = None
-            else:
-                obj.created = dateutil.parser.parse(created_comb)
-
-            obj.updated = None
-            for modified_comb in desc_comb.getModified():
-                updated = dateutil.parser.parse(modified_comb.getDateAsString())
-                if obj.updated:
-                    obj.updated = max(obj.updated, updated)
-                else:
-                    obj.updated = updated
 
 
 class CombineArchiveZipReader(object):

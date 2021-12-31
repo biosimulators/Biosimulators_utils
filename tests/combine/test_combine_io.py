@@ -25,20 +25,14 @@ class ReadWriteTestCase(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
 
     def test(self):
-        author1 = Person(given_name='first1', family_name='last1')
-        author2 = Person(given_name='first2', family_name='last2')
-
         format = 'https://spec-url-for-format'
-        description = 'Example content'
-        authors = [author1, author2]
-        now = datetime.datetime(2020, 1, 2, 1, 2, 3, tzinfo=dateutil.tz.tzutc())
         content1 = data_model.CombineArchiveContent(
-            '1.txt', format, False, description=description, authors=authors, created=now, updated=now)
+            '1.txt', format, False)
         content2 = data_model.CombineArchiveContent(
-            '2/2.txt', format, True, description=description, authors=authors, created=None, updated=now)
+            '2/2.txt', format, True)
 
-        archive1 = data_model.CombineArchive([content1, content2], description=description, authors=authors, created=now, updated=now)
-        archive2 = data_model.CombineArchive([content1, content1], description=description, authors=authors, created=None, updated=now)
+        archive1 = data_model.CombineArchive([content1, content2])
+        archive2 = data_model.CombineArchive([content1, content1])
 
         archive_file = os.path.join(self.temp_dir, 'test.omex')
         in_dir = os.path.join(self.temp_dir, 'in')
@@ -60,11 +54,11 @@ class ReadWriteTestCase(unittest.TestCase):
         archive1b = io.CombineArchiveReader().run(archive_file, out_dir, include_omex_metadata_files=True)
         metadata_contents = [content.location for content in archive1b.contents
                              if re.match(data_model.CombineArchiveContentFormatPattern.OMEX_METADATA.value, content.format)]
-        self.assertEqual(metadata_contents, ['metadata.rdf', 'metadata_1.rdf', 'metadata_2.rdf'])
+        self.assertEqual(metadata_contents, [])
 
         self.assertEqual(sorted(os.listdir(out_dir)), sorted([
             content1.location, os.path.dirname(content2.location),
-            'manifest.xml', 'metadata.rdf', 'metadata_1.rdf', 'metadata_2.rdf',
+            'manifest.xml',
         ]))
         with open(os.path.join(out_dir, content1.location), 'r') as file:
             self.assertEqual('a', file.read())
@@ -76,7 +70,7 @@ class ReadWriteTestCase(unittest.TestCase):
         self.assertTrue(archive2.is_equal(archive2b))
         self.assertEqual(sorted(os.listdir(out_dir2)), sorted([
             content1.location,
-            'manifest.xml', 'metadata.rdf', 'metadata_1.rdf',
+            'manifest.xml',
         ]))
         with open(os.path.join(out_dir2, content1.location), 'r') as file:
             self.assertEqual('a', file.read())
@@ -86,12 +80,10 @@ class ReadWriteTestCase(unittest.TestCase):
 
     def test_no_updated_date(self):
         format = 'https://spec-url-for-format'
-        description = 'Example content'
-        authors = []
         content = data_model.CombineArchiveContent(
-            '1.txt', format, False, description=description, created=None, updated=None)
+            '1.txt', format, False)
 
-        archive = data_model.CombineArchive([content], description=description, authors=authors, created=None, updated=None)
+        archive = data_model.CombineArchive([content])
 
         archive_file = os.path.join(self.temp_dir, 'test.omex')
         in_dir = os.path.join(self.temp_dir, 'in')
@@ -112,15 +104,10 @@ class ReadWriteTestCase(unittest.TestCase):
 
         self.assertEqual(sorted(os.listdir(out_dir)), sorted([
             content.location,
-            'manifest.xml', 'metadata.rdf', 'metadata_1.rdf',
+            'manifest.xml',
         ]))
         with open(os.path.join(out_dir, content.location), 'r') as file:
             self.assertEqual('a', file.read())
-
-    def test_multiple_updated_dates(self):
-        archive_file = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'multiple-updated-dates.omex')
-        archive = io.CombineArchiveReader().run(archive_file, self.temp_dir)
-        self.assertEqual(archive.updated, datetime.datetime(2020, 1, 1, 1, 1, 1, tzinfo=dateutil.tz.tzutc()))
 
     def test_read_error_handling(self):
         archive_file = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sedml-validation',
@@ -135,10 +122,10 @@ class ReadWriteTestCase(unittest.TestCase):
     def test_write_error_handling(self):
         now = datetime.datetime(2020, 1, 2, 1, 2, 3, tzinfo=dateutil.tz.tzutc())
         content = data_model.CombineArchiveContent(
-            '1.txt', 'plain/text', False, description='description', created=now, updated=now)
+            '1.txt', 'plain/text', False)
         with open(os.path.join(self.temp_dir, content.location), 'w') as file:
             pass
-        archive = data_model.CombineArchive([content], description='description', created=now, updated=now)
+        archive = data_model.CombineArchive([content])
 
         archive_file = os.path.join(self.temp_dir, 'archive.omex')
         with self.assertRaisesRegex(Exception, 'could not be saved'):
