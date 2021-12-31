@@ -271,7 +271,7 @@ def get_formats(config=None):
 
 
 def get_file_extension_combine_uri_map(config=None):
-    """ Get a map from file extensions to URIs for use with manifests of COMBINE/OMEX archives 
+    """ Get a map from file extensions to URIs for use with manifests of COMBINE/OMEX archives
 
     Args:
         config (:obj:`Config`, optional): configuration
