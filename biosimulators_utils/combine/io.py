@@ -10,11 +10,8 @@ from .data_model import (CombineArchiveBase, CombineArchive, CombineArchiveConte
                          CombineArchiveContentFormat, CombineArchiveContentFormatPattern)
 from ..archive.io import ArchiveReader
 from ..config import get_config, Config  # noqa: F401
-from ..data_model import Person
 from ..utils.core import flatten_nested_list_of_strings
 from ..warnings import warn, BioSimulatorsWarning
-import dateutil.parser
-import dateutil.tz
 import libcombine
 import os
 import re
