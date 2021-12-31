@@ -20,6 +20,9 @@ __all__ = [
     'get_authorization_for_client',
     'get_api_session',
     'validate_biosimulations_api_response',
+    'get_formats',
+    'get_file_extension_combine_uri_map',
+    'get_ontology_terms',
 ]
 
 
@@ -253,3 +256,54 @@ def validate_biosimulations_api_response(response, failure_introductory_message,
             raise exception_type(error_message)
         else:
             raise
+
+
+def get_formats(config=None):
+    """ Get information about the file formats used by BioSimulations
+
+    Args:
+        config (:obj:`Config`, optional): configuration
+
+    Returns:
+        :obj:`list` of :obj:`dict`: information about the file formats used by BioSimulations
+    """
+    return get_ontology_terms('EDAM', config=config)
+
+
+def get_file_extension_combine_uri_map(config=None):
+    """ Get a map from file extensions to URIs for use with manifests of COMBINE/OMEX archives 
+
+    Args:
+        config (:obj:`Config`, optional): configuration
+
+    Returns:
+        :obj:`dict`: which maps extensions to lists of associated URIs
+    """
+    formats = get_formats(config=config)
+    map = {}
+    for format in formats:
+        for extension in format['fileExtensions']:
+            if extension not in map:
+                map[extension] = set()
+            for uri in format.get('biosimulationsMetadata', {}).get('omexManifestUris', []):
+                map[extension].add(uri)
+            for media_type in format['mediaTypes']:
+                map[extension].add('http://purl.org/NET/mediatypes/' + media_type)
+
+    return map
+
+
+def get_ontology_terms(ontology, config=None):
+    """ Get the terms of an ontology used by BioSimulations
+
+    Args:
+        ontology (:obj:`str`): ontology such as ``EDAM``, ``KISAO``, ``Linguist``, ``SBO``, ``SIO``, or ``SPDX``
+        config (:obj:`Config`, optional): configuration
+
+    Returns:
+        :obj:`list` of :obj:`dict`: ontology terms
+    """
+    config = config or get_config()
+    response = requests.get(config.BIOSIMULATIONS_API_ENDPOINT + 'ontologies/' + ontology)
+    response.raise_for_status()
+    return response.json()

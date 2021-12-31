@@ -1,6 +1,7 @@
 from biosimulators_utils.biosimulations.utils import (
     run_simulation_project, publish_simulation_project, get_published_project,
     get_authorization_for_client, validate_biosimulations_api_response,
+    get_file_extension_combine_uri_map,
 )
 from unittest import mock
 import os
@@ -145,3 +146,19 @@ class BioSimulationsUtilsTestCase(unittest.TestCase):
         )
         with self.assertRaises(requests.RequestException):
             validate_biosimulations_api_response(response, 'Summary', ValueError)
+
+    def test_get_file_extension_combine_uri_map(self):
+        formats = [
+            {
+                'fileExtensions': ['ext'],
+                'mediaTypes': ['type'],
+                'biosimulationsMetadata': {
+                    'omexManifestUris': ['uri']
+                }
+            }
+        ]
+        with mock.patch('requests.get', return_value=mock.Mock(raise_for_status=lambda: None, json=lambda: formats)):
+            map = get_file_extension_combine_uri_map()
+        self.assertEqual(map, {
+            'ext': set(['http://purl.org/NET/mediatypes/type', 'uri']),
+        })
