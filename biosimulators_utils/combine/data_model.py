@@ -136,6 +136,7 @@ class CombineArchiveContentFormat(str, enum.Enum):
     Escher = 'http://purl.org/NET/mediatypes/application/escher+json'
     GIF = 'http://purl.org/NET/mediatypes/image/gif'
     GINML = 'http://purl.org/NET/mediatypes/application/ginml+xml'
+    GMSH_MESH = 'http://purl.org/NET/mediatypes/model/mesh'
     HDF5 = 'http://purl.org/NET/mediatypes/application/x-hdf'
     HOC = 'http://purl.org/NET/mediatypes/text/x-hoc'
     HTML = 'http://purl.org/NET/mediatypes/text/html'
@@ -150,7 +151,6 @@ class CombineArchiveContentFormat(str, enum.Enum):
     MATLAB = 'http://purl.org/NET/mediatypes/text/x-matlab'
     MATLAB_DATA = 'http://purl.org/NET/mediatypes/application/x-matlab-data'
     MorpheusML = 'http://purl.org/NET/mediatypes/application/morpheusml+xml'
-    MSH = 'http://purl.org/NET/mediatypes/model/mesh'
     NeuroML = 'http://identifiers.org/combine.specifications/neuroml'
     NuML = 'http://purl.org/NET/mediatypes/application/numl+xml'
     OMEX = 'http://identifiers.org/combine.specifications/omex'
@@ -201,7 +201,7 @@ class CombineArchiveContentFormat(str, enum.Enum):
 
 class CombineArchiveContentFormatPattern(str, enum.Enum):
     """ Format for the content of COMBINE/OMEX archives """
-    AI = r'^https?://purl\.org/NET/mediatypes/application/pdf$'
+    AI = r'^https?://purl\.org/NET/mediatypes/(application/pdf|application/postscript)$'
     BMP = r'^https?://purl\.org/NET/mediatypes/image/bmp$'
     BNGL = r'^https?://purl\.org/NET/mediatypes/text/bngl\+plain($|\.)'
     BioPAX = r'^https?://identifiers\.org/combine\.specifications/biopax($|\.)'
@@ -218,6 +218,7 @@ class CombineArchiveContentFormatPattern(str, enum.Enum):
     Escher = r'^https?://purl\.org/NET/mediatypes/application/escher\+json$'
     GIF = r'^https?://purl\.org/NET/mediatypes/image/gif$'
     GINML = r'^https?://purl\.org/NET/mediatypes/application/ginml\+xml$'
+    GMSH_MESH = r'^https?://purl\.org/NET/mediatypes/model/mesh$'
     HDF5 = r'^https?://purl\.org/NET/mediatypes/application/x-hdf5?$'
     HOC = r'^https?://purl\.org/NET/mediatypes/text/x-hoc$'
     HTML = r'^https?://purl\.org/NET/mediatypes/(text/html|application/xhtml\+xml)$'
@@ -232,7 +233,6 @@ class CombineArchiveContentFormatPattern(str, enum.Enum):
     MATLAB = r'^https?://purl\.org/NET/mediatypes/text/x-matlab$'
     MATLAB_DATA = r'^https?://purl\.org/NET/mediatypes/application/x-matlab-data$'
     MorpheusML = r'^https?://purl\.org/NET/mediatypes/application/morpheusml\+xml$'
-    MSH = r'^https?://purl\.org/NET/mediatypes/model/mesh$'
     NeuroML = r'^https?://identifiers\.org/combine\.specifications/neuroml($|\.)'
     NuML = r'^https?://purl\.org/NET/mediatypes/application/numl\+xml$'
     OMEX = r'^https?://identifiers\.org/combine\.specifications/omex($|\.)'
