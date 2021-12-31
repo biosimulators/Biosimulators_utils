@@ -60,7 +60,7 @@ class Config(object):
         LOG (:obj:`bool`): whether to log the execution of a COMBINE/OMEX archive
         LOG_PATH (:obj:`str`): path to save the execution log of a COMBINE/OMEX archive
         BIOSIMULATORS_API_ENDPOINT (:obj:`str`): URL for BioSimulators API
-        BIOSIMULATIONS_API_ENDPOINT (:obj:`str`): URL for runBioSimulations API
+        BIOSIMULATIONS_API_ENDPOINT (:obj:`str`): URL for BioSimulations API
         BIOSIMULATIONS_API_AUTH_ENDPOINT (:obj:`str`): authorization endpoint for the BioSimulations API
         BIOSIMULATIONS_API_AUDIENCE (:obj:`str`): audience for the BioSimulations API
         VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
@@ -127,7 +127,7 @@ class Config(object):
             LOG (:obj:`bool`, optional): whether to log the execution of a COMBINE/OMEX archive
             LOG_PATH (:obj:`str`, optional): path to save the execution status of a COMBINE/OMEX archive
             BIOSIMULATORS_API_ENDPOINT (:obj:`str`, optional): URL for BioSimulators API
-            BIOSIMULATIONS_API_ENDPOINT (:obj:`str`, optional): URL for runBioSimulations API
+            BIOSIMULATIONS_API_ENDPOINT (:obj:`str`, optional): URL for BioSimulations API
             BIOSIMULATIONS_API_AUTH_ENDPOINT (:obj:`str`, optional): authorization endpoint for the BioSimulations API
             BIOSIMULATIONS_API_AUDIENCE (:obj:`str`, optional): audience for the BioSimulations API
             VERBOSE (:obj:`bool`, optional): whether to display the detailed output of the execution of each task
