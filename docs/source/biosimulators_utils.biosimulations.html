@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.biosimulations package &#8212; BioSimulators utils 0.1.152 documentation</title>
+    <title>biosimulators_utils.biosimulations package &#8212; BioSimulators utils 0.1.153 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -651,6 +651,60 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.get_file_extension_combine_uri_map">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_file_extension_combine_uri_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_file_extension_combine_uri_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a map from file extensions to URIs for use with manifests of COMBINE/OMEX archives</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>which maps extensions to lists of associated URIs</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.get_formats">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_formats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get information about the file formats used by BioSimulations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>information about the file formats used by BioSimulations</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.get_ontology_terms">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_ontology_terms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ontology</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_ontology_terms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the terms of an ontology used by BioSimulations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ontology</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – ontology such as <code class="docutils literal notranslate"><span class="pre">EDAM</span></code>, <code class="docutils literal notranslate"><span class="pre">KISAO</span></code>, <code class="docutils literal notranslate"><span class="pre">Linguist</span></code>, <code class="docutils literal notranslate"><span class="pre">SBO</span></code>, <code class="docutils literal notranslate"><span class="pre">SIO</span></code>, or <code class="docutils literal notranslate"><span class="pre">SPDX</span></code></p></li>
+<li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ontology terms</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
 </dd>
 </dl>
 </dd></dl>
