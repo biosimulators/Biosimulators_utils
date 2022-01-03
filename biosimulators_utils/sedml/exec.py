@@ -545,7 +545,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                 model = sub_task.task.model
                 if apply_xml_model_changes and is_model_language_encoded_in_xml(model.language):
                     original_model_source = model.source
-                    fid, model.source = tempfile.mkstemp(suffix='.xml')
+                    fid, model.source = tempfile.mkstemp(suffix='.xml', dir=os.path.dirname(original_model_source))
                     os.close(fid)
 
                     model_etrees[model.id].write(model.source,

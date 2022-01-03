@@ -299,7 +299,7 @@ def resolve_model_and_apply_xml_changes(model, sed_doc, working_dir,
             # write model to file
             if save_to_file:
                 if temp_model_source is None:
-                    modified_model_file, temp_model_source = tempfile.mkstemp(suffix='.xml')
+                    modified_model_file, temp_model_source = tempfile.mkstemp(suffix='.xml', dir=os.path.dirname(model.source))
                     os.close(modified_model_file)
                     model.source = temp_model_source
 

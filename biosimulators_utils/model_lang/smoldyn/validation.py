@@ -46,7 +46,7 @@ def validate_model(filename, name=None, config=None):
         if os.path.isfile(filename):
             config = read_smoldyn_simulation_configuration(filename)
             disable_smoldyn_graphics_in_simulation_configuration(config)
-            fid, config_filename = tempfile.mkstemp(suffix='.txt')
+            fid, config_filename = tempfile.mkstemp(suffix='.txt', dir=os.path.dirname(filename))
             os.close(fid)
             write_smoldyn_simulation_configuration(config, config_filename)
             with StandardOutputErrorCapturer(level=StandardOutputErrorCapturerLevel.c, relay=False) as captured:

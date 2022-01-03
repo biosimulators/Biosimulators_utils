@@ -202,7 +202,7 @@ class OmexMetaReader(abc.ABC):
 
                 lines[0] = line
 
-                temp_fid, temp_filename = tempfile.mkstemp()
+                temp_fid, temp_filename = tempfile.mkstemp(dir=os.path.dirname(filename))
                 os.close(temp_fid)
                 with open(temp_filename, 'wb') as file:
                     for line in lines:
