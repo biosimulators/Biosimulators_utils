@@ -33,17 +33,17 @@
 
   <!-- taxon -->
   <rdf:Description rdf:about=".">
-    <bqbiol:hasTaxon rdf:resource="https://identifiers.org/taxonomy/9606"/>
+    <bqbiol:hasTaxon rdf:resource="http://identifiers.org/taxonomy/9606"/>
   </rdf:Description>
 
-  <rdf:Description rdf:about="https://identifiers.org/taxonomy/9606">
+  <rdf:Description rdf:about="http://identifiers.org/taxonomy/9606">
     <dc:title>Homo sapiens</dc:title>
   </rdf:Description>
 
   <!-- authors(s) -->
   <rdf:Description rdf:about=".">
-    <dc:creator rdf:resource="https://identifiers.org/orcid:0000-0001-8254-4958">
-      <rdf:Description rdf:about="https://identifiers.org/orcid:0000-0001-8254-4958">
+    <dc:creator rdf:resource="http://identifiers.org/orcid:0000-0001-8254-4958">
+      <rdf:Description rdf:about="http://identifiers.org/orcid:0000-0001-8254-4958">
         <foaf:name>Jonathan Karr</foaf:name>
       </rdf:Description>
     </dc:creator>
@@ -60,36 +60,36 @@
 
   <!-- related things (e.g., prior version) -->
   <rdf:Description rdf:about=".">
-    <dc:relation rdf:resource="https://identifiers.org/biomodels.db:BIOMD0000000838"/>
+    <dc:relation rdf:resource="http://identifiers.org/biomodels.db:BIOMD0000000838"/>
   </rdf:Description>
 
-  <rdf:Description rdf:about="https://identifiers.org/biomodels.db:BIOMD0000000838">
+  <rdf:Description rdf:about="http://identifiers.org/biomodels.db:BIOMD0000000838">
     <dc:title>Tsur2019 - Response of patients with melanoma to immune checkpoint blockade</dc:title>
   </rdf:Description>
 
   <!-- citations(s) -->
   <rdf:Description rdf:about=".">
-    <bqmodel:isDescribedBy rdf:resource="https://identifiers.org/doi:10.1016/j.copbio.2017.12.013"/>
+    <bqmodel:isDescribedBy rdf:resource="http://identifiers.org/doi:10.1016/j.copbio.2017.12.013"/>
   </rdf:Description>
 
-  <rdf:Description rdf:about="https://identifiers.org/doi:10.1016/j.copbio.2017.12.013">
+  <rdf:Description rdf:about="http://identifiers.org/doi:10.1016/j.copbio.2017.12.013">
     <dc:description>Goldberg AP, Szigeti B, Chew YH, Sekar JA, Roth YD &amp; Karr JR. Emerging whole-cell modeling principles and methods. Curr Opin Biotechnol 2018, 51:97-102.</dc:description>
   </rdf:Description>
 
   <rdf:Description rdf:about=".">
-    <bqmodel:isDescribedBy rdf:resource="https://identifiers.org/pubmed:29275251"/>
+    <bqmodel:isDescribedBy rdf:resource="http://identifiers.org/pubmed:29275251"/>
   </rdf:Description>
 
-  <rdf:Description rdf:about="https://identifiers.org/pubmed:29275251">
+  <rdf:Description rdf:about="http://identifiers.org/pubmed:29275251">
     <dc:description>Goldberg AP, Szigeti B, Chew YH, Sekar JA, Roth YD &amp; Karr JR. Emerging whole-cell modeling principles and methods. Curr Opin Biotechnol 2018, 51:97-102.</dc:description>
   </rdf:Description>
 
   <!-- other identifiers -->
   <rdf:Description rdf:about=".">
-    <bqmodel:is rdf:resource="https://identifiers.org/biomodels.db:BIOMD0000000838"/>
+    <bqmodel:is rdf:resource="http://identifiers.org/biomodels.db:BIOMD0000000838"/>
   </rdf:Description>
 
-  <rdf:Description rdf:about="https://identifiers.org/biomodels.db:BIOMD0000000838">
+  <rdf:Description rdf:about="http://identifiers.org/biomodels.db:BIOMD0000000838">
     <dc:title>Tsur2019 - Response of patients with melanoma to immune checkpoint blockade</dc:title>
   </rdf:Description>
 

@@ -9,7 +9,7 @@
   <rdf:Description rdf:about="http://omex-library.org/BioSim0001.omex/sim.sedml/figure1">
     <bqmodel:is>
       <rdf:Description>
-        <dc:identifier rdf:resource="https://doi.org/10.1371/journal.pcbi.1008379.g001"/>
+        <dc:identifier rdf:resource="http://identifiers.org/doi:10.1371/journal.pcbi.1008379.g001"/>
         <rdfs:label>Figure 1a</rdfs:label>
       </rdf:Description>
     </bqmodel:is>

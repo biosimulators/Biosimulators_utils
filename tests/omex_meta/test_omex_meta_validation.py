@@ -97,49 +97,49 @@ class OmexMetaValidationTestCase(unittest.TestCase):
         self.assertEqual(warnings, [])
 
         md2 = copy.deepcopy(md)
-        md2['creators'][0]['uri'] = 'https://identifiers.org/pubmed:1234'
+        md2['creators'][0]['uri'] = 'http://identifiers.org/pubmed:1234'
         errors, warnings = validate_biosimulations_metadata_for_uri(
             md2, validate_minimal_metadata=True, working_dir=self.dir_name)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
         md2 = copy.deepcopy(md)
-        md2['creators'][0]['uri'] = 'https://identifiers.org/pubmed/1234'
+        md2['creators'][0]['uri'] = 'http://identifiers.org/pubmed/1234'
         errors, warnings = validate_biosimulations_metadata_for_uri(
             md2, validate_minimal_metadata=True, working_dir=self.dir_name)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
         md2 = copy.deepcopy(md)
-        md2['creators'][0]['uri'] = 'https://identifiers.org/PubMed:1234'
+        md2['creators'][0]['uri'] = 'http://identifiers.org/PubMed:1234'
         errors, warnings = validate_biosimulations_metadata_for_uri(
             md2, validate_minimal_metadata=True, working_dir=self.dir_name)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
         md2 = copy.deepcopy(md)
-        md2['creators'][0]['uri'] = 'https://identifiers.org/ncbi/pubmed:1234'
+        md2['creators'][0]['uri'] = 'http://identifiers.org/ncbi/pubmed:1234'
         errors, warnings = validate_biosimulations_metadata_for_uri(
             md2, validate_minimal_metadata=True, working_dir=self.dir_name)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
         md2 = copy.deepcopy(md)
-        md2['creators'][0]['uri'] = 'https://identifiers.org/NCBI/pubmed:1234'
+        md2['creators'][0]['uri'] = 'http://identifiers.org/NCBI/pubmed:1234'
         errors, warnings = validate_biosimulations_metadata_for_uri(
             md2, validate_minimal_metadata=True, working_dir=self.dir_name)
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
         md2 = copy.deepcopy(md)
-        md2['creators'][0]['uri'] = 'https://identifiers.org/not-a-namespace:invalid'
+        md2['creators'][0]['uri'] = 'http://identifiers.org/not-a-namespace:invalid'
         errors, warnings = validate_biosimulations_metadata_for_uri(
             md2, validate_minimal_metadata=True, working_dir=self.dir_name)
         self.assertIn('is not a valid prefix', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         md2 = copy.deepcopy(md)
-        md2['creators'][0]['uri'] = 'https://identifiers.org/pubmed:invalid'
+        md2['creators'][0]['uri'] = 'http://identifiers.org/pubmed:invalid'
         errors, warnings = validate_biosimulations_metadata_for_uri(
             md2, validate_minimal_metadata=True, working_dir=self.dir_name)
         self.assertIn('is not valid for', flatten_nested_list_of_strings(errors))
@@ -147,7 +147,7 @@ class OmexMetaValidationTestCase(unittest.TestCase):
         self.assertEqual(warnings, [])
 
         md2 = copy.deepcopy(md)
-        md2['creators'][0]['uri'] = 'https://identifiers.org/ncbi:pubmed:1234'
+        md2['creators'][0]['uri'] = 'http://identifiers.org/ncbi:pubmed:1234'
         errors, warnings = validate_biosimulations_metadata_for_uri(
             md2, validate_minimal_metadata=True, working_dir=self.dir_name)
         self.assertIn('is not a valid prefix', flatten_nested_list_of_strings(errors))

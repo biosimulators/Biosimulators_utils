@@ -145,49 +145,55 @@ class OmexMetaIoTestCase(unittest.TestCase):
             'description': 'Description',
             'taxa': [
                 {
-                    'uri': 'https://identifiers.org/taxonomy/9606',
+                    'uri': 'http://identifiers.org/taxonomy/9606',
                     'label': 'Homo sapiens',
                 }
             ],
             'encodes': [
                 {
-                    'uri': 'https://identifiers.org/CL:0001057',
+                    'uri': 'http://identifiers.org/CL:0001057',
                     'label': 'myeloid dendritic cell, human',
                 }
             ],
             'sources': [
                 {
-                    'uri': 'https://github.org/lab/project',
+                    'uri': 'http://identifiers.org/github:lab/project',
                     'label': 'Tsur 2019 model source code',
                 }
             ],
             'predecessors': [
                 {
-                    'uri': 'https://identifiers.org/biomodels.db:BIOMD0000000837',
+                    'uri': 'http://identifiers.org/biomodels.db:BIOMD0000000837',
                     'label': 'Hanson2016 - Toxicity Management in CAR T cell therapy for B-ALL',
                 }
             ],
+            'references': [
+                {
+                    'uri': 'http://identifiers.org/pubmed:1234',
+                    'label': 'D Nadeau, C Marchand. Change in the kinetics of sulphacetamide tissue distribution in Walker tumor-bearing rats. Drug Metab Dispos 3(6): 565-76 (1975).',
+                },
+            ],
             'successors': [
                 {
-                    'uri': 'https://identifiers.org/biomodels.db:BIOMD0000000839',
+                    'uri': 'http://identifiers.org/biomodels.db:BIOMD0000000839',
                     'label': 'Almeida2019 - Transcription-based circadian ...',
                 }
             ],
             'see_also': [
                 {
-                    'uri': 'https://identifiers.org/biomodels.db:BIOMD0000000836',
+                    'uri': 'http://identifiers.org/biomodels.db:BIOMD0000000836',
                     'label': 'Radosavljevic2009_BioterroristAttack_PanicProtection_1',
                 }
             ],
             'identifiers': [
                 {
-                    'uri': 'https://identifiers.org/biomodels.db:BIOMD0000000838',
+                    'uri': 'http://identifiers.org/biomodels.db:BIOMD0000000838',
                     'label': 'biomodels.db:BIOMD0000000838',
                 }
             ],
             'citations': [
                 {
-                    'uri': 'https://identifiers.org/doi:10.1016/j.copbio.2017.12.013',
+                    'uri': 'http://identifiers.org/doi:10.1016/j.copbio.2017.12.013',
                     'label': (
                         'Goldberg AP, Szigeti B, Chew YH, Sekar JA, Roth YD & Karr JR. '
                         'Emerging whole-cell modeling principles and methods. '
@@ -195,7 +201,7 @@ class OmexMetaIoTestCase(unittest.TestCase):
                     ),
                 },
                 {
-                    'uri': 'https://identifiers.org/pubmed:29275251',
+                    'uri': 'http://identifiers.org/pubmed:29275251',
                     'label': (
                         'Goldberg AP, Szigeti B, Chew YH, Sekar JA, Roth YD & Karr JR. '
                         'Emerging whole-cell modeling principles and methods. '
@@ -205,7 +211,7 @@ class OmexMetaIoTestCase(unittest.TestCase):
             ],
             'creators': [
                 {
-                    'uri': 'https://identifiers.org/orcid:0000-0001-8254-4958',
+                    'uri': 'http://identifiers.org/orcid:0000-0001-8254-4958',
                     'label': 'Jonathan Karr',
                 }
             ],
@@ -216,12 +222,12 @@ class OmexMetaIoTestCase(unittest.TestCase):
                 }
             ],
             'license': {
-                'uri': 'https://identifiers.org/spdx:MIT',
+                'uri': 'http://identifiers.org/spdx:MIT',
                 'label': 'MIT',
             },
             'funders': [
                 {
-                    'uri': 'https://identifiers.org/doi:10.13039/100000001',
+                    'uri': 'http://identifiers.org/doi:10.13039/100000001',
                     'label': 'National Science Foundation',
                 },
             ],
@@ -255,7 +261,7 @@ class OmexMetaIoTestCase(unittest.TestCase):
         self.assertEqual(metadata[0]['title'], 'Name')
         self.assertEqual(metadata[0]['funders'], [
             {
-                'uri': 'https://identifiers.org/doi:10.13039/100000001',
+                'uri': 'http://identifiers.org/doi:10.13039/100000001',
                 'label': 'National Science Foundation',
             },
         ])
@@ -282,10 +288,11 @@ class OmexMetaIoTestCase(unittest.TestCase):
             'encodes': [],
             'sources': [],
             'predecessors': [],
+            'references': [],
             'successors': [],
             'see_also': [],
             'identifiers': [{
-                'uri': 'https://doi.org/10.1371/journal.pcbi.1008379.g001',
+                'uri': 'http://identifiers.org/doi:10.1371/journal.pcbi.1008379.g001',
                 'label': 'Figure 1a',
             }],
             'citations': [],

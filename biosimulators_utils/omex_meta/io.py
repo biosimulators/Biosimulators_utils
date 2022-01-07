@@ -828,8 +828,11 @@ class BiosimulationsOmexMetaWriter(OmexMetaWriter):
                                     object,
                                     namespaces['foaf'].accountName,
                                     rdflib.term.URIRef(value['uri']
+                                                       .replace('http://identifiers.org/orcid:',
+                                                                'https://orcid.org/')
                                                        .replace('https://identifiers.org/orcid:',
-                                                                'https://orcid.org/'))
+                                                                'https://orcid.org/')
+                                                       )
                                 ))
 
                             if value.get('label', None) is not None:

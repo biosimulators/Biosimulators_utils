@@ -194,6 +194,19 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
+    'http://purl.org/dc/terms/references': {
+        'namespace': {
+            'prefix': 'dcterms',
+            'uri': 'http://purl.org/dc/terms/',
+        },
+        'uri': 'http://purl.org/dc/terms/references',
+        'attribute': 'references',
+        'label': 'References',
+        'multiple_allowed': True,
+        'has_uri': True,
+        'has_label': True,
+        'required': False,
+    },
     'http://purl.org/spar/scoro/successor': {
         'namespace': {
             'prefix': 'scoro',
