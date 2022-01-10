@@ -7,12 +7,13 @@
 """
 
 from ..config import get_app_dirs
+from ..warnings import warn, BioSimulatorsWarning
 import dataclasses
 import datetime
 import dateutil.parser
 import functools
 import os.path
-import re
+import regex as re
 import requests_cache
 import typing
 
@@ -95,12 +96,13 @@ def get_identifiers_org_namespaces():
             a tuple of its provider code and its prefix to its attributes
     """
     filename = os.path.join(get_app_dirs().user_cache_dir, 'identifiers-org')
-    session = requests_cache.CachedSession(filename, expire_after=7*24*60*60)
+    session = requests_cache.CachedSession(filename, expire_after=7 * 24 * 60 * 60)
 
     response = session.get(NAMESPACES_ENDPOINT)
     response.raise_for_status()
 
     namespaces = {}
+    skipped_namespaces = []
     for namespace in response.json()['payload']['namespaces']:
         resources = []
         for resource in namespace['resources']:
@@ -133,13 +135,21 @@ def get_identifiers_org_namespaces():
                 deprecated_date=dateutil.parser.parse(resource['deprecationDate']) if resource['deprecationDate'] else None,
             ))
 
+        try:
+            pattern = re.compile(namespace['pattern'])
+        except re.error as exception:
+            msg = "'{}' (prefix '{}'): '{}' is not valid: {}.".format(
+                namespace['name'], namespace['prefix'], namespace['pattern'], str(exception))
+            skipped_namespaces.append(msg)
+            continue
+
         namespace_obj = IdentifiersOrgNamespace(
             id=namespace['id'],
             mir_id=namespace['mirId'],
             prefix=namespace['prefix'],
             name=namespace['name'],
             description=namespace['description'],
-            pattern=re.compile(namespace['pattern']),
+            pattern=pattern,
             embedded_in_lui=namespace['namespaceEmbeddedInLui'],
             sample_id=namespace['sampleId'],
             resources=resources,
@@ -151,6 +161,11 @@ def get_identifiers_org_namespaces():
         namespaces[namespace['prefix'].lower()] = namespace_obj
         for resource in namespace['resources']:
             namespaces[resource['providerCode'].lower() + '/' + namespace['prefix'].lower()] = namespace_obj
+
+    if skipped_namespaces:
+        msg = '{} namespaces will not be validated because their regular expression patterns are not valid:\n  - {}'.format(
+            len(skipped_namespaces), '\n  - '.join(sorted(skipped_namespaces)))
+        warn(msg, BioSimulatorsWarning)
 
     return namespaces
 
