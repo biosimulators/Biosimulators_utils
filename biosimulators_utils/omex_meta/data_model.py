@@ -296,7 +296,7 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'multiple_allowed': False,
         'has_uri': True,
         'has_label': True,
-        'required': True
+        'required': False
     },
     'http://purl.org/spar/scoro/funder': {
         'namespace': {

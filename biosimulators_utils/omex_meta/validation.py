@@ -13,7 +13,7 @@ from .utils import get_global_combine_archive_content_uri
 import dateutil.parser
 import os
 import re
-import validators
+import uritools
 
 __all__ = [
     'validate_biosimulations_metadata',
@@ -106,7 +106,7 @@ def validate_biosimulations_metadata_for_uri(metadata, validate_minimal_metadata
 
             for object in objects:
                 if object and object['uri']:
-                    if not validators.url(object['uri']):
+                    if not uritools.isuri(object['uri']):
                         errors.append(['URI `{}` of attribute `{}` ({}) is not a valid URI.'.format(
                             object['uri'], predicate_type['attribute'], predicate_type['uri'])])
                     else:

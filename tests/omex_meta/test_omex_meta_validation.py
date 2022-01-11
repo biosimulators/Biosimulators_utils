@@ -201,7 +201,7 @@ class OmexMetaValidationTestCase(unittest.TestCase):
         self.assertEqual(len(md), 1)
 
         md, errors, _ = read_omex_meta_file([self.FIXTURE_THIRD_A, self.FIXTURE_THIRD_C], config=config)
-        self.assertIn('is required', flatten_nested_list_of_strings(errors))
+        self.assertEqual(errors, [])
         self.assertEqual(len(md), 2)
 
         md, errors, _ = read_omex_meta_file([self.FIXTURE_THIRD_B, self.FIXTURE_THIRD_C], config=config)
@@ -209,7 +209,7 @@ class OmexMetaValidationTestCase(unittest.TestCase):
         self.assertEqual(len(md), 2)
 
         md, errors, _ = read_omex_meta_file([self.FIXTURE_THIRD_A], config=config)
-        self.assertIn('is required', flatten_nested_list_of_strings(errors))
+        self.assertEqual(errors, [])
         self.assertEqual(len(md), 1)
 
         md, errors, _ = read_omex_meta_file([self.FIXTURE_THIRD_B], config=config)

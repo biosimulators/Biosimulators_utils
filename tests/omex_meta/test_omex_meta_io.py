@@ -328,7 +328,7 @@ class OmexMetaIoTestCase(unittest.TestCase):
 
         filename = os.path.join(self.FIXTURE_DIR, 'missing-uri.rdf')
         metadata, errors, warnings = io.BiosimulationsOmexMetaReader().run(filename, working_dir=self.dir_name)
-        self.assertIn('is required', flatten_nested_list_of_strings(errors))
+        self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
         filename = os.path.join(self.FIXTURE_DIR, 'missing-label-2.rdf')

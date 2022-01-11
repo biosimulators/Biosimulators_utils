@@ -79,6 +79,8 @@ def get_reference_from_pubmed(pubmed_id=None, doi=None):
         pubmed_id = str(record['IdList'][0])
 
         record = get_entrez_record('pubmed', pubmed_id)
+        if record.get('DOI', None) != doi:
+            return None
     else:
         return None
 
@@ -170,7 +172,12 @@ def get_reference_from_crossref(id, session=requests):
         :obj:`JournalArticle`: data about a reference
     """
     response = session.get('https://api.crossref.org/works/' + id)
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError:
+        if response.status_code == 404:
+            return None
+        raise
     record = response.json()['message']
 
     return JournalArticle(
@@ -231,17 +238,22 @@ def get_pubmed_central_open_access_graphics(id, dirname, session=requests):
         if len(caption):
             caption = caption[0]
 
+        if caption is not None:
+            caption = ''.join([lxml.etree.tostring(child).decode('utf8') for child in caption.getchildren()])
+
         graphic = figure.xpath('graphic')
         if len(graphic):
             graphic = graphic[0]
+        elif graphic == []:
+            graphic = None
 
-        graphics.append(PubMedCentralOpenAccesGraphic(
-            id=oa_id + '/' + figure.attrib['id'],
-            label=label.text.strip('.') if label is not None else None,
-            caption=''.join([lxml.etree.tostring(child).decode('utf8')
-                             for child in caption.getchildren()]) if caption is not None else None,
-            filename=os.path.join(dirname, id, graphic.attrib['{{{}}}href'.format(graphic.nsmap['xlink'])] + ".jpg"),
-        ))
+        if graphic is not None:
+            graphics.append(PubMedCentralOpenAccesGraphic(
+                id=oa_id + '/' + figure.attrib['id'],
+                label=label.text.strip('.') if label is not None else None,
+                caption=caption,
+                filename=os.path.join(dirname, id, graphic.attrib['{{{}}}href'.format(graphic.nsmap['xlink'])] + ".jpg"),
+            ))
 
     return graphics
 
