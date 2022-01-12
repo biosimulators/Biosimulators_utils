@@ -64,7 +64,7 @@ def validate_model(filename,
     var_param_fid, var_param_filename = tempfile.mkstemp()
     os.close(var_param_fid)
 
-    cmd = ['xppaut', filename, '-qics', '-qpars', '-outfile', var_param_filename, '-quiet', '0']
+    cmd = ['xppaut', os.path.basename(filename), '-qics', '-qpars', '-outfile', var_param_filename, '-quiet', '0']
     if set_filename is not None:
         cmd.append('-setfile')
         cmd.append(set_filename)
@@ -79,23 +79,25 @@ def validate_model(filename,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         check=False,
+        cwd=os.path.dirname(filename),
     )
 
     stdout = result.stdout.decode(errors='ignore').strip()
 
     if result.returncode != 0:
-        errors.append(['`{}` could not be validated.'.format(filename), [[stdout]]])
+        errors.append(['`{}` is not a valid XPP file.'.format(filename), [[stdout]]])
 
     elif re.search(r'\berror\b', stdout, re.IGNORECASE):
         errors.append(['`{}` is not a valid XPP file.'.format(filename), [[stdout]]])
 
-    else:
-        cmd = ['xppaut', filename, '-qics', '-qpars', '-outfile', var_param_filename, '-quiet', '1']
+    if not errors:
+        cmd = ['xppaut', os.path.basename(filename), '-qics', '-qpars', '-outfile', var_param_filename, '-quiet', '1']
         result = subprocess.run(
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             check=False,
+            cwd=os.path.dirname(filename),
         )
         stdout = result.stdout.decode(errors='ignore').strip()
         if stdout:
@@ -137,11 +139,14 @@ def validate_model(filename,
             for line in file:
                 if line.startswith('aux '):
                     name, _, expr = line[4:].strip().partition('=')
+                    name = name.strip().upper()
+                    expr = expr.strip()
                     simulation['auxiliary_variables'][name] = expr
 
                 if line.startswith('set '):
                     name, _, values = line[4:].strip().partition(' ')
-                    simulation['sets'][name.strip().lower()] = {
+                    name = name.strip().lower()
+                    simulation['sets'][name] = {
                         'parameters': {},
                         'initial_conditions': {},
                     }
@@ -152,11 +157,11 @@ def validate_model(filename,
 
                         if paramVar in simulation['parameters']:
                             paramVar = paramVar.lower()
-                            simulation['sets'][name.strip().lower()]['parameters'][paramVar] = val
+                            simulation['sets'][name]['parameters'][paramVar] = val
                             # simulation['parameters'][paramVar] = val
                         else:
                             paramVar = paramVar.upper()
-                            simulation['sets'][name.strip().lower()]['initial_conditions'][paramVar] = val
+                            simulation['sets'][name]['initial_conditions'][paramVar] = val
                             simulation['initial_conditions'][paramVar] = val
 
                 elif line.startswith('@'):
@@ -275,6 +280,22 @@ def validate_model(filename,
                 ])
 
     os.remove(var_param_filename)
+
+    if simulation:
+        variable_ids = set(simulation['initial_conditions'].keys()) | set(simulation['auxiliary_variables'].keys()) | set('T')
+        missing_plot_variables = set()
+        for plot_element in simulation['plot'].get('elements', {}).values():
+            if 'x' in plot_element and plot_element['x'] not in variable_ids:
+                missing_plot_variables.add(plot_element['x'])
+            if 'y' in plot_element and plot_element['y'] not in variable_ids:
+                missing_plot_variables.add(plot_element['y'])
+            if 'z' in plot_element and plot_element['z'] not in variable_ids:
+                missing_plot_variables.add(plot_element['z'])
+        if missing_plot_variables:
+            errors.append([
+                '{} variables required for plots are not defined'.format(len(missing_plot_variables)),
+                [[variable] for variable in sorted(missing_plot_variables)],
+            ])
 
     return (errors, warnings, simulation)
 

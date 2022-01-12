@@ -15,6 +15,7 @@ from ...sedml.data_model import (  # noqa: F401
     Task,
     )
 from ...utils.core import flatten_nested_list_of_strings
+from ...warnings import warn, BioSimulatorsWarning
 from .data_model import SIMULATION_METHOD_KISAO_MAP
 from .validation import validate_model
 import types  # noqa: F401
@@ -56,6 +57,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                                       parameter_filename=parameter_filename,
                                       initial_conditions_filename=initial_conditions_filename,
                                       config=config)
+
     if errors:
         raise ValueError('Model file `{}` is not a valid XPP file or directory of XPP files.\n  {}'.format(
             model_filename, flatten_nested_list_of_strings(errors).replace('\n', '\n  ')))
@@ -112,13 +114,15 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                                                                   new_value=float(val) if native_data_types else val))
 
     # observables
+    var_ids = set()
     vars = []
 
-    vars.append(Variable(
+    time_variable = Variable(
         id=None if native_ids else 'time',
         name=None if native_ids else 'Time',
         symbol=Symbol.time,
-    ))
+    )
+    vars.append(time_variable)
 
     for key in model['initial_conditions'].keys():
         var = Variable(
@@ -126,7 +130,9 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             name=None if native_ids else 'Dynamics of "{}"'.format(key),
             target=key,
         )
-        vars.append(var)
+        if var.id not in var_ids:
+            var_ids.add(var.id)
+            vars.append(var)
 
     for key in model['auxiliary_variables'].keys():
         var = Variable(
@@ -134,7 +140,9 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             name=None if native_ids else 'Dynamics of "{}"'.format(key),
             target=key,
         )
-        vars.append(var)
+        if var.id not in var_ids:
+            var_ids.add(var.id)
+            vars.append(var)
 
     # plots
     if 'elements' in model['plot']:
@@ -148,18 +156,21 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         for i_element in sorted(model['plot']['elements'].keys()):
             element = model['plot']['elements'][i_element]
             if 'x' not in element:
-                raise ValueError('Plot element {} must have x data.'.format(i_element + 1))
+                element['x'] = 'T'
+                warn('Plot element {} does not declare x data. X data is assumed to be time (t).'.format(i_element + 1), BioSimulatorsWarning)
 
             if 'y' not in element:
-                raise ValueError('Plot element {} must have y data.'.format(i_element + 1))
+                element['y'] = 'T'
+                warn('Plot element {} does not declare y data. Y data is assumed to be time (t).'.format(i_element + 1), BioSimulatorsWarning)
 
             if plot_type == Plot3D:
                 if 'z' not in element:
-                    raise ValueError('3D plot element {} must have z data.'.format(i_element + 1))
+                    element['z'] = 'T'
+                    warn('3D plot element {} does not declare z data. Z data is assumed to be time (t).'.format(i_element + 1), BioSimulatorsWarning)
 
         data_generators = {}
         for var in vars:
-            data_generators[var.target] = DataGenerator(
+            data_generators[var.target or 'T'] = DataGenerator(
                 id='data_generator_{}'.format(var.target),
                 name=var.target,
                 variables=[var],

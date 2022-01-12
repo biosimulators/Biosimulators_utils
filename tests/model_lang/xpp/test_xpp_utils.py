@@ -71,9 +71,9 @@ class XppUtilsTestCase(unittest.TestCase):
 
         filename = os.path.join(self.FIXTURES_DIRNAME, 'wilson-cowan-auxiliary-variables.ode')
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(filename, None, UniformTimeCourseSimulation)
-        self.assertEqual(vars[-1].id, 'dynamics_dv')
-        self.assertEqual(vars[-1].name, 'Dynamics of "dv"')
-        self.assertEqual(vars[-1].target, 'dv')
+        self.assertEqual(vars[-1].id, 'dynamics_DV')
+        self.assertEqual(vars[-1].name, 'Dynamics of "DV"')
+        self.assertEqual(vars[-1].target, 'DV')
 
     def test_get_parameters_variables_for_simulation_native_ids_data_types(self):
         filename = os.path.join(self.FIXTURES_DIRNAME, 'wilson-cowan.ode')
@@ -133,9 +133,9 @@ class XppUtilsTestCase(unittest.TestCase):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
             filename, None, UniformTimeCourseSimulation,
             native_ids=True, native_data_types=True)
-        self.assertEqual(vars[-1].id, 'dv')
+        self.assertEqual(vars[-1].id, 'DV')
         self.assertEqual(vars[-1].name, None)
-        self.assertEqual(vars[-1].target, 'dv')
+        self.assertEqual(vars[-1].target, 'DV')
 
     def test_get_parameters_variables_for_simulation_error_handling(self):
         with self.assertRaises(ValueError):

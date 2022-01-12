@@ -96,7 +96,7 @@ class XppValidationTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
         self.assertEqual(model['auxiliary_variables'], collections.OrderedDict({
-            'dv': "-u+f(aee*u-aie*v-ze+i_e(t))",
+            'DV': "-u+f(aee*u-aie*v-ze+i_e(t))",
         }))
 
         filename = None
@@ -126,7 +126,7 @@ class XppValidationTestCase(unittest.TestCase):
         )
         with mock.patch('subprocess.run', return_value=return_value_1):
             errors, warnings, model = validation.validate_model(filename)
-        self.assertIn('could not be validated', flatten_nested_list_of_strings(errors))
+        self.assertIn('is not a valid XPP file', flatten_nested_list_of_strings(errors))
         self.assertIn('Error message', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
         self.assertEqual(model, None)
