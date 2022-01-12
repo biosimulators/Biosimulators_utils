@@ -19,6 +19,7 @@ name = 'biosimulators_utils'
 dirname = os.path.dirname(__file__)
 package_data = {
     name: [
+        os.path.join('utils', 'identifiers_org.json'),
         os.path.join('model_lang', 'cellml', '*.rng'),
         os.path.join('viz', 'vega', '**', '*.json'),
     ],

@@ -6,15 +6,15 @@
 :License: MIT
 """
 
-from ..config import get_app_dirs
 from ..warnings import warn, BioSimulatorsWarning
 import dataclasses
 import datetime
 import dateutil.parser
-import functools
+import json
 import os.path
+import pkg_resources
 import regex as re
-import requests_cache
+import requests
 import typing
 
 __all__ = [
@@ -24,6 +24,7 @@ __all__ = [
     'IdentifiersOrgNamespace',
     'InvalidIdentifiersOrgUri',
     'get_identifiers_org_namespaces',
+    'download_identifiers_org_namespaces',
     'get_identifiers_org_namespace',
     'validate_identifiers_org_uri',
 ]
@@ -87,87 +88,113 @@ class InvalidIdentifiersOrgUri(Exception):
     pass
 
 
-@functools.lru_cache(maxsize=None)
-def get_identifiers_org_namespaces():
+IDENTIFIERS_ORG_NAMESPACES = None
+
+
+def get_identifiers_org_namespaces(reload=False):
+    """ Get the namespaces registered with `Identifiers.org <https://identifiers.org/>`_.
+
+    Args:
+        reload (:obj:`bool`, optional): whether to reload the namespaces from the Identifiers.org API
+
+    Returns:
+        :obj:`dict`: dictionary that maps the prefix of each Identifiers.org namespace or
+            a tuple of its provider code and its prefix to its attributes
+    """
+    global IDENTIFIERS_ORG_NAMESPACES
+
+    if IDENTIFIERS_ORG_NAMESPACES is None or reload:
+        filename = pkg_resources.resource_filename('biosimulators_utils', os.path.join('utils', 'identifiers_org.json'))
+
+        if os.path.isfile(filename) and not reload:
+            with open(filename, 'r') as file:
+                raw_namespaces = json.load(file)
+        else:
+            raw_namespaces = download_identifiers_org_namespaces()
+            with open(filename, 'w') as file:
+                json.dump(raw_namespaces, file)
+
+        namespaces = {}
+        skipped_namespaces = []
+        for namespace in raw_namespaces:
+            resources = []
+            for resource in namespace['resources']:
+                resources.append(IdentifiersOrgNamespaceResource(
+                    id=resource['id'],
+                    mir_id=resource['mirId'],
+                    name=resource['name'],
+                    description=resource['description'],
+                    url_pattern=resource['urlPattern'],
+                    official=resource['official'],
+                    provider_code=resource['providerCode'],
+                    sample_id=resource['sampleId'],
+                    home_url=resource['resourceHomeUrl'],
+                    institution=IdentifiersOrgInstitution(
+                        id=resource['institution']['id'],
+                        name=resource['institution']['name'],
+                        home_url=resource['institution']['homeUrl'],
+                        description=resource['institution']['description'],
+                        ror_id=resource['institution']['rorId'],
+                        country=IdentifiersOrgCountry(
+                            code=resource['institution']['location']['countryCode'],
+                            name=resource['institution']['location']['countryName'],
+                        ),
+                    ),
+                    country=IdentifiersOrgCountry(
+                        code=resource['location']['countryCode'],
+                        name=resource['location']['countryName'],
+                    ),
+                    deprecated=resource['deprecated'],
+                    deprecated_date=dateutil.parser.parse(resource['deprecationDate']) if resource['deprecationDate'] else None,
+                ))
+
+            try:
+                pattern = re.compile(namespace['pattern'])
+            except re.error as exception:
+                msg = "'{}' (prefix '{}'): '{}' is not valid: {}.".format(
+                    namespace['name'], namespace['prefix'], namespace['pattern'], str(exception))
+                skipped_namespaces.append(msg)
+                continue
+
+            namespace_obj = IdentifiersOrgNamespace(
+                id=namespace['id'],
+                mir_id=namespace['mirId'],
+                prefix=namespace['prefix'],
+                name=namespace['name'],
+                description=namespace['description'],
+                pattern=pattern,
+                embedded_in_lui=namespace['namespaceEmbeddedInLui'],
+                sample_id=namespace['sampleId'],
+                resources=resources,
+                deprecated=namespace['deprecated'],
+                deprecated_date=dateutil.parser.parse(namespace['deprecationDate']) if namespace['deprecationDate'] else None,
+                created=dateutil.parser.parse(namespace['created']),
+                modified=dateutil.parser.parse(namespace['modified']),
+            )
+            namespaces[namespace['prefix'].lower()] = namespace_obj
+            for resource in namespace['resources']:
+                namespaces[resource['providerCode'].lower() + '/' + namespace['prefix'].lower()] = namespace_obj
+
+        if skipped_namespaces:
+            msg = '{} namespaces will not be validated because their regular expression patterns are not valid:\n  - {}'.format(
+                len(skipped_namespaces), '\n  - '.join(sorted(skipped_namespaces)))
+            warn(msg, BioSimulatorsWarning)
+
+        IDENTIFIERS_ORG_NAMESPACES = namespaces
+
+    return IDENTIFIERS_ORG_NAMESPACES
+
+
+def download_identifiers_org_namespaces():
     """ Get the namespaces registered with `Identifiers.org <https://identifiers.org/>`_.
 
     Returns:
         :obj:`dict`: dictionary that maps the prefix of each Identifiers.org namespace or
             a tuple of its provider code and its prefix to its attributes
     """
-    filename = os.path.join(get_app_dirs().user_cache_dir, 'identifiers-org')
-    session = requests_cache.CachedSession(filename, expire_after=7 * 24 * 60 * 60)
-
-    response = session.get(NAMESPACES_ENDPOINT)
+    response = requests.get(NAMESPACES_ENDPOINT)
     response.raise_for_status()
-
-    namespaces = {}
-    skipped_namespaces = []
-    for namespace in response.json()['payload']['namespaces']:
-        resources = []
-        for resource in namespace['resources']:
-            resources.append(IdentifiersOrgNamespaceResource(
-                id=resource['id'],
-                mir_id=resource['mirId'],
-                name=resource['name'],
-                description=resource['description'],
-                url_pattern=resource['urlPattern'],
-                official=resource['official'],
-                provider_code=resource['providerCode'],
-                sample_id=resource['sampleId'],
-                home_url=resource['resourceHomeUrl'],
-                institution=IdentifiersOrgInstitution(
-                    id=resource['institution']['id'],
-                    name=resource['institution']['name'],
-                    home_url=resource['institution']['homeUrl'],
-                    description=resource['institution']['description'],
-                    ror_id=resource['institution']['rorId'],
-                    country=IdentifiersOrgCountry(
-                        code=resource['institution']['location']['countryCode'],
-                        name=resource['institution']['location']['countryName'],
-                    ),
-                ),
-                country=IdentifiersOrgCountry(
-                    code=resource['location']['countryCode'],
-                    name=resource['location']['countryName'],
-                ),
-                deprecated=resource['deprecated'],
-                deprecated_date=dateutil.parser.parse(resource['deprecationDate']) if resource['deprecationDate'] else None,
-            ))
-
-        try:
-            pattern = re.compile(namespace['pattern'])
-        except re.error as exception:
-            msg = "'{}' (prefix '{}'): '{}' is not valid: {}.".format(
-                namespace['name'], namespace['prefix'], namespace['pattern'], str(exception))
-            skipped_namespaces.append(msg)
-            continue
-
-        namespace_obj = IdentifiersOrgNamespace(
-            id=namespace['id'],
-            mir_id=namespace['mirId'],
-            prefix=namespace['prefix'],
-            name=namespace['name'],
-            description=namespace['description'],
-            pattern=pattern,
-            embedded_in_lui=namespace['namespaceEmbeddedInLui'],
-            sample_id=namespace['sampleId'],
-            resources=resources,
-            deprecated=namespace['deprecated'],
-            deprecated_date=dateutil.parser.parse(namespace['deprecationDate']) if namespace['deprecationDate'] else None,
-            created=dateutil.parser.parse(namespace['created']),
-            modified=dateutil.parser.parse(namespace['modified']),
-        )
-        namespaces[namespace['prefix'].lower()] = namespace_obj
-        for resource in namespace['resources']:
-            namespaces[resource['providerCode'].lower() + '/' + namespace['prefix'].lower()] = namespace_obj
-
-    if skipped_namespaces:
-        msg = '{} namespaces will not be validated because their regular expression patterns are not valid:\n  - {}'.format(
-            len(skipped_namespaces), '\n  - '.join(sorted(skipped_namespaces)))
-        warn(msg, BioSimulatorsWarning)
-
-    return namespaces
+    return response.json()['payload']['namespaces']
 
 
 def get_identifiers_org_namespace(prefix):

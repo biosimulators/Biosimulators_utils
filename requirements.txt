@@ -21,7 +21,6 @@ pyyaml
 rdflib
 regex
 requests
-requests_cache
 setuptools
 simplejson
 termcolor

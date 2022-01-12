@@ -8,6 +8,9 @@ include LICENSE
 include requirements.txt
 include requirements.optional.txt
 
+# identifiers.org namespaces
+include biosimulators_utils/utils/identifiers_org.json
+
 # CellML schema
 include biosimulators_utils/model_lang/cellml/*.rng
 
