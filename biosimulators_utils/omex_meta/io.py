@@ -824,16 +824,29 @@ class BiosimulationsOmexMetaWriter(OmexMetaWriter):
                             'http://dublincore.org/specifications/dublin-core/dcmi-terms/contributor',
                         ]:
                             if value.get('uri', None) is not None:
-                                triples.append(Triple(
-                                    object,
-                                    namespaces['foaf'].accountName,
-                                    rdflib.term.URIRef(value['uri']
-                                                       .replace('http://identifiers.org/orcid:',
-                                                                'https://orcid.org/')
-                                                       .replace('https://identifiers.org/orcid:',
-                                                                'https://orcid.org/')
-                                                       )
-                                ))
+                                if value['uri'].lower().startswith('mailto:'):
+                                    triples.append(Triple(
+                                        object,
+                                        namespaces['foaf'].mbox,
+                                        rdflib.term.URIRef(value['uri'])
+                                    ))
+                                if value['uri'].lower().startswith('tel:'):
+                                    triples.append(Triple(
+                                        object,
+                                        namespaces['foaf'].phone,
+                                        rdflib.term.URIRef(value['uri'])
+                                    ))
+                                else:
+                                    triples.append(Triple(
+                                        object,
+                                        namespaces['foaf'].accountName,
+                                        rdflib.term.URIRef(value['uri']
+                                                           .replace('http://identifiers.org/orcid:',
+                                                                    'https://orcid.org/')
+                                                           .replace('https://identifiers.org/orcid:',
+                                                                    'https://orcid.org/')
+                                                           )
+                                    ))
 
                             if value.get('label', None) is not None:
                                 triples.append(Triple(
