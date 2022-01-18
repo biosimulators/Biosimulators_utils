@@ -15,7 +15,7 @@ import subprocess
 import tempfile
 
 
-__all__ = ['validate_model', 'get_xpp_input_configuration_from_directory']
+__all__ = ['validate_model', 'get_xpp_input_configuration_from_directory', 'sanitize_model']
 
 
 def validate_model(filename,
@@ -61,10 +61,12 @@ def validate_model(filename,
         errors.append(['XPP file `{}` does not exist.'.format(filename)])
         return (errors, warnings, simulation)
 
+    sanitized_filename = sanitize_model(filename)
+
     var_param_fid, var_param_filename = tempfile.mkstemp()
     os.close(var_param_fid)
 
-    cmd = ['xppaut', os.path.basename(filename), '-qics', '-qpars', '-outfile', var_param_filename, '-quiet', '0']
+    cmd = ['xppaut', os.path.basename(sanitized_filename), '-qics', '-qpars', '-outfile', var_param_filename, '-quiet', '0']
     if set_filename is not None:
         cmd.append('-setfile')
         cmd.append(set_filename)
@@ -79,7 +81,7 @@ def validate_model(filename,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         check=False,
-        cwd=os.path.dirname(filename),
+        cwd=os.path.dirname(sanitized_filename),
     )
 
     stdout = result.stdout.decode(errors='ignore').strip()
@@ -91,13 +93,13 @@ def validate_model(filename,
         errors.append(['`{}` is not a valid XPP file.'.format(filename), [[stdout]]])
 
     if not errors:
-        cmd = ['xppaut', os.path.basename(filename), '-qics', '-qpars', '-outfile', var_param_filename, '-quiet', '1']
+        cmd = ['xppaut', os.path.basename(sanitized_filename), '-qics', '-qpars', '-outfile', var_param_filename, '-quiet', '1']
         result = subprocess.run(
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             check=False,
-            cwd=os.path.dirname(filename),
+            cwd=os.path.dirname(sanitized_filename),
         )
         stdout = result.stdout.decode(errors='ignore').strip()
         if stdout:
@@ -114,6 +116,7 @@ def validate_model(filename,
             'sets': {},
             'auxiliary_variables': collections.OrderedDict(),
             'simulation_method': {},
+            'range': {},
             'plot': {},
         }
         block = None
@@ -178,6 +181,8 @@ def validate_model(filename,
                                 key = key.lower()
                                 if key == 'nout':
                                     key = 'njmp'
+                                if key == 'method':
+                                    key = 'meth'
 
                                 if key in [
                                     'xlo', 'xhi', 'ylo', 'yhi',
@@ -191,6 +196,21 @@ def validate_model(filename,
                                     'lt', 'axes', 'nplot',
                                 ]:
                                     simulation['plot'][key] = int(float(val))
+
+                                elif key in [
+                                    'rangelow', 'rangehigh', 'rangestep',
+                                ]:
+                                    simulation['range'][key] = float(val)
+
+                                elif key in [
+                                    'rangereset', 'rangeoldic',
+                                ]:
+                                    simulation['range'][key] = val.lower() in ['yes', 'on', 'true', '1']
+
+                                elif key in [
+                                    'rangeover',
+                                ]:
+                                    simulation['range'][key] = val
 
                                 elif key in el_keys:
                                     axis = key[0]
@@ -279,6 +299,7 @@ def validate_model(filename,
                     ],
                 ])
 
+    os.remove(sanitized_filename)
     os.remove(var_param_filename)
 
     if simulation:
@@ -296,6 +317,9 @@ def validate_model(filename,
                 '{} variables required for plots are not defined'.format(len(missing_plot_variables)),
                 [[variable] for variable in sorted(missing_plot_variables)],
             ])
+
+        if not simulation['range']:
+            simulation['range'] = None
 
     return (errors, warnings, simulation)
 
@@ -359,3 +383,62 @@ def get_xpp_input_configuration_from_directory(dirname):
         raise ValueError('`{}` does not contain a valid set of XPP files:\n  - {}'.format(dirname, '\n  - '.join(errors)))
 
     return (ode_filename, set_filename, parameter_filename, initial_conditions_filename)
+
+
+def sanitize_model(filename):
+    """ Sanitize an ODE file for interrogation
+
+    * Remove `outfile` statements
+
+    Args:
+        filename (:obj:`str`): path to model file or directory with ``.ode`` and possibly set (``.set``),
+            parameter (``.par``), andd initial conditions (``.ic``) files
+
+    Returns:
+        :obj:`str`: path to sanitized model file
+    """
+    statements = []
+    with open(filename, 'rb') as file:
+        statement = b''
+        for line in file:
+            if line.endswith(b'\\\n'):
+                statement += re.sub(b'\\\\+$', b'', line[0:-1]) + b' '
+            else:
+                statement += line
+
+                statements.append(statement)
+                statement = b''
+
+        if statement:
+            raise ValueError('Models cannot end with continued statements (lines that end in `\\`')
+
+    fid, sanitized_filename = tempfile.mkstemp(suffix='.ode', dir=os.path.dirname(filename))
+    os.close(fid)
+
+    with open(sanitized_filename, 'wb') as sanitized_file:
+        for statement in statements:
+            if statement.startswith(b'@'):
+                statement = statement[1:]
+                i_comment = statement.find(b'#')
+                if i_comment > -1:
+                    statement = statement[0:i_comment]
+
+                args = {}
+                for cmd in re.split(b'[, ]+', statement):
+                    parts = cmd.split(b'=')
+                    if len(parts) > 1:
+                        key = parts[0].lstrip()
+                        val = parts[1].rstrip()
+                        args[key] = val
+                args.pop(b'output', None)
+
+                if args:
+                    sanitized_statement = b'@ ' + b', '.join(key + b'=' + val for key, val in args.items()) + b'\n'
+                else:
+                    sanitized_statement = b''
+            else:
+                sanitized_statement = statement
+
+            sanitized_file.write(sanitized_statement)
+
+    return sanitized_filename

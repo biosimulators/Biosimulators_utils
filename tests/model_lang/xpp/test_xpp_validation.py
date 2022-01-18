@@ -65,6 +65,7 @@ class XppValidationTestCase(unittest.TestCase):
             'sets': {},
             'auxiliary_variables': collections.OrderedDict(),
             'simulation_method': simulation_method,
+            'range': None,
             'plot': plot,
         })
         self.assertEqual(model['initial_conditions'], initial_conditions)
@@ -260,6 +261,7 @@ class XppValidationTestCase(unittest.TestCase):
             'sets': {},
             'auxiliary_variables': collections.OrderedDict(),
             'simulation_method': simulation_method,
+            'range': None,
             'plot': plot,
         })
 
@@ -326,6 +328,7 @@ class XppValidationTestCase(unittest.TestCase):
             'sets': sets,
             'auxiliary_variables': collections.OrderedDict(),
             'simulation_method': simulation_method,
+            'range': None,
             'plot': plot,
         })
 
@@ -383,6 +386,7 @@ class XppValidationTestCase(unittest.TestCase):
             'sets': sets,
             'auxiliary_variables': collections.OrderedDict(),
             'simulation_method': simulation_method,
+            'range': None,
             'plot': plot,
         })
 
