@@ -513,15 +513,14 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                             "/sbml:listOfParameters/sbml:parameter[@id='{}']/@value"
                         ).format(reaction_id, param_id)
 
-                    if not model.getInitialAssignmentBySymbol(param_id) and not model.getAssignmentRuleByVariable(param_id):
-                        params.append(ModelAttributeChange(
-                            id=param_id if native_ids else 'value_parameter_' + param_id,
-                            name=parameter.getName() or None if native_ids else 'Value of parameter "{}" of reaction "{}"'.format(
-                                parameter.getName() or param_id, reaction.getName() or reaction_id),
-                            target=target,
-                            target_namespaces=namespaces,
-                            new_value=parameter.getValue() if native_data_types else format_float(parameter.getValue()),
-                        ))
+                    params.append(ModelAttributeChange(
+                        id=param_id if native_ids else 'value_parameter_' + param_id,
+                        name=parameter.getName() or None if native_ids else 'Value of parameter "{}" of reaction "{}"'.format(
+                            parameter.getName() or param_id, reaction.getName() or reaction_id),
+                        target=target,
+                        target_namespaces=namespaces,
+                        new_value=parameter.getValue() if native_data_types else format_float(parameter.getValue()),
+                    ))
 
                     if (
                         include_model_parameters_in_simulation_variables
