@@ -526,7 +526,6 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                         include_model_parameters_in_simulation_variables
                         and parameter.isSetConstant()
                         and not parameter.getConstant()
-                        and model.getAssignmentRuleByVariable(param_id)
                     ):
                         var = Variable(
                             id=param_id if native_ids else 'value_parameter_' + reaction_id + '_' + param_id,
