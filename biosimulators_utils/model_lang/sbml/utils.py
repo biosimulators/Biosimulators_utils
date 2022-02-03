@@ -514,7 +514,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                         ).format(reaction_id, param_id)
 
                     params.append(ModelAttributeChange(
-                        id=param_id if native_ids else 'value_parameter_' + param_id,
+                        id=param_id if native_ids else 'value_parameter_' reaction_id + '_' + param_id,
                         name=parameter.getName() or None if native_ids else 'Value of parameter "{}" of reaction "{}"'.format(
                             parameter.getName() or param_id, reaction.getName() or reaction_id),
                         target=target,
@@ -529,7 +529,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                         and model.getAssignmentRuleByVariable(param_id)
                     ):
                         var = Variable(
-                            id=param_id if native_ids else 'value_parameter_' + param_id,
+                            id=param_id if native_ids else 'value_parameter_' + reaction_id + '_' + param_id,
                             name=parameter.getName() or None if native_ids else 'Value of parameter "{}" of reaction "{}"'.format(
                                 parameter.getName() or param_id, reaction.getName() or reaction_id),
                             target=target,
