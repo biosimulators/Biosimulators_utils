@@ -127,13 +127,6 @@
                 </apply>
             </math>
         </assignmentRule>
-        <assignmentRule variable="local_param">
-            <math xmlns="http://www.w3.org/1998/Math/MathML">
-                <apply>
-                    <ci> kswe_prime </ci>
-                </apply>
-            </math>
-        </assignmentRule>
     </listOfRules>
     <listOfSpecies>
       <species compartment="compartment" id="Trim" initialAmount="0.084410675" metaid="metaid_0000084" name="CDC28_Clb2_Sic1_Complex" sboTerm="SBO:0000296">

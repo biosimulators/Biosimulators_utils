@@ -89,7 +89,7 @@ class GetVariableForSimulationTestCase(unittest.TestCase):
         self.assertEqual(variable.target, "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='compartment']/@size")
         self.assertEqual(variable.target_namespaces, {'sbml': 'http://www.sbml.org/sbml/level2/version4'})
 
-        variable = next(variable for variable in vars if variable.id == 'value_parameter_local_param')
+        variable = next(variable for variable in vars if variable.id == 'value_parameter_R1_local_param')
         self.assertEqual(variable.name, 'Value of parameter "local_param" of reaction "Clb-Sic dissociation"')
         self.assertEqual(variable.symbol, None)
         self.assertEqual(variable.target, ("/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']/sbml:kineticLaw"
@@ -451,7 +451,7 @@ class GetVariableForSimulationTestCaseNativeIdsDataTypes(unittest.TestCase):
 
         param = next((param for param in params if param.target == ("/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']/sbml:kineticLaw"
                                                                     "/sbml:listOfParameters/sbml:parameter[@id='local_param']/@value")), None)
-        self.assertEqual(param, None)
+        self.assertNotEqual(param, None)
 
         variable = next(variable for variable in vars if variable.target ==
                         "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='compartment']/@size")
