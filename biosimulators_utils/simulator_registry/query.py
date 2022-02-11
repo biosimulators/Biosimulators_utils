@@ -7,24 +7,28 @@
 """
 
 from ..biosimulations.utils import validate_biosimulations_api_response
-from ..config import get_config
+from ..config import get_config, Config  # noqa: F401
 import requests
 
 
 __all__ = ['get_simulator_version_specs']
 
 
-def get_simulator_version_specs(id):
+def get_simulator_version_specs(id, config=None):
     """ Get the specifications of the versions of a simulator in the BioSimulators registry
 
     Args:
         id (:obj:`str`): simulator id
+        config (:obj:`Config`, optional): configuration
 
     Returns:
         :obj:`list` of :obj:`dict`: specifications of the registered versions of the simulator
     """
 
-    endpoint = get_config().BIOSIMULATORS_API_ENDPOINT
+    if config is None:
+        config = get_config()
+
+    endpoint = config.BIOSIMULATORS_API_ENDPOINT
     response = requests.get('{}simulators/{}'.format(endpoint, id))
 
     try:
