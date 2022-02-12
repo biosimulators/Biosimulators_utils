@@ -1043,7 +1043,7 @@ class SedmlSimulationReader(object):
 
         if doc.level > 1 or doc.version > 3:
             warn(('`{}` is encoded using L{}V{}. Only features available in L1V3 are supported. '
-                  'Newer features such as simple repeated tasks are not yet supported.'
+                  'Newer features such as line and marker styles are not yet supported.'
                   ).format(filename, doc.level, doc.version), SedmlFeatureNotSupportedWarning)
 
         doc.metadata = self._read_metadata(doc_sed)
