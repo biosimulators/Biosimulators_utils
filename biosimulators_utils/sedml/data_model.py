@@ -53,6 +53,13 @@ __all__ = [
     'Plot2D',
     'Plot3D',
     'AxisScale',
+    'Color',
+    'LineType',
+    'LineStyle',
+    'MarkerType',
+    'MarkerStyle',
+    'FillStyle',
+    'Style',
     'Curve',
     'Surface',
 ]
@@ -235,7 +242,9 @@ class SedDocument(SedBase):
         metadata (:obj:`Metadata`): metadata
     """
 
-    def __init__(self, level=1, version=3, models=None, simulations=None, tasks=None, data_generators=None, outputs=None, metadata=None):
+    def __init__(self, level=1, version=3,
+                 models=None, simulations=None, tasks=None, data_generators=None, outputs=None, styles=None,
+                 metadata=None):
         """
         Args:
             level (:obj:`int`, optional): level
@@ -245,6 +254,7 @@ class SedDocument(SedBase):
             tasks (:obj:`list` of :obj:`AbstractTask`, optional): tasks
             data_generators (:obj:`list` of :obj:`DataGenerator`, optional): data generators
             outputs (:obj:`list` of :obj:`Output`, optional): outputs
+            styles (:obj:`list` of :obj:`Style`, optional): graphical styles
             metadata (:obj:`Metadata`, optional): metadata
         """
         SedBase.__init__(self)
@@ -255,6 +265,7 @@ class SedDocument(SedBase):
         self.tasks = tasks or []
         self.data_generators = data_generators or []
         self.outputs = outputs or []
+        self.styles = styles or []
         self.metadata = metadata
 
     def to_tuple(self):
@@ -271,6 +282,7 @@ class SedDocument(SedBase):
             tuple(none_sorted(task.to_tuple() for task in self.tasks)),
             tuple(none_sorted(data_generator.to_tuple() for data_generator in self.data_generators)),
             tuple(none_sorted(output.to_tuple() for output in self.outputs)),
+            tuple(none_sorted(style.to_tuple() for style in self.styles)),
             self.metadata.to_tuple() if self.metadata else None,
         )
 
@@ -291,6 +303,7 @@ class SedDocument(SedBase):
             and are_lists_equal(self.tasks, other.tasks) \
             and are_lists_equal(self.data_generators, other.data_generators) \
             and are_lists_equal(self.outputs, other.outputs) \
+            and are_lists_equal(self.styles, other.styles) \
             and ((self.metadata is None and self.metadata == other.metadata)
                  or (self.metadata is not None and self.metadata.is_equal(other.metadata)))
 
@@ -1685,6 +1698,237 @@ class AxisScale(str, enum.Enum):
     log = 'log'
 
 
+class Color(str):
+    """ 6-character hexidecimal RGB color or 8-character hexidecimal RGBA color """
+    pass
+
+
+class LineType(str, enum.Enum):
+    """ Style of a line of a curve """
+    none = 'none'
+    solid = 'solid'
+    dash = 'dash'
+    dot = 'dot'
+    dashDot = 'dashdot'
+    dashDotDot = 'dashDotDot'
+
+
+class LineStyle(SedBase):
+    """ Style of a line
+
+    Attributes:
+        type (:obj:`LineType`): type
+        color (:obj:`Color`): color
+        thickness (:obj:`float`): type
+    """
+
+    def __init__(self, type: LineType = None, color: Color = None, thickness: float = None):
+        """
+        Args:
+            type (:obj:`LineType`, optional): type
+            color (:obj:`Color`, optional): color
+            thickness (:obj:`float`, optional): type
+        """
+        SedBase.__init__(self)
+        self.type = type
+        self.color = color
+        self.thickness = thickness
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.type.value if self.type else None, self.color, self.thickness)
+
+    def is_equal(self, other):
+        """ Determine if line styles are equal
+
+        Args:
+            other (:obj:`FillStyle`): another line style
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two line styles are equal
+        """
+        return SedBase.is_equal(self, other) \
+            and self.type == other.type \
+            and self.color == other.color \
+            and self.thickness == other.thickness
+
+
+class MarkerType(str, enum.Enum):
+    """ Style of a marker of a curve """
+    none = 'none'
+    square = 'square'
+    circle = 'circle'
+    diamond = 'diamond'
+    xCross = 'xCross'
+    plus = 'plus'
+    star = 'star'
+    triangleUp = 'triangleUp'
+    triangleDown = 'triangleDown'
+    triangleLeft = 'triangleLeft'
+    triangleRight = 'triangleRight'
+    hDash = 'hDash'
+    vDash = 'vDash'
+
+
+class MarkerStyle(SedBase):
+    """ Style of a marker
+
+    Attributes:
+        type (:obj:`MarkerType`): type
+        size (:obj:`float`): size
+        fill_color (:obj:`Color`): fill color
+        line_color (:obj:`Color`): line color
+        line_thickness (:obj:`float`): line thickness
+    """
+
+    def __init__(self, type: MarkerType = None, size: float = None,
+                 fill_color: Color = None, line_color: Color = None,
+                 line_thickness: float = None):
+        """
+        Args:
+            type (:obj:`MarkerType`, optional): type
+            size (:obj:`float`, optional): size
+            fill_color (:obj:`Color`, optional): fill color
+            line_color (:obj:`Color`, optional): line color
+            line_thickness (:obj:`float`, optional): line thickness
+        """
+        SedBase.__init__(self)
+        self.type = type
+        self.size = size
+        self.fill_color = fill_color
+        self.line_color = line_color
+        self.line_thickness = line_thickness
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.type.value if self.type else None, self.size, self.fill_color, self.line_color, self.line_thickness)
+
+    def is_equal(self, other):
+        """ Determine if marker styles are equal
+
+        Args:
+            other (:obj:`FillStyle`): another marker style
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two marker styles are equal
+        """
+        return SedBase.is_equal(self, other) \
+            and self.type == other.type \
+            and self.size == other.size \
+            and self.fill_color == other.fill_color \
+            and self.line_color == other.line_color \
+            and self.line_thickness == other.line_thickness
+
+
+class FillStyle(SedBase):
+    """ Style of a marker
+
+    Attributes:
+        color (:obj:`Color`): color
+    """
+
+    def __init__(self, color: Color = None):
+        """
+        Args:
+            color (:obj:`Color`, optional): color
+        """
+        SedBase.__init__(self)
+        self.color = color
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (self.color,)
+
+    def is_equal(self, other):
+        """ Determine if fill styles are equal
+
+        Args:
+            other (:obj:`FillStyle`): another fill style
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two fill styles are equal
+        """
+        return SedBase.is_equal(self, other) \
+            and self.color == other.color
+
+
+class Style(SedBase, SedIdGroupMixin):
+    """ A graphical style
+
+    Attributes:
+        id (:obj:`str`): id
+        name (:obj:`str`): name
+        base (:obj:`Style`): base style
+        line (:obj:`LineStyle`): line style
+        marker (:obj:`MarkerStyle`): marker style
+        fill (:obj:`FillStyle`): fill style
+    """
+
+    def __init__(self, id: str = None, name: str = None, base: 'Style' = None,
+                 line: LineStyle = None, marker: MarkerStyle = None, fill: FillStyle = None):
+        """
+        Args:
+            id (:obj:`str`, optional): id
+            name (:obj:`str`, optional): name
+            base (:obj:`Style`, optional): base style
+            line (:obj:`LineStyle`, optional): line style
+            marker (:obj:`MarkerStyle`, optional): marker style
+            fill (:obj:`FillStyle`, optional): fill style
+        """
+        SedBase.__init__(self)
+        SedIdGroupMixin.__init__(self, id=id, name=name)
+        self.base = base
+        self.line = line
+        self.marker = marker
+        self.fill = fill
+
+    def to_tuple(self):
+        """ Get a tuple representation
+
+        Returns:
+            :obj:`tuple` of :obj:`str`: tuple representation
+        """
+        return (
+            self.id, self.name,
+            self.base.id if self.base else None,
+            self.line.to_tuple() if self.line else None,
+            self.marker.to_tuple() if self.marker else None,
+            self.fill.to_tuple() if self.fill else None,
+        )
+
+    def is_equal(self, other):
+        """ Determine if styles are equal
+
+        Args:
+            other (:obj:`Style`): another style
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if two styles are equal
+        """
+        return SedBase.is_equal(self, other) \
+            and SedIdGroupMixin.is_equal(self, other) \
+            and ((self.base is None and self.base == other.base)
+                 or (self.base is not None and other.base is not None and self.base.id == other.base.id)) \
+            and ((self.line is None and self.line == other.line)
+                 or (self.line is not None and self.line.is_equal(other.line))) \
+            and ((self.marker is None and self.marker == other.marker)
+                 or (self.marker is not None and self.marker.is_equal(other.marker))) \
+            and ((self.fill is None and self.fill == other.fill)
+                 or (self.fill is not None and self.fill.is_equal(other.fill)))
+
+
 class Curve(SedBase, SedIdGroupMixin):
     """ A curve in a 2D plot
 
@@ -1695,9 +1939,10 @@ class Curve(SedBase, SedIdGroupMixin):
         y_scale (:obj:`AxisScale`): y axis scale
         x_data_generator (:obj:`DataGenerator`): x data generator
         y_data_generator (:obj:`DataGenerator`): y data generator
+        style (:obj:`Style`): graphical style
     """
 
-    def __init__(self, id=None, name=None, x_scale=None, y_scale=None, x_data_generator=None, y_data_generator=None):
+    def __init__(self, id=None, name=None, x_scale=None, y_scale=None, x_data_generator=None, y_data_generator=None, style: Style = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1706,6 +1951,7 @@ class Curve(SedBase, SedIdGroupMixin):
             y_scale (:obj:`AxisScale`, optional): y axis scale
             x_data_generator (:obj:`DataGenerator`, optional): x data generator
             y_data_generator (:obj:`DataGenerator`, optional): y data generator
+            style (:obj:`Style`, optional): graphical style
         """
         SedBase.__init__(self)
         SedIdGroupMixin.__init__(self, id=id, name=name)
@@ -1713,6 +1959,7 @@ class Curve(SedBase, SedIdGroupMixin):
         self.y_scale = y_scale
         self.x_data_generator = x_data_generator
         self.y_data_generator = y_data_generator
+        self.style = style
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -1720,11 +1967,14 @@ class Curve(SedBase, SedIdGroupMixin):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.id, self.name,
-                self.x_scale.value if self.x_scale else None,
-                self.y_scale.value if self.y_scale else None,
-                self.x_data_generator.id if self.x_data_generator else None,
-                self.y_data_generator.id if self.y_data_generator else None)
+        return (
+            self.id, self.name,
+            self.x_scale.value if self.x_scale else None,
+            self.y_scale.value if self.y_scale else None,
+            self.x_data_generator.id if self.x_data_generator else None,
+            self.y_data_generator.id if self.y_data_generator else None,
+            self.style.id if self.style else None,
+        )
 
     def is_equal(self, other):
         """ Determine if curves are equal
@@ -1746,7 +1996,11 @@ class Curve(SedBase, SedIdGroupMixin):
             and ((self.y_data_generator is None and self.y_data_generator == other.y_data_generator)
                  or (self.y_data_generator is not None
                      and other.y_data_generator is not None
-                     and self.y_data_generator.id == other.y_data_generator.id))
+                     and self.y_data_generator.id == other.y_data_generator.id)) \
+            and ((self.style is None and self.style == other.style)
+                 or (self.style is not None
+                     and other.style is not None
+                     and self.style.id == other.style.id))
 
 
 class Surface(SedBase, SedIdGroupMixin):
@@ -1761,11 +2015,13 @@ class Surface(SedBase, SedIdGroupMixin):
         x_data_generator (:obj:`DataGenerator`): x data generator
         y_data_generator (:obj:`DataGenerator`): y data generator
         z_data_generator (:obj:`DataGenerator`): z data generator
+        style (:obj:`Style`): graphical style
     """
 
     def __init__(self, id=None, name=None,
                  x_scale=None, y_scale=None, z_scale=None,
-                 x_data_generator=None, y_data_generator=None, z_data_generator=None):
+                 x_data_generator=None, y_data_generator=None, z_data_generator=None,
+                 style: Style = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1776,6 +2032,7 @@ class Surface(SedBase, SedIdGroupMixin):
             x_data_generator (:obj:`DataGenerator`, optional): x data generator
             y_data_generator (:obj:`DataGenerator`, optional): y data generator
             z_data_generator (:obj:`DataGenerator`, optional): z data generator
+            style (:obj:`Style`, optional): graphical style
         """
         SedBase.__init__(self)
         SedIdGroupMixin.__init__(self, id=id, name=name)
@@ -1785,6 +2042,7 @@ class Surface(SedBase, SedIdGroupMixin):
         self.x_data_generator = x_data_generator
         self.y_data_generator = y_data_generator
         self.z_data_generator = z_data_generator
+        self.style = style
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -1792,13 +2050,16 @@ class Surface(SedBase, SedIdGroupMixin):
         Returns:
             :obj:`tuple` of :obj:`str`: tuple representation
         """
-        return (self.id, self.name,
-                self.x_scale.value if self.x_scale else None,
-                self.y_scale.value if self.y_scale else None,
-                self.z_scale.value if self.z_scale else None,
-                self.x_data_generator.id if self.x_data_generator else None,
-                self.y_data_generator.id if self.y_data_generator else None,
-                self.z_data_generator.id if self.z_data_generator else None)
+        return (
+            self.id, self.name,
+            self.x_scale.value if self.x_scale else None,
+            self.y_scale.value if self.y_scale else None,
+            self.z_scale.value if self.z_scale else None,
+            self.x_data_generator.id if self.x_data_generator else None,
+            self.y_data_generator.id if self.y_data_generator else None,
+            self.z_data_generator.id if self.z_data_generator else None,
+            self.style.id if self.style else None,
+        )
 
     def is_equal(self, other):
         """ Determine if surfaces are equal
@@ -1825,4 +2086,8 @@ class Surface(SedBase, SedIdGroupMixin):
             and ((self.z_data_generator is None and self.z_data_generator == other.z_data_generator)
                  or (self.z_data_generator is not None
                      and other.z_data_generator is not None
-                     and self.z_data_generator.id == other.z_data_generator.id))
+                     and self.z_data_generator.id == other.z_data_generator.id)) \
+            and ((self.style is None and self.style == other.style)
+                 or (self.style is not None
+                     and other.style is not None
+                     and self.style.id == other.style.id))

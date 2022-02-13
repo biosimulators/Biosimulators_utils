@@ -77,6 +77,9 @@ class SedmlSimulationWriter(object):
         self._create_doc(doc)
         self._add_metadata_to_obj(doc)
 
+        for style in doc.styles:
+            self._add_style_to_doc(style)
+
         for model in doc.models:
             self._add_model_to_doc(model)
 
@@ -121,6 +124,53 @@ class SedmlSimulationWriter(object):
             self._call_libsedml_method(doc_sed, 'setLevel', doc.level)
         if doc.version is not None:
             self._call_libsedml_method(doc_sed, 'setVersion', doc.version)
+
+    def _add_style_to_doc(self, style):
+        """ Add a graphical style to a SED document
+
+        Args:
+            style (:obj:`data_model.Style`): style
+        """
+        style_sed = self._doc_sed.createStyle()
+        self._obj_to_sed_obj_map[style] = style_sed
+
+        if style.id is not None:
+            self._call_libsedml_method(style_sed, 'setId', style.id)
+
+        if style.name is not None:
+            self._call_libsedml_method(style_sed, 'setName', style.name)
+
+        if style.base is not None:
+            if not style.base.id:  # pragma: no cover: already validated
+                raise ValueError('Style must have an id to be referenced')
+            self._call_libsedml_method(style_sed, 'setBaseStyle', style.base.id)
+
+        if style.line is not None:
+            line_style_sed = style_sed.createLineStyle()
+            if style.line.type is not None:
+                self._call_libsedml_method(line_style_sed, 'setType', style.line.type.value)
+            if style.line.color is not None:
+                self._call_libsedml_method(line_style_sed, 'setColor', style.line.color)
+            if style.line.thickness is not None:
+                self._call_libsedml_method(line_style_sed, 'setThickness', style.line.thickness)
+
+        if style.marker is not None:
+            marker_style_sed = style_sed.createMarkerStyle()
+            if style.marker.type is not None:
+                self._call_libsedml_method(marker_style_sed, 'setType', style.marker.type.value)
+            if style.marker.size is not None:
+                self._call_libsedml_method(marker_style_sed, 'setSize', style.marker.size)
+            if style.marker.fill_color is not None:
+                self._call_libsedml_method(marker_style_sed, 'setFill', style.marker.fill_color)
+            if style.marker.line_color is not None:
+                self._call_libsedml_method(marker_style_sed, 'setLineColor', style.marker.line_color)
+            if style.marker.line_thickness is not None:
+                self._call_libsedml_method(marker_style_sed, 'setLineThickness', style.marker.line_thickness)
+
+        if style.fill is not None:
+            fill_style_sed = style_sed.createFillStyle()
+            if style.fill.color is not None:
+                self._call_libsedml_method(fill_style_sed, 'setColor', style.fill.color)
 
     def _add_model_to_doc(self, model):
         """ Add a model to a SED document
@@ -690,6 +740,11 @@ class SedmlSimulationWriter(object):
                     raise ValueError('Data generator must have an id to be referenced')
                 self._call_libsedml_method(curve_sed, 'setYDataReference', curve.y_data_generator.id)
 
+            if curve.style is not None:
+                if not curve.style.id:  # pragma: no cover: already validated
+                    raise ValueError('Style must have an id to be referenced')
+                self._call_libsedml_method(curve_sed, 'setStyle', curve.style.id)
+
     def _add_plot3d_to_doc(self, plot):
         """ Add a 3D plot to a SED document
 
@@ -733,6 +788,11 @@ class SedmlSimulationWriter(object):
                 if not surface.z_data_generator.id:  # pragma: no cover: already validated
                     raise ValueError('Data generator must have an id to be referenced')
                 self._call_libsedml_method(surface_sed, 'setZDataReference', surface.z_data_generator.id)
+
+            if surface.style is not None:
+                if not surface.style.id:  # pragma: no cover: already validated
+                    raise ValueError('Style must have an id to be referenced')
+                self._call_libsedml_method(surface_sed, 'setStyle', surface.style.id)
 
     def _set_axis_scale(self, obj, axis):
         """ Set the scale of an axis of a curve of surface
@@ -1042,14 +1102,65 @@ class SedmlSimulationReader(object):
         )
 
         if doc.level > 1 or doc.version > 3:
-            warn(('`{}` is encoded using L{}V{}. Only features available in L1V3 are supported. '
-                  'Newer features such as line and marker styles are not yet supported.'
-                  ).format(filename, doc.level, doc.version), SedmlFeatureNotSupportedWarning)
+            msg = (
+                '`{}` is encoded using L{}V{}. Only a few features introduced after L1V3 are supported. '
+                'Most newer features, such as finer stylistic control of plots and parameter estimation, are not yet supported.'
+            ).format(filename, doc.level, doc.version)
+            warn(msg, SedmlFeatureNotSupportedWarning)
 
         doc.metadata = self._read_metadata(doc_sed)
 
         # initialize data structure to keep track of errors in references
         self._reference_errors = []
+
+        # graphical styles
+        id_to_style_map = {}
+        for style_sed in doc_sed.getListOfStyles():
+            style = data_model.Style()
+
+            style.id = style_sed.getId() or None
+            style.name = style_sed.getName() or None
+            style.base = style_sed.getBaseStyle() or None
+
+            line_style_sed = style_sed.getLineStyle()
+            if line_style_sed:
+                style.line = data_model.LineStyle()
+                style.line.type = line_style_sed.getTypeAsString() or None
+                style.line.color = line_style_sed.getColor() or None
+                style.line.thickness = line_style_sed.getThickness()
+
+                if style.line.type:
+                    style.line.type = data_model.LineType[style.line.type]
+                if not line_style_sed.isSetThickness():
+                    style.line.thickness = None
+
+            marker_style_sed = style_sed.getMarkerStyle()
+            if marker_style_sed:
+                style.marker = data_model.MarkerStyle()
+                style.marker.type = marker_style_sed.getTypeAsString() or None
+                style.marker.size = marker_style_sed.getSize()
+                style.marker.fill_color = marker_style_sed.getFill() or None
+                style.marker.line_color = marker_style_sed.getLineColor() or None
+                style.marker.line_thickness = marker_style_sed.getLineThickness()
+
+                if style.marker.type:
+                    style.marker.type = data_model.MarkerType[style.marker.type]
+                if not marker_style_sed.isSetSize():
+                    style.marker.size = None
+                if not marker_style_sed.isSetLineThickness():
+                    style.marker.line_thickness = None
+
+            fill_style_sed = style_sed.getFillStyle()
+            if fill_style_sed:
+                style.fill = data_model.FillStyle()
+                style.fill.color = fill_style_sed.getColor() or None
+
+            doc.styles.append(style)
+            self._add_obj_to_id_to_obj_map(style_sed, style, id_to_style_map)
+
+        # deserialize base styles
+        for style_sed, style in zip(doc_sed.getListOfStyles(), doc.styles):
+            self._deserialize_reference(style_sed, style, 'base', 'BaseStyle', 'base', id_to_style_map)
 
         # data descriptions
         if doc_sed.getListOfDataDescriptions():
@@ -1310,6 +1421,8 @@ class SedmlSimulationReader(object):
                                                 'x_data_generator', id_to_data_gen_map)
                     self._deserialize_reference(curve_sed, curve, 'data generator', 'YDataReference',
                                                 'y_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(curve_sed, curve, 'style', 'Style',
+                                                'style', id_to_style_map)
 
             elif isinstance(output_sed, libsedml.SedPlot3D):
                 output = data_model.Plot3D()
@@ -1331,6 +1444,8 @@ class SedmlSimulationReader(object):
                                                 'YDataReference', 'y_data_generator', id_to_data_gen_map)
                     self._deserialize_reference(surface_sed, surface, 'data generator',
                                                 'ZDataReference', 'z_data_generator', id_to_data_gen_map)
+                    self._deserialize_reference(surface_sed, surface, 'style',
+                                                'Style', 'style', id_to_style_map)
 
             else:  # pragma: no cover: already validated by libSED-ML
                 # this is an error rather than a warning because SED doesn't define any other types of outputs

@@ -256,6 +256,7 @@ class DataModelTestCase(unittest.TestCase):
             (task.to_tuple(),),
             (plot2d.curves[0].x_data_generator.to_tuple(),),
             tuple(none_sorted((report.to_tuple(), plot2d.to_tuple(), plot3d.to_tuple()))),
+            (),
             document.metadata.to_tuple(),
         ))
 

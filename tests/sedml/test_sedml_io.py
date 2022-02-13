@@ -549,11 +549,12 @@ class IoTestCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'invalid XML'):
             io.SedmlSimulationWriter().run(document, filename)
 
-    def _set_target_namespaces(self, document):
-        namespaces = {
-            None: 'http://sed-ml.org/sed-ml/level1/version3',
-            'sbml': 'http://www.sbml.org/sbml/level2/version4',
-        }
+    def _set_target_namespaces(self, document, namespaces=None):
+        if namespaces is None:
+            namespaces = {
+                None: 'http://sed-ml.org/sed-ml/level1/version3',
+                'sbml': 'http://www.sbml.org/sbml/level2/version4',
+            }
         for model in document.models:
             for change in model.changes:
                 change.target_namespaces = namespaces
@@ -843,7 +844,7 @@ class IoTestCase(unittest.TestCase):
         document = data_model.SedDocument(level=1, version=4)
         io.SedmlSimulationWriter().run(document, filename)
 
-        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, 'Only features available in L1V3 are supported'):
+        with self.assertWarnsRegex(SedmlFeatureNotSupportedWarning, ' Only a few features introduced after L1V3 are supported'):
             io.SedmlSimulationReader().run(filename)
 
     def test_SedmlSimulationWriter__add_namespaces_to_obj(self):
@@ -864,3 +865,188 @@ class IoTestCase(unittest.TestCase):
         self.assertEqual(node.getNamespaces().getLength(), 0)
 
         self.assertEqual(io.SedmlSimulationReader()._get_parent_namespaces_prefixes_used_in_xml_node(node), set(['prefix']))
+
+    def test_read_write_style(self):
+        shutil.copy(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000075.xml'),
+                    os.path.join(self.tmp_dir, 'model.sbml'))
+
+        style1 = data_model.Style(
+            id='style1',
+            name='Style1',
+            base=None,
+            line=data_model.LineStyle(
+                type=data_model.LineType.dash,
+                color='000000',
+                thickness=1,
+            ),
+            marker=data_model.MarkerStyle(
+                type=data_model.MarkerType.square,
+                size=2,
+                fill_color='FF0000',
+                line_color='00FF00',
+                line_thickness=3,
+            ),
+            fill=data_model.FillStyle(
+                color='0000FF',
+            ),
+        )
+
+        style2 = data_model.Style(
+            id='style2',
+            name='Style2',
+            base=style1,
+            line=data_model.LineStyle(
+                type=data_model.LineType.dot,
+                color=None,
+                thickness=None,
+            ),
+            marker=data_model.MarkerStyle(
+                type=data_model.MarkerType.circle,
+                size=None,
+                fill_color=None,
+                line_color=None,
+                line_thickness=None,
+            ),
+            fill=None,
+        )
+
+        model = data_model.Model(
+            id='model',
+            name='Model',
+            source='model.sbml',
+            language='urn:sedml:language:sbml',
+            changes=[],
+        )
+        simulation = data_model.SteadyStateSimulation(
+            id='simulation',
+            name='Simulation',
+            algorithm=data_model.Algorithm(
+                kisao_id='KISAO_0000019',
+                changes=[]
+            ),
+        )
+
+        task = data_model.Task(id='task', name='Task', model=model, simulation=simulation)
+
+        plot2d = data_model.Plot2D(
+            id='plot2d',
+            name='Plot2D',
+            curves=[
+                data_model.Curve(
+                    id='curve', name='Curve',
+                    x_scale=data_model.AxisScale.linear,
+                    y_scale=data_model.AxisScale.log,
+                    x_data_generator=data_model.DataGenerator(
+                        id='dataGen1',
+                        name='DataGen1',
+                        variables=[
+                            data_model.Variable(
+                                id='var1', name='Var1', symbol='urn:sedml:symbol:time', task=task)
+                        ],
+                        parameters=[],
+                        math='var1',
+                    ),
+                    y_data_generator=data_model.DataGenerator(
+                        id='dataGen2',
+                        name='DataGen2',
+                        variables=[
+                            data_model.Variable(
+                                id='var2',
+                                name='Var2',
+                                target='/sbml:sbml/sbml:model/@id',
+                                task=task,
+                            )
+                        ],
+                        parameters=[],
+                        math='var2',
+                    ),
+                    style=style1,
+                ),
+            ]
+        )
+
+        plot3d = data_model.Plot3D(
+            id='plot3d',
+            name='Plot3D',
+            surfaces=[
+                data_model.Surface(
+                    id='surface', name='Surface',
+                    x_scale=data_model.AxisScale.linear,
+                    y_scale=data_model.AxisScale.log,
+                    z_scale=data_model.AxisScale.linear,
+                    x_data_generator=data_model.DataGenerator(
+                        id='dataGen3',
+                        name='DataGen3',
+                        variables=[
+                            data_model.Variable(
+                                id='var3',
+                                name='Var3',
+                                target='/sbml:sbml/sbml:model/@id',
+                                task=task,
+                            )
+                        ],
+                        parameters=[],
+                        math='var3',
+                    ),
+                    y_data_generator=data_model.DataGenerator(
+                        id='dataGen4',
+                        name='DataGen4',
+                        variables=[
+                            data_model.Variable(
+                                id='var4',
+                                name='Var4',
+                                target='/sbml:sbml/sbml:model/@id',
+                                task=task,
+                            )
+                        ],
+                        parameters=[],
+                        math='var4',
+                    ),
+                    z_data_generator=data_model.DataGenerator(
+                        id='dataGen5',
+                        name='DataGen5',
+                        variables=[
+                            data_model.Variable(
+                                id='var5',
+                                name='Var5',
+                                target='/sbml:sbml/sbml:model/@id',
+                                task=task,
+                            )
+                        ],
+                        parameters=[],
+                        math='var5',
+                    ),
+                    style=style2,
+                ),
+            ]
+        )
+
+        now = datetime.datetime(2020, 1, 2, 1, 2, 3, tzinfo=dateutil.tz.tzutc())
+        document = data_model.SedDocument(
+            level=1,
+            version=4,
+            styles=[style1, style2],
+            models=[model],
+            simulations=[simulation],
+            tasks=[task],
+            data_generators=[
+                plot2d.curves[0].x_data_generator,
+                plot2d.curves[0].y_data_generator,
+                plot3d.surfaces[0].x_data_generator,
+                plot3d.surfaces[0].y_data_generator,
+                plot3d.surfaces[0].z_data_generator,
+            ],
+            outputs=[plot2d, plot3d],
+            metadata=None,
+        )
+        namespaces = {
+            None: 'http://sed-ml.org/sed-ml/level1/version4',
+            'sbml': 'http://www.sbml.org/sbml/level3/version1/core',
+        }
+        self._set_target_namespaces(document, namespaces)
+
+        filename = os.path.join(self.tmp_dir, 'test.xml')
+        io.SedmlSimulationWriter().run(document, filename)
+
+        document2 = io.SedmlSimulationReader().run(filename)
+        self.assertTrue(document.is_equal(document2))
