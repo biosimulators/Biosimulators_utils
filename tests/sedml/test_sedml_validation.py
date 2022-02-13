@@ -208,7 +208,7 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = validation.validate_doc(doc, self.dirname, validate_models_with_languages=False)
         self.assertEqual(errors, [])
-        self.assertIn('XPath could not be validated.', flatten_nested_list_of_strings(warnings))    
+        self.assertIn('XPath could not be validated.', flatten_nested_list_of_strings(warnings))
 
         doc = data_model.SedDocument()
         doc.models.append(data_model.Model(id='model1', source=''))
@@ -1751,3 +1751,57 @@ class ValidationTestCase(unittest.TestCase):
         ])
         self.assertEqual(errors, [])
         self.assertIn('do not have consistent shapes', flatten_nested_list_of_strings(warnings))
+
+    def test_validate_style(self):
+        style = data_model.Style(
+            line=data_model.LineStyle(
+                type=data_model.LineType.dash,
+                color='000000',
+                thickness=1,
+            ),
+            marker=data_model.MarkerStyle(
+                type=data_model.MarkerType.square,
+                size=2,
+                fill_color='FFFFFF',
+                line_color='FF00FF00',
+                line_thickness=3,
+            ),
+            fill=data_model.FillStyle(
+                color='f0f0f0f0',
+            ),
+        )
+        errors, warnings = validation.validate_style(style)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+        style = data_model.Style(
+            line=data_model.LineStyle(
+                type='a',
+                color='b',
+                thickness=-1,
+            ),
+            marker=data_model.MarkerStyle(
+                type='c',
+                size=-2,
+                fill_color='d',
+                line_color='e',
+                line_thickness=-3,
+            ),
+            fill=data_model.FillStyle(
+                color='f',
+            ),
+        )
+        errors, warnings = validation.validate_style(style)
+        self.assertNotEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+    def test_validate_style_network(self):
+        style1 = data_model.Style(id='1')
+        style2 = data_model.Style(id='2', base=style1)
+        styles = [style1, style2]
+        errors = validation.validate_base_style_network(styles)
+        self.assertEqual(errors, [])
+
+        style1.base = style2
+        errors = validation.validate_base_style_network(styles)
+        self.assertNotEqual(errors, [])

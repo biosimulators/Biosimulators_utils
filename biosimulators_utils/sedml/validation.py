@@ -17,7 +17,7 @@ from .data_model import (SedIdGroupMixin, AbstractTask, Task, RepeatedTask,  # n
                          Range, FunctionalRange, UniformRange, VectorRange,
                          SetValueComputeModelChange,
                          Report, Plot2D, Plot3D, DataGenerator,
-                         Calculation)
+                         Calculation, Style, LineType, MarkerType)
 from .math import compile_math, eval_math
 from .utils import (append_all_nested_children_to_doc, get_range_len,
                     is_model_language_encoded_in_xml,
@@ -121,7 +121,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
         doc_copy = copy.deepcopy(doc)
         append_all_nested_children_to_doc(doc_copy)
 
-        for child_type in ('models', 'simulations', 'tasks', 'data_generators', 'outputs'):
+        for child_type in ('styles', 'models', 'simulations', 'tasks', 'data_generators', 'outputs'):
             not_children = set([child.id for child in getattr(doc_copy, child_type)]).difference(
                 set([child.id for child in getattr(doc, child_type)]))
             if not_children:
@@ -130,6 +130,22 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                         child_type[0].upper() + child_type[1:], child_type),
                     [[child] for child in sorted(not_children)],
                 ])
+
+        # styles
+        for i_style, style in enumerate(doc.styles):
+            style_errors, style_warnings = validate_style(style)
+
+            # append errors/warnings to global lists of errors and warnings
+            style_id = '`' + style.id + '`' if style and style.id else str(i_style + 1)
+
+            if style_errors:
+                errors.append(['Model {} is invalid.'.format(style_id), style_errors])
+
+            if style_warnings:
+                warnings.append(['Model {} may be invalid.'.format(style_id), style_warnings])
+
+        # style bases are acyclic
+        errors.extend(validate_base_style_network(doc.styles))
 
         # model
         model_ids = [model.id for model in doc.models]
@@ -695,6 +711,92 @@ def validate_unique_ids(doc):
                        [[id] for id in sorted(duplicate_ids)]])
 
     return errors
+
+
+def is_valid_color(color):
+    """ Determine if a color is valid
+
+    Args:
+        color (:obj:`str`): color
+
+    Returns:
+        :obj:`bool`: whether the color is valid
+    """
+    return re.match(r'^[a-f0-9]{6,6}|[a-f0-9]{8,8}$', color, re.IGNORECASE) is not None
+
+
+def validate_style(style):
+    """ Validate a style
+
+    Args:
+        style (:obj:`Style`): style
+
+    Returns:
+        :obj:`tuple`:
+
+            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * nested :obj:`list` of :obj:`str`: nested list of warnings (e.g., required ids missing or ids not unique)
+    """
+    errors = []
+    warnings = []
+
+    if style.line:
+        if style.line.type is not None and not isinstance(style.line.type, LineType):
+            errors.append(['Line type must be one of the following', [[type] for type in sorted(LineType.__members__.keys())]])
+
+        if style.line.color is not None and not is_valid_color(style.line.color):
+            errors.append(['Line color must be a 6 or 8-digit hexidecimal number'])
+
+        if style.line.thickness is not None and style.line.thickness < 0:
+            errors.append(['Line thickness must be a non-negative number or NaN'])
+
+    if style.marker:
+        if style.marker.type is not None and not isinstance(style.marker.type, MarkerType):
+            errors.append(['Marker type must be one of the following', [[type] for type in sorted(MarkerType.__members__.keys())]])
+
+        if style.marker.size is not None and style.marker.size < 0:
+            errors.append(['Marker size must be a non-negative number or NaN'])
+
+        if style.marker.fill_color is not None and not is_valid_color(style.marker.fill_color):
+            errors.append(['Marker fill color must be a 6 or 8-digit hexidecimal number'])
+
+        if style.marker.line_color is not None and not is_valid_color(style.marker.line_color):
+            errors.append(['Marker line color must be a 6 or 8-digit hexidecimal number'])
+
+        if style.marker.line_thickness is not None and style.marker.line_thickness < 0:
+            errors.append(['Marker line thickness must be a non-negative number or NaN'])
+
+    if style.fill:
+        if style.fill.color is not None and not is_valid_color(style.fill.color):
+            errors.append(['Fill color must be a 6 or 8-digit hexidecimal number'])
+
+    return (errors, warnings)
+
+
+def validate_base_style_network(styles):
+    """ Validate that the network of relationships among styles is acyclic
+
+    Args:
+        styles (:obj:`list` of :obj:`Style): styles
+
+    Returns:
+        nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+    """
+    style_base_graph = networkx.DiGraph()
+
+    for style in styles:
+        if style.id:
+            style_base_graph.add_node(style.id)
+
+    for style in styles:
+        if style.id and style.base and style.base.id:
+            style_base_graph.add_edge(style.id, style.base.id)
+
+    try:
+        networkx.algorithms.cycles.find_cycle(style_base_graph)
+        return [['The bases of the styles are defined cyclically. The bases of the styles must be acyclic.']]
+    except networkx.NetworkXNoCycle:
+        return []
 
 
 def validate_task(task):

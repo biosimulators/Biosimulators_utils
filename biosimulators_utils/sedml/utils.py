@@ -70,10 +70,15 @@ def append_all_nested_children_to_doc(doc):
     Args:
         doc (:obj:`SedDocument`): SED document
     """
+    styles = set(doc.styles)
     data_generators = set(doc.data_generators)
     tasks = set(doc.tasks)
     simulations = set(doc.simulations)
     models = set(doc.models)
+
+    for style in doc.styles:
+        if style.base:
+            styles.add(style.base)
 
     for model in doc.models:
         for change in model.changes:
@@ -95,6 +100,8 @@ def append_all_nested_children_to_doc(doc):
                     data_generators.add(curve.x_data_generator)
                 if curve.y_data_generator:
                     data_generators.add(curve.y_data_generator)
+                if curve.style:
+                    styles.add(curve.style)
 
         elif isinstance(output, Plot3D):
             for surface in output.surfaces:
@@ -104,6 +111,8 @@ def append_all_nested_children_to_doc(doc):
                     data_generators.add(surface.y_data_generator)
                 if surface.z_data_generator:
                     data_generators.add(surface.z_data_generator)
+                if surface.style:
+                    styles.add(surface.style)
 
     for data_gen in data_generators:
         for var in data_gen.variables:
@@ -118,6 +127,7 @@ def append_all_nested_children_to_doc(doc):
             if task.simulation:
                 simulations.add(task.simulation)
 
+    doc.styles += list(styles - set(doc.styles))
     doc.models += list(models - set(doc.models))
     doc.simulations += list(simulations - set(doc.simulations))
     doc.tasks += list(tasks - set(doc.tasks))

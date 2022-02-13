@@ -1045,6 +1045,10 @@ class IoTestCase(unittest.TestCase):
         }
         self._set_target_namespaces(document, namespaces)
 
+        errors, warnings = validation.validate_doc(document, self.tmp_dir, validate_models_with_languages=False)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
         filename = os.path.join(self.tmp_dir, 'test.xml')
         io.SedmlSimulationWriter().run(document, filename)
 
