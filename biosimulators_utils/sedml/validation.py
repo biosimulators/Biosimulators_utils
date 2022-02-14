@@ -17,7 +17,7 @@ from .data_model import (SedIdGroupMixin, AbstractTask, Task, RepeatedTask,  # n
                          Range, FunctionalRange, UniformRange, VectorRange,
                          SetValueComputeModelChange,
                          Report, Plot2D, Plot3D, DataGenerator,
-                         Calculation, Style, LineType, MarkerType)
+                         Calculation, Style, LineStyleType, MarkerStyleType)
 from .math import compile_math, eval_math
 from .utils import (append_all_nested_children_to_doc, get_range_len,
                     is_model_language_encoded_in_xml,
@@ -741,34 +741,34 @@ def validate_style(style):
     warnings = []
 
     if style.line:
-        if style.line.type is not None and not isinstance(style.line.type, LineType):
-            errors.append(['Line type must be one of the following', [[type] for type in sorted(LineType.__members__.keys())]])
+        if style.line.type is not None and not isinstance(style.line.type, LineStyleType):
+            errors.append(['Line type must be one of the following', [[type] for type in sorted(LineStyleType.__members__.keys())]])
 
         if style.line.color is not None and not is_valid_color(style.line.color):
-            errors.append(['Line color must be a 6 or 8-digit hexidecimal number'])
+            errors.append(['Line color must be a 6 or 8-digit hexidecimal number, not `{}`'.format(style.line.color)])
 
         if style.line.thickness is not None and style.line.thickness < 0:
             errors.append(['Line thickness must be a non-negative number or NaN'])
 
     if style.marker:
-        if style.marker.type is not None and not isinstance(style.marker.type, MarkerType):
-            errors.append(['Marker type must be one of the following', [[type] for type in sorted(MarkerType.__members__.keys())]])
+        if style.marker.type is not None and not isinstance(style.marker.type, MarkerStyleType):
+            errors.append(['Marker type must be one of the following', [[type] for type in sorted(MarkerStyleType.__members__.keys())]])
 
         if style.marker.size is not None and style.marker.size < 0:
             errors.append(['Marker size must be a non-negative number or NaN'])
 
         if style.marker.fill_color is not None and not is_valid_color(style.marker.fill_color):
-            errors.append(['Marker fill color must be a 6 or 8-digit hexidecimal number'])
+            errors.append(['Marker fill color must be a 6 or 8-digit hexidecimal number, not `{}`'.format(style.marker.fill_color)])
 
         if style.marker.line_color is not None and not is_valid_color(style.marker.line_color):
-            errors.append(['Marker line color must be a 6 or 8-digit hexidecimal number'])
+            errors.append(['Marker line color must be a 6 or 8-digit hexidecimal number, not `{}`'.format(style.marker.line_color)])
 
         if style.marker.line_thickness is not None and style.marker.line_thickness < 0:
             errors.append(['Marker line thickness must be a non-negative number or NaN'])
 
     if style.fill:
         if style.fill.color is not None and not is_valid_color(style.fill.color):
-            errors.append(['Fill color must be a 6 or 8-digit hexidecimal number'])
+            errors.append(['Fill color must be a 6 or 8-digit hexidecimal number, not `{}`'.format(style.fill.color)])
 
     return (errors, warnings)
 

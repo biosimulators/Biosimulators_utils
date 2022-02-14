@@ -1130,7 +1130,7 @@ class SedmlSimulationReader(object):
                 style.line.thickness = line_style_sed.getThickness()
 
                 if style.line.type:
-                    style.line.type = data_model.LineType[style.line.type]
+                    style.line.type = data_model.LineStyleType[style.line.type]
                 if not line_style_sed.isSetThickness():
                     style.line.thickness = None
 
@@ -1144,7 +1144,7 @@ class SedmlSimulationReader(object):
                 style.marker.line_thickness = marker_style_sed.getLineThickness()
 
                 if style.marker.type:
-                    style.marker.type = data_model.MarkerType[style.marker.type]
+                    style.marker.type = data_model.MarkerStyleType[style.marker.type]
                 if not marker_style_sed.isSetSize():
                     style.marker.size = None
                 if not marker_style_sed.isSetLineThickness():

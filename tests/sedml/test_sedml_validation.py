@@ -1755,12 +1755,12 @@ class ValidationTestCase(unittest.TestCase):
     def test_validate_style(self):
         style = data_model.Style(
             line=data_model.LineStyle(
-                type=data_model.LineType.dash,
+                type=data_model.LineStyleType.dash,
                 color='000000',
                 thickness=1,
             ),
             marker=data_model.MarkerStyle(
-                type=data_model.MarkerType.square,
+                type=data_model.MarkerStyleType.square,
                 size=2,
                 fill_color='FFFFFF',
                 line_color='FF00FF00',

@@ -54,9 +54,9 @@ __all__ = [
     'Plot3D',
     'AxisScale',
     'Color',
-    'LineType',
+    'LineStyleType',
     'LineStyle',
-    'MarkerType',
+    'MarkerStyleType',
     'MarkerStyle',
     'FillStyle',
     'Style',
@@ -1703,7 +1703,7 @@ class Color(str):
     pass
 
 
-class LineType(str, enum.Enum):
+class LineStyleType(str, enum.Enum):
     """ Style of a line of a curve """
     none = 'none'
     solid = 'solid'
@@ -1717,15 +1717,15 @@ class LineStyle(SedBase):
     """ Style of a line
 
     Attributes:
-        type (:obj:`LineType`): type
+        type (:obj:`LineStyleType`): type
         color (:obj:`Color`): color
         thickness (:obj:`float`): type
     """
 
-    def __init__(self, type: LineType = None, color: Color = None, thickness: float = None):
+    def __init__(self, type: LineStyleType = None, color: Color = None, thickness: float = None):
         """
         Args:
-            type (:obj:`LineType`, optional): type
+            type (:obj:`LineStyleType`, optional): type
             color (:obj:`Color`, optional): color
             thickness (:obj:`float`, optional): type
         """
@@ -1757,7 +1757,7 @@ class LineStyle(SedBase):
             and self.thickness == other.thickness
 
 
-class MarkerType(str, enum.Enum):
+class MarkerStyleType(str, enum.Enum):
     """ Style of a marker of a curve """
     none = 'none'
     square = 'square'
@@ -1778,19 +1778,19 @@ class MarkerStyle(SedBase):
     """ Style of a marker
 
     Attributes:
-        type (:obj:`MarkerType`): type
+        type (:obj:`MarkerStyleType`): type
         size (:obj:`float`): size
         fill_color (:obj:`Color`): fill color
         line_color (:obj:`Color`): line color
         line_thickness (:obj:`float`): line thickness
     """
 
-    def __init__(self, type: MarkerType = None, size: float = None,
+    def __init__(self, type: MarkerStyleType = None, size: float = None,
                  fill_color: Color = None, line_color: Color = None,
                  line_thickness: float = None):
         """
         Args:
-            type (:obj:`MarkerType`, optional): type
+            type (:obj:`MarkerStyleType`, optional): type
             size (:obj:`float`, optional): size
             fill_color (:obj:`Color`, optional): fill color
             line_color (:obj:`Color`, optional): line color

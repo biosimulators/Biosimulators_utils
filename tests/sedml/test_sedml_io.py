@@ -875,12 +875,12 @@ class IoTestCase(unittest.TestCase):
             name='Style1',
             base=None,
             line=data_model.LineStyle(
-                type=data_model.LineType.dash,
+                type=data_model.LineStyleType.dash,
                 color='000000',
                 thickness=1,
             ),
             marker=data_model.MarkerStyle(
-                type=data_model.MarkerType.square,
+                type=data_model.MarkerStyleType.square,
                 size=2,
                 fill_color='FF0000',
                 line_color='00FF00',
@@ -896,12 +896,12 @@ class IoTestCase(unittest.TestCase):
             name='Style2',
             base=style1,
             line=data_model.LineStyle(
-                type=data_model.LineType.dot,
+                type=data_model.LineStyleType.dot,
                 color=None,
                 thickness=None,
             ),
             marker=data_model.MarkerStyle(
-                type=data_model.MarkerType.circle,
+                type=data_model.MarkerStyleType.circle,
                 size=None,
                 fill_color=None,
                 line_color=None,
