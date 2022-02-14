@@ -722,7 +722,7 @@ def is_valid_color(color):
     Returns:
         :obj:`bool`: whether the color is valid
     """
-    return re.match(r'^[a-f0-9]{6,6}|[a-f0-9]{8,8}$', color, re.IGNORECASE) is not None
+    return re.match(r'^([a-f0-9]{6,6}|[a-f0-9]{8,8})$', color, re.IGNORECASE) is not None
 
 
 def validate_style(style):
