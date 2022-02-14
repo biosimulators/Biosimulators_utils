@@ -1709,7 +1709,7 @@ class LineStyleType(str, enum.Enum):
     solid = 'solid'
     dash = 'dash'
     dot = 'dot'
-    dashDot = 'dashdot'
+    dashDot = 'dashDot'
     dashDotDot = 'dashDotDot'
 
 
