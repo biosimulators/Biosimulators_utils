@@ -1632,19 +1632,19 @@ class ValidationTestCase(unittest.TestCase):
         errors, warnings = validation.validate_output(report)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
         self.assertIn('must have a label', flatten_nested_list_of_strings(errors))
-        self.assertIn('experimental feature of SED-ML', flatten_nested_list_of_strings(warnings))
+        self.assertIn('simulation tools do not have the capability', flatten_nested_list_of_strings(warnings))
 
         plot2d.curves[0].id = None
         plot2d.curves[0].x_data_generator.variables[0].task = data_model.RepeatedTask()
         errors, warnings = validation.validate_output(plot2d)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
-        self.assertIn('experimental feature of SED-ML', flatten_nested_list_of_strings(warnings))
+        self.assertIn('simulation tools do not have the capability', flatten_nested_list_of_strings(warnings))
 
         plot3d.surfaces[0].id = None
         plot3d.surfaces[0].x_data_generator.variables[0].task = data_model.RepeatedTask()
         errors, warnings = validation.validate_output(plot3d)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
-        self.assertIn('experimental feature of SED-ML', flatten_nested_list_of_strings(warnings))
+        self.assertIn('simulation tools do not have the capability', flatten_nested_list_of_strings(warnings))
 
         report.data_sets = []
         errors, warnings = validation.validate_output(report)
