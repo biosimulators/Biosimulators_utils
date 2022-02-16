@@ -1583,7 +1583,6 @@ def validate_output(output):
     if involves_repeated_task:
         msg = (
             'Some simulation tools will not be able to generate this output because it uses data from repeated tasks. '
-            'Output for repeated tasks is an experimental feature of SED-ML, which is not officially supported.'
         )
         warnings.append([msg])
 
