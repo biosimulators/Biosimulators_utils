@@ -1582,7 +1582,8 @@ def validate_output(output):
 
     if involves_repeated_task:
         msg = (
-            'Some simulation tools will not be able to generate this output because it uses data from repeated tasks. '
+            'Some simulation tools will not be able to generate this output because it uses data from repeated tasks, '
+            'which some simulation tools do not have the capability to execute.'
         )
         warnings.append([msg])
 
