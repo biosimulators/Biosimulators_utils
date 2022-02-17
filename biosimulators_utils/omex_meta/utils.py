@@ -51,12 +51,16 @@ def build_omex_meta_file_for_model(model_filename,
         raise ValueError('Metadata could not be extracted from model `{}`:\n  {}'.format(
             model_filename, '\n'.join(errors).replace('\n', '\n  ')))
 
-    model = editor.get_xml()
+    model = None
+    try:
+        model = editor.get_xml()
+    except:
+        pass
     if not model:
         errors = ''.join([logger[i_message].get_message() for i_message in range(len(logger))])
         raise RuntimeError('Model `{}` could not be read:\n  {}'.format(
             model_filename, errors.replace('\n', '\n  ')))
-    with open(model_filename, 'w') as file:
+    with open(model_filename, 'w', encoding="utf-8") as file:
         file.write(model)
 
     if rdf.to_file(metadata_filename, metadata_format.value) != 0:
