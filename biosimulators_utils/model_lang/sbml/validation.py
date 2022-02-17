@@ -37,12 +37,19 @@ def validate_model(filename, name=None, validate_consistency=True, config=None):
             if validate_consistency:
                 doc.checkConsistency()
 
+            warningmap = {}
             for i_error in range(doc.getNumErrors()):
                 sbml_error = doc.getError(i_error)
                 if sbml_error.isInfo() or sbml_error.isWarning():
-                    warnings.append([sbml_error.getMessage()])
+                    errid = sbml_error.getErrorId()
+                    if errid not in warningmap:
+                        warningmap[errid] = [0, sbml_error.getMessage()]
+                    warningmap[errid][0] += 1
                 else:
                     errors.append([sbml_error.getMessage()])
+            for errid in warningmap:
+                (num, msg) = warningmap[errid]
+                warnings.append([str(num) + " SBML warning(s) with id " + str(errid) + ".  Example message:\n'" + msg.strip() + "'"])
 
         else:
             errors.append(['`{}` is not a file.'.format(filename or '')])

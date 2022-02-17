@@ -578,6 +578,7 @@ class Model(SedBase, SedIdGroupMixin):
         self.source = source
         self.language = language
         self.changes = changes or []
+        self.structural_changes = []
 
     def to_tuple(self):
         """ Get a tuple representation

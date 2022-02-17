@@ -142,7 +142,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                 errors.append(['Model {} is invalid.'.format(style_id), style_errors])
 
             if style_warnings:
-                warnings.append(['Model {} may be invalid.'.format(style_id), style_warnings])
+                warnings.append(['Model {} generated warnings.'.format(style_id), style_warnings])
 
         # style bases are acyclic
         errors.extend(validate_base_style_network(doc.styles))
@@ -161,7 +161,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                 errors.append(['Model {} is invalid.'.format(model_id), model_errors])
 
             if model_warnings:
-                warnings.append(['Model {} may be invalid.'.format(model_id), model_warnings])
+                warnings.append(['Model {} generated warnings.'.format(model_id), model_warnings])
 
         # model sources are acyclic
         model_source_graph = networkx.DiGraph()
@@ -208,7 +208,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                 errors.append(['Simulation {} is invalid.'.format(sim_id), sim_errors])
             if sim_warnings:
                 sim_id = '`' + sim.id + '`' if sim and sim.id else str(i_sim + 1)
-                warnings.append(['Simulation {} may be invalid.'.format(sim_id), sim_warnings])
+                warnings.append(['Simulation {} generated warnings.'.format(sim_id), sim_warnings])
 
         # basic tasks reference a model and a simulation
         task_errors = {}
@@ -329,7 +329,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
 
                             if variable_warnings:
                                 variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
-                                range_warnings.append(['Variable {} may be invalid.'.format(variable_id), variable_warnings])
+                                range_warnings.append(['Variable {} generated warnings.'.format(variable_id), variable_warnings])
 
                         temp_errors, temp_warnings = validate_calculation(range)
                         range_errors.extend(temp_errors)
@@ -352,7 +352,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                     if range_warnings:
                         range_id = '`' + range.id + '`' if range and range.id else str(i_range + 1)
                         task_warnings[task]['ranges'].append(
-                            ['{} {} may be invalid.'.format(range.__class__.__name__, range_id), range_warnings])
+                            ['{} {} generated warnings.'.format(range.__class__.__name__, range_id), range_warnings])
 
         # ranges of repeated tasks have unique ids
         ranges_have_ids = True
@@ -515,7 +515,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
 
                         if variable_warnings:
                             variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
-                            change_warnings.append(['Variable {} may be invalid.'.format(variable_id), variable_warnings])
+                            change_warnings.append(['Variable {} generated warnings.'.format(variable_id), variable_warnings])
 
                     temp_errors, temp_warnings = validate_calculation(change)
                     change_errors.extend(temp_errors)
@@ -527,13 +527,13 @@ def validate_doc(doc, working_dir, validate_semantics=True,
 
                     if change_warnings:
                         change_id = '`' + change.id + '`' if change and change.id else str(i_change + 1)
-                        all_change_warnings.append(['Change {} may be invalid.'.format(change_id), change_warnings])
+                        all_change_warnings.append(['Change {} generated warnings.'.format(change_id), change_warnings])
 
                 if all_change_errors:
                     task_errors[task]['other'].append(['Changes are invalid.', all_change_errors])
 
                 if all_change_warnings:
-                    task_warnings[task]['other'].append(['Changes may be invalid.', all_change_warnings])
+                    task_warnings[task]['other'].append(['Changes generated warnings.', all_change_warnings])
 
         # repeated tasks involve 1 model
         if not subtasks_cyclic:
@@ -553,7 +553,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                 errors.append(['Task {} is invalid.'.format(task_id), task_errors[task]['other']])
 
             if task_warnings[task]['other']:
-                warnings.append(['Task {} may be invalid.'.format(task_id), task_warnings[task]['other']])
+                warnings.append(['Task {} generated warnings.'.format(task_id), task_warnings[task]['other']])
 
         # validate data generators
         if validate_targets_with_model_sources:
@@ -591,7 +591,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                 errors.append(['Data generator {} is invalid.'.format(data_gen_id), data_gen_errors])
 
             if data_gen_warnings:
-                warnings.append(['Data generator {} may be invalid.'.format(data_gen_id), data_gen_warnings])
+                warnings.append(['Data generator {} generated warnings.'.format(data_gen_id), data_gen_warnings])
 
         # validate outputs
         for i_output, output in enumerate(doc.outputs):
@@ -603,7 +603,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                 errors.append(['Output {} is invalid.'.format(output_id), output_errors])
 
             if output_warnings:
-                warnings.append(['Output {} may be invalid.'.format(output_id), output_warnings])
+                warnings.append(['Output {} generated warnings.'.format(output_id), output_warnings])
 
         # tasks, data generators that don't contribute to outputs
         used_data_generators = set()
@@ -886,7 +886,7 @@ def validate_model(model, model_ids, working_dir, validate_models_with_languages
     if model_change_errors:
         errors.append(['The changes of the model are invalid.', model_change_errors])
     if model_change_warnings:
-        warnings.append(['The changes of the model may be invalid.', model_change_warnings])
+        warnings.append(['The changes of the model generated warnings.', model_change_warnings])
 
     return (errors, warnings)
 
@@ -975,7 +975,7 @@ def validate_model_source(model, model_ids, working_dir, validate_models_with_la
             if model_source_errors:
                 errors.append(['The model file `{}` is invalid.'.format(model.source), model_source_errors])
             if model_source_warnings:
-                warnings.append(['The model file `{}` may be invalid.'.format(model.source), model_source_warnings])
+                warnings.append(['The model file `{}` generated warnings.'.format(model.source), model_source_warnings])
 
     return (errors, warnings)
 
@@ -1068,6 +1068,8 @@ def validate_model_changes(model):
     errors = []
     warnings = []
 
+    if len(model.changes)>0:
+        warnings.append(["Model change XPaths are currently not validated."])
     for i_change, change in enumerate(model.changes):
         change_errors = []
         change_warnings = []
@@ -1078,7 +1080,8 @@ def validate_model_changes(model):
                                                              ModelChange, model.language, model.id,
                                                              check_in_model_source=False)
                 change_errors.extend(temp_errors)
-                change_warnings.extend(temp_warnings)
+                # Setting check_in_model_source to False means that we don't even try to validate XPaths
+                # change_warnings.extend(temp_warnings)
 
         else:
             change_errors.append(['Model attribute change must define a target.'])
@@ -1119,7 +1122,7 @@ def validate_model_changes(model):
 
                 if variable_warnings:
                     var_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
-                    change_warnings.append(['Variable {} may be invalid.'.format(var_id), variable_warnings])
+                    change_warnings.append(['Variable {} generated warnings.'.format(var_id), variable_warnings])
 
             temp_errors, temp_warnings = validate_calculation(change)
             change_errors.extend(temp_errors)
@@ -1131,7 +1134,7 @@ def validate_model_changes(model):
 
         if change_warnings:
             change_id = '`' + change.id + '`' if change and change.id else str(i_change + 1)
-            warnings.append(['Change {} may be invalid.'.format(change_id), change_warnings])
+            warnings.append(['Change {} generated warnings.'.format(change_id), change_warnings])
 
     return errors, warnings
 
@@ -1371,8 +1374,7 @@ def validate_data_generator_variables(variables, model_etrees=None, validate_tar
             models = get_models_referenced_by_task(variable.task)
             for model in models:
                 if model and model.language:
-                    model_changes = model.changes or list(filter(lambda change: change.model == model,
-                                                                 get_model_changes_for_task(variable.task)))
+                    model_changes = model.structural_changes
 
                     temp_errors, temp_warnings = validate_target(
                         variable.target, variable.target_namespaces,
@@ -1389,7 +1391,7 @@ def validate_data_generator_variables(variables, model_etrees=None, validate_tar
 
         if variable_warnings:
             variable_id = '`' + variable.id + '`' if variable and variable.id else str(i_variable + 1)
-            warnings.append(['Variable {} may be invalid.'.format(variable_id), variable_warnings])
+            warnings.append(['Variable {} generated warnings.'.format(variable_id), variable_warnings])
 
     if len(task_types) > 1:
         warnings.append(['The variables do not have consistent shapes.'])
@@ -1505,7 +1507,7 @@ def validate_output(output):
                 errors.append(['Curve {} is invalid.'.format(curve_id), curve_errors])
             if curve_warnings:
                 curve_id = '`' + curve.id + '`' if curve and curve.id else str(i_curve + 1)
-                warnings.append(['Curve {} may be invalid.'.format(curve_id), curve_warnings])
+                warnings.append(['Curve {} generated warnings.'.format(curve_id), curve_warnings])
 
         if len(x_scales) > 1:
             warnings.append(['Curves do not have consistent x-scales.'])
@@ -1566,7 +1568,7 @@ def validate_output(output):
                 errors.append(['Surface {} is invalid.'.format(surface_id), surface_errors])
             if surface_warnings:
                 surface_id = '`' + surface.id + '`' if surface and surface.id else str(i_surface + 1)
-                warnings.append(['Surface {} may be invalid.'.format(surface_id), surface_warnings])
+                warnings.append(['Surface {} generated warnings.'.format(surface_id), surface_warnings])
 
         if len(x_scales) > 1:
             warnings.append(['Surfaces do not have consistent x-scales.'])
