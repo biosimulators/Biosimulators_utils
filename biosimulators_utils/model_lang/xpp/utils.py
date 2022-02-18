@@ -156,17 +156,14 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         for i_element in sorted(model['plot']['elements'].keys()):
             element = model['plot']['elements'][i_element]
             if 'x' not in element:
-                element['x'] = 'T'
-                warn('Plot element {} does not declare x data. X data is assumed to be time (t).'.format(i_element + 1), BioSimulatorsWarning)
+                element['x'] = 'T'  # what XPP uses as the default
 
             if 'y' not in element:
-                element['y'] = 'T'
-                warn('Plot element {} does not declare y data. Y data is assumed to be time (t).'.format(i_element + 1), BioSimulatorsWarning)
+                element['y'] = 'T'  # what XPP uses as the default
 
             if plot_type == Plot3D:
                 if 'z' not in element:
-                    element['z'] = 'T'
-                    warn('3D plot element {} does not declare z data. Z data is assumed to be time (t).'.format(i_element + 1), BioSimulatorsWarning)
+                    element['z'] = 'T'  # what XPP uses as the default
 
         data_generators = {}
         for var in vars:
