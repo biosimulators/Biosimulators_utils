@@ -1372,10 +1372,6 @@ class SedmlSimulationReader(object):
                 change.target = change_sed.getTarget() or None
                 change.target_namespaces = self._get_namespaces_for_sed_object_targets(change_sed)
                 model.changes.append(change)
-                if isinstance(change_sed, libsedml.SedAddXML) or \
-                   isinstance(change_sed, libsedml.SedChangeXML) or \
-                   isinstance(change_sed, libsedml.SedRemoveXML):
-                       model.structural_changes.append(change)
 
         # data generators
         id_to_data_gen_map = {}

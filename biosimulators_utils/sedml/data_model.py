@@ -10,6 +10,7 @@ from ..biosimulations.data_model import Metadata  # noqa: F401
 from ..utils.core import are_lists_equal, none_sorted
 import abc
 import enum
+import libsedml
 
 
 __all__ = [
@@ -578,7 +579,6 @@ class Model(SedBase, SedIdGroupMixin):
         self.source = source
         self.language = language
         self.changes = changes or []
-        self.structural_changes = []
 
     def to_tuple(self):
         """ Get a tuple representation
@@ -604,6 +604,18 @@ class Model(SedBase, SedIdGroupMixin):
             and self.language == other.language \
             and are_lists_equal(self.changes, other.changes)
 
+    def has_structural_changes(self):
+        """ Check if there are structural model changes present.
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if structural model changes are present
+        """
+        for change in self.changes:
+            if isinstance(change, libsedml.SedAddXML) or \
+               isinstance(change, libsedml.SedChangeXML) or \
+               isinstance(change, libsedml.SedRemoveXML):
+                   return True
+        return False
 
 class ModelChange(SedBase, SedIdGroupMixin, TargetGroupMixin):
     """ A change to a model
