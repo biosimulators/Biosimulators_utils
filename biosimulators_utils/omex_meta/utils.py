@@ -51,11 +51,10 @@ def build_omex_meta_file_for_model(model_filename,
         raise ValueError('Metadata could not be extracted from model `{}`:\n  {}'.format(
             model_filename, '\n'.join(errors).replace('\n', '\n  ')))
 
-    model = None
     try:
         model = editor.get_xml()
-    except:
-        pass
+    except Exception as e:
+        raise RuntimeError('Model `{}` could not be read: '.format(model_filename) + str(e) )
     if not model:
         errors = ''.join([logger[i_message].get_message() for i_message in range(len(logger))])
         raise RuntimeError('Model `{}` could not be read:\n  {}'.format(
