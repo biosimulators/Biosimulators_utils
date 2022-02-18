@@ -231,20 +231,24 @@ def get_pubmed_central_open_access_graphics(id, dirname, session=requests):
     graphics = []
     for figure in nxml.xpath('*//fig'):
         label = figure.xpath('label')
-        if len(label):
+        if len(label) >= 1:
             label = label[0]
+        else:
+            label = None
 
         caption = figure.xpath('caption')
-        if len(caption):
+        if len(caption) >= 1:
             caption = caption[0]
+        else:
+            caption = None
 
         if caption is not None:
             caption = ''.join([lxml.etree.tostring(child).decode('utf8') for child in caption.getchildren()])
 
         graphic = figure.xpath('graphic')
-        if len(graphic):
+        if len(graphic) >= 1:
             graphic = graphic[0]
-        elif graphic == []:
+        else:
             graphic = None
 
         if graphic is not None:
