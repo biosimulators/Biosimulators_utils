@@ -332,7 +332,7 @@ def validate_model(filename,
                                     simulation['other'][key] = val
                                     # raise NotImplementedError('Option `{}` is not supported'.format(key))
 
-                elif line.startswith('d') and not ('=' in line and (' ' not in line or line.find('=') < line.find(' '))):
+                elif line.lower().startswith('d') and not ('=' in line and (' ' not in line or line.find('=') < line.find(' '))):
                     # check for "done" line; note just the singular character ``d`` defines the "done" line
                     break
 
@@ -532,7 +532,7 @@ def sanitize_model(filename, keep_only_directives=True, exclude_options=None):
 
     with open(sanitized_filename, 'wb') as sanitized_file:
         for statement in statements:
-            if not keep_only_directives and statement.startswith(b'only'):
+            if not keep_only_directives and statement.lower().startswith(b'only '):
                 continue
 
             elif statement.startswith(b'@'):
