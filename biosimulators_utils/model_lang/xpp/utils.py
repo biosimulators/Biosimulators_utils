@@ -15,7 +15,6 @@ from ...sedml.data_model import (  # noqa: F401
     Task,
     )
 from ...utils.core import flatten_nested_list_of_strings
-from ...warnings import warn, BioSimulatorsWarning
 from .data_model import SIMULATION_METHOD_KISAO_MAP
 from .validation import validate_model
 import types  # noqa: F401
@@ -97,14 +96,15 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     )
 
     t_0 = float(model['simulation_method'].get('t0', 0.))
+    t_output_start = float(model['simulation_method'].get('trans', t_0))
     duration = float(model['simulation_method'].get('total', 20.))
     d_t = float(model['simulation_method'].get('dt', 0.05))
     n_jmp = float(model['simulation_method'].get('njmp', 1))
 
     sim.initial_time = t_0
-    sim.output_start_time = t_0
-    sim.output_end_time = sim.initial_time + duration
-    sim.number_of_steps = duration / (d_t * n_jmp)
+    sim.output_start_time = t_output_start
+    sim.output_end_time = t_0 + duration
+    sim.number_of_steps = (sim.output_end_time - sim.output_start_time) / (d_t * n_jmp)
     sim.number_of_steps = round(sim.number_of_steps)
 
     for key, val in model['simulation_method'].items():

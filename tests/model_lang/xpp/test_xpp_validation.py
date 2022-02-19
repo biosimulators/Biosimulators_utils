@@ -66,7 +66,14 @@ class XppValidationTestCase(unittest.TestCase):
             'auxiliary_variables': collections.OrderedDict(),
             'simulation_method': simulation_method,
             'range': None,
+            'other_numerics': None,
+            'auto': None,
             'plot': plot,
+            'nullcline_plot': None,
+            'poincare_map': None,
+            'output': None,
+            'ui': None,
+            'other': None,
         })
         self.assertEqual(model['initial_conditions'], initial_conditions)
 
@@ -161,12 +168,14 @@ class XppValidationTestCase(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertIn("I' is a duplicate name", flatten_nested_list_of_strings(warnings))
         self.assertEqual(model['simulation_method'], {
-            'delay': '50',
             'meth': 'cvode',
-            'tol': '1e-6',
-            'atol': '1e-8',
-            'bound': '40000',
+            'toler': '1e-6',
+            'atoler': '1e-8',
             'total': '200',
+        })
+        self.assertEqual(model['other_numerics'], {
+            'delay': '50',
+            'bound': '40000',
         })
 
     def test_get_xpp_input_configuration_from_directory(self):
@@ -253,6 +262,9 @@ class XppValidationTestCase(unittest.TestCase):
         model['initial_conditions'] = dict(model['initial_conditions'])
         self.assertEqual(list(model['parameters'].keys()), list(parameters.keys()))
         self.assertEqual(model['parameters'], parameters)
+        self.assertEqual(model['initial_conditions'], initial_conditions)
+        self.assertEqual(model['sets'], {})
+        self.assertEqual(model['auxiliary_variables'], collections.OrderedDict())
         self.assertEqual(model['simulation_method'], simulation_method)
         self.assertEqual(model['plot'], plot)
         self.assertEqual(model, {
@@ -262,7 +274,14 @@ class XppValidationTestCase(unittest.TestCase):
             'auxiliary_variables': collections.OrderedDict(),
             'simulation_method': simulation_method,
             'range': None,
+            'other_numerics': None,
+            'auto': None,
             'plot': plot,
+            'nullcline_plot': None,
+            'poincare_map': None,
+            'output': None,
+            'ui': None,
+            'other': None,
         })
 
     def test_with_sets(self):
@@ -329,7 +348,14 @@ class XppValidationTestCase(unittest.TestCase):
             'auxiliary_variables': collections.OrderedDict(),
             'simulation_method': simulation_method,
             'range': None,
+            'other_numerics': None,
+            'auto': None,
             'plot': plot,
+            'nullcline_plot': None,
+            'poincare_map': None,
+            'output': None,
+            'ui': None,
+            'other': None,
         })
 
     def test_from_directory_2(self):
@@ -387,7 +413,14 @@ class XppValidationTestCase(unittest.TestCase):
             'auxiliary_variables': collections.OrderedDict(),
             'simulation_method': simulation_method,
             'range': None,
+            'other_numerics': None,
+            'auto': None,
             'plot': plot,
+            'nullcline_plot': None,
+            'poincare_map': None,
+            'output': None,
+            'ui': None,
+            'other': None,
         })
 
     def test_cannot_parse_other_formats(self):

@@ -61,7 +61,7 @@ def validate_model(filename,
         errors.append(['XPP file `{}` does not exist.'.format(filename)])
         return (errors, warnings, simulation)
 
-    sanitized_filename = sanitize_model(filename)
+    sanitized_filename = sanitize_model(filename, exclude_options=['output'])
 
     var_param_fid, var_param_filename = tempfile.mkstemp()
     os.close(var_param_fid)
@@ -117,7 +117,14 @@ def validate_model(filename,
             'auxiliary_variables': collections.OrderedDict(),
             'simulation_method': {},
             'range': {},
+            'other_numerics': {},
+            'auto': {},
             'plot': {},
+            'nullcline_plot': {},
+            'poincare_map': {},
+            'output': {},
+            'ui': {},
+            'other': {},
         }
         block = None
         with open(var_param_filename, 'r') as file:
@@ -126,7 +133,7 @@ def validate_model(filename,
                 if line.startswith('#'):
                     if line == '#Parameters query:':
                         block = 'parameters'
-                    if line == '#Initial conditions query:':
+                    elif line == '#Initial conditions query:':
                         block = 'initial_conditions'
                 elif block:
                     id, _, value = line.partition(' ')
@@ -144,7 +151,15 @@ def validate_model(filename,
                     name, _, expr = line[4:].strip().partition('=')
                     name = name.strip().upper()
                     expr = expr.strip()
-                    simulation['auxiliary_variables'][name] = expr
+
+                    if name.endswith(']'):
+                        name, _, start_end = name[0:-1].partition('[')
+                        start, _, end = start_end.partition('..')
+                        for i_var in range(int(start), int(end) + 1):
+                            simulation['auxiliary_variables'][name + str(i_var)] = expr.replace('[j]', f'[{i_var}]')
+
+                    else:
+                        simulation['auxiliary_variables'][name] = expr
 
                 if line.startswith('set '):
                     name, _, values = line[4:].strip().partition(' ')
@@ -179,23 +194,50 @@ def validate_model(filename,
                             val = parts[1].rstrip()
                             if ' ' not in key and ' ' not in val:
                                 key = key.lower()
-                                if key == 'nout':
+                                if key == 'transient':
+                                    key = 'trans'
+                                elif key == 'nout':
                                     key = 'njmp'
-                                if key == 'method':
+                                elif key == 'method':
                                     key = 'meth'
+                                elif key.startswith('xplot'):
+                                    key = key.replace('xplot', 'xp')
+                                elif key.startswith('yplot'):
+                                    key = key.replace('yplot', 'yp')
+                                elif key.startswith('zplot'):
+                                    key = key.replace('zplot', 'zp')
+                                elif key == 'atol':
+                                    key = 'atoler'
+                                elif key in ['rtol', 'tol', 'rtolerance', 'tolerance']:
+                                    key = 'toler'
+                                elif key == 'xp1':
+                                    key = 'xp'
+                                elif key == 'yp1':
+                                    key = 'yp'
+                                elif key == 'zp1':
+                                    key = 'zp'
+                                elif key == 'xlow':
+                                    key = 'xlo'
+                                elif key == 'ylow':
+                                    key = 'ylo'
+                                elif key == 'bounds':
+                                    key = 'bound'
+                                elif key == 'maxstore':
+                                    key = 'maxstor'
+                                elif key == 'background':
+                                    key = 'back'
 
                                 if key in [
-                                    'xlo', 'xhi', 'ylo', 'yhi',
-                                    'xmin', 'xmax', 'ymin', 'ymax', 'zmin', 'zmax',
-                                    'phi', 'theta',
-                                    'nplot',
+                                    'total', 'dt', 'njmp', 't0', 'trans',
+                                    'meth',
+                                    'bandup', 'bandlo',
+                                    'dtmin', 'dtmax',
+                                    'vmaxpts',
+                                    'jac_eps', 'newt_tol', 'newt_iter',
+                                    'atoler', 'toler',
+                                    'seed',
                                 ]:
-                                    simulation['plot'][key] = float(val)
-
-                                elif key in [
-                                    'lt', 'axes', 'nplot',
-                                ]:
-                                    simulation['plot'][key] = int(float(val))
+                                    simulation['simulation_method'][key] = val
 
                                 elif key in [
                                     'rangelow', 'rangehigh', 'rangestep',
@@ -203,7 +245,7 @@ def validate_model(filename,
                                     simulation['range'][key] = float(val)
 
                                 elif key in [
-                                    'rangereset', 'rangeoldic',
+                                    'range', 'rangereset', 'rangeoldic',
                                 ]:
                                     simulation['range'][key] = val.lower() in ['yes', 'on', 'true', '1']
 
@@ -211,6 +253,28 @@ def validate_model(filename,
                                     'rangeover',
                                 ]:
                                     simulation['range'][key] = val
+
+                                elif key in [
+                                    'ntst', 'nmax', 'npr',
+                                    'dsmin', 'dsmax', 'ds',
+                                    'parmin', 'parmax',
+                                    'normmin', 'normmax',
+                                    'autoxmin', 'autoxmax', 'autoymin', 'autoymax', 'autovar',
+                                    'epsl', 'epsu', 'epss',  # undocumented tolerances for AUTO
+                                    'smc', 'umc',  # manifold colors (0 - 10)
+                                ]:
+                                    # AUTO options
+                                    simulation['auto'][key] = val
+
+                                elif key in [
+                                    'maxstor',  # total number of time steps that will be kept in memory
+                                    'bound',  # maximum any plotted variable can reach in magnitude
+                                    'delay',  # maximum delay allowed in the integration
+                                    'tor_per',  # period for a toroidal phasespace
+                                    'fold',  # name of variable to be considered modulo the period
+                                    'autoeval',  # whether or not to automatically re-evaluate tables everytime a parameter is changed
+                                ]:
+                                    simulation['other_numerics'][key] = val
 
                                 elif key in el_keys:
                                     axis = key[0]
@@ -222,8 +286,51 @@ def validate_model(filename,
                                         simulation['plot']['elements'][i_el] = {}
                                     simulation['plot']['elements'][i_el][axis] = val.upper()
 
+                                elif key in [
+                                    'xlo', 'xhi', 'ylo', 'yhi',  # axes limits for 2D plots
+                                    'xmin', 'xmax', 'ymin', 'ymax', 'zmin', 'zmax',  # axes limits for 3D plots
+                                    'phi', 'theta',  # angles for 3D plots
+                                ]:
+                                    simulation['plot'][key] = float(val)
+
+                                elif key in [
+                                    'axes',  # number of dimensions to plot (2 or 3)
+                                    'nplot',  # number of curves to plot
+                                    'lt',  # line type (-6 - 2)
+                                ]:
+                                    simulation['plot'][key] = int(float(val))
+
+                                elif key in [
+                                    'xnc', 'ync',  # null cline colors (0 - 10)
+                                    'nmesh',  # mesh size for computing nullclines
+                                ]:
+                                    simulation['nullcline_plot'][key] = val
+
+                                elif key in ['poimap', 'poivar', 'poipln', 'poisgn', 'poistop']:
+                                    # Poincare map options
+                                    simulation['poincare_map'][key] = val
+
+                                elif key in [
+                                    'back',  # background color
+                                    'small', 'big',  # font size
+                                    'bell',
+                                ]:
+                                    # UI options
+                                    simulation['ui'][key] = val
+
+                                elif key in [
+                                    'output',  # file to save results
+                                ]:
+                                    simulation['output'][key] = val
+
+                                elif key in [
+                                    'create',  # undocumented option used by ModelDB:239039
+                                ]:
+                                    simulation['other'][key] = val
+
                                 else:
-                                    simulation['simulation_method'][key] = val
+                                    simulation['other'][key] = val
+                                    # raise NotImplementedError('Option `{}` is not supported'.format(key))
 
                 elif line.startswith('d') and not ('=' in line and (' ' not in line or line.find('=') < line.find(' '))):
                     # check for "done" line; note just the singular character ``d`` defines the "done" line
@@ -318,8 +425,11 @@ def validate_model(filename,
                 [[variable] for variable in sorted(missing_plot_variables)],
             ])
 
-        if not simulation['range']:
-            simulation['range'] = None
+        for key, val in simulation.items():
+            if not val:
+                simulation[key] = None
+        simulation['sets'] = simulation['sets'] or {}
+        simulation['auxiliary_variables'] = simulation['auxiliary_variables'] or collections.OrderedDict()
 
     return (errors, warnings, simulation)
 
@@ -385,18 +495,23 @@ def get_xpp_input_configuration_from_directory(dirname):
     return (ode_filename, set_filename, parameter_filename, initial_conditions_filename)
 
 
-def sanitize_model(filename):
+def sanitize_model(filename, keep_only_directives=True, exclude_options=None):
     """ Sanitize an ODE file for interrogation
 
-    * Remove `outfile` statements
+    * Join continued statements into individual lines
+    * Remove statements
 
     Args:
         filename (:obj:`str`): path to model file or directory with ``.ode`` and possibly set (``.set``),
             parameter (``.par``), andd initial conditions (``.ic``) files
+        keep_only_directives (:obj:`bool`, optional): whether to keep `only` directives which limit output variables
+        exclude_options (:obj:`list` of :obj:`str`, optional): list of directives to exclude
 
     Returns:
         :obj:`str`: path to sanitized model file
     """
+    exclude_options = exclude_options or []
+
     statements = []
     with open(filename, 'rb') as file:
         statement = b''
@@ -417,7 +532,10 @@ def sanitize_model(filename):
 
     with open(sanitized_filename, 'wb') as sanitized_file:
         for statement in statements:
-            if statement.startswith(b'@'):
+            if not keep_only_directives and statement.startswith(b'only'):
+                continue
+
+            elif statement.startswith(b'@'):
                 statement = statement[1:]
                 i_comment = statement.find(b'#')
                 if i_comment > -1:
@@ -427,10 +545,12 @@ def sanitize_model(filename):
                 for cmd in re.split(b'[, ]+', statement):
                     parts = cmd.split(b'=')
                     if len(parts) > 1:
-                        key = parts[0].lstrip()
+                        key = parts[0].lstrip().lower()
                         val = parts[1].rstrip()
                         args[key] = val
-                args.pop(b'output', None)
+
+                for exclude_directive in exclude_options:
+                    args.pop(exclude_directive.encode(), None)
 
                 if args:
                     sanitized_statement = b'@ ' + b', '.join(key + b'=' + val for key, val in args.items()) + b'\n'

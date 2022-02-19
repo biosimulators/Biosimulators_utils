@@ -42,7 +42,7 @@ class XppUtilsTestCase(unittest.TestCase):
         self.assertEqual(vars[-1].name, 'Dynamics of "V"')
         self.assertEqual(vars[-1].target, 'V')
 
-        self.assertEqual(len(plots), 1)        
+        self.assertEqual(len(plots), 1)
         plot = plots[0]
         self.assertIsInstance(plot, Plot2D)
         self.assertEqual(len(plot.curves), 1)
