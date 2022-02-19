@@ -1390,6 +1390,8 @@ class SedmlSimulationReader(object):
         # outputs
         id_to_output_map = {}
         for output_sed in doc_sed.getListOfOutputs():
+            skipped_children = False
+
             if isinstance(output_sed, libsedml.SedReport):
                 output = data_model.Report()
 
@@ -1404,10 +1406,20 @@ class SedmlSimulationReader(object):
                     self._deserialize_reference(dataset_sed, data_set, 'data generator',
                                                 'DataReference', 'data_generator', id_to_data_gen_map)
 
+                has_children = len(output.data_sets) >= 1
+
             elif isinstance(output_sed, libsedml.SedPlot2D):
                 output = data_model.Plot2D()
 
                 for curve_sed in output_sed.getListOfCurves():
+                    if not isinstance(curve_sed, libsedml.SedCurve):
+                        skipped_children = True
+                        msg = (
+                            'Curves of type `{}` are not supported. '
+                            'Only curves available in L1V3 (`SedCurve`) are currently supported.'
+                        ).format(curve_sed.__class__.__name__)
+                        warn(msg, SedmlFeatureNotSupportedWarning)
+
                     curve = data_model.Curve()
 
                     curve.id = curve_sed.getId() or None
@@ -1424,10 +1436,20 @@ class SedmlSimulationReader(object):
                     self._deserialize_reference(curve_sed, curve, 'style', 'Style',
                                                 'style', id_to_style_map)
 
+                has_children = len(output.curves) >= 1
+
             elif isinstance(output_sed, libsedml.SedPlot3D):
                 output = data_model.Plot3D()
 
                 for surface_sed in output_sed.getListOfSurfaces():
+                    if not isinstance(surface_sed, libsedml.SedSurface):
+                        skipped_children = True
+                        msg = (
+                            'Surfaces of type `{}` are not supported. '
+                            'Only surfaces available in L1V3 (`SedSurface`) are currently supported.'
+                        ).format(surface_sed.__class__.__name__)
+                        warn(msg, SedmlFeatureNotSupportedWarning)
+
                     surface = data_model.Surface()
 
                     surface.id = surface_sed.getId() or None
@@ -1447,10 +1469,17 @@ class SedmlSimulationReader(object):
                     self._deserialize_reference(surface_sed, surface, 'style',
                                                 'Style', 'style', id_to_style_map)
 
+                has_children = len(output.surfaces) >= 1
+
             else:  # pragma: no cover: already validated by libSED-ML
                 # this is an error rather than a warning because SED doesn't define any other types of outputs
                 msg = 'Output type {} is not supported.'.format(output_sed.__class__.__name__)
                 raise NotImplementedError(msg)
+
+            if not has_children and skipped_children:
+                msg = 'Output `{}` was skipped because none of its children are currently supported.'.format(output.id)
+                warn(msg, SedmlFeatureNotSupportedWarning)
+                continue
 
             doc.outputs.append(output)
 
