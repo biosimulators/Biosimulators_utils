@@ -203,7 +203,7 @@ class ValidateModelController(cement.Controller):
         errors, warnings, _ = biosimulators_utils.sedml.validation.validate_model_with_language(filename, language, config=config)
 
         if warnings:
-            msg = 'The model file `{}` may be invalid.\n  {}'.format(
+            msg = 'The model file `{}` has warnings.\n  {}'.format(
                 filename, flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
             warn(msg, BioSimulatorsWarning)
 
@@ -249,7 +249,7 @@ class ValidateSimulationController(cement.Controller):
                 raise
 
         if reader.warnings:
-            msg = 'The SED-ML file `{}` may be invalid.\n  {}'.format(
+            msg = 'The SED-ML file `{}` has warnings.\n  {}'.format(
                 args.filename, flatten_nested_list_of_strings(reader.warnings).replace('\n', '\n  '))
             warn(msg, BioSimulatorsWarning)
 
@@ -289,7 +289,7 @@ class ValidateMetadataController(cement.Controller):
         _, errors, warnings = biosimulators_utils.omex_meta.io.read_omex_meta_file(args.filename)
 
         if warnings:
-            msg = 'The OMEX Metadata file `{}` may be invalid.\n  {}'.format(
+            msg = 'The OMEX Metadata file `{}` has warnings.\n  {}'.format(
                 args.filename, flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
             warn(msg, BioSimulatorsWarning)
 
@@ -345,7 +345,7 @@ class ValidateModelingProjectController(cement.Controller):
             config=config,
         )
         if warnings:
-            msg = 'The COMBINE/OMEX archive may be invalid.\n  {}'.format(
+            msg = 'The COMBINE/OMEX archive has warnings.\n  {}'.format(
                 flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
             warn(msg, BioSimulatorsWarning)
 
