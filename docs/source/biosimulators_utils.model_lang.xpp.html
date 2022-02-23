@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.model_lang.xpp package &#8212; BioSimulators utils 0.1.161 documentation</title>
+    <title>biosimulators_utils.model_lang.xpp package &#8212; BioSimulators utils 0.1.162 documentation</title>
     
     <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -448,15 +448,20 @@ for the variable of an associated SED-ML data generator</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.model_lang.xpp.validation.sanitize_model">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.xpp.validation.</span></span><span class="sig-name descname"><span class="pre">sanitize_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/xpp/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.xpp.validation.sanitize_model" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.xpp.validation.</span></span><span class="sig-name descname"><span class="pre">sanitize_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_only_directives</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/xpp/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.xpp.validation.sanitize_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sanitize an ODE file for interrogation</p>
 <ul class="simple">
-<li><p>Remove <cite>outfile</cite> statements</p></li>
+<li><p>Join continued statements into individual lines</p></li>
+<li><p>Remove statements</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to model file or directory with <code class="docutils literal notranslate"><span class="pre">.ode</span></code> and possibly set (<code class="docutils literal notranslate"><span class="pre">.set</span></code>),
-parameter (<code class="docutils literal notranslate"><span class="pre">.par</span></code>), andd initial conditions (<code class="docutils literal notranslate"><span class="pre">.ic</span></code>) files</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to model file or directory with <code class="docutils literal notranslate"><span class="pre">.ode</span></code> and possibly set (<code class="docutils literal notranslate"><span class="pre">.set</span></code>),
+parameter (<code class="docutils literal notranslate"><span class="pre">.par</span></code>), andd initial conditions (<code class="docutils literal notranslate"><span class="pre">.ic</span></code>) files</p></li>
+<li><p><strong>keep_only_directives</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – whether to keep <cite>only</cite> directives which limit output variables</p></li>
+<li><p><strong>exclude_options</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – list of directives to exclude</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>path to sanitized model file</p>

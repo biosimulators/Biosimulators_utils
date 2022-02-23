@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.omex_meta package &#8212; BioSimulators utils 0.1.161 documentation</title>
+    <title>biosimulators_utils.omex_meta package &#8212; BioSimulators utils 0.1.162 documentation</title>
     
     <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -713,7 +713,7 @@ a COMBINE/OMEX archive in an OMEX Metadata file</p></li>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.omex_meta.utils.build_omex_meta_file_for_model">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.omex_meta.utils.</span></span><span class="sig-name descname"><span class="pre">build_omex_meta_file_for_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">OmexMetadataOutputFormat.rdfxml_abbrev</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.utils.build_omex_meta_file_for_model" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.omex_meta.utils.</span></span><span class="sig-name descname"><span class="pre">build_omex_meta_file_for_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">OmexMetadataOutputFormat.rdfxml_abbrev</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/omex_meta/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.omex_meta.utils.build_omex_meta_file_for_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an OMEX metadata file for a model encoded in CellML or SBML. Also
 add missing metadata ids to the model file.</p>
 <dl class="field-list simple">
@@ -722,6 +722,7 @@ add missing metadata ids to the model file.</p>
 <li><p><strong>model_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to model to extract metadata about</p></li>
 <li><p><strong>metadata_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to save metadata</p></li>
 <li><p><strong>metadata_format</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">OmexMetadataOutputFormat</span></code>, optional) – format for <code class="xref py py-obj docutils literal notranslate"><span class="pre">metadata_filename</span></code></p></li>
+<li><p><strong>encoding</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – encoding (e.g., <code class="docutils literal notranslate"><span class="pre">utf-8</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
