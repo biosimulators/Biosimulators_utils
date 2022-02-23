@@ -78,7 +78,7 @@ class CombineArchiveWriter(object):
         self.warnings.extend(warnings)
 
         if self.warnings:
-            warn('COMBINE/OMEX archive may be invalid.\n  ' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
+            warn('COMBINE/OMEX archive has warnings.\n  ' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
                  BioSimulatorsWarning)
         if self.errors:
             raise ValueError('COMBINE/OMEX archive is invalid.\n  ' + flatten_nested_list_of_strings(self.errors).replace('\n', '\n  '))
@@ -105,7 +105,7 @@ class CombineArchiveWriter(object):
 
         errors, warnings = get_combine_errors_warnings(manifest)
         if warnings:
-            msg = 'COMBINE/OMEX archive may be invalid.\n  ' + flatten_nested_list_of_strings(warnings).replace('\n', '\n  ')
+            msg = 'COMBINE/OMEX archive has warnings.\n  ' + flatten_nested_list_of_strings(warnings).replace('\n', '\n  ')
             warn(msg, BioSimulatorsWarning)
         if errors:
             msg = 'COMBINE/OMEX archive is invalid.\n  ' + flatten_nested_list_of_strings(errors).replace('\n', '\n  ')
@@ -237,7 +237,7 @@ class CombineArchiveReader(object):
 
         # raise warnings and errors
         if self.warnings:
-            warn('COMBINE/OMEX archive may be invalid.\n  ' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
+            warn('COMBINE/OMEX archive has warnings.\n  ' + flatten_nested_list_of_strings(self.warnings).replace('\n', '\n  '),
                  BioSimulatorsWarning)
         if self.errors:
             raise ValueError('`{}` is not a valid COMBINE/OMEX archive.\n  {}'.format(

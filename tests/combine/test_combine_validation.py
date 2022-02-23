@@ -221,7 +221,7 @@ class ValidationTestCase(unittest.TestCase):
             errors, warnings = validate(archive, self.tmp_dir)
         self.assertEqual(errors, [])
         self.assertEqual(len(warnings), 1)
-        self.assertIn('may be invalid', flatten_nested_list_of_strings(warnings))
+        self.assertIn('has warnings', flatten_nested_list_of_strings(warnings))
         self.assertIn('my warning', flatten_nested_list_of_strings(warnings))
 
     def test_manifest_in_manifest(self):

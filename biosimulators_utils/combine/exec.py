@@ -125,7 +125,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             # validate archive
             errors, warnings = validate(archive, archive_tmp_dir, config=config)
             if warnings:
-                msg = 'The COMBINE/OMEX archive may be invalid.\n  {}'.format(
+                msg = 'The COMBINE/OMEX archive has warnings.\n  {}'.format(
                     flatten_nested_list_of_strings(warnings).replace('\n', '\n  '))
                 warn(msg, BioSimulatorsWarning)
 

@@ -603,6 +603,21 @@ class Model(SedBase, SedIdGroupMixin):
             and self.language == other.language \
             and are_lists_equal(self.changes, other.changes)
 
+    def has_structural_changes(self):
+        """ Check if there are structural model changes present.
+
+        * Add element
+        * Replace element
+        * Remove element
+
+        Returns:
+            :obj:`bool`: :obj:`True`, if structural model changes are present
+        """
+        for change in self.changes:
+            if isinstance(change, (AddElementModelChange, ReplaceElementModelChange, RemoveElementModelChange)):
+                return True
+        return False
+
 
 class ModelChange(SedBase, SedIdGroupMixin, TargetGroupMixin):
     """ A change to a model

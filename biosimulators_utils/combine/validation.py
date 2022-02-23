@@ -281,7 +281,7 @@ def validate_content(content, archive_dirname,
         ]]
     if warnings:
         warnings = [[
-            'The {} file at location `{}` may be invalid.'.format(file_type, content.location),
+            'The {} file at location `{}` has warnings.'.format(file_type, content.location),
             warnings,
         ]]
 

@@ -340,7 +340,7 @@ class TriplesOmexMetaReader(OmexMetaReader):
 
             if temp_warnings:
                 if isinstance(filename_or_filenames, (tuple, list)):
-                    warnings.append(['The OMEX Metadata file at location `{}` may be invalid.'.format(error_filename), temp_warnings])
+                    warnings.append(['The OMEX Metadata file at location `{}` has warnings.'.format(error_filename), temp_warnings])
                 else:
                     warnings.extend(temp_warnings)
 
@@ -503,7 +503,7 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
 
             if temp_warnings:
                 if isinstance(filename_or_filenames, (tuple, list)):
-                    warnings.append(['The OMEX Metadata file at location `{}` may be invalid.'.format(error_filename), temp_warnings])
+                    warnings.append(['The OMEX Metadata file at location `{}` has warnings.'.format(error_filename), temp_warnings])
                 else:
                     warnings.extend(temp_warnings)
 

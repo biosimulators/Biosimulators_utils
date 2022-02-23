@@ -53,7 +53,7 @@ def validate_biosimulations_metadata(metadata, archive=None, working_dir=None):
 
         if temp_warnings:
             el_uri = get_global_combine_archive_content_uri(el_metadata['uri'], el_metadata['combine_archive_uri'])
-            warnings.append(['The metadata for URI `{}` may be invalid.'.format(
+            warnings.append(['The metadata for URI `{}` has warnings.'.format(
                 el_uri),  temp_warnings])
 
     if not has_archive_metadata:

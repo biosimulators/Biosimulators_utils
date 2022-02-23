@@ -37,12 +37,33 @@ def validate_model(filename, name=None, validate_consistency=True, config=None):
             if validate_consistency:
                 doc.checkConsistency()
 
+            warning_map = {}
             for i_error in range(doc.getNumErrors()):
                 sbml_error = doc.getError(i_error)
                 if sbml_error.isInfo() or sbml_error.isWarning():
-                    warnings.append([sbml_error.getMessage()])
+                    err_id = sbml_error.getErrorId()
+                    if err_id not in warning_map:
+                        warning_map[err_id] = [
+                            0,
+                            sbml_error.getCategoryAsString(),
+                            sbml_error.getMessage().strip(),
+                            sbml_error.getLine(),
+                            sbml_error.getColumn(),
+                            sbml_error.getSeverityAsString().lower(),
+                        ]
+                    warning_map[err_id][0] += 1
                 else:
-                    errors.append([sbml_error.getMessage()])
+                    errors.append(['{} ({}) at line {}, column {}: {}'.format(
+                        sbml_error.getCategoryAsString(), sbml_error.getErrorId(),
+                        sbml_error.getLine(), sbml_error.getColumn(),
+                        sbml_error.getMessage())
+                    ])
+            for err_id, (count, category, first_msg, line, column, severity) in warning_map.items():
+                warnings.append([
+                    '{} {}{} of type {} ({}). The following is the first {} at line {}, column {}:'.format(
+                        count, severity, 's' if count > 1 else '', category, err_id, severity, line, column),
+                    [[first_msg]]
+                ])
 
         else:
             errors.append(['`{}` is not a file.'.format(filename or '')])
