@@ -400,3 +400,22 @@ class DataModelTestCase(unittest.TestCase):
         self.assertEqual(range.number_of_steps, 20)
         range.number_of_steps = 30
         self.assertEqual(range.number_of_points, 30)
+
+    def test_Model_has_structural_changes(self):
+        model = data_model.Model()
+        self.assertFalse(model.has_structural_changes())
+
+        model.changes.append(data_model.ModelAttributeChange())
+        self.assertFalse(model.has_structural_changes())
+
+        model.changes.append(data_model.AddElementModelChange())
+        self.assertTrue(model.has_structural_changes())
+
+        model.changes = [data_model.ReplaceElementModelChange()]
+        self.assertTrue(model.has_structural_changes())
+
+        model.changes = [data_model.RemoveElementModelChange()]
+        self.assertTrue(model.has_structural_changes())
+
+        model.changes = [data_model.ComputeModelChange()]
+        self.assertFalse(model.has_structural_changes())

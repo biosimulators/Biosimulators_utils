@@ -10,7 +10,6 @@ from ..biosimulations.data_model import Metadata  # noqa: F401
 from ..utils.core import are_lists_equal, none_sorted
 import abc
 import enum
-import libsedml
 
 
 __all__ = [
@@ -607,13 +606,15 @@ class Model(SedBase, SedIdGroupMixin):
     def has_structural_changes(self):
         """ Check if there are structural model changes present.
 
+        * Add element
+        * Replace element
+        * Remove element
+
         Returns:
             :obj:`bool`: :obj:`True`, if structural model changes are present
         """
         for change in self.changes:
-            if isinstance(change, libsedml.SedAddXML) or \
-               isinstance(change, libsedml.SedChangeXML) or \
-               isinstance(change, libsedml.SedRemoveXML):
+            if isinstance(change, (AddElementModelChange, ReplaceElementModelChange, RemoveElementModelChange)):
                 return True
         return False
 
