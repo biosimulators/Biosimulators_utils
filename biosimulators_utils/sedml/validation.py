@@ -1375,14 +1375,12 @@ def validate_data_generator_variables(variables, model_etrees=None, validate_tar
             models = get_models_referenced_by_task(variable.task)
             for model in models:
                 if model and model.language:
-                    model_changes = model.changes or list(filter(lambda change: change.model == model,
-                                                                 get_model_changes_for_task(variable.task)))
                     temp_errors, temp_warnings = validate_target(
                         variable.target, variable.target_namespaces,
                         DataGenerator, model.language,
                         model_id=model.id,
                         model_etree=model_etrees.get(model, None),
-                        check_in_model_source=not model_changes and validate_targets_with_model_sources)
+                        check_in_model_source=not model.has_structural_changes() and validate_targets_with_model_sources)
                     variable_errors.extend(temp_errors)
                     variable_warnings.extend(temp_warnings)
 
