@@ -319,7 +319,7 @@ class ValidationTestCase(unittest.TestCase):
         doc.models[0].changes[0].variables[0].target = None
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
-        self.assertIn('XPath could not be validated.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
 
         doc.models[0].changes[0].variables[0].target = 'y'
         doc.models[0].changes[0].variables[0].symbol = 'y'
@@ -331,7 +331,7 @@ class ValidationTestCase(unittest.TestCase):
         doc.models[0].changes[0].variables[0].model = None
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('must reference a model', flatten_nested_list_of_strings(errors))
-        self.assertIn('XPath could not be validated.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
 
         doc.models[0].changes[0].variables[0].model = doc.models[0]
         doc.models[0].changes[0].variables[0].task = data_model.Task(
@@ -958,23 +958,23 @@ class ValidationTestCase(unittest.TestCase):
         )
         errors, warnings = validation.validate_model_changes(model)
         self.assertIn('not supported', flatten_nested_list_of_strings(errors))
-        self.assertIn('XPath could not be validated.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
 
         model.changes[0].variables[0].target = model.changes[0].target
         model.changes[0].variables[0].target_namespaces = model.changes[0].target_namespaces
         errors, warnings = validation.validate_model_changes(model)
         self.assertEqual(errors, [])
-        self.assertIn('XPath could not be validated.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
 
         with mock.patch('biosimulators_utils.sedml.validation.validate_target', return_value=([], [['warning']])):
             errors, warnings = validation.validate_model_changes(model)
         self.assertEqual(errors, [])
-        self.assertIn('may be invalid', flatten_nested_list_of_strings(warnings))
+        self.assertIn('has warnings', flatten_nested_list_of_strings(warnings))
 
         with mock.patch('biosimulators_utils.sedml.validation.validate_target', return_value=([], [['warning']])):
             errors, warnings = validation.validate_model(model, [], os.path.dirname(__file__))
         self.assertEqual(errors, [])
-        self.assertIn('changes of the model may be invalid', flatten_nested_list_of_strings(warnings))
+        self.assertIn('changes of the model has warnings', flatten_nested_list_of_strings(warnings))
 
     def test_validate_simulation(self):
         sim = data_model.UniformTimeCourseSimulation(
@@ -1109,12 +1109,12 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('is not supported', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [data_model.ModelAttributeChange()]
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -1136,7 +1136,7 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
-        self.assertIn('XPath could not be validated', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -1147,7 +1147,7 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('must reference a model', flatten_nested_list_of_strings(errors))
-        self.assertIn('XPath could not be validated', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -1158,7 +1158,7 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('should not reference a task', flatten_nested_list_of_strings(errors))
-        self.assertIn('XPath could not be validated', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -1169,7 +1169,7 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
-        self.assertIn('XPath could not be validated', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -1180,7 +1180,7 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
-        self.assertIn('XPath could not be validated', flatten_nested_list_of_strings(warnings))
+        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = []
 
         errors, warnings = self._validate_task(task, variables)
