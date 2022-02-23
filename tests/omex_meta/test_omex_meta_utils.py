@@ -1,6 +1,7 @@
 from biosimulators_utils.omex_meta.data_model import OmexMetadataOutputFormat
 from biosimulators_utils.omex_meta.utils import (
-    build_omex_meta_file_for_model, get_local_combine_archive_content_uri, get_global_combine_archive_content_uri)
+    build_omex_meta_file_for_model, _build_omex_meta_file_for_model, _build_omex_meta_file_for_model_error_wrapper,
+    get_local_combine_archive_content_uri, get_global_combine_archive_content_uri)
 import os
 import shutil
 import tempfile
@@ -42,12 +43,65 @@ class OmexMetaUtilsTestCase(unittest.TestCase):
         with self.assertRaisesRegex(NotImplementedError, 'is not supported'):
             build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
 
+    def test__build_omex_meta_file_for_model_error_handling(self):
         model_filename = os.path.join(self.temp_dirname, 'model.xml')
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
         metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
         with open(model_filename, 'w') as file:
             file.write('<sbml></sbml')
         with self.assertRaisesRegex(ValueError, 'could not be extracted'):
+            _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format.value)
+
+        # model_filename = os.path.join(self.temp_dirname, 'model.xml')
+        # metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
+        # metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
+        # with open(model_filename, 'w') as file:
+        #     file.write('<sbml></sbml>')
+        # with self.assertRaisesRegex(ValueError, 'could not be read'):
+        #    _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format.value)
+
+        model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-metadata', 'simple-regulation.xml')
+        metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
+        _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format.value)
+
+    def test__build_omex_meta_file_for_model_error_handling_wrapper(self):
+        model_filename = os.path.join(self.temp_dirname, 'model.xml')
+        metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
+        with open(model_filename, 'w') as file:
+            file.write('<sbml></sbml')
+        with self.assertRaisesRegex(SystemExit, 'could not be extracted'):
+            _build_omex_meta_file_for_model_error_wrapper(model_filename, metadata_filename, metadata_format.value)
+
+        # model_filename = os.path.join(self.temp_dirname, 'model.xml')
+        # metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
+        # metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
+        # with open(model_filename, 'w') as file:
+        #     file.write('<sbml></sbml>')
+        # with self.assertRaisesRegex(SystemExit, 'could not be read'):
+        #     _build_omex_meta_file_for_model_error_wrapper(model_filename, metadata_filename, metadata_format.value)
+
+        model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-metadata', 'simple-regulation.xml')
+        metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
+        _build_omex_meta_file_for_model_error_wrapper(model_filename, metadata_filename, metadata_format.value)
+
+    def test__build_omex_meta_file_for_model_error_handling_subprocess(self):
+        model_filename = os.path.join(self.temp_dirname, 'model.xml')
+        metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
+        with open(model_filename, 'w') as file:
+            file.write('<sbml></sbml')
+        with self.assertRaisesRegex(RuntimeError, 'could not be extracted'):
+            build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
+
+        model_filename = os.path.join(self.temp_dirname, 'model.xml')
+        metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
+        with open(model_filename, 'w') as file:
+            file.write('<sbml></sbml>')
+        with self.assertRaisesRegex(RuntimeError, 'could not be read'):
             build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
 
         model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-metadata', 'simple-regulation.xml')
