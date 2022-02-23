@@ -1068,7 +1068,7 @@ def validate_model_changes(model):
     errors = []
     warnings = []
 
-    if len(model.changes)>0:
+    if len(model.changes) > 0:
         warnings.append(["Model change XPaths are currently not validated."])
     for i_change, change in enumerate(model.changes):
         change_errors = []

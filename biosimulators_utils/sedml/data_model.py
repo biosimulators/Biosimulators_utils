@@ -614,8 +614,9 @@ class Model(SedBase, SedIdGroupMixin):
             if isinstance(change, libsedml.SedAddXML) or \
                isinstance(change, libsedml.SedChangeXML) or \
                isinstance(change, libsedml.SedRemoveXML):
-                   return True
+                return True
         return False
+
 
 class ModelChange(SedBase, SedIdGroupMixin, TargetGroupMixin):
     """ A change to a model
