@@ -114,6 +114,14 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                     [[id] for id in repeated_ids],
                 ])
 
+    if validate_targets_with_model_sources:
+        model_change = False
+        for model in doc.models:
+            if model.language and does_model_language_use_xpath_variable_targets(model.language):
+                model_change = model_change or model.has_structural_changes()
+        if model_change:
+            warnings.append(["All XPaths are validated with respect to their target models before applying model changes, which can, in theory, invalidate otherwise-valid targets."])
+
     if validate_semantics:
         errors.extend(validate_unique_ids(doc))
 
@@ -315,10 +323,8 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                                 temp_errors, temp_warnings = validate_target(
                                     variable.target, variable.target_namespaces, Calculation,
                                     variable.model.language, variable.model.id,
-                                    check_in_model_source=(
-                                        not variable.model.changes
-                                        and not get_model_changes_for_task(task)
-                                    )
+                                    check_in_model_source=validate_targets_with_model_sources,
+                                    model_change = variable.model.has_structural_changes(),
                                 )
                                 variable_errors.extend(temp_errors)
                                 variable_warnings.extend(temp_warnings)
@@ -466,7 +472,8 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                             temp_errors, temp_warnings = validate_target(
                                 change.target, change.target_namespaces,
                                 ModelChange, change.model.language, change.model.id,
-                                check_in_model_source=False)
+                                check_in_model_source=validate_targets_with_model_sources,
+                                model_change = change.model.has_structural_changes())
                             change_errors.extend(temp_errors)
                             change_warnings.extend(temp_warnings)
 
@@ -505,7 +512,8 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                             temp_errors, temp_warnings = validate_target(
                                 variable.target, variable.target_namespaces,
                                 Calculation, variable.model.language, variable.model.id,
-                                check_in_model_source=False)
+                                check_in_model_source=validate_targets_with_model_sources,
+                                model_change=change.model.has_structural_changes())
                             variable_errors.extend(temp_errors)
                             variable_warnings.extend(temp_warnings)
 
@@ -1068,9 +1076,6 @@ def validate_model_changes(model):
     errors = []
     warnings = []
 
-    if model.language and does_model_language_use_xpath_variable_targets(model.language) and len(model.changes) > 0:
-        warnings.append(["Model change XPaths cannot be validated separate from their execution."])
-
     for i_change, change in enumerate(model.changes):
         change_errors = []
         change_warnings = []
@@ -1079,7 +1084,8 @@ def validate_model_changes(model):
             if model.language:
                 temp_errors, temp_warnings = validate_target(change.target, change.target_namespaces,
                                                              ModelChange, model.language, model.id,
-                                                             check_in_model_source=False,
+                                                             check_in_model_source=validate_targets_with_model_sources,
+                                                             model_change=model.has_structural_changes(),
                                                              warn_xpaths_not_validated=False)
                 change_errors.extend(temp_errors)
                 change_warnings.extend(temp_warnings)
@@ -1113,7 +1119,8 @@ def validate_model_changes(model):
                     temp_errors, temp_warnings = validate_target(
                         variable.target, variable.target_namespaces,
                         Calculation, variable.model.language, variable.model.id,
-                        check_in_model_source=False)
+                        check_in_model_source=validate_targets_with_model_sources,
+                        model_change=variable.model.has_structural_changes())
                     variable_errors.extend(temp_errors)
                     variable_warnings.extend(temp_warnings)
 
@@ -1323,8 +1330,7 @@ def validate_data_generator(data_generator, model_etrees=None, validate_targets_
         if not param.id:
             errors.append(['Parameter {} must have an id.'.format(i_parameter + 1)])
 
-    temp_errors, temp_warnings = validate_data_generator_variables(data_generator.variables, model_etrees=model_etrees,
-                                                                   validate_targets_with_model_sources=validate_targets_with_model_sources)
+    temp_errors, temp_warnings = validate_data_generator_variables(data_generator.variables, model_etrees=model_etrees, validate_targets_with_model_sources=validate_targets_with_model_sources)
     errors.extend(temp_errors)
     warnings.extend(temp_warnings)
 
@@ -1380,7 +1386,8 @@ def validate_data_generator_variables(variables, model_etrees=None, validate_tar
                         DataGenerator, model.language,
                         model_id=model.id,
                         model_etree=model_etrees.get(model, None),
-                        check_in_model_source=not model.has_structural_changes() and validate_targets_with_model_sources)
+                        check_in_model_source=validate_targets_with_model_sources,
+                        model_change = model.has_structural_changes())
                     variable_errors.extend(temp_errors)
                     variable_warnings.extend(temp_warnings)
 
@@ -1591,8 +1598,7 @@ def validate_output(output):
     return (errors, warnings)
 
 
-def validate_target(target, namespaces, context, language, model_id, model_etree=None, doc=None, check_in_model_source=False,
-                    warn_xpaths_not_validated=True):
+def validate_target(target, namespaces, context, language, model_id, model_etree=None, doc=None, check_in_model_source=False, warn_xpaths_not_validated=True, model_change=False):
     """ Validate that a target is a valid XPath and that the namespaces needed to resolve a target are defined
 
     Args:
@@ -1605,6 +1611,7 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
         doc (:obj:`SedDocument`, optional): SED document
         check_in_model_source (:obj:`bool`, optional): whether to check that the target exists in the source
         warn_xpaths_not_validated (:obj:`bool`, optional): whether to warn that XPaths cannot be validated
+        model_changes (:obj:`bool`, optional): whether the model has changes that could validate or invalidate XPaths.
 
     Returns:
         nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
@@ -1640,7 +1647,7 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
             try:
                 xpath.evaluate(root)
 
-                if model_etree and check_in_model_source and context in [DataGenerator, Calculation]:
+                if model_etree and check_in_model_source:
                     if context == DataGenerator and '/@' in target:
                         xpath = target.rpartition('/@')[0]
                     else:
@@ -1648,10 +1655,16 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
 
                     objs = eval_xpath(model_etree, xpath, namespaces)  # TODO
 
-                    if not objs:
-                        errors.append(['XPath `{}` does not match any elements of model `{}`.'.format(xpath, model_id or '')])
-                    elif len(objs) > 1:
-                        errors.append(['XPath `{}` matches multiple elements of model `{}`.'.format(xpath, model_id or '')])
+                    if model_change:
+                        if not objs:
+                            warnings.append(['XPath `{}` does not match any elements of model `{}`.  However, one or more modelChange objects may be causing this failure.'.format(xpath, model_id or '')])
+                        elif len(objs) > 1:
+                            warnings.append(['XPath `{}` matches multiple elements of model `{}`.  However, one or more modelChange objects may be causing this failure.'.format(xpath, model_id or '')])
+                    else:
+                        if not objs:
+                            errors.append(['XPath `{}` does not match any elements of model `{}`.'.format(xpath, model_id or '')])
+                        elif len(objs) > 1:
+                            errors.append(['XPath `{}` matches multiple elements of model `{}`.'.format(xpath, model_id or '')])
 
                 else:
                     if warn_xpaths_not_validated:

@@ -614,7 +614,7 @@ class Model(SedBase, SedIdGroupMixin):
             :obj:`bool`: :obj:`True`, if structural model changes are present
         """
         for change in self.changes:
-            if isinstance(change, (AddElementModelChange, ReplaceElementModelChange, RemoveElementModelChange)):
+            if isinstance(change, (AddElementModelChange, ReplaceElementModelChange, RemoveElementModelChange, ModelAttributeChange)):
                 return True
         return False
 
