@@ -160,6 +160,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
         for i_model, model in enumerate(doc.models):
             model_errors, model_warnings = validate_model(model, model_ids, working_dir,
                                                           validate_models_with_languages=validate_models_with_languages,
+                                                          check_in_model_source=validate_targets_with_model_sources,
                                                           config=config)
 
             # append errors/warnings to global lists of errors and warnings
@@ -859,7 +860,7 @@ def validate_repeated_task_has_one_model(task):
     return (errors, warnings)
 
 
-def validate_model(model, model_ids, working_dir, validate_models_with_languages=True, config=None):
+def validate_model(model, model_ids, working_dir, validate_models_with_languages=True, config=None, check_in_model_source=True):
     """ Check a model
 
     Args:
@@ -890,7 +891,7 @@ def validate_model(model, model_ids, working_dir, validate_models_with_languages
     warnings.extend(tmp_warnings)
 
     # validate that model changes have targets
-    model_change_errors, model_change_warnings = validate_model_changes(model)
+    model_change_errors, model_change_warnings = validate_model_changes(model, check_in_model_source=check_in_model_source)
     if model_change_errors:
         errors.append(['The changes of the model are invalid.', model_change_errors])
     if model_change_warnings:
@@ -1062,7 +1063,7 @@ def validate_model_change_types(changes, types=(ModelChange, )):
     return errors
 
 
-def validate_model_changes(model):
+def validate_model_changes(model, check_in_model_source=True):
     """ Check that model changes are semantically valid
 
     * Check that the variables of compute model changes are valid
@@ -1084,7 +1085,7 @@ def validate_model_changes(model):
             if model.language:
                 temp_errors, temp_warnings = validate_target(change.target, change.target_namespaces,
                                                              ModelChange, model.language, model.id,
-                                                             check_in_model_source=validate_targets_with_model_sources,
+                                                             check_in_model_source=check_in_model_source,
                                                              model_change=model.has_structural_changes(),
                                                              warn_xpaths_not_validated=False)
                 change_errors.extend(temp_errors)
@@ -1119,7 +1120,7 @@ def validate_model_changes(model):
                     temp_errors, temp_warnings = validate_target(
                         variable.target, variable.target_namespaces,
                         Calculation, variable.model.language, variable.model.id,
-                        check_in_model_source=validate_targets_with_model_sources,
+                        check_in_model_source=check_in_model_source,
                         model_change=variable.model.has_structural_changes())
                     variable_errors.extend(temp_errors)
                     variable_warnings.extend(temp_warnings)
