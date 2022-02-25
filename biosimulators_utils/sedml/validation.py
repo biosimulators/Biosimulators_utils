@@ -25,7 +25,6 @@ from .utils import (append_all_nested_children_to_doc, get_range_len,
                     get_models_referenced_by_task,
                     get_all_sed_objects,
                     get_data_generators_for_output, get_variables_for_data_generators,
-                    get_model_changes_for_task,
                     get_task_results_shape)
 from kisao.data_model import TermType as KisaoTermType
 import collections
@@ -352,7 +351,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                                     variable.target, variable.target_namespaces, Calculation,
                                     variable.model.language, variable.model.id,
                                     check_in_model_source=validate_targets_with_model_sources,
-                                    model_change = variable.model.has_structural_changes(),
+                                    model_change=variable.model.has_structural_changes(),
                                     model_etree=model_etrees.get(model, None),
                                 )
                                 variable_errors.extend(temp_errors)
@@ -502,7 +501,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                                 change.target, change.target_namespaces,
                                 ModelChange, change.model.language, change.model.id,
                                 check_in_model_source=validate_targets_with_model_sources,
-                                model_change = change.model and change.model.has_structural_changes(),
+                                model_change=change.model and change.model.has_structural_changes(),
                                 model_etree=model_etrees.get(model, None),
                                 )
                             change_errors.extend(temp_errors)
@@ -1401,7 +1400,7 @@ def validate_data_generator_variables(variables, model_etrees=None, validate_tar
                         model_id=model.id,
                         model_etree=model_etrees.get(model, None),
                         check_in_model_source=validate_targets_with_model_sources,
-                        model_change = model.has_structural_changes())
+                        model_change=model.has_structural_changes())
                     variable_errors.extend(temp_errors)
                     variable_warnings.extend(temp_warnings)
 
