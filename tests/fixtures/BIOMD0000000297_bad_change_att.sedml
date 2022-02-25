@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sedML xmlns="http://sed-ml.org/sed-ml/level1/version2" xmlns:sbml="http://www.sbml.org/sbml/level2/version4" level="1" version="2">
+  <listOfModels>
+    <model id="model" language="urn:sedml:language:sbml" source="BIOMD0000000297.xml">
+      <listOfChanges>
+        <changeAttribute target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Trim&apos;]/@initialConcentration" newValue="0.084410675"/>
+        <changeAttribute target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id=&apos;Trim_noexist&apos;]/@initialConcentration" newValue="0.084410675"/>
+      </listOfChanges>
+    </model>
+  </listOfModels>
+</sedML>
