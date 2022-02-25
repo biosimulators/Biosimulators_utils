@@ -7,6 +7,7 @@
 """
 
 from ...config import Config  # noqa: F401
+from .data_model import SIMULATION_METHOD_KISAO_MAP
 import collections
 import glob
 import os
@@ -139,14 +140,23 @@ def validate_model(filename,
                     id, _, value = line.partition(' ')
                     simulation[block][id] = float(value)
 
+        parameter_ids = {key.lower(): key for key in simulation['parameters'].keys()}
+        variable_ids = {key.upper(): key for key in simulation['initial_conditions'].keys()}
+
         el_keys = ['xp', 'yp', 'zp']
         for i_el in range(7):
             el_keys.append('xp' + str(i_el + 2))
             el_keys.append('yp' + str(i_el + 2))
             el_keys.append('zp' + str(i_el + 2))
 
-        with open(filename, 'r') as file:
+        with open(filename, 'rb') as file:
             for line in file:
+                i_comment = line.find(b'#')
+                if i_comment >= 0:
+                    line = line[0:i_comment]
+                line = line.strip()
+                line = line.decode()
+
                 if line.startswith('aux '):
                     name, _, expr = line[4:].strip().partition('=')
                     name = name.strip().upper()
@@ -169,63 +179,60 @@ def validate_model(filename,
                         'initial_conditions': {},
                     }
                     for val in values[1:-1].split(','):
-                        paramVar, _, val = val.partition('=')
-                        paramVar = paramVar.strip()
+                        param_var, _, val = val.partition('=')
+                        param_var = param_var.strip()
                         val = float(val.strip())
 
-                        if paramVar in simulation['parameters']:
-                            paramVar = paramVar.lower()
-                            simulation['sets'][name]['parameters'][paramVar] = val
-                            # simulation['parameters'][paramVar] = val
+                        if param_var.lower() in parameter_ids:
+                            param_var = parameter_ids[param_var.lower()]
+                            simulation['sets'][name]['parameters'][param_var] = val
+                            # simulation['parameters'][param_var] = val
                         else:
-                            paramVar = paramVar.upper()
-                            simulation['sets'][name]['initial_conditions'][paramVar] = val
-                            simulation['initial_conditions'][paramVar] = val
+                            param_var = variable_ids[param_var.upper()]
+                            simulation['sets'][name]['initial_conditions'][param_var] = val
+                            simulation['initial_conditions'][param_var] = val
 
                 elif line.startswith('@'):
                     line = line[1:]
-                    i_comment = line.find('#')
-                    if i_comment > -1:
-                        line = line[0:i_comment]
                     for cmd in line.split(','):
                         parts = cmd.split('=')
                         if len(parts) > 1:
                             key = parts[0].lstrip()
                             val = parts[1].rstrip()
                             if ' ' not in key and ' ' not in val:
-                                key = key.lower()
-                                if key == 'transient':
-                                    key = 'trans'
-                                elif key == 'nout':
-                                    key = 'njmp'
-                                elif key == 'method':
-                                    key = 'meth'
-                                elif key.startswith('xplot'):
-                                    key = key.replace('xplot', 'xp')
-                                elif key.startswith('yplot'):
-                                    key = key.replace('yplot', 'yp')
-                                elif key.startswith('zplot'):
-                                    key = key.replace('zplot', 'zp')
-                                elif key == 'atol':
-                                    key = 'atoler'
-                                elif key in ['rtol', 'tol', 'rtolerance', 'tolerance']:
-                                    key = 'toler'
-                                elif key == 'xp1':
-                                    key = 'xp'
-                                elif key == 'yp1':
-                                    key = 'yp'
-                                elif key == 'zp1':
-                                    key = 'zp'
-                                elif key == 'xlow':
-                                    key = 'xlo'
-                                elif key == 'ylow':
-                                    key = 'ylo'
-                                elif key == 'bounds':
-                                    key = 'bound'
-                                elif key == 'maxstore':
-                                    key = 'maxstor'
-                                elif key == 'background':
-                                    key = 'back'
+                                key = norm_simulation_method_arg(key)
+
+                                if key == 'meth':
+                                    if val.lower() in ['r', 'rk', 'rk4', 'runge-kutta']:
+                                        val = 'rungekutta'
+                                    elif val.lower() in ['q']:
+                                        val = 'qualrk'
+                                    elif val.lower() in ['d']:
+                                        val = 'discrete'
+                                    elif val.lower() in ['e']:
+                                        val = 'euler'
+                                    elif val.lower() in ['m']:
+                                        val = 'modeuler'
+                                    elif val.lower() in ['a']:
+                                        val = 'adams'
+                                    elif val.lower() in ['g']:
+                                        val = 'gear'
+                                    elif val.lower() in ['v']:
+                                        val = 'volterra'
+                                    elif val.lower() in ['b']:
+                                        val = 'backeul'
+                                    elif val.lower() in ['s']:
+                                        val = 'stiff'
+                                    elif val.lower() in ['c']:
+                                        val = 'cvode'
+                                    elif val.lower() in ['5']:
+                                        val = '5dp'
+                                    elif val.lower() in ['8']:
+                                        val = '83dp'
+                                    elif val.lower() in ['2']:
+                                        val = '2rb'
+                                    elif val.lower() in ['y']:
+                                        val = 'ymp'
 
                                 if key in [
                                     'total', 'dt', 'njmp', 't0', 'trans',
@@ -332,40 +339,93 @@ def validate_model(filename,
                                     simulation['other'][key] = val
                                     # raise NotImplementedError('Option `{}` is not supported'.format(key))
 
-                elif line.lower().startswith('d') and not ('=' in line and (' ' not in line or line.find('=') < line.find(' '))):
+                elif line.lower() in ['d', 'done']:
                     # check for "done" line; note just the singular character ``d`` defines the "done" line
                     break
 
         if set_filename is not None:
             with open(set_filename, 'r') as file:
                 block = None
+                i_line = 0
                 for line in file:
+                    i_line += 1
                     if line.startswith('#'):
                         block = line[1:].strip()
                     elif line:
                         if block == 'Old ICs':
                             val, _, var = line.partition(' ')
+                            var = var.strip()
                             val = float(val.strip())
-                            var = var.strip().upper()
-                            simulation['initial_conditions'][var] = val
+                            norm_var = variable_ids.get(var.upper(), None)
+                            if norm_var is None:
+                                msg = 'Initial condition for undefined variable `{}` ignored in set file `{}` at line {}.'.format(
+                                    var, set_filename, i_line)
+                                warnings.append([msg])
+                            else:
+                                simulation['initial_conditions'][norm_var] = val
 
                         elif block == 'Parameters':
                             val, _, var = line.partition(' ')
+                            var = var.strip()
                             val = float(val.strip())
-                            var = var.strip().lower()
-                            simulation['parameters'][var] = val
+                            norm_var = parameter_ids.get(var.lower(), None)
+                            if norm_var is None:
+                                msg = 'Value of undefined parameter `{}` ignored in set file `{}` at line {}.'.format(
+                                    var, set_filename, i_line)
+                                warnings.append([msg])
+                            else:
+                                simulation['parameters'][norm_var] = val
+
+                        elif block == 'Numerical stuff':
+                            val, _, var = line.partition(' ')
+
+                            var = norm_simulation_method_arg(var.strip())
+                            val = val.strip()
+
+                            if var in SIMULATION_METHOD_KISAO_MAP:
+                                val = var
+                                var = 'meth'
+
+                            if var in ['bound', 'delay']:
+                                simulation['other_numerics'][var] = val
+                            elif var in ['nmesh']:
+                                simulation['nullcline_plot'][var] = val
+                            elif var in ['poimap', 'poivar', 'poipln', 'poisgn', 'poistop']:
+                                simulation['poincare_map'][var] = val
+                            elif var in [
+                                'atoler', 'dt', 'dtmax', 'dtmin',
+                                'meth', 'newt_tol', 'njmp',
+                                't0', 'toler', 'total', 'trans',
+                            ]:
+                                simulation['simulation_method'][var] = val
 
         if parameter_filename is not None:
             with open(parameter_filename, 'r') as file:
                 file.readline()
+                i_line = 0
                 for line in file:
+                    i_line += 1
                     val, _, param = line.partition(' ')
-                    simulation['parameters'][param.strip()] = float(val.strip())
+                    param = param.strip()
+                    val = val.strip()
+                    norm_param = parameter_ids.get(param, None)
+                    if norm_param is None:
+                        msg = 'Value of undefined parameter `{}` ignored in parameter file `{}` at line {}.'.format(
+                            param, parameter_filename, i_line)
+                        warnings.append([msg])
+                    else:
+                        simulation['parameters'][norm_param] = float(val)
 
         if initial_conditions_filename is not None:
             with open(initial_conditions_filename, 'r') as file:
                 for val, var in zip(file, simulation['initial_conditions'].keys()):
-                    simulation['initial_conditions'][var] = float(val.strip())
+                    val = val.strip()
+                    simulation['initial_conditions'][var] = float(val)
+
+        aux_variable_ids = {key.upper(): key for key in simulation['auxiliary_variables'].keys()}
+        for key in list(simulation['initial_conditions'].keys()):
+            if key.upper() in aux_variable_ids:
+                simulation['initial_conditions'].pop(key)
 
         t_0 = simulation['simulation_method'].get('t0', 0.)
         try:
@@ -395,9 +455,9 @@ def validate_model(filename,
 
         if not errors:
             number_of_steps = duration / (d_t * n_jmp)
-            if (number_of_steps % 1.) > 1e-8:
+            if (number_of_steps % 1.) > 1e-8 and (1 - (number_of_steps % 1.)) > 1e-8:
                 errors.append([
-                    'Number of steps must be an integer',
+                    'Number of steps must be an integer, not {}'.format(number_of_steps),
                     [
                         ['t0: {}'.format(t_0)],
                         ['total: {}'.format(duration)],
@@ -410,19 +470,47 @@ def validate_model(filename,
     os.remove(var_param_filename)
 
     if simulation:
-        variable_ids = set(simulation['initial_conditions'].keys()) | set(simulation['auxiliary_variables'].keys()) | set('T')
+        all_variable_ids = list(simulation['initial_conditions'].keys()) + \
+            list(simulation['auxiliary_variables'].keys()) + ['T']
+        all_unique_variable_ids = set()
+        duplicate_all_variable_ids = set()
+        for id in all_variable_ids:
+            id = id.upper()
+            if id in all_unique_variable_ids:
+                duplicate_all_variable_ids.add(id)
+            else:
+                all_unique_variable_ids.add(id)
+
         missing_plot_variables = set()
+        uses_duplicate_all_variable_ids = set()
         for plot_element in simulation['plot'].get('elements', {}).values():
-            if 'x' in plot_element and plot_element['x'] not in variable_ids:
-                missing_plot_variables.add(plot_element['x'])
-            if 'y' in plot_element and plot_element['y'] not in variable_ids:
-                missing_plot_variables.add(plot_element['y'])
-            if 'z' in plot_element and plot_element['z'] not in variable_ids:
-                missing_plot_variables.add(plot_element['z'])
+            if 'x' in plot_element:
+                if plot_element['x'] not in all_unique_variable_ids:
+                    missing_plot_variables.add(plot_element['x'])
+                if plot_element['x'] in duplicate_all_variable_ids:
+                    uses_duplicate_all_variable_ids.add(plot_element['x'])
+            if 'y' in plot_element:
+                if plot_element['y'] not in all_unique_variable_ids:
+                    missing_plot_variables.add(plot_element['y'])
+                if plot_element['y'] in duplicate_all_variable_ids:
+                    uses_duplicate_all_variable_ids.add(plot_element['y'])
+            if 'z' in plot_element:
+                if plot_element['z'] not in all_unique_variable_ids:
+                    missing_plot_variables.add(plot_element['z'])
+                if plot_element['z'] in duplicate_all_variable_ids:
+                    uses_duplicate_all_variable_ids.add(plot_element['z'])
         if missing_plot_variables:
             errors.append([
                 '{} variables required for plots are not defined'.format(len(missing_plot_variables)),
                 [[variable] for variable in sorted(missing_plot_variables)],
+            ])
+        if uses_duplicate_all_variable_ids:
+            errors.append([
+                (
+                    'The following ids used in plots are repeated between variables, auxiliary variables, and time. '
+                    'Their ids must be unique to unambiguously discern the intended meaning of plots.'
+                ),
+                [[id] for id in sorted(uses_duplicate_all_variable_ids)]
             ])
 
         for key, val in simulation.items():
@@ -432,6 +520,69 @@ def validate_model(filename,
         simulation['auxiliary_variables'] = simulation['auxiliary_variables'] or collections.OrderedDict()
 
     return (errors, warnings, simulation)
+
+
+def norm_simulation_method_arg(arg):
+    """ Normalize the name of a numerical argument
+
+    Args:
+        arg (:obj:`str`): numerical argument
+
+    Returns:
+        :obj:`str`: normalized name of the argument
+    """
+    arg = arg.lower()
+    if arg == 'deltat':
+        arg = 'dt'
+    elif arg == 'transient':
+        arg = 'trans'
+    elif arg == 'nout':
+        arg = 'njmp'
+    elif arg == 'method':
+        arg = 'meth'
+    elif arg.startswith('xplot'):
+        arg = arg.replace('xplot', 'xp')
+    elif arg.startswith('yplot'):
+        arg = arg.replace('yplot', 'yp')
+    elif arg.startswith('zplot'):
+        arg = arg.replace('zplot', 'zp')
+    elif arg in ['atol', 'abs. tolerance']:
+        arg = 'atoler'
+    elif arg in ['rtol', 'tol', 'rtolerance', 'tolerance']:
+        arg = 'toler'
+    elif arg == 'xp1':
+        arg = 'xp'
+    elif arg == 'yp1':
+        arg = 'yp'
+    elif arg == 'zp1':
+        arg = 'zp'
+    elif arg == 'xlow':
+        arg = 'xlo'
+    elif arg == 'ylow':
+        arg = 'ylo'
+    elif arg == 'bounds':
+        arg = 'bound'
+    elif arg == 'maxstore':
+        arg = 'maxstor'
+    elif arg == 'background':
+        arg = 'back'
+    elif arg == 'newton tolerance':
+        arg = 'newt_tol'
+    elif arg == 'nullcline mesh':
+        arg = 'nmesh'
+    elif arg == 'poincare none':
+        arg = 'poimap'
+    elif arg == 'poincare sign':
+        arg = 'poisgn'
+    elif arg == 'poincare variable':
+        arg = 'poivar'
+    elif arg == 'poincare plane':
+        arg = 'poipln'
+    elif arg == 'stop on section':
+        arg = 'poistop'
+    elif arg == 'max delay':
+        arg = 'delay'
+    return arg
 
 
 def get_xpp_input_configuration_from_directory(dirname):
@@ -516,6 +667,8 @@ def sanitize_model(filename, keep_only_directives=True, exclude_options=None):
     with open(filename, 'rb') as file:
         statement = b''
         for line in file:
+            line = re.sub(rb'^ +', b' ', line)
+
             if line.endswith(b'\\\n'):
                 statement += re.sub(b'\\\\+$', b'', line[0:-1]) + b' '
             else:

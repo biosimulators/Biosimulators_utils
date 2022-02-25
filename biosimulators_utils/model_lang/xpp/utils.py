@@ -25,7 +25,7 @@ __all__ = ['get_parameters_variables_outputs_for_simulation']
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
                                                     set_filename=None, parameter_filename=None, initial_conditions_filename=None,
                                                     change_level=SedDocument, native_ids=False, native_data_types=False,
-                                                    config=None):
+                                                    config=None, max_number_of_steps=None):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -43,6 +43,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             for the variable of an associated SED-ML data generator
         native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
         config (:obj:`Config`, optional): whether to fail on missing includes
+        max_number_of_steps (:obj:`int`, optional): maximum number of steps to record
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
@@ -67,7 +68,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     # parameters
     params = []
 
-    for key, val in model['parameters'].items():
+    for key, val in (model.get('parameters', None) or {}).items():
         params.append(ModelAttributeChange(
             id=key if native_ids else 'parameter_{}'.format(key),
             name=None if native_ids else 'Value of parameter "{}"'.format(key),
@@ -75,16 +76,19 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
             new_value=val if native_data_types else str(val),
         ))
 
-    for key, val in model['initial_conditions'].items():
-        params.append(ModelAttributeChange(
-            id=key if native_ids else 'initial_condition_{}'.format(key),
-            name=None if native_ids else 'Initial condition of "{}"'.format(key),
-            target='{}'.format(key),
-            new_value=val if native_data_types else str(val),
-        ))
+    aux_var_ids = [key.upper() for key in (model.get('auxiliary_variables', None) or {}).keys()]
+    for key, val in (model.get('initial_conditions', None) or {}).items():
+        if key.upper() not in aux_var_ids:
+            params.append(ModelAttributeChange(
+                id=key if native_ids else 'initial_condition_{}'.format(key),
+                name=None if native_ids else 'Initial condition of "{}"'.format(key),
+                target='{}'.format(key),
+                new_value=val if native_data_types else str(val),
+            ))
 
     # simulation
-    sim_method_id = model['simulation_method'].get('meth', 'rungekutta').lower()
+    simulation_method = model.get('simulation_method', None) or {}
+    sim_method_id = simulation_method.get('meth', 'rungekutta').lower()
     sim_method_props = SIMULATION_METHOD_KISAO_MAP[sim_method_id]
     sim_method_kisao_id = sim_method_props['kisao_id']
 
@@ -95,11 +99,14 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         )
     )
 
-    t_0 = float(model['simulation_method'].get('t0', 0.))
-    t_output_start = float(model['simulation_method'].get('trans', t_0))
-    duration = float(model['simulation_method'].get('total', 20.))
-    d_t = float(model['simulation_method'].get('dt', 0.05))
-    n_jmp = float(model['simulation_method'].get('njmp', 1))
+    t_0 = float(simulation_method.get('t0', 0.))
+    t_output_start = float(simulation_method.get('trans', t_0))
+    duration = float(simulation_method.get('total', 20.))
+    d_t = float(simulation_method.get('dt', 0.05))
+    n_jmp = int(float(simulation_method.get('njmp', 1)))
+
+    if 'dt' not in sim_method_props['parameters']:
+        n_jmp = simulation_method['njmp'] = 1
 
     sim.initial_time = t_0
     sim.output_start_time = t_output_start
@@ -107,14 +114,18 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     sim.number_of_steps = (sim.output_end_time - sim.output_start_time) / (d_t * n_jmp)
     sim.number_of_steps = round(sim.number_of_steps)
 
-    for key, val in model['simulation_method'].items():
+    if max_number_of_steps is not None and sim.number_of_steps > max_number_of_steps:
+        n_jmp = simulation_method['njmp'] = round(n_jmp * sim.number_of_steps / max_number_of_steps)
+        sim.number_of_steps = (sim.output_end_time - sim.output_start_time) / (d_t * n_jmp)
+        sim.number_of_steps = round(sim.number_of_steps)
+
+    for key, val in simulation_method.items():
         param_kisao_id = sim_method_props['parameters'].get(key, None)
         if param_kisao_id:
             sim.algorithm.changes.append(AlgorithmParameterChange(kisao_id=param_kisao_id,
                                                                   new_value=float(val) if native_data_types else val))
 
     # observables
-    var_ids = set()
     vars = []
 
     time_variable = Variable(
@@ -124,37 +135,34 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     )
     vars.append(time_variable)
 
-    for key in model['initial_conditions'].keys():
+    for key in (model.get('initial_conditions', None) or {}).keys():
         var = Variable(
             id=key if native_ids else 'dynamics_{}'.format(key),
             name=None if native_ids else 'Dynamics of "{}"'.format(key),
             target=key,
         )
-        if var.id not in var_ids:
-            var_ids.add(var.id)
-            vars.append(var)
+        vars.append(var)
 
-    for key in model['auxiliary_variables'].keys():
+    for key in (model.get('auxiliary_variables', None) or {}).keys():
         var = Variable(
-            id=key if native_ids else 'dynamics_{}'.format(key),
+            id=key if native_ids else 'dynamics_aux_{}'.format(key),
             name=None if native_ids else 'Dynamics of "{}"'.format(key),
             target=key,
         )
-        if var.id not in var_ids:
-            var_ids.add(var.id)
-            vars.append(var)
+        vars.append(var)
 
     # plots
-    if 'elements' in model['plot']:
+    ode_plot = model.get('plot', None) or {}
+    if 'elements' in ode_plot:
         plot_type = Plot2D
-        for i_element in sorted(model['plot']['elements'].keys()):
-            element = model['plot']['elements'][i_element]
+        for i_element in sorted(ode_plot['elements'].keys()):
+            element = ode_plot['elements'][i_element]
             if 'z' in element:
                 plot_type = Plot3D
                 break
 
-        for i_element in sorted(model['plot']['elements'].keys()):
-            element = model['plot']['elements'][i_element]
+        for i_element in sorted(ode_plot['elements'].keys()):
+            element = ode_plot['elements'][i_element]
             if 'x' not in element:
                 element['x'] = 'T'  # what XPP uses as the default
 
@@ -167,7 +175,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
 
         data_generators = {}
         for var in vars:
-            data_generators[var.target or 'T'] = DataGenerator(
+            data_generators[(var.target or 'T').upper()] = DataGenerator(
                 id='data_generator_{}'.format(var.target),
                 name=var.target,
                 variables=[var],
@@ -176,8 +184,8 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
 
         plot = plot_type(id='plot')
 
-        for i_element in sorted(model['plot']['elements'].keys()):
-            element = model['plot']['elements'][i_element]
+        for i_element in sorted(ode_plot['elements'].keys()):
+            element = ode_plot['elements'][i_element]
 
             if plot_type == Plot2D:
                 plot.curves.append(Curve(

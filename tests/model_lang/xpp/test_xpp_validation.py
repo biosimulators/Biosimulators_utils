@@ -385,6 +385,15 @@ class XppValidationTestCase(unittest.TestCase):
         sets = {}
         simulation_method = {
             'total': '40',
+            'dt': '0.05',
+            'dtmax': '1',
+            'dtmin': '1e-12',
+            'newt_tol': '0.001',
+            'njmp': '1',
+            't0': '0',
+            'toler': '0.001',
+            'atoler': '0.001',
+            'trans': '0',
         }
         plot = {
             'elements': {
@@ -398,6 +407,9 @@ class XppValidationTestCase(unittest.TestCase):
             'ylo': -.1,
             'yhi': 1.,
         }
+        other_numerics = {'bound': '100', 'delay': '0'}
+        nullcline_plot = {'nmesh': '40'}
+        poincare_map = {'poimap': '0', 'poipln': '0', 'poisgn': '1', 'poistop': '0', 'poivar': '1'}
         model['parameters'] = dict(model['parameters'])
         model['initial_conditions'] = dict(model['initial_conditions'])
         self.assertEqual(list(model['parameters'].keys()), list(parameters.keys()))
@@ -406,6 +418,9 @@ class XppValidationTestCase(unittest.TestCase):
         self.assertEqual(model['sets'], sets)
         self.assertEqual(model['simulation_method'], simulation_method)
         self.assertEqual(model['plot'], plot)
+        self.assertEqual(model['other_numerics'], other_numerics)
+        self.assertEqual(model['nullcline_plot'], nullcline_plot)
+        self.assertEqual(model['poincare_map'], poincare_map)
         self.assertEqual(model, {
             'parameters': parameters,
             'initial_conditions': initial_conditions,
@@ -413,11 +428,11 @@ class XppValidationTestCase(unittest.TestCase):
             'auxiliary_variables': collections.OrderedDict(),
             'simulation_method': simulation_method,
             'range': None,
-            'other_numerics': None,
+            'other_numerics': other_numerics,
             'auto': None,
             'plot': plot,
-            'nullcline_plot': None,
-            'poincare_map': None,
+            'nullcline_plot': nullcline_plot,
+            'poincare_map': poincare_map,
             'output': None,
             'ui': None,
             'other': None,
