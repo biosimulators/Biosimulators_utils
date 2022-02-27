@@ -8,6 +8,7 @@
 
 from ...config import Config  # noqa: F401
 from .data_model import SIMULATION_METHOD_KISAO_MAP
+from biosimulators_utils.sedml.data_model import Symbol
 import collections
 import glob
 import os
@@ -129,8 +130,10 @@ def validate_model(filename,
             'output': {},
             'ui': {},
             'other': {},
+            'outfile_column_names': [Symbol.time.value],
         }
         block = None
+        duplicate_ids = set()
         with open(var_param_filename, 'r') as file:
             for line in file:
                 line = line.strip()
@@ -141,7 +144,20 @@ def validate_model(filename,
                         block = 'initial_conditions'
                 elif block:
                     id, _, value = line.partition(' ')
-                    simulation[block][id] = float(value)
+                    if id in simulation[block]:
+                        duplicate_ids.add("{} '{}'".format(block[0:1].upper() + block[1:].replace('_', ' '), id))
+                    else:
+                        simulation[block][id] = float(value)
+
+                    if block == 'initial_conditions':
+                        simulation['outfile_column_names'].append(id)
+
+        if duplicate_ids:
+            msg = '{} parameters and variables were duplicately defined:\n  - {}'.format(
+                len(duplicate_ids),
+                '\n  - '.join(sorted(duplicate_ids)),
+            )
+            warnings.append([msg])
 
         parameter_ids = {key.lower(): key for key in simulation['parameters'].keys()}
         variable_ids = {key.upper(): key for key in simulation['initial_conditions'].keys()}
@@ -169,7 +185,8 @@ def validate_model(filename,
                         name, _, start_end = name[0:-1].partition('[')
                         start, _, end = start_end.partition('..')
                         for i_var in range(int(start), int(end) + 1):
-                            simulation['auxiliary_variables'][name + str(i_var)] = expr.replace('[j]', f'[{i_var}]')
+                            el_name = name + str(i_var)
+                            simulation['auxiliary_variables'][el_name] = expr.replace('[j]', f'[{i_var}]')
 
                     else:
                         simulation['auxiliary_variables'][name] = expr

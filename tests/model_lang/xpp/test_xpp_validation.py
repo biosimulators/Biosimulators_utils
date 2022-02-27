@@ -1,4 +1,5 @@
 from biosimulators_utils.model_lang.xpp import validation
+from biosimulators_utils.sedml.data_model import Symbol
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
 from unittest import mock
 import collections
@@ -40,6 +41,7 @@ class XppValidationTestCase(unittest.TestCase):
             ('U', .1),
             ('V', .05),
         ])
+        outfile_column_names = [Symbol.time.value, 'U', 'V']
         simulation_method = {
             'total': '40',
         }
@@ -74,6 +76,7 @@ class XppValidationTestCase(unittest.TestCase):
             'output': None,
             'ui': None,
             'other': None,
+            'outfile_column_names': outfile_column_names,
         })
         self.assertEqual(model['initial_conditions'], initial_conditions)
 
@@ -243,6 +246,7 @@ class XppValidationTestCase(unittest.TestCase):
             ('U', .2),
             ('V', .1),
         ])
+        outfile_column_names = [Symbol.time.value, 'U', 'V']
         simulation_method = {
             'total': '40',
         }
@@ -282,6 +286,7 @@ class XppValidationTestCase(unittest.TestCase):
             'output': None,
             'ui': None,
             'other': None,
+            'outfile_column_names': outfile_column_names,
         })
 
     def test_with_sets(self):
@@ -308,6 +313,7 @@ class XppValidationTestCase(unittest.TestCase):
             ('U', .3),
             ('V', .05),
         ])
+        outfile_column_names = [Symbol.time.value, 'U', 'V']
         sets = {
             'set1': {
                 'parameters': {'aee': 12.},
@@ -356,6 +362,7 @@ class XppValidationTestCase(unittest.TestCase):
             'output': None,
             'ui': None,
             'other': None,
+            'outfile_column_names': outfile_column_names,
         })
 
     def test_from_directory_2(self):
@@ -382,6 +389,7 @@ class XppValidationTestCase(unittest.TestCase):
             ('U', .1),
             ('V', .04),
         ])
+        outfile_column_names = [Symbol.time.value, 'U', 'V']
         sets = {}
         simulation_method = {
             'total': '40',
@@ -436,6 +444,7 @@ class XppValidationTestCase(unittest.TestCase):
             'output': None,
             'ui': None,
             'other': None,
+            'outfile_column_names': outfile_column_names,
         })
 
     def test_cannot_parse_other_formats(self):
