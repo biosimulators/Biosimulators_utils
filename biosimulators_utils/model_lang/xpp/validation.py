@@ -702,10 +702,18 @@ def sanitize_model(filename, keep_only_directives=True, exclude_options=None):
 
     with open(sanitized_filename, 'wb') as sanitized_file:
         for statement in statements:
-            i_comment = statement.find(b'#')
-            if i_comment > -1:
-                statement = statement[0:i_comment]
-            statement = statement.strip() + b'\n'
+            statement = statement.lstrip()
+            if (
+                statement.startswith(b'@')
+                or statement.startswith(b'p ')
+                or statement.startswith(b'par ')
+                or statement.startswith(b'param ')
+                or statement.startswith(b'#')
+            ):
+                i_comment = statement.find(b'#')
+                if i_comment > -1:
+                    statement = statement[0:i_comment]
+                statement = statement.strip() + b'\n'
 
             if not keep_only_directives and statement.lower().startswith(b'only '):
                 continue
