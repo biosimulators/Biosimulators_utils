@@ -711,7 +711,7 @@ def sanitize_model(filename, keep_only_directives=True, exclude_options=None):
                 continue
 
             elif statement.startswith(b'@'):
-                statement = statement[1:]                
+                statement = statement[1:]
 
                 args = {}
                 for cmd in re.split(b'[, ]+', statement):
