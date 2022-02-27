@@ -1,6 +1,7 @@
 from biosimulators_utils.ref import utils
 from unittest import mock
 import Bio.Entrez
+import flaky
 import ftplib
 import os
 import random
@@ -45,6 +46,7 @@ class RefUtilsTestCase(unittest.TestCase):
         with self.assertRaisesRegex(TypeError, 'must be a string'):
             utils.get_entrez_record('pmc', None)
 
+    @flaky.flaky(max_runs=5, min_passes=1)
     def test_get_pubmed_central_id(self):
         self.assertEqual(utils.get_pubmed_central_id('23184105'), 'PMC5813803')
         time.sleep(1)
