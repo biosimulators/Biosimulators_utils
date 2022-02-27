@@ -170,9 +170,6 @@ def validate_model(filename,
 
         with open(filename, 'rb') as file:
             for line in file:
-                i_comment = line.find(b'#')
-                if i_comment >= 0:
-                    line = line[0:i_comment]
                 line = line.strip()
                 line = line.decode()
 
@@ -705,14 +702,16 @@ def sanitize_model(filename, keep_only_directives=True, exclude_options=None):
 
     with open(sanitized_filename, 'wb') as sanitized_file:
         for statement in statements:
+            i_comment = statement.find(b'#')
+            if i_comment > -1:
+                statement = statement[0:i_comment]
+            statement = statement.strip() + b'\n'
+
             if not keep_only_directives and statement.lower().startswith(b'only '):
                 continue
 
             elif statement.startswith(b'@'):
-                statement = statement[1:]
-                i_comment = statement.find(b'#')
-                if i_comment > -1:
-                    statement = statement[0:i_comment]
+                statement = statement[1:]                
 
                 args = {}
                 for cmd in re.split(b'[, ]+', statement):
