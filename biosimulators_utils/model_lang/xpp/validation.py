@@ -93,6 +93,9 @@ def validate_model(filename,
     elif re.search(r'\berror\b', stdout, re.IGNORECASE):
         errors.append(['`{}` is not a valid XPP file.'.format(filename), [[stdout]]])
 
+    elif 'Too many boundary conditions' in stdout:
+        errors.append(['`{}` has too many boundary conditions'])
+
     if not errors:
         cmd = ['xppaut', os.path.basename(sanitized_filename), '-qics', '-qpars', '-outfile', var_param_filename, '-quiet', '1']
         result = subprocess.run(
