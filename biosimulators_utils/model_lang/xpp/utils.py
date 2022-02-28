@@ -17,6 +17,8 @@ from ...sedml.data_model import (  # noqa: F401
 from ...utils.core import flatten_nested_list_of_strings
 from .data_model import SIMULATION_METHOD_KISAO_MAP
 from .validation import validate_model
+import decimal
+import math
 import types  # noqa: F401
 
 __all__ = ['get_parameters_variables_outputs_for_simulation']
@@ -115,9 +117,18 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
     sim.number_of_steps = round(sim.number_of_steps)
 
     if max_number_of_steps is not None and sim.number_of_steps > max_number_of_steps:
-        n_jmp = simulation_method['njmp'] = round(n_jmp * sim.number_of_steps / max_number_of_steps)
-        sim.number_of_steps = (sim.output_end_time - sim.output_start_time) / (d_t * n_jmp)
-        sim.number_of_steps = round(sim.number_of_steps)
+        if 'dt' in sim_method_props['parameters']:
+            new_d_t = (sim.output_end_time - sim.output_start_time) / max_number_of_steps
+            n_jmp = math.ceil(new_d_t / d_t)
+        else:
+            n_jmp = 1
+        d_t = float(
+            (decimal.Decimal(sim.output_end_time) - decimal.Decimal(sim.output_start_time))
+            / decimal.Decimal(max_number_of_steps) / decimal.Decimal(n_jmp)
+        )
+        simulation_method['dt'] = str(d_t)
+        simulation_method['njmp'] = str(n_jmp)
+        sim.number_of_steps = max_number_of_steps
 
     for key, val in simulation_method.items():
         param_kisao_id = sim_method_props['parameters'].get(key, None)
