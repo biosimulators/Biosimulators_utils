@@ -652,7 +652,7 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
                         }
                         for sub_el in el['value'].get('other', []):
                             if (
-                                sub_el['predicate'] == 'http://dublincore.org/specifications/dublin-core/dcmi-terms/identifier'
+                                sub_el['predicate'] == 'http://purl.org/dc/elements/1.1/identifier'
                                 and 'uri' in sub_el['value']
                             ):
                                 value['uri'] = sub_el['value']['uri']
@@ -729,13 +729,13 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
                 }
                 for el in other_md['value'].get('description', []):
                     if (
-                        el['predicate'] == 'http://dublincore.org/specifications/dublin-core/dcmi-terms/description'
+                        el['predicate'] == 'http://purl.org/dc/elements/1.1/description'
                         and 'label' in el['value']
                     ):
                         value['attribute']['label'] = el['value']['label']
                 for el in other_md['value'].get('other', []):
                     if (
-                        el['predicate'] == 'http://dublincore.org/specifications/dublin-core/dcmi-terms/identifier'
+                        el['predicate'] == 'http://purl.org/dc/elements/1.1/identifier'
                         and 'uri' in el['value']
                     ):
                         value['value']['uri'] = el['value']['uri']
@@ -794,7 +794,7 @@ class BiosimulationsOmexMetaWriter(OmexMetaWriter):
         local_id = 0
 
         namespaces = {
-            'dc': rdflib.Namespace('http://dublincore.org/specifications/dublin-core/dcmi-terms/'),
+            'dc': rdflib.Namespace('http://purl.org/dc/elements/1.1/'),
             'dcterms': rdflib.Namespace('http://purl.org/dc/terms/'),
             'foaf': rdflib.Namespace('http://xmlns.com/foaf/0.1/'),
             'rdfs': rdflib.Namespace('http://www.w3.org/2000/01/rdf-schema#'),
@@ -839,8 +839,8 @@ class BiosimulationsOmexMetaWriter(OmexMetaWriter):
                             ))
 
                         if predicate_type['uri'] in [
-                            'http://dublincore.org/specifications/dublin-core/dcmi-terms/creator',
-                            'http://dublincore.org/specifications/dublin-core/dcmi-terms/contributor',
+                            'http://purl.org/dc/elements/1.1/creator',
+                            'http://purl.org/dc/elements/1.1/contributor',
                         ]:
                             if value.get('uri', None) is not None:
                                 if value['uri'].lower().startswith('mailto:'):
