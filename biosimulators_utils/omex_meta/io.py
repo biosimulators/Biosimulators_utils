@@ -11,7 +11,8 @@ from ..config import get_config, Config  # noqa: F401
 from .data_model import (Triple, OmexMetadataOutputFormat, OmexMetadataSchema,
                          BIOSIMULATIONS_ROOT_URI_PATTERN,
                          BIOSIMULATIONS_PREDICATE_TYPES,
-                         BIOSIMULATIONS_NAMESPACE_PREFIX_MAP)
+                         BIOSIMULATIONS_NAMESPACE_PREFIX_MAP,
+                         BIOSIMULATIONS_NAMESPACE_ALIASES)
 from .utils import get_local_combine_archive_content_uri, get_global_combine_archive_content_uri
 from .validation import validate_biosimulations_metadata
 from lxml import etree
@@ -569,6 +570,24 @@ class BiosimulationsOmexMetaReader(OmexMetaReader):
         """
         errors = []
         warnings = []
+
+        for triple in triples:
+            subject = str(triple.subject)
+            predicate = str(triple.predicate)
+            object = str(triple.object)
+
+            for ns, alias in BIOSIMULATIONS_NAMESPACE_ALIASES.items():
+                if isinstance(triple.subject, rdflib.term.URIRef) and subject.startswith(ns):
+                    subject = alias + subject[len(ns):]
+                    triple.subject = rdflib.term.URIRef(subject)
+
+                if isinstance(triple.predicate, rdflib.term.URIRef) and predicate.startswith(ns):
+                    predicate = alias + predicate[len(ns):]
+                    triple.predicate = rdflib.term.URIRef(predicate)
+
+                if isinstance(triple.object, rdflib.term.URIRef) and object.startswith(ns):
+                    object = alias + object[len(ns):]
+                    triple.object = rdflib.term.URIRef(object)
 
         objects = {}
         for triple in triples:

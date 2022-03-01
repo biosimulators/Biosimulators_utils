@@ -19,6 +19,7 @@ __all__ = [
     'BIOSIMULATIONS_PREDICATE_TYPES',
     'BIOSIMULATIONS_THUMBNAIL_FORMATS',
     'BIOSIMULATIONS_NAMESPACE_PREFIX_MAP',
+    'BIOSIMULATIONS_NAMESPACE_ALIASES',
     'BIOSIMULATIONS_THUMBNAIL_FORMATS',
 ]
 
@@ -350,6 +351,11 @@ BIOSIMULATIONS_NAMESPACE_PREFIX_MAP = {
     'http://www.w3.org/1999/02/22-rdf-syntax-ns#': 'rdf',
     'http://www.w3.org/2000/01/rdf-schema#': 'rdfs',
     'http://xmlns.com/foaf/0.1/': 'foaf',
+}
+
+BIOSIMULATIONS_NAMESPACE_ALIASES = {
+    'http://purl.org/dc/elements/1.1/': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
+    'http://sempublishing.sourceforge.net/scoro/': 'http://purl.org/spar/scoro/',
 }
 
 BIOSIMULATIONS_THUMBNAIL_FORMATS = [
