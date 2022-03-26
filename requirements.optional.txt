@@ -1,7 +1,7 @@
 #################################
 ## Model languages
 [bngl]
-bionetgen >= 0.4.7
+bionetgen >= 0.7.2
 
 [cellml]
 libcellml
