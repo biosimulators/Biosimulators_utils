@@ -69,6 +69,6 @@ simulate({t_start=>0,t_end=>10,n_steps=>1,method=>"ssa"});
 #visualize({type=>"contactmap"})
 #visualize({type=>"ruleviz_pattern"})
 #visualize({type=>"ruleviz_operation"})
-parameter_scan({t_start=>0,t_end=>10,n_steps=>1,method=>"ssa",parameter=>"k_1",par_min=0.0,par_max=1.0,n_scan_pts=>2})
-bifurcate({t_start=>0,t_end=>10,n_steps=>1,method=>"ssa",parameter=>"k_1",par_min=0.0,par_max=1.0,n_scan_pts=>2})
+parameter_scan({t_start=>0,t_end=>10,n_steps=>1,method=>"ssa",parameter=>"k_1",par_min=>0.0,par_max=>1.0,n_scan_pts=>2})
+bifurcate({t_start=>0,t_end=>10,n_steps=>1,method=>"ssa",parameter=>"k_1",par_min=>0.0,par_max=>1.0,n_scan_pts=>2})
 setModelName("model name")
