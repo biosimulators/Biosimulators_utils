@@ -6,29 +6,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.168 documentation</title>
+    <title>biosimulators_utils.simulator package &#8212; BioSimulators utils 0.1.169 documentation</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/biosimulators.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -53,7 +50,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -221,7 +218,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -301,12 +298,12 @@
               <div>
                 
   <section id="module-biosimulators_utils.simulator">
-<span id="biosimulators-utils-simulator-package"></span><h1>biosimulators_utils.simulator package<a class="headerlink" href="#module-biosimulators_utils.simulator" title="Permalink to this headline">¶</a></h1>
+<span id="biosimulators-utils-simulator-package"></span><h1>biosimulators_utils.simulator package<a class="headerlink" href="#module-biosimulators_utils.simulator" title="Permalink to this headline">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
 </section>
 <section id="module-biosimulators_utils.simulator.cli">
-<span id="biosimulators-utils-simulator-cli-module"></span><h2>biosimulators_utils.simulator.cli module<a class="headerlink" href="#module-biosimulators_utils.simulator.cli" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-cli-module"></span><h2>biosimulators_utils.simulator.cli module<a class="headerlink" href="#module-biosimulators_utils.simulator.cli" title="Permalink to this headline">#</a></h2>
 <p>Utilities for creating BioSimulators-compliant command-line interfaces for biosimulation tools.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -324,7 +321,7 @@
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.cli.build_cli">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.cli.</span></span><span class="sig-name descname"><span class="pre">build_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cli_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cli_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_archive_executer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">environment_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/cli.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.cli.build_cli" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.cli.</span></span><span class="sig-name descname"><span class="pre">build_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cli_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cli_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_archive_executer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">environment_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/cli.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.cli.build_cli" title="Permalink to this definition">#</a></dt>
 <dd><p>Create a BioSimulators-compliant command-line application for a biosimulation tool.</p>
 <p>The command-line application will have two inputs</p>
 <ul class="simple">
@@ -365,7 +362,7 @@ variables recognized by the simulator</p></li>
 
 </section>
 <section id="module-biosimulators_utils.simulator.data_model">
-<span id="biosimulators-utils-simulator-data-model-module"></span><h2>biosimulators_utils.simulator.data_model module<a class="headerlink" href="#module-biosimulators_utils.simulator.data_model" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-data-model-module"></span><h2>biosimulators_utils.simulator.data_model module<a class="headerlink" href="#module-biosimulators_utils.simulator.data_model" title="Permalink to this headline">#</a></h2>
 <p>Data model for simulators</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -383,7 +380,7 @@ variables recognized by the simulator</p></li>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.data_model.EnvironmentVariable">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.data_model.</span></span><span class="sig-name descname"><span class="pre">EnvironmentVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">more_info_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.EnvironmentVariable" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.data_model.</span></span><span class="sig-name descname"><span class="pre">EnvironmentVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">more_info_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.EnvironmentVariable" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Environment variable supported by a simulator</p>
 <dl class="py attribute">
@@ -420,49 +417,49 @@ variables recognized by the simulator</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.data_model.SoftwareInterface">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.data_model.</span></span><span class="sig-name descname"><span class="pre">SoftwareInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.data_model.</span></span><span class="sig-name descname"><span class="pre">SoftwareInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>Software interface</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.data_model.SoftwareInterface.biosimulators_docker_image">
-<span class="sig-name descname"><span class="pre">biosimulators_docker_image</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BioSimulators</span> <span class="pre">Docker</span> <span class="pre">image'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.biosimulators_docker_image" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">biosimulators_docker_image</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BioSimulators</span> <span class="pre">Docker</span> <span class="pre">image'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.biosimulators_docker_image" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.data_model.SoftwareInterface.command_line">
-<span class="sig-name descname"><span class="pre">command_line</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'command-line</span> <span class="pre">application'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.command_line" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">command_line</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'command-line</span> <span class="pre">application'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.command_line" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.data_model.SoftwareInterface.desktop_application">
-<span class="sig-name descname"><span class="pre">desktop_application</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'desktop</span> <span class="pre">application'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.desktop_application" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">desktop_application</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'desktop</span> <span class="pre">application'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.desktop_application" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.data_model.SoftwareInterface.library">
-<span class="sig-name descname"><span class="pre">library</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'library'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.library" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">library</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'library'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.library" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.data_model.SoftwareInterface.mobile_application">
-<span class="sig-name descname"><span class="pre">mobile_application</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'mobile</span> <span class="pre">application'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.mobile_application" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">mobile_application</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'mobile</span> <span class="pre">application'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.mobile_application" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.data_model.SoftwareInterface.web_application">
-<span class="sig-name descname"><span class="pre">web_application</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'web</span> <span class="pre">application'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.web_application" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">web_application</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'web</span> <span class="pre">application'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.web_application" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.data_model.SoftwareInterface.web_service">
-<span class="sig-name descname"><span class="pre">web_service</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'web</span> <span class="pre">service'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.web_service" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">web_service</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'web</span> <span class="pre">service'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.data_model.SoftwareInterface.web_service" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="module-biosimulators_utils.simulator.environ">
-<span id="biosimulators-utils-simulator-environ-module"></span><h2>biosimulators_utils.simulator.environ module<a class="headerlink" href="#module-biosimulators_utils.simulator.environ" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-environ-module"></span><h2>biosimulators_utils.simulator.environ module<a class="headerlink" href="#module-biosimulators_utils.simulator.environ" title="Permalink to this headline">#</a></h2>
 <p>Common environment variables for simulators</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -480,7 +477,7 @@ variables recognized by the simulator</p></li>
 </dl>
 </section>
 <section id="module-biosimulators_utils.simulator.exceptions">
-<span id="biosimulators-utils-simulator-exceptions-module"></span><h2>biosimulators_utils.simulator.exceptions module<a class="headerlink" href="#module-biosimulators_utils.simulator.exceptions" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-exceptions-module"></span><h2>biosimulators_utils.simulator.exceptions module<a class="headerlink" href="#module-biosimulators_utils.simulator.exceptions" title="Permalink to this headline">#</a></h2>
 <p>Standard exceptions issued by biosimulation tools</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -498,14 +495,14 @@ variables recognized by the simulator</p></li>
 </dl>
 <dl class="py exception">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.exceptions.AlgorithmDoesNotSupportModelFeatureException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.exceptions.</span></span><span class="sig-name descname"><span class="pre">AlgorithmDoesNotSupportModelFeatureException</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exceptions.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.exceptions.AlgorithmDoesNotSupportModelFeatureException" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.exceptions.</span></span><span class="sig-name descname"><span class="pre">AlgorithmDoesNotSupportModelFeatureException</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exceptions.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.exceptions.AlgorithmDoesNotSupportModelFeatureException" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.exceptions.BioSimulatorsException" title="biosimulators_utils.exceptions.BioSimulatorsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.exceptions.BioSimulatorsException</span></code></a></p>
 <p>Exception that an algorithm does not support a feature of a model</p>
 </dd></dl>
 
 </section>
 <section id="module-biosimulators_utils.simulator.exec">
-<span id="biosimulators-utils-simulator-exec-module"></span><h2>biosimulators_utils.simulator.exec module<a class="headerlink" href="#module-biosimulators_utils.simulator.exec" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-exec-module"></span><h2>biosimulators_utils.simulator.exec module<a class="headerlink" href="#module-biosimulators_utils.simulator.exec" title="Permalink to this headline">#</a></h2>
 <p>Utilities for executing command-line interfaces to simulators and
 containers that contain command-line interfaces to simulators</p>
 <dl class="field-list simple">
@@ -524,7 +521,7 @@ containers that contain command-line interfaces to simulators</p>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_containerized_simulator">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.exec.</span></span><span class="sig-name descname"><span class="pre">exec_sedml_docs_in_archive_with_containerized_simulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docker_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docker_image_temp_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/tmp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docker_image_path_sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">environment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pull_docker_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_to_exec_within_container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_CURRENT_USER_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allocate_tty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_docker_container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exec.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_containerized_simulator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.exec.</span></span><span class="sig-name descname"><span class="pre">exec_sedml_docs_in_archive_with_containerized_simulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docker_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docker_image_temp_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/tmp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docker_image_path_sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">environment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pull_docker_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_to_exec_within_container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_CURRENT_USER_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allocate_tty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_docker_container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exec.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_containerized_simulator" title="Permalink to this definition">#</a></dt>
 <dd><p>Use a containerized simulator tool to execute the tasks specified in a
 COMBINE/OMEX archive and generate the reports specified in the archive</p>
 <dl class="field-list simple">
@@ -561,7 +558,7 @@ execute commands</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_simulator_cli">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.exec.</span></span><span class="sig-name descname"><span class="pre">exec_sedml_docs_in_archive_with_simulator_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">environment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exec.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_simulator_cli" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.exec.</span></span><span class="sig-name descname"><span class="pre">exec_sedml_docs_in_archive_with_simulator_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">environment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/exec.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.exec.exec_sedml_docs_in_archive_with_simulator_cli" title="Permalink to this definition">#</a></dt>
 <dd><p>Use a command-line interface to a simulation tool to execute the tasks specified in archive
 COMBINE/OMEX archive and generate the reports specified in the archive</p>
 <dl class="field-list simple">
@@ -581,7 +578,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 </section>
 <section id="module-biosimulators_utils.simulator.io">
-<span id="biosimulators-utils-simulator-io-module"></span><h2>biosimulators_utils.simulator.io module<a class="headerlink" href="#module-biosimulators_utils.simulator.io" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-io-module"></span><h2>biosimulators_utils.simulator.io module<a class="headerlink" href="#module-biosimulators_utils.simulator.io" title="Permalink to this headline">#</a></h2>
 <p>Methods for reading specifications of simulators</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -599,7 +596,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.io.read_simulator_specs">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.io.</span></span><span class="sig-name descname"><span class="pre">read_simulator_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_or_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.io.read_simulator_specs" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.io.</span></span><span class="sig-name descname"><span class="pre">read_simulator_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_or_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.io.read_simulator_specs" title="Permalink to this definition">#</a></dt>
 <dd><p>Read the specifications of a simulator</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -627,7 +624,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 </section>
 <section id="module-biosimulators_utils.simulator.specs">
-<span id="biosimulators-utils-simulator-specs-module"></span><h2>biosimulators_utils.simulator.specs module<a class="headerlink" href="#module-biosimulators_utils.simulator.specs" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-specs-module"></span><h2>biosimulators_utils.simulator.specs module<a class="headerlink" href="#module-biosimulators_utils.simulator.specs" title="Permalink to this headline">#</a></h2>
 <p>Utilities for reading the specifications of a simulator</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -645,7 +642,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_parameter">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">does_algorithm_implementation_have_capabilities_to_execute_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_kisao_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_parameter" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">does_algorithm_implementation_have_capabilities_to_execute_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_kisao_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_parameter" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine if an implementation of an algorithm has the capabilities to execute a model langugae</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -665,7 +662,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_model_language">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">does_algorithm_implementation_have_capabilities_to_execute_sed_model_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_model_language" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">does_algorithm_implementation_have_capabilities_to_execute_sed_model_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_specs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_model_language" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine if an implementation of an algorithm has the capabilities to execute a model langugae</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -685,7 +682,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_task">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">does_algorithm_implementation_have_capabilities_to_execute_sed_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_specs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_substitution_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">AlgorithmSubstitutionPolicy.SAME_VARIABLES</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_task" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">does_algorithm_implementation_have_capabilities_to_execute_sed_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_specs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_substitution_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">AlgorithmSubstitutionPolicy.SAME_VARIABLES</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_algorithm_implementation_have_capabilities_to_execute_sed_task" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine if an implementation of an algorithm has the capabilities to execute a SED task</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -706,7 +703,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_document">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">does_simulator_have_capabilities_to_execute_sed_document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sed_doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_specs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_substitution_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">AlgorithmSubstitutionPolicy.SAME_VARIABLES</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_document" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">does_simulator_have_capabilities_to_execute_sed_document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sed_doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_specs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_substitution_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">AlgorithmSubstitutionPolicy.SAME_VARIABLES</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_document" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine if a simulator has the capabilities to execute a SED document</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -727,7 +724,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_task">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">does_simulator_have_capabilities_to_execute_sed_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_specs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_substitution_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">AlgorithmSubstitutionPolicy.SAME_VARIABLES</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_task" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">does_simulator_have_capabilities_to_execute_sed_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_specs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_substitution_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">AlgorithmSubstitutionPolicy.SAME_VARIABLES</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.does_simulator_have_capabilities_to_execute_sed_task" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine if a simulator has the capabilities to execute a SED task</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -748,7 +745,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.specs.gen_algorithms_from_specs">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">gen_algorithms_from_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">specifications</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.gen_algorithms_from_specs" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">gen_algorithms_from_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">specifications</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.gen_algorithms_from_specs" title="Permalink to this definition">#</a></dt>
 <dd><p>Generate a list of algorithms and their parameters from the specifications of a simulator</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -765,7 +762,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.specs.get_simulator_specs">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">get_simulator_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'latest'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.get_simulator_specs" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.specs.</span></span><span class="sig-name descname"><span class="pre">get_simulator_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'latest'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/specs.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.specs.get_simulator_specs" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the specifications of a simulation tool from the BioSimulators registry</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -785,7 +782,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 
 </section>
 <section id="module-biosimulators_utils.simulator.utils">
-<span id="biosimulators-utils-simulator-utils-module"></span><h2>biosimulators_utils.simulator.utils module<a class="headerlink" href="#module-biosimulators_utils.simulator.utils" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-simulator-utils-module"></span><h2>biosimulators_utils.simulator.utils module<a class="headerlink" href="#module-biosimulators_utils.simulator.utils" title="Permalink to this headline">#</a></h2>
 <p>Utilities for simulators</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -803,7 +800,7 @@ COMBINE/OMEX archive and generate the reports specified in the archive</p>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator.utils.get_algorithm_substitution_policy">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.utils.</span></span><span class="sig-name descname"><span class="pre">get_algorithm_substitution_policy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.utils.get_algorithm_substitution_policy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator.utils.</span></span><span class="sig-name descname"><span class="pre">get_algorithm_substitution_policy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator.utils.get_algorithm_substitution_policy" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the current algorithm substitution policy based on the value of the <code class="docutils literal notranslate"><span class="pre">ALGORITHM_SUBSTITUTION_POLICY</span></code>
 environment variable.</p>
 <dl class="field-list simple">
@@ -835,8 +832,9 @@ environment variable.</p>
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
