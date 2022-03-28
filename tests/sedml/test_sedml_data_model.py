@@ -406,9 +406,9 @@ class DataModelTestCase(unittest.TestCase):
         self.assertFalse(model.has_structural_changes())
 
         model.changes.append(data_model.ModelAttributeChange())
-        self.assertFalse(model.has_structural_changes())
+        self.assertTrue(model.has_structural_changes())
 
-        model.changes.append(data_model.AddElementModelChange())
+        model.changes = [data_model.AddElementModelChange()]
         self.assertTrue(model.has_structural_changes())
 
         model.changes = [data_model.ReplaceElementModelChange()]

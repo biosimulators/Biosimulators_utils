@@ -3,6 +3,7 @@ from biosimulators_utils.sedml import utils
 from biosimulators_utils.sedml import validation
 from biosimulators_utils.sedml.warnings import IllogicalSedmlWarning
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
+from biosimulators_utils.sedml.io import SedmlSimulationReader
 from lxml import etree
 from unittest import mock
 import copy
@@ -319,7 +320,6 @@ class ValidationTestCase(unittest.TestCase):
         doc.models[0].changes[0].variables[0].target = None
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
-        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
 
         doc.models[0].changes[0].variables[0].target = 'y'
         doc.models[0].changes[0].variables[0].symbol = 'y'
@@ -331,7 +331,6 @@ class ValidationTestCase(unittest.TestCase):
         doc.models[0].changes[0].variables[0].model = None
         errors, warnings = validation.validate_doc(doc, self.dirname)
         self.assertIn('must reference a model', flatten_nested_list_of_strings(errors))
-        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
 
         doc.models[0].changes[0].variables[0].model = doc.models[0]
         doc.models[0].changes[0].variables[0].task = data_model.Task(
@@ -958,13 +957,11 @@ class ValidationTestCase(unittest.TestCase):
         )
         errors, warnings = validation.validate_model_changes(model)
         self.assertIn('not supported', flatten_nested_list_of_strings(errors))
-        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
 
         model.changes[0].variables[0].target = model.changes[0].target
         model.changes[0].variables[0].target_namespaces = model.changes[0].target_namespaces
         errors, warnings = validation.validate_model_changes(model)
         self.assertEqual(errors, [])
-        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
 
         with mock.patch('biosimulators_utils.sedml.validation.validate_target', return_value=([], [['warning']])):
             errors, warnings = validation.validate_model_changes(model)
@@ -974,7 +971,7 @@ class ValidationTestCase(unittest.TestCase):
         with mock.patch('biosimulators_utils.sedml.validation.validate_target', return_value=([], [['warning']])):
             errors, warnings = validation.validate_model(model, [], os.path.dirname(__file__))
         self.assertEqual(errors, [])
-        self.assertIn('changes of the model has warnings', flatten_nested_list_of_strings(warnings))
+        self.assertIn('changes of the model have warnings', flatten_nested_list_of_strings(warnings))
 
     def test_validate_simulation(self):
         sim = data_model.UniformTimeCourseSimulation(
@@ -1109,12 +1106,10 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('is not supported', flatten_nested_list_of_strings(errors))
-        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [data_model.ModelAttributeChange()]
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
-        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -1136,7 +1131,6 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('must define a target', flatten_nested_list_of_strings(errors))
-        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -1147,7 +1141,6 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('must reference a model', flatten_nested_list_of_strings(errors))
-        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -1158,7 +1151,6 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('should not reference a task', flatten_nested_list_of_strings(errors))
-        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -1169,7 +1161,6 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
-        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = [
             data_model.ComputeModelChange(
                 target='x',
@@ -1180,7 +1171,6 @@ class ValidationTestCase(unittest.TestCase):
 
         errors, warnings = self._validate_task(task, variables)
         self.assertIn('must have an id', flatten_nested_list_of_strings(errors))
-        self.assertIn('Model change XPaths cannot be validated', flatten_nested_list_of_strings(warnings))
         task.model.changes = []
 
         errors, warnings = self._validate_task(task, variables)
@@ -1805,3 +1795,141 @@ class ValidationTestCase(unittest.TestCase):
         style1.base = style2
         errors = validation.validate_base_style_network(styles)
         self.assertNotEqual(errors, [])
+
+    def test_validate_modelchange_xpaths_with_or_without_attribute_change(self):
+        workingdir = os.path.join(os.path.dirname(__file__), '..', 'fixtures')
+
+        # XPath problem in attribute change
+        filename = os.path.join(workingdir, 'BIOMD0000000297_bad_change_att.sedml')
+        doc = SedmlSimulationReader().run(filename, validate_semantics=False, validate_models_with_languages = False, validate_targets_with_model_sources=False)
+        errors, warnings = validation.validate_doc(doc, workingdir)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(len(warnings), 2)
+        self.assertEqual(len(warnings[1]), 2)
+        self.assertIn('this tool does not fully validate these XPaths', flatten_nested_list_of_strings(warnings))
+        self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('does not match any elements of model `model`.  However, one or more model change objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
+
+        # XPath problem in a compute change
+        filename = os.path.join(workingdir, 'BIOMD0000000297_compchange_bad_xpath.sedml')
+        doc = SedmlSimulationReader().run(filename, validate_semantics=False, validate_models_with_languages = False, validate_targets_with_model_sources=False)
+        errors, warnings = validation.validate_doc(doc, workingdir)
+
+        self.assertEqual(len(errors), 1)
+        self.assertIn('Change 1 is invalid.', flatten_nested_list_of_strings(errors))
+        self.assertIn('does not match any elements of model', flatten_nested_list_of_strings(errors))
+        self.assertEqual(len(warnings), 1)
+        self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
+
+        # XPath problem in compute change with attribute change present
+        filename = os.path.join(workingdir, 'BIOMD0000000297_compchange_and_attchange_bad_xpath_.sedml')
+        doc = SedmlSimulationReader().run(filename, validate_semantics=False, validate_models_with_languages = False, validate_targets_with_model_sources=False)
+        errors, warnings = validation.validate_doc(doc, workingdir)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(len(warnings), 2)
+        self.assertEqual(len(warnings[1]), 2)
+        self.assertIn('this tool does not fully validate these XPaths', flatten_nested_list_of_strings(warnings))
+        self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('does not match any elements of model `model`.  However, one or more model change objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
+
+
+    def test_validate_datagen_xpaths_with_or_without_model_change(self):
+        workingdir = os.path.join(os.path.dirname(__file__), '..', 'fixtures')
+
+        # No problems, no changes
+        filename = os.path.join(workingdir, 'BIOMD0000000297_nochange_good_xpath.sedml')
+        doc = SedmlSimulationReader().run(filename, validate_semantics=False, validate_models_with_languages = False, validate_targets_with_model_sources=False)
+        errors, warnings = validation.validate_doc(doc, workingdir)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(len(warnings), 1)
+        self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
+
+        # XPath problem, no changes
+        filename = os.path.join(workingdir, 'BIOMD0000000297_nochange_bad_xpath.sedml')
+        doc = SedmlSimulationReader().run(filename, validate_semantics=False, validate_models_with_languages = False, validate_targets_with_model_sources=False)
+        errors, warnings = validation.validate_doc(doc, workingdir)
+
+        self.assertEqual(len(errors), 1)
+        self.assertIn('Data generator `BE_1_task1` is invalid.', flatten_nested_list_of_strings(errors))
+        self.assertIn('does not match any elements of model', flatten_nested_list_of_strings(errors))
+        self.assertEqual(len(warnings), 1)
+        self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
+
+        # No problems, attribute changes
+        filename = os.path.join(workingdir, 'BIOMD0000000297_change_good_xpath.sedml')
+        doc = SedmlSimulationReader().run(filename, validate_semantics=False, validate_models_with_languages = False, validate_targets_with_model_sources=False)
+        errors, warnings = validation.validate_doc(doc, workingdir)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(len(warnings), 2)
+        self.assertIn('this tool does not fully validate these XPaths', flatten_nested_list_of_strings(warnings))
+        self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
+
+        # XPath problem, attribute changes
+        filename = os.path.join(workingdir, 'BIOMD0000000297_change_bad_xpath.sedml')
+        doc = SedmlSimulationReader().run(filename, validate_semantics=False, validate_models_with_languages = False, validate_targets_with_model_sources=False)
+        errors, warnings = validation.validate_doc(doc, workingdir)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(len(warnings), 3)
+        self.assertIn('this tool does not fully validate these XPaths', flatten_nested_list_of_strings(warnings))
+        self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('does not match any elements of model `model`.  However, one or more model change objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
+
+
+    def test_validate_repeated_task_xpaths_with_or_without_model_change(self):
+        workingdir = os.path.join(os.path.dirname(__file__), '..', 'fixtures')
+
+        # No problems, no changes
+        filename = os.path.join(workingdir, 'BIOMD0000000297_repeat_good_xpath_nochange.sedml')
+        doc = SedmlSimulationReader().run(filename, validate_semantics=False, validate_models_with_languages = False, validate_targets_with_model_sources=False)
+        errors, warnings = validation.validate_doc(doc, workingdir)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(len(warnings), 2)
+        self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('The following tasks do not contribute', flatten_nested_list_of_strings(warnings))
+
+        # XPath problem, no changes
+        filename = os.path.join(workingdir, 'BIOMD0000000297_repeat_bad_xpath_nochange.sedml')
+        doc = SedmlSimulationReader().run(filename, validate_semantics=False, validate_models_with_languages = False, validate_targets_with_model_sources=False)
+        errors, warnings = validation.validate_doc(doc, workingdir)
+
+        self.assertEqual(len(errors), 1)
+        self.assertIn('Task `task1` is invalid.', flatten_nested_list_of_strings(errors))
+        self.assertIn('does not match any elements of model', flatten_nested_list_of_strings(errors))
+        self.assertEqual(len(warnings), 2)
+        self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('The following tasks do not contribute', flatten_nested_list_of_strings(warnings))
+
+        # No problems, attribute changes
+        filename = os.path.join(workingdir, 'BIOMD0000000297_repeat_good_xpath_change.sedml')
+        doc = SedmlSimulationReader().run(filename, validate_semantics=False, validate_models_with_languages = False, validate_targets_with_model_sources=False)
+        errors, warnings = validation.validate_doc(doc, workingdir)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(len(warnings), 3)
+        self.assertIn('this tool does not fully validate these XPaths', flatten_nested_list_of_strings(warnings))
+        self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('The following tasks do not contribute', flatten_nested_list_of_strings(warnings))
+
+        # XPath problem, attribute changes
+        filename = os.path.join(workingdir, 'BIOMD0000000297_repeat_bad_xpath_change.sedml')
+        doc = SedmlSimulationReader().run(filename, validate_semantics=False, validate_models_with_languages = False, validate_targets_with_model_sources=False)
+        errors, warnings = validation.validate_doc(doc, workingdir)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(len(warnings), 4)
+        self.assertIn('this tool does not fully validate these XPaths', flatten_nested_list_of_strings(warnings))
+        self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('does not match any elements of model `model`.  However, one or more model change objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('The following tasks do not contribute', flatten_nested_list_of_strings(warnings))
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main(["test_sedml_validation.py"])
+
