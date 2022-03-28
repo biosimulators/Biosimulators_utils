@@ -148,7 +148,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                     except Exception:
                         pass
     else:
-        model_etrees = None
+        model_etrees = {}
 
     if validate_semantics:
         errors.extend(validate_unique_ids(doc))
