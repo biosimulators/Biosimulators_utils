@@ -149,8 +149,3 @@ class ModelUtilsTestCase(unittest.TestCase):
         self.assertEqual(output.curves[0].y_data_generator.variables[0].target, 'V')
         self.assertEqual(output.curves[0].x_scale, AxisScale.linear)
         self.assertEqual(output.curves[0].y_scale, AxisScale.linear)
-
-if __name__ == "__main__":
-    import pytest
-    pytest.main(["test_sedml_model_utils.py"])
-
