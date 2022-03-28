@@ -7,7 +7,7 @@ on:
 jobs:
   getVersionNumber:
     name: Get version number
-    if: startsWith(github.ref, 'refs/tags/')
+    if: "startsWith(github.ref, 'refs/tags/') && !contains(github.event.head_commit.message, '[skip ci]') && github.actor != 'allcontributors'"
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get-version-number.outputs.version }}
@@ -22,6 +22,7 @@ jobs:
 
   build:
     name: Lint, test, and compile documentation
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && github.actor != 'allcontributors'"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -129,14 +130,18 @@ jobs:
     name: Release a new version
     needs: [getVersionNumber, build]
     runs-on: ubuntu-latest
-    outputs:
-      docsChanged: ${{ steps.commit-docs.outputs.docsChanged }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
           ref: dev
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "biosimulators.daemon@gmail.com"
+          git config --local user.name "biosimulatorsdaemon"
+          git config pull.rebase false
 
       - name: Install Python
         uses: actions/setup-python@v2
@@ -160,6 +165,39 @@ jobs:
       - name: Install the package
         run: python -m pip install .[all]
 
+      # update Identifiers.org namespaces
+      - name: Update Identifiers.org namespaces
+        run: python -c "from biosimulators_utils.utils.identifiers_org import get_identifiers_org_namespaces; get_identifiers_org_namespaces(reload=True);"
+
+      - name: Install pytest
+        run: python -m pip install pytest
+
+      - name: Install the requirements for the tests
+        run: python -m pip install .[tests]
+
+      - name: Test the updated Identifiers.org namespaces
+        uses: GabrielBB/xvfb-action@v1
+        env:
+          MPLBACKEND: PDF
+        with:
+          run: python -m pytest tests/utils/test_identifiers_org_utils.py
+
+      - id: commit-identifiers-namespaces
+        name: Commit the Identifiers.org namespaces
+        run: |
+          git stash
+          git pull
+          set +e
+          git stash pop
+          git add biosimulators_utils/utils/identifiers_org.json
+          git commit -m "chore: Updated Identifiers.org namespaces [skip ci]"
+          if [[ $? = 0 ]]; then
+            changed=1
+          else
+            changed=0
+          fi
+          echo "::set-output name=changed::$changed"
+
       # compile and push documentation
       - name: Install the requirements for compiling the documentation
         run: python -m pip install -r docs-src/requirements.txt
@@ -173,24 +211,21 @@ jobs:
       - id: commit-docs
         name: Commit the compiled documentation
         run: |
-          git config --local user.email "biosimulators.daemon@gmail.com"
-          git config --local user.name "biosimulatorsdaemon"
-          git config pull.rebase false
           git stash
           git pull
           set +e
           git stash pop
           git add docs
-          git commit -m "chore: Updating compiled documentation"
+          git commit -m "chore: Updated compiled documentation [skip ci]"
           if [[ $? = 0 ]]; then
-            docsChanged=1
+            changed=1
           else
-            docsChanged=0
+            changed=0
           fi
-          echo "::set-output name=docsChanged::$docsChanged"
+          echo "::set-output name=changed::$changed"
 
       - name: Push the compiled documentation
-        if: steps.commit-docs.outputs.docsChanged == '1'
+        if: steps.commit-identifiers-namespaces.outputs.changed == '1' || steps.commit-docs.outputs.changed == '1'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -60,7 +60,7 @@ class XppUtilsTestCase(unittest.TestCase):
         self.assertEqual(sim.initial_time, 10.)
         self.assertEqual(sim.output_start_time, 10.)
         self.assertEqual(sim.output_end_time, 50.)
-        self.assertEqual(sim.number_of_steps, round(40. / (0.1 * 10)))
+        self.assertEqual(sim.number_of_steps, round(40. / (0.1 * 1)))
         self.assertEqual(len(sim.algorithm.changes), 4)
         self.assertEqual({change.kisao_id: change.new_value for change in sim.algorithm.changes}, {
             'KISAO_0000209': '1e-8',
@@ -71,7 +71,7 @@ class XppUtilsTestCase(unittest.TestCase):
 
         filename = os.path.join(self.FIXTURES_DIRNAME, 'wilson-cowan-auxiliary-variables.ode')
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(filename, None, UniformTimeCourseSimulation)
-        self.assertEqual(vars[-1].id, 'dynamics_DV')
+        self.assertEqual(vars[-1].id, 'dynamics_aux_DV')
         self.assertEqual(vars[-1].name, 'Dynamics of "DV"')
         self.assertEqual(vars[-1].target, 'DV')
 
@@ -120,7 +120,7 @@ class XppUtilsTestCase(unittest.TestCase):
         self.assertEqual(sim.initial_time, 10.)
         self.assertEqual(sim.output_start_time, 10.)
         self.assertEqual(sim.output_end_time, 50.)
-        self.assertEqual(sim.number_of_steps, round(40. / (0.1 * 10)))
+        self.assertEqual(sim.number_of_steps, round(40. / (0.1 * 1)))
         self.assertEqual(len(sim.algorithm.changes), 4)
         self.assertEqual({change.kisao_id: change.new_value for change in sim.algorithm.changes}, {
             'KISAO_0000209': 1e-8,

@@ -6,29 +6,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.model_lang.cellml package &#8212; BioSimulators utils 0.1.162 documentation</title>
+    <title>biosimulators_utils.model_lang.cellml package &#8212; BioSimulators utils 0.1.169 documentation</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/biosimulators.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -53,7 +50,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -268,7 +265,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -318,12 +315,12 @@
               <div>
                 
   <section id="module-biosimulators_utils.model_lang.cellml">
-<span id="biosimulators-utils-model-lang-cellml-package"></span><h1>biosimulators_utils.model_lang.cellml package<a class="headerlink" href="#module-biosimulators_utils.model_lang.cellml" title="Permalink to this headline">¶</a></h1>
+<span id="biosimulators-utils-model-lang-cellml-package"></span><h1>biosimulators_utils.model_lang.cellml package<a class="headerlink" href="#module-biosimulators_utils.model_lang.cellml" title="Permalink to this headline">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
 </section>
 <section id="module-biosimulators_utils.model_lang.cellml.utils">
-<span id="biosimulators-utils-model-lang-cellml-utils-module"></span><h2>biosimulators_utils.model_lang.cellml.utils module<a class="headerlink" href="#module-biosimulators_utils.model_lang.cellml.utils" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-model-lang-cellml-utils-module"></span><h2>biosimulators_utils.model_lang.cellml.utils module<a class="headerlink" href="#module-biosimulators_utils.model_lang.cellml.utils" title="Permalink to this headline">#</a></h2>
 <p>Utilities for working with CellML models</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -341,7 +338,7 @@
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.model_lang.cellml.utils.get_parameters_variables_outputs_for_simulation">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.cellml.utils.</span></span><span class="sig-name descname"><span class="pre">get_parameters_variables_outputs_for_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_kisao_id=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_level=&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.SedDocument'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_ids=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_data_types=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/cellml/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.cellml.utils.get_parameters_variables_outputs_for_simulation" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.cellml.utils.</span></span><span class="sig-name descname"><span class="pre">get_parameters_variables_outputs_for_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_kisao_id=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_level=&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.SedDocument'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_ids=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_data_types=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/cellml/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.cellml.utils.get_parameters_variables_outputs_for_simulation" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the possible observables for a simulation of a model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -372,7 +369,7 @@ for the variable of an associated SED-ML data generator</p></li>
 
 </section>
 <section id="module-biosimulators_utils.model_lang.cellml.validation">
-<span id="biosimulators-utils-model-lang-cellml-validation-module"></span><h2>biosimulators_utils.model_lang.cellml.validation module<a class="headerlink" href="#module-biosimulators_utils.model_lang.cellml.validation" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-model-lang-cellml-validation-module"></span><h2>biosimulators_utils.model_lang.cellml.validation module<a class="headerlink" href="#module-biosimulators_utils.model_lang.cellml.validation" title="Permalink to this headline">#</a></h2>
 <p>Utilities for validating CellML models</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -390,7 +387,7 @@ for the variable of an associated SED-ML data generator</p></li>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.model_lang.cellml.validation.validate_model">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.cellml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/cellml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.cellml.validation.validate_model" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.cellml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/cellml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.cellml.validation.validate_model" title="Permalink to this definition">#</a></dt>
 <dd><p>Check that a file is a valid CellML model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -424,7 +421,7 @@ for the variable of an associated SED-ML data generator</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.model_lang.cellml.validation.validate_model_version_1_0">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.cellml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model_version_1_0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/cellml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.cellml.validation.validate_model_version_1_0" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.cellml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model_version_1_0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/cellml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.cellml.validation.validate_model_version_1_0" title="Permalink to this definition">#</a></dt>
 <dd><p>Check that a file is a valid CellML 2.0 model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -451,7 +448,7 @@ for the variable of an associated SED-ML data generator</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.model_lang.cellml.validation.validate_model_version_1_1">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.cellml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model_version_1_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/cellml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.cellml.validation.validate_model_version_1_1" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.cellml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model_version_1_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/cellml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.cellml.validation.validate_model_version_1_1" title="Permalink to this definition">#</a></dt>
 <dd><p>Check that a file is a valid CellML 2.0 model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -478,7 +475,7 @@ for the variable of an associated SED-ML data generator</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.model_lang.cellml.validation.validate_model_version_2">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.cellml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model_version_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/cellml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.cellml.validation.validate_model_version_2" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.cellml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model_version_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/cellml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.cellml.validation.validate_model_version_2" title="Permalink to this definition">#</a></dt>
 <dd><p>Check that a file is a valid CellML 2.0 model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -516,8 +513,9 @@ for the variable of an associated SED-ML data generator</p></li>
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

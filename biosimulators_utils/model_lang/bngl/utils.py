@@ -161,7 +161,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
                 raise ValueError((
                     'Sample times (`sample_times`) must be a non-empty array of floats '
                     'greater than or equal to the simulation start time (`t_start`).'
-                ))
+                ))  # pragma: no cover; caught by BioNetGen's own validation
             sample_times = sorted([float(sample_time.strip()) for sample_time in args['sample_times'][1:-1].strip().split(',')])
             output_start_time = sample_times[0]
             output_end_time = sample_times[-1]

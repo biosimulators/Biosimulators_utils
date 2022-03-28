@@ -6,29 +6,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>biosimulators_utils.licensing package &#8212; BioSimulators utils 0.1.162 documentation</title>
+    <title>biosimulators_utils.licensing package &#8212; BioSimulators utils 0.1.169 documentation</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/pydata-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/biosimulators.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -53,7 +50,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -221,7 +218,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -271,12 +268,12 @@
               <div>
                 
   <section id="module-biosimulators_utils.licensing">
-<span id="biosimulators-utils-licensing-package"></span><h1>biosimulators_utils.licensing package<a class="headerlink" href="#module-biosimulators_utils.licensing" title="Permalink to this headline">¶</a></h1>
+<span id="biosimulators-utils-licensing-package"></span><h1>biosimulators_utils.licensing package<a class="headerlink" href="#module-biosimulators_utils.licensing" title="Permalink to this headline">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
 </section>
 <section id="module-biosimulators_utils.licensing.core">
-<span id="biosimulators-utils-licensing-core-module"></span><h2>biosimulators_utils.licensing.core module<a class="headerlink" href="#module-biosimulators_utils.licensing.core" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-licensing-core-module"></span><h2>biosimulators_utils.licensing.core module<a class="headerlink" href="#module-biosimulators_utils.licensing.core" title="Permalink to this headline">#</a></h2>
 <p>Tool for managing licenses through environment variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -294,12 +291,12 @@
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.core.LicenseManager">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.licensing.core.</span></span><span class="sig-name descname"><span class="pre">LicenseManager</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.licensing.core.</span></span><span class="sig-name descname"><span class="pre">LicenseManager</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">contextlib.AbstractContextManager</span></code></p>
 <p>Base singleton class for managing setting up licenses for software packages from environment variables</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.core.LicenseManager.ENV_VAR_PREFIX">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ENV_VAR_PREFIX</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.ENV_VAR_PREFIX" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ENV_VAR_PREFIX</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.ENV_VAR_PREFIX" title="Permalink to this definition">#</a></dt>
 <dd><p>classmethod(function) -&gt; method</p>
 <p>Convert a function to be a class method.</p>
 <p>A class method receives the class as implicit first argument,
@@ -325,13 +322,13 @@ If you want those, see the staticmethod builtin.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.core.LicenseManager.__enter__">
-<span class="sig-name descname"><span class="pre">__enter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.__enter__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__enter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.__enter__" title="Permalink to this definition">#</a></dt>
 <dd><p>Enter a context</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.core.LicenseManager.__exit__">
-<span class="sig-name descname"><span class="pre">__exit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traceback</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.__exit__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__exit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">traceback</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.__exit__" title="Permalink to this definition">#</a></dt>
 <dd><p>Exit a context</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -346,13 +343,13 @@ If you want those, see the staticmethod builtin.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.core.LicenseManager.end">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.end" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.end" title="Permalink to this definition">#</a></dt>
 <dd><p>Terminate usage of the software package with license keys</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.core.LicenseManager.get_keys_from_env_vars">
-<span class="sig-name descname"><span class="pre">get_keys_from_env_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.get_keys_from_env_vars" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_keys_from_env_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.get_keys_from_env_vars" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the license keys for the software package from environment variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -366,7 +363,7 @@ If you want those, see the staticmethod builtin.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.core.LicenseManager.is_package_available">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_package_available</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.is_package_available" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_package_available</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.is_package_available" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine whether the package is installed and available</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -380,7 +377,7 @@ If you want those, see the staticmethod builtin.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.core.LicenseManager.start">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.start" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.core.LicenseManager.start" title="Permalink to this definition">#</a></dt>
 <dd><p>Initialize the usage of the software package with license keys</p>
 </dd></dl>
 
@@ -388,7 +385,7 @@ If you want those, see the staticmethod builtin.</p>
 
 </section>
 <section id="module-biosimulators_utils.licensing.gurobi">
-<span id="biosimulators-utils-licensing-gurobi-module"></span><h2>biosimulators_utils.licensing.gurobi module<a class="headerlink" href="#module-biosimulators_utils.licensing.gurobi" title="Permalink to this headline">¶</a></h2>
+<span id="biosimulators-utils-licensing-gurobi-module"></span><h2>biosimulators_utils.licensing.gurobi module<a class="headerlink" href="#module-biosimulators_utils.licensing.gurobi" title="Permalink to this headline">#</a></h2>
 <p>Tool for managing Gurobi licenses through environment variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -406,23 +403,23 @@ If you want those, see the staticmethod builtin.</p>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.gurobi.GurobiLicenseManager">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.licensing.gurobi.</span></span><span class="sig-name descname"><span class="pre">GurobiLicenseManager</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.licensing.gurobi.</span></span><span class="sig-name descname"><span class="pre">GurobiLicenseManager</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.licensing.core.LicenseManager" title="biosimulators_utils.licensing.core.LicenseManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.licensing.core.LicenseManager</span></code></a></p>
 <p>Gurobi license manager</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.gurobi.GurobiLicenseManager.ENV_VAR_PREFIX">
-<span class="sig-name descname"><span class="pre">ENV_VAR_PREFIX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'GRB'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.ENV_VAR_PREFIX" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ENV_VAR_PREFIX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'GRB'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.ENV_VAR_PREFIX" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.gurobi.GurobiLicenseManager.end">
-<span class="sig-name descname"><span class="pre">end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.end" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.end" title="Permalink to this definition">#</a></dt>
 <dd><p>Terminate usage of the software package with license keys</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.gurobi.GurobiLicenseManager.get_keys_from_env_vars">
-<span class="sig-name descname"><span class="pre">get_keys_from_env_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.get_keys_from_env_vars" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_keys_from_env_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.get_keys_from_env_vars" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the license keys for the software package from environment variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -436,7 +433,7 @@ If you want those, see the staticmethod builtin.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.gurobi.GurobiLicenseManager.is_package_available">
-<span class="sig-name descname"><span class="pre">is_package_available</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.is_package_available" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">is_package_available</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.is_package_available" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine whether the package is installed</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -450,7 +447,7 @@ If you want those, see the staticmethod builtin.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.gurobi.GurobiLicenseManager.save_keys_to_license_file">
-<span class="sig-name descname"><span class="pre">save_keys_to_license_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/home/runner/gurobi.lic'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.save_keys_to_license_file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">save_keys_to_license_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/home/runner/gurobi.lic'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.save_keys_to_license_file" title="Permalink to this definition">#</a></dt>
 <dd><p>Save license keys to a file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -461,7 +458,7 @@ If you want those, see the staticmethod builtin.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.licensing.gurobi.GurobiLicenseManager.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.start" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/licensing/gurobi.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.licensing.gurobi.GurobiLicenseManager.start" title="Permalink to this definition">#</a></dt>
 <dd><p>Initialize usage of the software package with license keys</p>
 </dd></dl>
 
@@ -480,8 +477,9 @@ If you want those, see the staticmethod builtin.</p>
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">

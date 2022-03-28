@@ -135,7 +135,7 @@ class BgnlUtilsTestCase(unittest.TestCase):
         self.assertEqual(sims[0].number_of_steps, 4)
 
     def test_get_parameters_variables_for_simulation_with_empty_sample_times(self):
-        with self.assertRaisesRegex(ValueError, 'must be a non-empty array'):
+        with self.assertRaisesRegex(ValueError, 'failed to parse action'):
             get_parameters_variables_outputs_for_simulation(os.path.join(self.FIXTURE_DIRNAME, 'empty-sample-times.bngl'),
                                                             None, UniformTimeCourseSimulation, None)
 

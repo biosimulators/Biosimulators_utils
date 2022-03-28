@@ -19,6 +19,7 @@ __all__ = [
     'BIOSIMULATIONS_PREDICATE_TYPES',
     'BIOSIMULATIONS_THUMBNAIL_FORMATS',
     'BIOSIMULATIONS_NAMESPACE_PREFIX_MAP',
+    'BIOSIMULATIONS_NAMESPACE_ALIASES',
     'BIOSIMULATIONS_THUMBNAIL_FORMATS',
 ]
 
@@ -77,12 +78,12 @@ BIOSIMULATIONS_ROOT_URI_FORMAT = 'http://omex-library.org/{}.omex'
 BIOSIMULATIONS_ROOT_URI_PATTERN = r'^(http://omex-library\.org/.*?\.omex)(/|$)'
 
 BIOSIMULATIONS_PREDICATE_TYPES = {
-    'http://dublincore.org/specifications/dublin-core/dcmi-terms/title': {
+    'http://purl.org/dc/elements/1.1/title': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://purl.org/dc/elements/1.1/',
         },
-        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/title',
+        'uri': 'http://purl.org/dc/elements/1.1/title',
         'attribute': 'title',
         'label': 'title',
         'multiple_allowed': False,
@@ -90,12 +91,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': True,
     },
-    'http://dublincore.org/specifications/dublin-core/dcmi-terms/abstract': {
+    'http://purl.org/dc/elements/1.1/abstract': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://purl.org/dc/elements/1.1/',
         },
-        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/abstract',
+        'uri': 'http://purl.org/dc/elements/1.1/abstract',
         'attribute': 'abstract',
         'label': 'Abstract',
         'multiple_allowed': False,
@@ -116,12 +117,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
-    'http://dublincore.org/specifications/dublin-core/dcmi-terms/description': {
+    'http://purl.org/dc/elements/1.1/description': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://purl.org/dc/elements/1.1/',
         },
-        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/description',
+        'uri': 'http://purl.org/dc/elements/1.1/description',
         'attribute': 'description',
         'label': 'Description',
         'multiple_allowed': False,
@@ -168,12 +169,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': False,
         'required': False,
     },
-    'http://dublincore.org/specifications/dublin-core/dcmi-terms/source': {
+    'http://purl.org/dc/elements/1.1/source': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://purl.org/dc/elements/1.1/',
         },
-        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/source',
+        'uri': 'http://purl.org/dc/elements/1.1/source',
         'attribute': 'sources',
         'label': 'Sources',
         'multiple_allowed': True,
@@ -233,12 +234,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
-    'http://dublincore.org/specifications/dublin-core/dcmi-terms/creator': {
+    'http://purl.org/dc/elements/1.1/creator': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://purl.org/dc/elements/1.1/',
         },
-        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/creator',
+        'uri': 'http://purl.org/dc/elements/1.1/creator',
         'attribute': 'creators',
         'label': 'Creators',
         'multiple_allowed': True,
@@ -246,12 +247,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
-    'http://dublincore.org/specifications/dublin-core/dcmi-terms/contributor': {
+    'http://purl.org/dc/elements/1.1/contributor': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://purl.org/dc/elements/1.1/',
         },
-        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/contributor',
+        'uri': 'http://purl.org/dc/elements/1.1/contributor',
         'attribute': 'contributors',
         'label': 'Contributors',
         'multiple_allowed': True,
@@ -285,12 +286,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
-    'http://dublincore.org/specifications/dublin-core/dcmi-terms/license': {
+    'http://purl.org/dc/elements/1.1/license': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://purl.org/dc/elements/1.1/',
         },
-        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/license',
+        'uri': 'http://purl.org/dc/elements/1.1/license',
         'attribute': 'license',
         'label': 'License',
         'multiple_allowed': False,
@@ -311,12 +312,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
-    'http://dublincore.org/specifications/dublin-core/dcmi-terms/created': {
+    'http://purl.org/dc/elements/1.1/created': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://purl.org/dc/elements/1.1/',
         },
-        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/created',
+        'uri': 'http://purl.org/dc/elements/1.1/created',
         'attribute': 'created',
         'label': 'Created',
         'multiple_allowed': False,
@@ -324,12 +325,12 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
         'has_label': True,
         'required': False,
     },
-    'http://dublincore.org/specifications/dublin-core/dcmi-terms/modified': {
+    'http://purl.org/dc/elements/1.1/modified': {
         'namespace': {
             'prefix': 'dc',
-            'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/',
+            'uri': 'http://purl.org/dc/elements/1.1/',
         },
-        'uri': 'http://dublincore.org/specifications/dublin-core/dcmi-terms/modified',
+        'uri': 'http://purl.org/dc/elements/1.1/modified',
         'attribute': 'modified',
         'label': 'Modified',
         'multiple_allowed': True,
@@ -342,7 +343,7 @@ BIOSIMULATIONS_PREDICATE_TYPES = {
 BIOSIMULATIONS_NAMESPACE_PREFIX_MAP = {
     'http://biomodels.net/biology-qualifiers/': 'bqbiol',
     'http://biomodels.net/model-qualifiers/': 'biomodel',
-    'http://dublincore.org/specifications/dublin-core/dcmi-terms/': 'dc',
+    'http://purl.org/dc/elements/1.1/': 'dc',
     'http://prismstandard.org/namespaces/basic/2.0/': 'prism',
     'http://purl.org/dc/terms/': 'dcterms',
     'http://purl.org/spar/scoro/': 'scoro',
@@ -350,6 +351,11 @@ BIOSIMULATIONS_NAMESPACE_PREFIX_MAP = {
     'http://www.w3.org/1999/02/22-rdf-syntax-ns#': 'rdf',
     'http://www.w3.org/2000/01/rdf-schema#': 'rdfs',
     'http://xmlns.com/foaf/0.1/': 'foaf',
+}
+
+BIOSIMULATIONS_NAMESPACE_ALIASES = {
+    'http://dublincore.org/specifications/dublin-core/dcmi-terms/': 'http://purl.org/dc/elements/1.1/',
+    'http://sempublishing.sourceforge.net/scoro/': 'http://purl.org/spar/scoro/',
 }
 
 BIOSIMULATIONS_THUMBNAIL_FORMATS = [

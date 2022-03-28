@@ -221,6 +221,8 @@ class SedmlSimulationWriter(object):
         change_sed = model_sed.createChangeAttribute()
         self._obj_to_sed_obj_map[change] = change_sed
 
+        # if change.name is not None:
+        #     self._call_libsedml_method(change_sed, 'setName', change.name)
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
             self._add_namespaces_to_obj(change_sed, change.target_namespaces)
@@ -243,6 +245,8 @@ class SedmlSimulationWriter(object):
         change_sed = model_sed.createAddXML()
         self._obj_to_sed_obj_map[change] = change_sed
 
+        # if change.name is not None:
+        #     self._call_libsedml_method(change_sed, 'setName', change.name)
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
             self._add_namespaces_to_obj(change_sed, change.target_namespaces)
@@ -268,6 +272,8 @@ class SedmlSimulationWriter(object):
         change_sed = model_sed.createChangeXML()
         self._obj_to_sed_obj_map[change] = change_sed
 
+        # if change.name is not None:
+        #     self._call_libsedml_method(change_sed, 'setName', change.name)
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
             self._add_namespaces_to_obj(change_sed, change.target_namespaces)
@@ -293,6 +299,8 @@ class SedmlSimulationWriter(object):
         change_sed = model_sed.createRemoveXML()
         self._obj_to_sed_obj_map[change] = change_sed
 
+        # if change.name is not None:
+        #    self._call_libsedml_method(change_sed, 'setName', change.name)
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
             self._add_namespaces_to_obj(change_sed, change.target_namespaces)
@@ -312,6 +320,9 @@ class SedmlSimulationWriter(object):
         model_sed = self._obj_to_sed_obj_map[model]
         change_sed = model_sed.createComputeChange()
         self._obj_to_sed_obj_map[change] = change_sed
+
+        # if change.name is not None:
+        #    self._call_libsedml_method(change_sed, 'setName', change.name)
 
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
@@ -483,6 +494,9 @@ class SedmlSimulationWriter(object):
 
         change_sed = task_sed.createTaskChange()
         self._obj_to_sed_obj_map[change] = change_sed
+
+        # if change.name is not None:
+        #    self._call_libsedml_method(change_sed, 'setName', change.name)
 
         if change.target is not None:
             self._call_libsedml_method(change_sed, 'setTarget', change.target)
@@ -1244,6 +1258,7 @@ class SedmlSimulationReader(object):
                 for change_sed in task_sed.getListOfTaskChanges():
                     change = data_model.SetValueComputeModelChange()
 
+                    # change.name = change_sed.getName() or None
                     change.target = change_sed.getTarget() or None
                     change.target_namespaces = self._get_namespaces_for_sed_object_targets(change_sed)
 
@@ -1369,6 +1384,7 @@ class SedmlSimulationReader(object):
                     msg = 'Change type {} is not supported.'.format(change_sed.__class__.__name__)
                     raise NotImplementedError(msg)
 
+                # change.name = change_sed.getName() or None
                 change.target = change_sed.getTarget() or None
                 change.target_namespaces = self._get_namespaces_for_sed_object_targets(change_sed)
                 model.changes.append(change)
