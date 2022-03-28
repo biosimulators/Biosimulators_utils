@@ -1679,13 +1679,13 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
                     if model_change:
                         if not objs:
                             msg = (
-                                'XPath `{}` does not match any elements of model `{}`.  However, one or more modelChange '
+                                'XPath `{}` does not match any elements of model `{}`.  However, one or more model change '
                                 'objects may be intended to correct this failure.'
                             ).format(xpath, model_id or '')
                             warnings.append([msg])
                         elif len(objs) > 1:
                             msg = (
-                                'XPath `{}` matches multiple elements of model `{}`.  However, one or more modelChange '
+                                'XPath `{}` matches multiple elements of model `{}`.  However, one or more model change '
                                 'objects may be intended to correct this failure.'
                             ).format(xpath, model_id or '')
                             warnings.append([msg])

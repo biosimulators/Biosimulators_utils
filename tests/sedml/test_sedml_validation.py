@@ -1809,7 +1809,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(len(warnings[1]), 2)
         self.assertIn('All XPaths are validated with respect to their target models before applying model changes', flatten_nested_list_of_strings(warnings))
         self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
-        self.assertIn('does not match any elements of model `model`.  However, one or more modelChange objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('does not match any elements of model `model`.  However, one or more model change objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
 
         # XPath problem in a compute change
         filename = os.path.join(workingdir, 'BIOMD0000000297_compchange_bad_xpath.sedml')
@@ -1832,7 +1832,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(len(warnings[1]), 2)
         self.assertIn('All XPaths are validated with respect to their target models before applying model changes', flatten_nested_list_of_strings(warnings))
         self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
-        self.assertIn('does not match any elements of model `model`.  However, one or more modelChange objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('does not match any elements of model `model`.  However, one or more model change objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
 
 
     def test_validate_datagen_xpaths_with_or_without_model_change(self):
@@ -1877,7 +1877,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(len(warnings), 3)
         self.assertIn('All XPaths are validated with respect to their target models before applying model changes', flatten_nested_list_of_strings(warnings))
         self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
-        self.assertIn('does not match any elements of model `model`.  However, one or more modelChange objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('does not match any elements of model `model`.  However, one or more model change objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
 
 
     def test_validate_repeated_task_xpaths_with_or_without_model_change(self):
@@ -1925,7 +1925,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertEqual(len(warnings), 4)
         self.assertIn('All XPaths are validated with respect to their target models before applying model changes', flatten_nested_list_of_strings(warnings))
         self.assertIn('The model file `BIOMD0000000297.xml` has warnings.', flatten_nested_list_of_strings(warnings))
-        self.assertIn('does not match any elements of model `model`.  However, one or more modelChange objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
+        self.assertIn('does not match any elements of model `model`.  However, one or more model change objects may be intended to correct this failure.', flatten_nested_list_of_strings(warnings))
         self.assertIn('The following tasks do not contribute', flatten_nested_list_of_strings(warnings))
 
 
