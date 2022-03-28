@@ -114,14 +114,15 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                 ])
 
     if validate_targets_with_model_sources:
-        model_change = False
+        has_xpath_model_changes = False
         for model in doc.models:
             if model.language and does_model_language_use_xpath_variable_targets(model.language):
-                model_change = model_change or model.has_structural_changes()
-        if model_change:
+                has_xpath_model_changes = has_xpath_model_changes or model.has_structural_changes()
+        if has_xpath_model_changes:
             msg = (
-                "All XPaths are validated with respect to their target models before applying "
-                "model changes, which can, in theory, invalidate otherwise-valid targets."
+                "This tool validates XPaths for model changes and variables against their unmodified target models. "
+                "As a result, this tool does not fully validate these XPaths. These XPaths could be invalidated by "
+                "changes to their target models."
             )
             warnings.append([msg])
 
@@ -185,9 +186,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
         # model
         model_ids = [model.id for model in doc.models]
         for i_model, model in enumerate(doc.models):
-            model_etree = None
-            if model in model_etrees:
-                model_etree = model_etrees[model]
+            model_etree = model_etrees.get(model, None)
             model_errors, model_warnings = validate_model(model, model_ids, working_dir,
                                                           validate_models_with_languages=validate_models_with_languages,
                                                           check_in_model_source=validate_targets_with_model_sources,
@@ -1153,7 +1152,7 @@ def validate_model_changes(model, check_in_model_source=True, model_etree=None):
 
         elif isinstance(change, ModelAttributeChange):
             if not change.new_value:
-                change_errors.append(['A ChangeAttribute must define a newValue.'])
+                change_errors.append(['A ChangeAttribute must define a new value.'])
 
         if change_errors:
             change_id = '`' + change.id + '`' if change and change.id else str(i_change + 1)
