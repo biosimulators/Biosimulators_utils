@@ -117,8 +117,21 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(
     # setup Docker run arguments
     args = ['docker', 'run']
 
-    args.extend(['--mount', 'type=bind,source={},target={},readonly'.format(in_dir, image_in_dir)])
-    args.extend(['--mount', 'type=bind,source={},target={}'.format(os.path.abspath(out_dir), image_out_dir)])
+    temp_dir_host_path = os.getenv('TEMP_DIR_HOST_PATH', None)
+
+    if temp_dir_host_path:
+        temp_out_dir = tempfile.mkdtemp()
+
+        mount_in_dir = os.path.join(temp_dir_host_path, os.path.basename(in_dir))
+        mount_out_dir = os.path.join(temp_dir_host_path, os.path.basename(temp_out_dir))
+    else:
+        temp_out_dir = None
+
+        mount_in_dir = in_dir
+        mount_out_dir = os.path.abspath(out_dir)
+
+    args.extend(['--mount', 'type=bind,source={},target={},readonly'.format(mount_in_dir, image_in_dir)])
+    args.extend(['--mount', 'type=bind,source={},target={}'.format(mount_out_dir, image_out_dir)])
 
     if environment:
         for key, val in environment.items():
@@ -152,6 +165,9 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(
     try:
         subprocess.check_call(args)
 
+        if temp_out_dir:
+            shutil.move(temp_out_dir, out_dir)
+
     except FileNotFoundError:
         raise RuntimeError("Docker could not be found")
 
@@ -165,6 +181,8 @@ def exec_sedml_docs_in_archive_with_containerized_simulator(
 
     finally:
         shutil.rmtree(in_dir)
+        if temp_out_dir and os.path.isdir(temp_out_dir):
+            shutil.rmtree(temp_out_dir)
 
 
 def build_cli_args(archive_filename, out_dir):
