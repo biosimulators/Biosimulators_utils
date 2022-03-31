@@ -100,7 +100,7 @@ def get_parameters_variables_for_simulation_version_1(model, xml_root, simulatio
             initial_time=0.,
             output_start_time=0.,
             output_end_time=1.,
-            number_of_steps=10.,
+            number_of_steps=10,
             algorithm=Algorithm(
                 kisao_id=algorithm_kisao_id or 'KISAO_0000019',
             ),
@@ -180,7 +180,7 @@ def get_parameters_variables_for_simulation_version_2(model, xml_root, simulatio
             initial_time=0.,
             output_start_time=0.,
             output_end_time=1.,
-            number_of_steps=10.,
+            number_of_steps=10,
             algorithm=Algorithm(
                 kisao_id=algorithm_kisao_id or 'KISAO_0000019',
             ),
@@ -188,7 +188,7 @@ def get_parameters_variables_for_simulation_version_2(model, xml_root, simulatio
     else:
         sim = OneStepSimulation(
             id='simulation',
-            step=1.,
+            step=1,
             algorithm=Algorithm(
                 kisao_id=algorithm_kisao_id or 'KISAO_0000019',
             ),
