@@ -188,7 +188,7 @@ def get_parameters_variables_for_simulation_version_2(model, xml_root, simulatio
     else:
         sim = OneStepSimulation(
             id='simulation',
-            step=1,
+            step=1.,
             algorithm=Algorithm(
                 kisao_id=algorithm_kisao_id or 'KISAO_0000019',
             ),
