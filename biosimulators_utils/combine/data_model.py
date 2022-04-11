@@ -335,7 +335,7 @@ class CombineArchiveContentFormatPattern(str, enum.Enum):
     SO = r'^https?://purl\.org/NET/mediatypes/application/x-sharedlib$'
     SQL = r'^https?://purl\.org/NET/mediatypes/application/sql$'
     SVG = r'^https?://purl\.org/NET/mediatypes/image/svg\+xml$'
-    SVGZ = r'^https?://purl\.org/NET/mediatypes/image/svg\+xml(-compressed)?$'
+    SVGZ = r'^https?://purl\.org/NET/mediatypes/image/svg\+xml-compressed$'
     TEXT = r'^https?://purl\.org/NET/mediatypes/text/plain$'
     TIFF = r'^https?://purl\.org/NET/mediatypes/image/tiff$'
     TSV = r'^https?://purl\.org/NET/mediatypes/text/tab-separated-values$'
