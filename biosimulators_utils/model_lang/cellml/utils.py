@@ -23,7 +23,7 @@ __all__ = ['get_parameters_variables_outputs_for_simulation']
 
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
-                                                    change_level=SedDocument, native_ids=False, native_data_types=False,
+                                                    change_level=SedDocument, native_ids=False, native_data_types=False, observable_only=False,
                                                     config=None):
     """ Get the possible observables for a simulation of a model
 
@@ -37,6 +37,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
             for the variable of an associated SED-ML data generator
         native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
+        observable_only (:obj:`bool`, optional): whether to skip the variables that are not exposed by OpenCor
         config (:obj:`Config`, optional): whether to fail on missing includes
 
     Returns:
@@ -66,7 +67,8 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
         or default_ns.startswith('http://www.cellml.org/cellml/1.1')
     ):
         return get_parameters_variables_for_simulation_version_1(model, root, simulation_type, algorithm_kisao_id=algorithm_kisao_id,
-                                                                 native_ids=native_ids, native_data_types=native_data_types)
+                                                                 native_ids=native_ids, native_data_types=native_data_types,
+                                                                 observable_only=observable_only)
 
     else:
         return get_parameters_variables_for_simulation_version_2(model, root, simulation_type, algorithm_kisao_id=algorithm_kisao_id,
@@ -74,7 +76,7 @@ def get_parameters_variables_outputs_for_simulation(model_filename, model_langua
 
 
 def get_parameters_variables_for_simulation_version_1(model, xml_root, simulation_type,
-                                                      algorithm_kisao_id=None, native_ids=False, native_data_types=False):
+                                                      algorithm_kisao_id=None, native_ids=False, native_data_types=False, observable_only=False):
     """ Get the possible observables for a simulation of a model
 
     Args:
@@ -86,6 +88,7 @@ def get_parameters_variables_for_simulation_version_1(model, xml_root, simulatio
         native_ids (:obj:`bool`, optional): whether to return the raw id and name of each model component rather than the suggested name
             for the variable of an associated SED-ML data generator
         native_data_types (:obj:`bool`, optional): whether to return new_values in their native data types
+        observable_only (:obj:`bool`, optional): whether to skip the variables that are not exposed by OpenCor
 
     Returns:
         :obj:`list` of :obj:`ModelAttributeChange`: possible attributes of a model that can be changed and their default values
@@ -124,6 +127,12 @@ def get_parameters_variables_for_simulation_version_1(model, xml_root, simulatio
         component_name = component.attrib['name']
         for variable in component.xpath('cellml:variable', namespaces=namespaces):
             variable_name = variable.attrib['name']
+            public_interface_in = variable.attrib.get('public_interface', None) == 'in'
+            private_interface_in = variable.attrib.get('private_interface', None) == 'in'
+            variable_is_hidden = private_interface_in or public_interface_in
+
+            if(variable_is_hidden and observable_only):
+                continue
             initial_value = variable.attrib.get('initial_value', None)
             if initial_value is not None:
                 params.append(ModelAttributeChange(
