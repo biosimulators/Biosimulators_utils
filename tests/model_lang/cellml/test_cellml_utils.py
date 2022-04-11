@@ -65,14 +65,98 @@ class CellmlUtilsTestCase(unittest.TestCase):
             target_namespaces=namespaces,
         )))
 
+    def test_get_parameters_variables_for_simulation_version_1_observable_only(self):
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            self.V1_FIXTURE_FILENAME, None, OneStepSimulation, None, observable_only=True)
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(
+            self.V1_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None, observable_only=True)
+
+        self.assertEqual(len(params), 13)
+        self.assertEqual(len(vars), 30)
+
+        namespaces = {
+            'cellml': 'http://www.cellml.org/cellml/1.0#',
+        }
+
+        self.assertTrue(params[0].is_equal(ModelAttributeChange(
+            id='initial_value_component_total_cytoplasmic_Ca_flux_variable_F',
+            name='Initial value of variable "F" of component "total_cytoplasmic_Ca_flux"',
+            target=(
+                "/cellml:model"
+                "/cellml:component[@name='total_cytoplasmic_Ca_flux']"
+                "/cellml:variable[@name='F']"
+                "/@initial_value"
+            ),
+            target_namespaces=namespaces,
+            new_value='96.5',
+        )))
+
+        self.assertEqual(len(sims), 1)
+
+        sim = sims[0]
+        self.assertIsInstance(sim, UniformTimeCourseSimulation)
+
+        self.assertTrue(vars[0].is_equal(Variable(
+            id='value_component_environment_variable_time',
+            name='Value of variable "time" of component "environment"',
+            target=(
+                "/cellml:model"
+                "/cellml:component[@name='environment']"
+                "/cellml:variable[@name='time']"
+            ),
+            target_namespaces=namespaces,
+        )))
+
     def test_get_parameters_variables_for_simulation_version_1_native_ids_data_types(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.V1_FIXTURE_FILENAME, None, OneStepSimulation, None,
-                                                                     native_ids=True, native_data_types=True)
+                                                                                    native_ids=True, native_data_types=True)
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.V1_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None,
-                                                                     native_ids=True, native_data_types=True)
+                                                                                    native_ids=True, native_data_types=True)
 
         self.assertEqual(len(params), 13)
         self.assertEqual(len(vars), 54)
+
+        namespaces = {
+            'cellml': 'http://www.cellml.org/cellml/1.0#',
+        }
+
+        self.assertTrue(params[0].is_equal(ModelAttributeChange(
+            id='total_cytoplasmic_Ca_flux.F',
+            name=None,
+            target=(
+                "/cellml:model"
+                "/cellml:component[@name='total_cytoplasmic_Ca_flux']"
+                "/cellml:variable[@name='F']"
+                "/@initial_value"
+            ),
+            target_namespaces=namespaces,
+            new_value=96.5,
+        )))
+
+        self.assertEqual(len(sims), 1)
+
+        sim = sims[0]
+        self.assertIsInstance(sim, UniformTimeCourseSimulation)
+
+        self.assertTrue(vars[0].is_equal(Variable(
+            id='environment.time',
+            name=None,
+            target=(
+                "/cellml:model"
+                "/cellml:component[@name='environment']"
+                "/cellml:variable[@name='time']"
+            ),
+            target_namespaces=namespaces,
+        )))
+
+    def test_get_parameters_variables_for_simulation_version_1_native_ids_data_types_observable_only(self):
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.V1_FIXTURE_FILENAME, None, OneStepSimulation, None,
+                                                                                    native_ids=True, native_data_types=True, observable_only=True)
+        params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.V1_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None,
+                                                                                    native_ids=True, native_data_types=True, observable_only=True)
+
+        self.assertEqual(len(params), 13)
+        self.assertEqual(len(vars), 30)
 
         namespaces = {
             'cellml': 'http://www.cellml.org/cellml/1.0#',
@@ -149,9 +233,9 @@ class CellmlUtilsTestCase(unittest.TestCase):
 
     def test_get_parameters_variables_for_simulation_version_2_native_ids_data_types(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.V2_FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None,
-                                                                     native_ids=True, native_data_types=True)
+                                                                                    native_ids=True, native_data_types=True)
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.V2_FIXTURE_FILENAME, None, OneStepSimulation, None,
-                                                                     native_ids=True, native_data_types=True)
+                                                                                    native_ids=True, native_data_types=True)
 
         self.assertEqual(len(params), 1)
         self.assertEqual(len(vars), 3)
