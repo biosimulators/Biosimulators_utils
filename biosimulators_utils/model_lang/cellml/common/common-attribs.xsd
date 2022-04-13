@@ -26,7 +26,7 @@
   <xs:attribute name="class" type="xs:NMTOKENS"/>
   <xs:attribute name="style" type="xs:string"/>
   <xs:attribute name="xref" type="xs:IDREF"/>
-  <xs:attribute name="id" type="xs:ID"/>
+  <xs:attribute name="id" type="xs:string"/>
   <xs:attribute ref="xlink:href"/>
   <!-- allow attributes from foreign namespaces, and don't check them -->
   <xs:anyAttribute namespace="##other" processContents="skip"/>

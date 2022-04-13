@@ -2,9 +2,11 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
         xmlns:cellml="http://www.cellml.org/cellml/1.1#"
         xmlns:mathml="http://www.w3.org/1998/Math/MathML"
+        xmlns:rdf= "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
         xmlns:xlink="http://www.w3.org/1999/xlink"
         elementFormDefault="qualified"
         targetNamespace="http://www.cellml.org/cellml/1.1#">
+ <import namespace ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
  <import namespace="http://www.w3.org/1998/Math/MathML"
          schemaLocation="mathml2.xsd"/>
  <import namespace="http://www.w3.org/1999/xlink" schemaLocation="common/xlink-href.xsd"/>
@@ -109,7 +111,8 @@
       <element name="units" type="cellml:units"/>
       <element name="variable" type="cellml:variable"/>
       <element name="reaction" type="cellml:reaction"/>
-      <element ref="mathml:math"/>
+      <element ref="mathml:math"/>      
+      <any namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"  processContents="skip" />
     </choice>
     <attribute name="name" type="cellml:cellMLIdentifier" use="required"/>
     <anyAttribute namespace="##other" processContents="lax"/>

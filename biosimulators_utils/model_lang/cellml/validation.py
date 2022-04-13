@@ -142,13 +142,17 @@ def validate_model_version_1_1(filename, doc, resolve_imports=True, config=None)
     """
     # ``cellml_1_1_original.xsd`` was obtained from https://www.cellml.org/tools/cellml_1_1_schema
     # `cellml_1_1.xsd`` was created by were directly downloading all referenced namspaces from
-    # https://www.cellml.org/tools/cellml_1_1_schema/common, 
-    # https://www.cellml.org/tools/cellml_1_1_schema/content, 
+    # https://www.cellml.org/tools/cellml_1_1_schema/common,
+    # https://www.cellml.org/tools/cellml_1_1_schema/content,
     # https://www.cellml.org/tools/cellml_1_1_schema/presentation
     # The original ``cellml_1_1.xsd`` was modified to change the http sources to local sources.
     # Additionally, the following two lines were removed from the ``cellml_1_1_original.xsd``: 113, 309
     # These lines added the following to the definitions of "Component" and "Role":  <any namespace="##other" processContents="skip"/>
     # This caused lxml to fail to parse the schema due to it being nondeterministic.
+    # In its place, <any namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"  processContents="skip" />
+    # was added to allow using RDF syntax in the schema. The RDF is not validated.
+    # Finally, in common/common-attribs.xsd the type of the attribute "id" was changed from "ID" to "string".
+    # This was done to allow using numbers as ids for equations as described in the CellML primer.
 
     schema_filename = pkg_resources.resource_filename('biosimulators_utils',
                                                       os.path.join("model_lang", "cellml", "cellml_1_1.xsd"))
