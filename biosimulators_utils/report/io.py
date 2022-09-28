@@ -268,7 +268,7 @@ class ReportReader(object):
                         data_set_slice = [slice(0, dim_len) for dim_len in data_set_shape] + \
                             [slice(0, 1)] * (data_set_ndim - len(data_set_shape))
                         results[data_set.id] = (
-                            data_set_results[i_data_set][data_set_slice]
+                            data_set_results[(i_data_set,data_set_slice)]
                             .reshape(data_set_shape)
                             .astype(data_set_data_type)
                         )
