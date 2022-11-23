@@ -275,10 +275,13 @@ class ReportReader(object):
                               f'data_set.id = {data_set.id}, '
                               f'i_data_set = {i_data_set}, '
                               f'data_set_slice = {data_set_slice}, '
+                              f'data_set_ndim = {data_set_ndim}'
                               f'data_set_shape = {data_set_shape}, '
-                              f'data_set_data_type = {data_set_data_type}')
+                              f'data_set_data_type = {data_set_data_type}'
+                              f'data_set_results = {data_set_results}'
+                              )
                         results[data_set.id] = (
-                            data_set_results[i_data_set][data_set_slice]
+                            data_set_results[i_data_set][data_set_slice[0].start:data_set_slice[0].stop]
                             .reshape(data_set_shape)
                             .astype(data_set_data_type)
                         )
