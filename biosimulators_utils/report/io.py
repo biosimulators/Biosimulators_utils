@@ -268,9 +268,9 @@ class ReportReader(object):
                         data_set_slice = [slice(0, dim_len) for dim_len in data_set_shape] + \
                             [slice(0, 1)] * (data_set_ndim - len(data_set_shape))
 
-
                         # This is the numpy bug!!
-                        # IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+                        # IndexError: only integers, slices (`:`), ellipsis (`...`),
+                        # numpy.newaxis (`None`) and integer or boolean arrays are valid indices
                         print(f'NUMPY BUG! '
                               f'data_set.id = {data_set.id}, '
                               f'i_data_set = {i_data_set}, '

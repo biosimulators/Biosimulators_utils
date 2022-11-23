@@ -116,7 +116,7 @@ def write_plot_3d(plot, data_generator_results, base_path, rel_path, format=VizF
         colormaps (:obj:`list` of :obj:`matplotlib.colors.LinearSegmentedColormap`, optional): colormaps
     """
     figure = pyplot.figure()
-    figure.gca(projection='3d')
+    axes = figure.gca(projection='3d')
 
     x_names = set()
     y_names = set()
