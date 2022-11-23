@@ -283,8 +283,8 @@ class ReportReader(object):
                         if data_set_ndim == 2:
                             results[data_set.id] = (
                                 data_set_results[i_data_set]
-                                [data_set_slice[0].start:data_set_slice[0].stop]
-                                [data_set_slice[1].start:data_set_slice[1].stop]
+                                [data_set_slice[0].start:data_set_slice[0].stop,
+                                data_set_slice[1].start:data_set_slice[1].stop]
                                 .reshape(data_set_shape)
                                 .astype(data_set_data_type)
                             )
