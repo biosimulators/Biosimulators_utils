@@ -265,23 +265,14 @@ class ReportReader(object):
                         results[data_set.id] = None
                     else:
                         data_set_shape = data_set_shapes[i_data_set]
-                        data_set_slice = [slice(0, dim_len) for dim_len in data_set_shape] + \
-                            [slice(0, 1)] * (data_set_ndim - len(data_set_shape))
-                        if data_set_ndim == 2:
-                            results[data_set.id] = (
-                                data_set_results[i_data_set]
-                                [data_set_slice[0].start:data_set_slice[0].stop,
-                                    data_set_slice[1].start:data_set_slice[1].stop]
-                                .reshape(data_set_shape)
-                                .astype(data_set_data_type)
-                            )
-                        else:
-                            results[data_set.id] = (
-                                data_set_results[i_data_set]
-                                [data_set_slice[0].start:data_set_slice[0].stop]
-                                .reshape(data_set_shape)
-                                .astype(data_set_data_type)
-                            )
+                        data_set_slice = tuple([slice(0, dim_len) for dim_len in data_set_shape] + \
+                            [slice(0, 1)] * (data_set_ndim - len(data_set_shape)))
+                        results[data_set.id] = (
+                            data_set_results[i_data_set][data_set_slice]
+                            .reshape(data_set_shape)
+                            .astype(data_set_data_type)
+                        )
+
             file_data_set_ids = set(file_data_set_ids)
 
         else:
