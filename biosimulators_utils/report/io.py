@@ -265,8 +265,8 @@ class ReportReader(object):
                         results[data_set.id] = None
                     else:
                         data_set_shape = data_set_shapes[i_data_set]
-                        data_set_slice = tuple([slice(0, dim_len) for dim_len in data_set_shape] + 
-                            [slice(0, 1)] * (data_set_ndim - len(data_set_shape)))
+                        data_set_slice = tuple( [slice(0, dim_len) for dim_len in data_set_shape] +
+                                                [slice(0, 1)] * (data_set_ndim - len(data_set_shape)))
                         results[data_set.id] = (
                             data_set_results[i_data_set][data_set_slice]
                             .reshape(data_set_shape)
