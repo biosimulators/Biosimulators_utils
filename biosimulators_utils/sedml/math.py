@@ -175,6 +175,7 @@ def compile_math(math):
             math
             .replace('&&', 'and')
             .replace('||', 'or')
+            .replace('^', '**')
         )
 
     math_node = evalidate.evalidate(math,
