@@ -27,7 +27,7 @@ def validate_model(filename, name=None, config=None):
         :obj:`tuple`:
 
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
-            * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
+            * nested :obj:`list` of :obj:`str`: nested list of warnings (e.g., required ids missing or ids not unique)
             * :obj:`bionetgen.xmlapi.model.bngmodel`: model
     """
     errors = []

@@ -11,6 +11,7 @@ from ..omex_meta.io import read_omex_meta_files_for_archive
 from ..sedml.io import SedmlSimulationReader
 from .data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat, CombineArchiveContentFormatPattern  # noqa: F401
 from .utils import get_sedml_contents
+from zipfile import ZipFile
 import imghdr
 import os
 import re
@@ -22,14 +23,14 @@ __all__ = [
 ]
 
 
-def validate(archive, archive_dirname,
-             include_all_sed_docs_when_no_sed_doc_is_master=True,
-             always_include_all_sed_docs=False,
-             formats_to_validate=[
+def validate(archive:CombineArchive, archive_dirname:str,
+             include_all_sed_docs_when_no_sed_doc_is_master:bool=True,
+             always_include_all_sed_docs:bool=False,
+             formats_to_validate:"list[CombineArchiveContentFormat]"=[
                  CombineArchiveContentFormat.SED_ML,
              ],
-             validate_models_with_languages=True,
-             config=None):
+             validate_models_with_languages:bool=True,
+             config:Config=None):
     """ Validate a COMBINE/OMEX archive and the SED-ML and model documents it contains
 
     Args:
@@ -95,7 +96,8 @@ def validate(archive, archive_dirname,
 
             if isinstance(content, CombineArchiveContent):
                 if content.location:
-                    if not os.path.isfile(os.path.join(archive_dirname, content.location)):
+                    abs_path = os.path.join(archive_dirname, content.location)
+                    if not os.path.isfile(abs_path):
                         content_errors.append(['Location is not a file.'])
 
                 else:
