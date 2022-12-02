@@ -129,7 +129,7 @@ class CombineArchiveReader(object):
         self.errors = []
         self.warnings = []
 
-    def run(self, in_file:str, out_dir:str, include_omex_metadata_files:bool=True, config:Config=None) -> CombineArchive:
+    def run(self, in_file: str, out_dir: str, include_omex_metadata_files: bool = True, config: Config = None) -> CombineArchive:
         """ Read an archive from a file
 
         Args:
@@ -202,11 +202,11 @@ class CombineArchiveReader(object):
             archive.contents.append(content)
 
         # extract files
-        #archive_comb.extractTo(out_dir) # libcombine incorrectly extracts files as directories.
-        
-        # Backup extraction
+
         with Zip(in_file, 'r') as zip_archive:
             zip_archive.extractall(path=out_dir)
+
+#        archive_comb.extractTo(out_dir) # libcombine incorrectly extracts files as directories.
 
         # read metadata files skipped by libCOMBINE
         content_locations = set(os.path.relpath(content.location, '.') for content in archive.contents)
