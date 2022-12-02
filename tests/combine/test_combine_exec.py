@@ -94,17 +94,6 @@ class ExecCombineTestCase(unittest.TestCase):
                 config.COLLECT_COMBINE_ARCHIVE_RESULTS = True
                 results, _ = exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, config=config)
 
-                # print failing assert variables
-                print('ExecCombineTestCase test 1 assert:')
-                print(f'sed_doc_executer: {sed_doc_executer}'
-                      f'archive_filename: {archive_filename}'
-                      f'out_dir: {out_dir}'
-                      f'config: {config}')
-                print(f'results: {results}')
-                sed_doc_results = SedDocumentResults({
-                    'sim.sedml': ReportResults({'report1': 'ABC', 'report2': 'DEF'})})
-                print(f'SedDocumentResults: {sed_doc_results}')
-
                 self.assertEqual(results, SedDocumentResults({
                     'sim.sedml': ReportResults({
                         'report1': 'ABC',
@@ -220,11 +209,6 @@ class ExecCombineTestCase(unittest.TestCase):
                 config.BUNDLE_OUTPUTS = True
                 config.KEEP_INDIVIDUAL_OUTPUTS = True                
                 exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, config=config)
-
-
-        # print failing assert variables
-        print('ExecCombineTestCase test 2 assert:')
-        print(f'out_dir: {sorted(os.listdir(out_dir))}')
 
         self.assertEqual(sorted(os.listdir(out_dir)), sorted(['reports.zip', 'plots.zip', 'dir1', 'log.yml']))
         self.assertEqual(os.listdir(os.path.join(out_dir, 'dir1')), ['dir2'])
