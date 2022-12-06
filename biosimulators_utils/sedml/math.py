@@ -146,7 +146,6 @@ VALID_MATH_EXPRESSION_NODES = [
     'Lt',
     'GtE',
     'LtE',
-    'Add',
     'Sub',
     'Mult',
     'Div',
@@ -159,11 +158,6 @@ VALID_MATH_EXPRESSION_NODES = [
     'BitXor',
     'Call',
     'Constant',
-    'Expression',
-    'BinOp',
-    'BoolOp',
-    'Name',
-    'Load',
 ]
 
 
