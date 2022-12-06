@@ -161,6 +161,7 @@ VALID_MATH_EXPRESSION_NODES = [
     'Constant',
     'Expression',
     'BinOp',
+    'BoolOp',
     'Name',
     'Load',
 ]
