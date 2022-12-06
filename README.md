@@ -12,7 +12,7 @@ Command-line application and high-level utilities for reading, writing, validati
 
 ### Requirements
 * Python >= 3.7
-* pip
+* pip (latest)
 
 ### Optional requirements
 
