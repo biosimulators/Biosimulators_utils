@@ -1485,7 +1485,7 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn('The syntax', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
 
         calculation_2 = copy.copy(calculation)
-        calculation_2.math = 'a / 1'
+        calculation_2.math = 'a * 1'
         with mock.patch('biosimulators_utils.sedml.math.VALID_MATH_EXPRESSION_NODES', new_callable=mock.PropertyMock(return_value=[])):
             self.assertIn('uses forbidden', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
 

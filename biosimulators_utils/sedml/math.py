@@ -184,7 +184,7 @@ def compile_math(math):
         )
 
     math_node = evalidate.evalidate(math,
-                                    safenodes=VALID_MATH_EXPRESSION_NODES,
+                                    addnodes=VALID_MATH_EXPRESSION_NODES,
                                     funcs=MATHEMATICAL_FUNCTIONS.keys())
     compiled_math = compile(math_node, '<math>', 'eval')
     return compiled_math
