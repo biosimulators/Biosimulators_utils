@@ -27,6 +27,7 @@ from .utils import (append_all_nested_children_to_doc, get_range_len,
                     get_data_generators_for_output, get_variables_for_data_generators,
                     get_task_results_shape)
 from kisao.data_model import TermType as KisaoTermType
+from evalidate import CompilationException, ValidationException
 import collections
 import copy
 import lxml.etree
@@ -1773,8 +1774,11 @@ def validate_calculation(calculation):
         except TypeError:
             errors.append(['The mathematical expression must be a `string`, not a `{}`.'.format(calculation.math.__class__)])
             return (errors, warnings)
-        except SyntaxError:
-            errors.append(['The syntax of the mathematical expression `{}` is invalid.'.format(calculation.math)])
+        except (SyntaxError, CompilationException) as exception:
+            errors.append(['The syntax of the mathematical expression `{}` is invalid.'.format(calculation.math), [[str(exception)]]])
+            return (errors, warnings)
+        except ValidationException as exception:
+            errors.append(['The mathematical expression `{}` uses forbidden operations.'.format(calculation.math), [[str(exception)]]])
             return (errors, warnings)
         except Exception as exception:
             errors.append(['The mathematical expression `{}` is invalid.'.format(calculation.math), [[str(exception)]]])
