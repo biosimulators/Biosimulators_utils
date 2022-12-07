@@ -4,95 +4,160 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>biosimulators_utils.combine package &#8212; BioSimulators utils 0.1.171 documentation</title>
-    
+    <title>biosimulators_utils.combine package &#8212; BioSimulators utils 0.1.172 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/styles/theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/bootstrap.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="icon" sizes="16x16" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png" />
+    <link rel="icon" sizes="32x32" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png" />
     <link rel="stylesheet" type="text/css" href="../_static/css/biosimulators.css" />
-    
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94">
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'source/biosimulators_utils.combine';</script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="biosimulators_utils.gh_action package" href="biosimulators_utils.gh_action.html" />
     <link rel="prev" title="biosimulators_utils.biosimulations package" href="biosimulators_utils.biosimulations.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-      
-      <link rel="icon" sizes="16x16" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png">
-      
-    
-      
-      <link rel="icon" sizes="32x32" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png">
-      
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
 
-    
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Enter text to search for ..." aria-label="Enter text to search for ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="../index.html">
-  <img src="../_static/biosimulators-logo.svg" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="Logo image">
+    <img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
   
-  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+  <div class="col-lg-9 navbar-header-items">
     <div id="navbar-center" class="mr-auto">
       
     </div>
 
     <div id="navbar-end">
       
+        <div class="navbar-end-item navbar-persistent--container">
+          
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+        </div>
+      
+      
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Quick links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/biosimulators/Biosimulators_utils" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github"></i></span>
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github"></i></span>
             <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://twitter.com/biosimulators" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter"></i></span>
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter"></i></span>
             <label class="sr-only">Twitter</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="mailto:info@biosimulators.org" rel="noopener" target="_blank" title="Email"><span><i class="fas fa-envelope"></i></span>
+          
+          
+          
+          
+          
+          
+          
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fas fa-envelope"></i></span>
             <label class="sr-only">Email</label></a>
         </li>
       </ul>
@@ -100,226 +165,179 @@
       
     </div>
   </div>
+
+
+  
+  
+    <div class="navbar-persistent--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+    </div>
+  
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
 </div>
-    </nav>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
     
 
-    <div class="container-xl">
-      <div class="row">
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Quick links">
+        <li class="nav-item">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Enter text to search for ..." aria-label="Enter text to search for ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <div class="bd-toc-item active">
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fas fa-envelope"></i></span>
+            <label class="sr-only">Email</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+  <div class="sidebar-start-items sidebar-primary__section">
+    <div class="sidebar-start-items__item">
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Enter text to search for ..." aria-label="Enter text to search for ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">
+    Section Navigation
+  </p>
+  <div class="bd-toc-item navbar-nav">
     <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.archive.html">
-   biosimulators_utils.archive package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.biosimulations.html">
-   biosimulators_utils.biosimulations package
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   biosimulators_utils.combine package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.gh_action.html">
-   biosimulators_utils.gh_action package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.kisao.html">
-   biosimulators_utils.kisao package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.licensing.html">
-   biosimulators_utils.licensing package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.log.html">
-   biosimulators_utils.log package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.model_lang.html">
-   biosimulators_utils.model_lang package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.omex_meta.html">
-   biosimulators_utils.omex_meta package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.ref.html">
-   biosimulators_utils.ref package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.report.html">
-   biosimulators_utils.report package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.sedml.html">
-   biosimulators_utils.sedml package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.simulator.html">
-   biosimulators_utils.simulator package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.simulator_registry.html">
-   biosimulators_utils.simulator_registry package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.utils.html">
-   biosimulators_utils.utils package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.viz.html">
-   biosimulators_utils.viz package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.xml.html">
-   biosimulators_utils.xml package
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.archive.html">biosimulators_utils.archive package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.biosimulations.html">biosimulators_utils.biosimulations package</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">biosimulators_utils.combine package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.gh_action.html">biosimulators_utils.gh_action package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.kisao.html">biosimulators_utils.kisao package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.licensing.html">biosimulators_utils.licensing package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.log.html">biosimulators_utils.log package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.model_lang.html">biosimulators_utils.model_lang package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.omex_meta.html">biosimulators_utils.omex_meta package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.ref.html">biosimulators_utils.ref package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.report.html">biosimulators_utils.report package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.sedml.html">biosimulators_utils.sedml package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.simulator.html">biosimulators_utils.simulator package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.simulator_registry.html">biosimulators_utils.simulator_registry package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.utils.html">biosimulators_utils.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.viz.html">biosimulators_utils.viz package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.xml.html">biosimulators_utils.xml package</a></li>
 </ul>
 
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+  
+  <div id="rtd-footer-container"></div>
+
+      </div>
+      <main id="main-content" class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
             </div>
             
-          
-
-          
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
             
+            <article class="bd-article" role="main">
               
-              <div class="toc-item">
-                
-<div class="tocsection onthispage mt-5 pt-1 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
-
-<nav id="bd-toc-nav">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.data_model">
-   biosimulators_utils.combine.data_model module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.exceptions">
-   biosimulators_utils.combine.exceptions module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.exec">
-   biosimulators_utils.combine.exec module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.io">
-   biosimulators_utils.combine.io module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.utils">
-   biosimulators_utils.combine.utils module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.validation">
-   biosimulators_utils.combine.validation module
-  </a>
- </li>
-</ul>
-
-</nav>
-              </div>
-              
-              <div class="toc-item">
-                
-
-<div class="tocsection editthispage">
-    <a href="https://github.com/biosimulators/Biosimulators_utils/edit/dev/docs-src/source/biosimulators_utils.combine.rst">
-        <i class="fas fa-pencil-alt"></i> Edit this page
-    </a>
-</div>
-
-              </div>
-              
-            
-          </div>
-          
-
-          
-          
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
-              
-              <div>
-                
   <section id="module-biosimulators_utils.combine">
-<span id="biosimulators-utils-combine-package"></span><h1>biosimulators_utils.combine package<a class="headerlink" href="#module-biosimulators_utils.combine" title="Permalink to this headline">#</a></h1>
+<span id="biosimulators-utils-combine-package"></span><h1>biosimulators_utils.combine package<a class="headerlink" href="#module-biosimulators_utils.combine" title="Permalink to this heading">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </section>
 <section id="module-biosimulators_utils.combine.data_model">
-<span id="biosimulators-utils-combine-data-model-module"></span><h2>biosimulators_utils.combine.data_model module<a class="headerlink" href="#module-biosimulators_utils.combine.data_model" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-combine-data-model-module"></span><h2>biosimulators_utils.combine.data_model module<a class="headerlink" href="#module-biosimulators_utils.combine.data_model" title="Permalink to this heading">#</a></h2>
 <p>Data model for COMBINE/OMEX archives</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020-12-06</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.data_model.CombineArchive">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.data_model.</span></span><span class="sig-name descname"><span class="pre">CombineArchive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchive" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.combine.data_model.CombineArchiveBase" title="biosimulators_utils.combine.data_model.CombineArchiveBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.combine.data_model.CombineArchiveBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.combine.data_model.CombineArchiveBase" title="biosimulators_utils.combine.data_model.CombineArchiveBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombineArchiveBase</span></code></a></p>
 <p>A COMBINE/OMEX archive</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.data_model.CombineArchive.contents">
 <span class="sig-name descname"><span class="pre">contents</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchive.contents" title="Permalink to this definition">#</a></dt>
 <dd><p>contents of the archive</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#biosimulators_utils.combine.data_model.CombineArchiveContent" title="biosimulators_utils.combine.data_model.CombineArchiveContent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></a></p>
 </dd>
 </dl>
@@ -330,10 +348,10 @@
 <span class="sig-name descname"><span class="pre">get_master_content</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchive.get_master_content" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the master content of an archive</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>master content</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#biosimulators_utils.combine.data_model.CombineArchiveContent" title="biosimulators_utils.combine.data_model.CombineArchiveContent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></a></p>
 </dd>
 </dl>
@@ -344,13 +362,13 @@
 <span class="sig-name descname"><span class="pre">is_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchive.is_equal" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine if two content items are equal</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.combine.data_model.CombineArchiveContent" title="biosimulators_utils.combine.data_model.CombineArchiveContent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></a>) – another content item</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two archives are equal</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
@@ -361,10 +379,10 @@
 <span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchive.to_tuple" title="Permalink to this definition">#</a></dt>
 <dd><p>Tuple representation of a COMBINE/OMEX archive</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple representation of a COMBINE/OMEX archive</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -375,21 +393,21 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.data_model.CombineArchiveBase">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.data_model.</span></span><span class="sig-name descname"><span class="pre">CombineArchiveBase</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchiveBase" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>A COMBINE/OMEX archive</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.data_model.CombineArchiveContent">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.data_model.</span></span><span class="sig-name descname"><span class="pre">CombineArchiveContent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">master</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchiveContent" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.combine.data_model.CombineArchiveBase" title="biosimulators_utils.combine.data_model.CombineArchiveBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.combine.data_model.CombineArchiveBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.combine.data_model.CombineArchiveBase" title="biosimulators_utils.combine.data_model.CombineArchiveBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombineArchiveBase</span></code></a></p>
 <p>A content item (e.g., file) in a COMBINE/OMEX archive</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.data_model.CombineArchiveContent.location">
 <span class="sig-name descname"><span class="pre">location</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchiveContent.location" title="Permalink to this definition">#</a></dt>
 <dd><p>path to the content</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -400,7 +418,7 @@
 <span class="sig-name descname"><span class="pre">format</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchiveContent.format" title="Permalink to this definition">#</a></dt>
 <dd><p>URL for the specification of the format of the content</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -411,7 +429,7 @@
 <span class="sig-name descname"><span class="pre">master</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchiveContent.master" title="Permalink to this definition">#</a></dt>
 <dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if the content is the “primary” content of the parent archive</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
@@ -422,13 +440,13 @@
 <span class="sig-name descname"><span class="pre">is_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchiveContent.is_equal" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine if two content items are equal</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.combine.data_model.CombineArchiveContent" title="biosimulators_utils.combine.data_model.CombineArchiveContent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></a>) – another content item</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two content items are equal</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
@@ -439,10 +457,10 @@
 <span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchiveContent.to_tuple" title="Permalink to this definition">#</a></dt>
 <dd><p>Tuple representation of a content item of a COMBINE/OMEX archive</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple representation of a content item of a COMBINE/OMEX archive</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -453,7 +471,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.data_model.CombineArchiveContentFormat">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.data_model.</span></span><span class="sig-name descname"><span class="pre">CombineArchiveContentFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Format for the content of COMBINE/OMEX archives</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.data_model.CombineArchiveContentFormat.ACTIONSCRIPT">
@@ -1000,7 +1018,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.data_model.</span></span><span class="sig-name descname"><span class="pre">CombineArchiveContentFormatPattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Format for the content of COMBINE/OMEX archives</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.ACTIONSCRIPT">
@@ -1424,7 +1442,7 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SVGZ">
-<span class="sig-name descname"><span class="pre">SVGZ</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'^https?://purl\\.org/NET/mediatypes/image/svg\\+xml(-compressed)?$'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SVGZ" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">SVGZ</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'^https?://purl\\.org/NET/mediatypes/image/svg\\+xml-compressed$'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SVGZ" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1546,51 +1564,51 @@
 
 </section>
 <section id="module-biosimulators_utils.combine.exceptions">
-<span id="biosimulators-utils-combine-exceptions-module"></span><h2>biosimulators_utils.combine.exceptions module<a class="headerlink" href="#module-biosimulators_utils.combine.exceptions" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-combine-exceptions-module"></span><h2>biosimulators_utils.combine.exceptions module<a class="headerlink" href="#module-biosimulators_utils.combine.exceptions" title="Permalink to this heading">#</a></h2>
 <p>Exceptions for COMBINE/OMEX archives</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2021-01-12</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2021, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
 <dl class="py exception">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.exceptions.CombineArchiveExecutionError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.exceptions.</span></span><span class="sig-name descname"><span class="pre">CombineArchiveExecutionError</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/exceptions.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.exceptions.CombineArchiveExecutionError" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.exceptions.BioSimulatorsException" title="biosimulators_utils.exceptions.BioSimulatorsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.exceptions.BioSimulatorsException</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.exceptions.BioSimulatorsException" title="biosimulators_utils.exceptions.BioSimulatorsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">BioSimulatorsException</span></code></a></p>
 <p>Error that a SED document could not be executed</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.exceptions.NoSedmlError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.exceptions.</span></span><span class="sig-name descname"><span class="pre">NoSedmlError</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/exceptions.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.exceptions.NoSedmlError" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.exceptions.BioSimulatorsException" title="biosimulators_utils.exceptions.BioSimulatorsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.exceptions.BioSimulatorsException</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.exceptions.BioSimulatorsException" title="biosimulators_utils.exceptions.BioSimulatorsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">BioSimulatorsException</span></code></a></p>
 <p>Error that a COMBINE/OMEX archive does not contain any SED-ML files</p>
 </dd></dl>
 
 </section>
 <section id="module-biosimulators_utils.combine.exec">
-<span id="biosimulators-utils-combine-exec-module"></span><h2>biosimulators_utils.combine.exec module<a class="headerlink" href="#module-biosimulators_utils.combine.exec" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-combine-exec-module"></span><h2>biosimulators_utils.combine.exec module<a class="headerlink" href="#module-biosimulators_utils.combine.exec" title="Permalink to this heading">#</a></h2>
 <p>Utilities for executing tasks in SED-ML files in COMBINE/OMEX archives</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020-12-06</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
@@ -1599,7 +1617,7 @@
 <span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.exec.</span></span><span class="sig-name descname"><span class="pre">exec_sedml_docs_in_archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sed_doc_executer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_xml_model_changes=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sed_doc_executer_supported_features=(&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Task'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Report'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.DataSet'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Plot2D'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Curve'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Plot3D'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Surface'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sed_doc_executer_logged_features=(&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Task'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Report'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.DataSet'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Plot2D'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Curve'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Plot3D'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.Surface'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level=StandardOutputErrorCapturerLevel.c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/exec.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.exec.exec_sedml_docs_in_archive" title="Permalink to this definition">#</a></dt>
 <dd><p>Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sed_doc_executer</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.FunctionType</span></code>) – <p>function to execute each SED document in the archive.
 The function must implement the following interface:</p>
@@ -1648,14 +1666,14 @@ the SED document executer logs. Default: tasks, reports, plots, data sets, curve
 <li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>) – configuration</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocumentResults</span></code>: results</p></li>
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveLog</span></code>: log</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
 </dd>
 </dl>
@@ -1663,19 +1681,19 @@ the SED document executer logs. Default: tasks, reports, plots, data sets, curve
 
 </section>
 <section id="module-biosimulators_utils.combine.io">
-<span id="biosimulators-utils-combine-io-module"></span><h2>biosimulators_utils.combine.io module<a class="headerlink" href="#module-biosimulators_utils.combine.io" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-combine-io-module"></span><h2>biosimulators_utils.combine.io module<a class="headerlink" href="#module-biosimulators_utils.combine.io" title="Permalink to this heading">#</a></h2>
 <p>Utilities for reading and writing COMBINE/OMEX archives</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020-12-06</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
@@ -1689,7 +1707,7 @@ the SED document executer logs. Default: tasks, reports, plots, data sets, curve
 <span class="sig-name descname"><span class="pre">errors</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.io.CombineArchiveReader.errors" title="Permalink to this definition">#</a></dt>
 <dd><p>errors</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -1700,7 +1718,7 @@ the SED document executer logs. Default: tasks, reports, plots, data sets, curve
 <span class="sig-name descname"><span class="pre">warnings</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.io.CombineArchiveReader.warnings" title="Permalink to this definition">#</a></dt>
 <dd><p>warnings</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -1716,17 +1734,17 @@ the SED document executer logs. Default: tasks, reports, plots, data sets, curve
 <span class="sig-name descname"><span class="pre">read_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.io.CombineArchiveReader.read_manifest" title="Permalink to this definition">#</a></dt>
 <dd><p>Read the contents of an OMEX manifest file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to OMEX manifest file</p></li>
 <li><p><strong>archive_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, option) – path to COMBINE archive</p></li>
 <li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>contents of the OMEX manifest file</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></p>
 </dd>
 </dl>
@@ -1734,10 +1752,10 @@ the SED document executer logs. Default: tasks, reports, plots, data sets, curve
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.io.CombineArchiveReader.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_omex_metadata_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.io.CombineArchiveReader.run" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_omex_metadata_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.config.Config" title="biosimulators_utils.config.Config"><span class="pre">Config</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#biosimulators_utils.combine.data_model.CombineArchive" title="biosimulators_utils.combine.data_model.CombineArchive"><span class="pre">CombineArchive</span></a></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.io.CombineArchiveReader.run" title="Permalink to this definition">#</a></dt>
 <dd><p>Read an archive from a file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>in_file</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to archive</p></li>
 <li><p><strong>out_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – directory where the contents of the archive should be unpacked</p></li>
@@ -1746,13 +1764,13 @@ file as part of the contents of the archive</p></li>
 <li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>description of archive</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – archive is invalid</p>
 </dd>
 </dl>
@@ -1770,7 +1788,7 @@ file as part of the contents of the archive</p></li>
 <span class="sig-name descname"><span class="pre">errors</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.io.CombineArchiveWriter.errors" title="Permalink to this definition">#</a></dt>
 <dd><p>errors</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -1781,7 +1799,7 @@ file as part of the contents of the archive</p></li>
 <span class="sig-name descname"><span class="pre">warnings</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.io.CombineArchiveWriter.warnings" title="Permalink to this definition">#</a></dt>
 <dd><p>warnings</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -1792,14 +1810,14 @@ file as part of the contents of the archive</p></li>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_file</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.io.CombineArchiveWriter.run" title="Permalink to this definition">#</a></dt>
 <dd><p>Write an archive to a file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>archive</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>) – description of archive</p></li>
 <li><p><strong>in_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – directory which contains the files in the archive</p></li>
 <li><p><strong>out_file</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to save archive</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>AssertionError</strong> – if files could not be added to the archive or the archive could not be
     saved</p>
 </dd>
@@ -1811,7 +1829,7 @@ file as part of the contents of the archive</p></li>
 <span class="sig-name descname"><span class="pre">write_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.io.CombineArchiveWriter.write_manifest" title="Permalink to this definition">#</a></dt>
 <dd><p>Write an OMEX manifest file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>contents</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code>) – contents of a COMBINE/OMEX archive</p></li>
 <li><p><strong>filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to OMEX manifest file</p></li>
@@ -1833,19 +1851,19 @@ the extension <code class="docutils literal notranslate"><span class="pre">.sedm
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/io.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.io.CombineArchiveZipReader.run" title="Permalink to this definition">#</a></dt>
 <dd><p>Read an archive from a zip file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>in_file</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path to archive</p></li>
 <li><p><strong>out_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – directory where the contents of the archive should be unpacked</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>description of the archive</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – archive is invalid</p>
 </dd>
 </dl>
@@ -1855,19 +1873,19 @@ the extension <code class="docutils literal notranslate"><span class="pre">.sedm
 
 </section>
 <section id="module-biosimulators_utils.combine.utils">
-<span id="biosimulators-utils-combine-utils-module"></span><h2>biosimulators_utils.combine.utils module<a class="headerlink" href="#module-biosimulators_utils.combine.utils" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-combine-utils-module"></span><h2>biosimulators_utils.combine.utils module<a class="headerlink" href="#module-biosimulators_utils.combine.utils" title="Permalink to this heading">#</a></h2>
 <p>Utilities for working with COMBINE/OMEX archives</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020-12-06</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
@@ -1876,7 +1894,7 @@ the extension <code class="docutils literal notranslate"><span class="pre">.sedm
 <span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.utils.</span></span><span class="sig-name descname"><span class="pre">get_sedml_contents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_sed_docs_when_no_sed_doc_is_master</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_include_all_sed_docs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.utils.get_sedml_contents" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the SED-ML files in an archive</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>archive</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>) – COMBINE/OMEX archive</p></li>
 <li><p><strong>include_all_sed_docs_when_no_sed_doc_is_master</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">true</span></code>
@@ -1885,10 +1903,10 @@ and no SED document has <code class="docutils literal notranslate"><span class="
 return all SED documents, regardless of whether they have <code class="docutils literal notranslate"><span class="pre">master=&quot;true&quot;</span></code> or not.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>SED-ML files in a COMBINE/OMEX archive</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code></p>
 </dd>
 </dl>
@@ -1899,7 +1917,7 @@ return all SED documents, regardless of whether they have <code class="docutils 
 <span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.utils.</span></span><span class="sig-name descname"><span class="pre">get_summary_sedml_contents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_all_sed_docs_when_no_sed_doc_is_master</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_include_all_sed_docs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.utils.get_summary_sedml_contents" title="Permalink to this definition">#</a></dt>
 <dd><p>Get a summary of the SED-ML content in a COMBINE/OMEX archive</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>archive</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>) – COMBINE/OMEX archive</p></li>
 <li><p><strong>archive_dir</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – path where the content of the archive is located</p></li>
@@ -1910,10 +1928,10 @@ return all SED documents, regardless of whether they have <code class="docutils 
 <li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – whether to fail on missing includes</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>summary of the SED-ML content in a COMBINE/OMEX archive</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -1921,28 +1939,28 @@ return all SED documents, regardless of whether they have <code class="docutils 
 
 </section>
 <section id="module-biosimulators_utils.combine.validation">
-<span id="biosimulators-utils-combine-validation-module"></span><h2>biosimulators_utils.combine.validation module<a class="headerlink" href="#module-biosimulators_utils.combine.validation" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-combine-validation-module"></span><h2>biosimulators_utils.combine.validation module<a class="headerlink" href="#module-biosimulators_utils.combine.validation" title="Permalink to this heading">#</a></h2>
 <p>Methods for validating COMBINE archives</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2021-04-16</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2021, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.combine.validation.validate">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.validation.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">archive,</span> <span class="pre">archive_dirname,</span> <span class="pre">include_all_sed_docs_when_no_sed_doc_is_master=True,</span> <span class="pre">always_include_all_sed_docs=False,</span> <span class="pre">formats_to_validate=[&lt;CombineArchiveContentFormat.SED_ML:</span> <span class="pre">'http://identifiers.org/combine.specifications/sed-ml'&gt;],</span> <span class="pre">validate_models_with_languages=True,</span> <span class="pre">config=None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.validation.validate" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.validation.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">archive:</span> <span class="pre">~biosimulators_utils.combine.data_model.CombineArchive,</span> <span class="pre">archive_dirname:</span> <span class="pre">str,</span> <span class="pre">include_all_sed_docs_when_no_sed_doc_is_master:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">always_include_all_sed_docs:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">formats_to_validate:</span> <span class="pre">list[biosimulators_utils.combine.data_model.CombineArchiveContentFormat]</span> <span class="pre">=</span> <span class="pre">[&lt;CombineArchiveContentFormat.SED_ML:</span> <span class="pre">'http://identifiers.org/combine.specifications/sed-ml'&gt;],</span> <span class="pre">validate_models_with_languages:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">config:</span> <span class="pre">~typing.Optional[~biosimulators_utils.config.Config]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.validation.validate" title="Permalink to this definition">#</a></dt>
 <dd><p>Validate a COMBINE/OMEX archive and the SED-ML and model documents it contains</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>archive</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>) – COMBINE/OMEX archive</p></li>
 <li><p><strong>archive_dirname</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – directory with the content of the archive</p></li>
@@ -1956,14 +1974,14 @@ for formats of files to validate</p></li>
 <li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: nested list of errors with the archive</p></li>
 <li><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: nested list of warnings with the archive</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
 </dd>
 </dl>
@@ -1974,7 +1992,7 @@ for formats of files to validate</p></li>
 <span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.validation.</span></span><span class="sig-name descname"><span class="pre">validate_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">content,</span> <span class="pre">archive_dirname,</span> <span class="pre">formats_to_validate=[&lt;CombineArchiveContentFormat.SED_ML:</span> <span class="pre">'http://identifiers.org/combine.specifications/sed-ml'&gt;],</span> <span class="pre">validate_models_with_languages=True,</span> <span class="pre">config=None</span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.validation.validate_content" title="Permalink to this definition">#</a></dt>
 <dd><p>Validate an item of a COMBINE/OMEX archive</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>content</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchiveContent</span></code>) – item of a COMBINE/OMEX archive</p></li>
 <li><p><strong>archive_dirname</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – directory with the content of the archive</p></li>
@@ -1984,14 +2002,14 @@ for formats of files to validate</p></li>
 <li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: nested list of errors with the archive</p></li>
 <li><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>: nested list of warnings with the archive</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
 </dd>
 </dl>
@@ -2002,13 +2020,13 @@ for formats of files to validate</p></li>
 <span class="sig-prename descclassname"><span class="pre">biosimulators_utils.combine.validation.</span></span><span class="sig-name descname"><span class="pre">validate_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/combine/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.combine.validation.validate_format" title="Permalink to this definition">#</a></dt>
 <dd><p>Validate a COMBINE of an element of a COMBINE/OMEX archive</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>format</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – format</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>nested list of errors with the archive</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -2018,27 +2036,2407 @@ for formats of files to validate</p></li>
 </section>
 
 
-              </div>
-              
-              
-          </main>
+            </article>
+            
+            
+            
+          </div>
           
-
-      </div>
-    </div>
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
   
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
-    &copy; Copyright 2022, BioSimulators Team.<br>
-</p>
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.data_model">
+   biosimulators_utils.combine.data_model module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchive">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CombineArchive
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchive.contents">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchive.contents
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchive.get_master_content">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchive.get_master_content()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchive.is_equal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchive.is_equal()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchive.to_tuple">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchive.to_tuple()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveBase">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CombineArchiveBase
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContent">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CombineArchiveContent
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContent.location">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContent.location
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContent.format">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContent.format
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContent.master">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContent.master
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContent.is_equal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContent.is_equal()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContent.to_tuple">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContent.to_tuple()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CombineArchiveContentFormat
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.ACTIONSCRIPT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.ACTIONSCRIPT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.ADOBE_FLASH">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.ADOBE_FLASH
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.AI">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.AI
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.BMP">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.BMP
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.BNGL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.BNGL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.BOURNE_SHELL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.BOURNE_SHELL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.BioPAX">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.BioPAX
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.C">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.C
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.CPP_HEADER">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.CPP_HEADER
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.CPP_SOURCE">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.CPP_SOURCE
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.CSS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.CSS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.CSV">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.CSV
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.CellML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.CellML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.CopasiML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.CopasiML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.DLL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.DLL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.DOC">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.DOC
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.DOCX">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.DOCX
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.EPS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.EPS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.Escher">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.Escher
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.GENESIS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.GENESIS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.GIF">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.GIF
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.GINML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.GINML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.GMSH_MESH">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.GMSH_MESH
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.GRAPHML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.GRAPHML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.HDF5">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.HDF5
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.HOC">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.HOC
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.HTML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.HTML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.ICO">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.ICO
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.INI">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.INI
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.IPython_Notebook">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.IPython_Notebook
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.JAVASCRIPT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.JAVASCRIPT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.JAVA_ARCHIVE">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.JAVA_ARCHIVE
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.JAVA_CLASS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.JAVA_CLASS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.JAVA_SOURCE">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.JAVA_SOURCE
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.JPEG">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.JPEG
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.JSON">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.JSON
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.Kappa">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.Kappa
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.LEMS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.LEMS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.MAPLE_WORKSHEET">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.MAPLE_WORKSHEET
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.MARKDOWN">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.MARKDOWN
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.MASS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.MASS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.MATHEMATICA_NOTEBOOK">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.MATHEMATICA_NOTEBOOK
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.MATLAB">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.MATLAB
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.MATLAB_DATA">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.MATLAB_DATA
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.MATLAB_FIGURE">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.MATLAB_FIGURE
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.MorpheusML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.MorpheusML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.NCS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.NCS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.NEURON_SESSION">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.NEURON_SESSION
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.NMODL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.NMODL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.NeuroML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.NeuroML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.NuML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.NuML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.ODE">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.ODE
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.ODT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.ODT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.OMEX">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.OMEX
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.OMEX_MANIFEST">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.OMEX_MANIFEST
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.OMEX_METADATA">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.OMEX_METADATA
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.OTHER">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.OTHER
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.OWL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.OWL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.PDF">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.PDF
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.PERL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.PERL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.PHP">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.PHP
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.PNG">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.PNG
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.POSTSCRIPT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.POSTSCRIPT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.PPT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.PPT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.PPTX">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.PPTX
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.PSD">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.PSD
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.Python">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.Python
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.QUICKTIME">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.QUICKTIME
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.R">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.R
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.RBA">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.RBA
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.RDF_XML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.RDF_XML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.RST">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.RST
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.RUBY">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.RUBY
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.R_Project">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.R_Project
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SBGN">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SBGN
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SBML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SBML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SBOL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SBOL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SBOL_VISUAL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SBOL_VISUAL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SED_ML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SED_ML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SHOCKWAVE_FLASH">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SHOCKWAVE_FLASH
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SLI">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SLI
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SO">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SO
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SQL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SQL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SVG">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SVG
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SVGZ">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SVGZ
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.Scilab">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.Scilab
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.SimBiology_Project">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.SimBiology_Project
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.Smoldyn">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.Smoldyn
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.TEXT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.TEXT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.TIFF">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.TIFF
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.TSV">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.TSV
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.VCML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.VCML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.Vega">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.Vega
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.Vega_Lite">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.Vega_Lite
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.WEBP">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.WEBP
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.XLS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.XLS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.XLSX">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.XLSX
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.XML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.XML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.XPP">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.XPP
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.XPP_AUTO">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.XPP_AUTO
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.XPP_SET">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.XPP_SET
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.XSL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.XSL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.XUL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.XUL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.XYZ">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.XYZ
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.YAML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.YAML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.ZGINML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.ZGINML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.ZIP">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.ZIP
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.pharmML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormat.pharmML
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CombineArchiveContentFormatPattern
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.ACTIONSCRIPT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.ACTIONSCRIPT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.ADOBE_FLASH">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.ADOBE_FLASH
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.AI">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.AI
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.BMP">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.BMP
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.BNGL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.BNGL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.BOURNE_SHELL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.BOURNE_SHELL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.BioPAX">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.BioPAX
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.C">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.C
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.CPP_HEADER">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.CPP_HEADER
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.CPP_SOURCE">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.CPP_SOURCE
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.CSS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.CSS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.CSV">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.CSV
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.CellML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.CellML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.CopasiML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.CopasiML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.DLL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.DLL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.DOC">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.DOC
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.DOCX">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.DOCX
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.EPS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.EPS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.Escher">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.Escher
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.GENESIS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.GENESIS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.GIF">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.GIF
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.GINML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.GINML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.GMSH_MESH">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.GMSH_MESH
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.GRAPHML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.GRAPHML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.HDF5">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.HDF5
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.HOC">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.HOC
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.HTML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.HTML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.ICO">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.ICO
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.INI">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.INI
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.IPython_Notebook">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.IPython_Notebook
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.JAVASCRIPT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.JAVASCRIPT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.JAVA_ARCHIVE">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.JAVA_ARCHIVE
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.JAVA_CLASS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.JAVA_CLASS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.JAVA_SOURCE">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.JAVA_SOURCE
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.JPEG">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.JPEG
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.JSON">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.JSON
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.Kappa">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.Kappa
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.LEMS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.LEMS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.MAPLE_WORKSHEET">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.MAPLE_WORKSHEET
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.MARKDOWN">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.MARKDOWN
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.MASS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.MASS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.MATHEMATICA_NOTEBOOK">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.MATHEMATICA_NOTEBOOK
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.MATLAB">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.MATLAB
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.MATLAB_DATA">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.MATLAB_DATA
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.MATLAB_FIGURE">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.MATLAB_FIGURE
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.MorpheusML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.MorpheusML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.NCS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.NCS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.NEURON_SESSION">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.NEURON_SESSION
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.NMODL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.NMODL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.NeuroML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.NeuroML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.NuML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.NuML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.ODE">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.ODE
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.ODT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.ODT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.OMEX">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.OMEX
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.OMEX_MANIFEST">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.OMEX_MANIFEST
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.OMEX_METADATA">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.OMEX_METADATA
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.OTHER">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.OTHER
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.OWL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.OWL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.PDF">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.PDF
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.PERL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.PERL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.PHP">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.PHP
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.PNG">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.PNG
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.POSTSCRIPT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.POSTSCRIPT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.PPT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.PPT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.PPTX">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.PPTX
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.PSD">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.PSD
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.Python">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.Python
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.QUICKTIME">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.QUICKTIME
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.R">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.R
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.RBA">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.RBA
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.RDF_XML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.RDF_XML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.RST">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.RST
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.RUBY">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.RUBY
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.R_Project">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.R_Project
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SBGN">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SBGN
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SBML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SBML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SBOL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SBOL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SBOL_VISUAL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SBOL_VISUAL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SED_ML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SED_ML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SHOCKWAVE_FLASH">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SHOCKWAVE_FLASH
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SLI">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SLI
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SO">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SO
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SQL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SQL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SVG">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SVG
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SVGZ">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SVGZ
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.Scilab">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.Scilab
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.SimBiology_Project">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.SimBiology_Project
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.Smoldyn">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.Smoldyn
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.TEXT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.TEXT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.TIFF">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.TIFF
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.TSV">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.TSV
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.VCML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.VCML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.Vega">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.Vega
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.Vega_Lite">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.Vega_Lite
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.WEBP">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.WEBP
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.XLS">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.XLS
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.XLSX">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.XLSX
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.XML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.XML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.XPP">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.XPP
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.XPP_AUTO">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.XPP_AUTO
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.XPP_SET">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.XPP_SET
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.XSL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.XSL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.XUL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.XUL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.XYZ">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.XYZ
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.YAML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.YAML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.ZGINML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.ZGINML
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.ZIP">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.ZIP
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.pharmML">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveContentFormatPattern.pharmML
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.exceptions">
+   biosimulators_utils.combine.exceptions module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.exceptions.CombineArchiveExecutionError">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CombineArchiveExecutionError
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.exceptions.NoSedmlError">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       NoSedmlError
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.exec">
+   biosimulators_utils.combine.exec module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.exec.exec_sedml_docs_in_archive">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       exec_sedml_docs_in_archive()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.io">
+   biosimulators_utils.combine.io module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveReader">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CombineArchiveReader
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveReader.errors">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveReader.errors
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveReader.warnings">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveReader.warnings
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveReader.NONE_DATETIME">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveReader.NONE_DATETIME
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveReader.read_manifest">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveReader.read_manifest()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveReader.run">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveReader.run()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveWriter">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CombineArchiveWriter
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveWriter.errors">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveWriter.errors
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveWriter.warnings">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveWriter.warnings
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveWriter.run">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveWriter.run()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveWriter.write_manifest">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveWriter.write_manifest()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveZipReader">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CombineArchiveZipReader
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.combine.io.CombineArchiveZipReader.run">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CombineArchiveZipReader.run()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.utils">
+   biosimulators_utils.combine.utils module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.utils.get_sedml_contents">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       get_sedml_contents()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.utils.get_summary_sedml_contents">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       get_summary_sedml_contents()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.combine.validation">
+   biosimulators_utils.combine.validation module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.validation.validate">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       validate()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.validation.validate_content">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       validate_content()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.combine.validation.validate_format">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       validate_format()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+</div>
+
+<div class="toc-item">
+  
+<div id="searchbox"></div>
+</div>
+
+<div class="toc-item">
+  
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/biosimulators/Biosimulators_utils/edit/dev/docs-src/source/biosimulators_utils.combine.rst">
+        <i class="fa-solid fa-pencil"></i> Edit this page
+    </a>
+</div>
+
+</div>
+
+<div class="toc-item">
+  
+<div class="tocsection sourcelink">
+    <a href="../_sources/source/biosimulators_utils.combine.rst.txt">
+        <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+</div>
+
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
     </div>
-    
   </div>
-</footer>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2022, BioSimulators Team.<br>
+
+</p>
+
+  </div>
+  
+</div>
+  </footer>
   </body>
 </html>
