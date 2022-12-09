@@ -4,95 +4,160 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>biosimulators_utils.simulator_registry package &#8212; BioSimulators utils 0.1.171 documentation</title>
-    
+    <title>biosimulators_utils.simulator_registry package &#8212; BioSimulators utils 0.1.172 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/styles/theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/bootstrap.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="icon" sizes="16x16" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png" />
+    <link rel="icon" sizes="32x32" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png" />
     <link rel="stylesheet" type="text/css" href="../_static/css/biosimulators.css" />
-    
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94">
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'source/biosimulators_utils.simulator_registry';</script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="biosimulators_utils.utils package" href="biosimulators_utils.utils.html" />
     <link rel="prev" title="biosimulators_utils.simulator package" href="biosimulators_utils.simulator.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-      
-      <link rel="icon" sizes="16x16" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png">
-      
-    
-      
-      <link rel="icon" sizes="32x32" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png">
-      
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
 
-    
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Enter text to search for ..." aria-label="Enter text to search for ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="../index.html">
-  <img src="../_static/biosimulators-logo.svg" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="Logo image">
+    <img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
   
-  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+  <div class="col-lg-9 navbar-header-items">
     <div id="navbar-center" class="mr-auto">
       
     </div>
 
     <div id="navbar-end">
       
+        <div class="navbar-end-item navbar-persistent--container">
+          
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+        </div>
+      
+      
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Quick links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/biosimulators/Biosimulators_utils" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github"></i></span>
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github"></i></span>
             <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://twitter.com/biosimulators" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter"></i></span>
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter"></i></span>
             <label class="sr-only">Twitter</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="mailto:info@biosimulators.org" rel="noopener" target="_blank" title="Email"><span><i class="fas fa-envelope"></i></span>
+          
+          
+          
+          
+          
+          
+          
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fas fa-envelope"></i></span>
             <label class="sr-only">Email</label></a>
         </li>
       </ul>
@@ -100,209 +165,172 @@
       
     </div>
   </div>
+
+
+  
+  
+    <div class="navbar-persistent--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+    </div>
+  
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
 </div>
-    </nav>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
     
 
-    <div class="container-xl">
-      <div class="row">
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Quick links">
+        <li class="nav-item">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Enter text to search for ..." aria-label="Enter text to search for ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <div class="bd-toc-item active">
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fas fa-envelope"></i></span>
+            <label class="sr-only">Email</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+  <div class="sidebar-start-items sidebar-primary__section">
+    <div class="sidebar-start-items__item">
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Enter text to search for ..." aria-label="Enter text to search for ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">
+    Section Navigation
+  </p>
+  <div class="bd-toc-item navbar-nav">
     <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.archive.html">
-   biosimulators_utils.archive package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.biosimulations.html">
-   biosimulators_utils.biosimulations package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.combine.html">
-   biosimulators_utils.combine package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.gh_action.html">
-   biosimulators_utils.gh_action package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.kisao.html">
-   biosimulators_utils.kisao package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.licensing.html">
-   biosimulators_utils.licensing package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.log.html">
-   biosimulators_utils.log package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.model_lang.html">
-   biosimulators_utils.model_lang package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.omex_meta.html">
-   biosimulators_utils.omex_meta package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.ref.html">
-   biosimulators_utils.ref package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.report.html">
-   biosimulators_utils.report package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.sedml.html">
-   biosimulators_utils.sedml package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.simulator.html">
-   biosimulators_utils.simulator package
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   biosimulators_utils.simulator_registry package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.utils.html">
-   biosimulators_utils.utils package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.viz.html">
-   biosimulators_utils.viz package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.xml.html">
-   biosimulators_utils.xml package
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.archive.html">biosimulators_utils.archive package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.biosimulations.html">biosimulators_utils.biosimulations package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.combine.html">biosimulators_utils.combine package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.gh_action.html">biosimulators_utils.gh_action package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.kisao.html">biosimulators_utils.kisao package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.licensing.html">biosimulators_utils.licensing package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.log.html">biosimulators_utils.log package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.model_lang.html">biosimulators_utils.model_lang package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.omex_meta.html">biosimulators_utils.omex_meta package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.ref.html">biosimulators_utils.ref package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.report.html">biosimulators_utils.report package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.sedml.html">biosimulators_utils.sedml package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.simulator.html">biosimulators_utils.simulator package</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">biosimulators_utils.simulator_registry package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.utils.html">biosimulators_utils.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.viz.html">biosimulators_utils.viz package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.xml.html">biosimulators_utils.xml package</a></li>
 </ul>
 
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+  
+  <div id="rtd-footer-container"></div>
+
+      </div>
+      <main id="main-content" class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
             </div>
             
-          
-
-          
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
             
+            <article class="bd-article" role="main">
               
-              <div class="toc-item">
-                
-<div class="tocsection onthispage mt-5 pt-1 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
-
-<nav id="bd-toc-nav">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.simulator_registry.data_model">
-   biosimulators_utils.simulator_registry.data_model module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.simulator_registry.process_submission">
-   biosimulators_utils.simulator_registry.process_submission module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.simulator_registry.query">
-   biosimulators_utils.simulator_registry.query module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.simulator_registry.submit">
-   biosimulators_utils.simulator_registry.submit module
-  </a>
- </li>
-</ul>
-
-</nav>
-              </div>
-              
-              <div class="toc-item">
-                
-
-<div class="tocsection editthispage">
-    <a href="https://github.com/biosimulators/Biosimulators_utils/edit/dev/docs-src/source/biosimulators_utils.simulator_registry.rst">
-        <i class="fas fa-pencil-alt"></i> Edit this page
-    </a>
-</div>
-
-              </div>
-              
-            
-          </div>
-          
-
-          
-          
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
-              
-              <div>
-                
   <section id="module-biosimulators_utils.simulator_registry">
-<span id="biosimulators-utils-simulator-registry-package"></span><h1>biosimulators_utils.simulator_registry package<a class="headerlink" href="#module-biosimulators_utils.simulator_registry" title="Permalink to this headline">#</a></h1>
+<span id="biosimulators-utils-simulator-registry-package"></span><h1>biosimulators_utils.simulator_registry package<a class="headerlink" href="#module-biosimulators_utils.simulator_registry" title="Permalink to this heading">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </section>
 <section id="module-biosimulators_utils.simulator_registry.data_model">
-<span id="biosimulators-utils-simulator-registry-data-model-module"></span><h2>biosimulators_utils.simulator_registry.data_model module<a class="headerlink" href="#module-biosimulators_utils.simulator_registry.data_model" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-simulator-registry-data-model-module"></span><h2>biosimulators_utils.simulator_registry.data_model module<a class="headerlink" href="#module-biosimulators_utils.simulator_registry.data_model" title="Permalink to this heading">#</a></h2>
 <p>Data model for submitting simulators to the BioSimulators registry</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020-12-06</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator_registry.data_model.IssueLabel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator_registry.data_model.</span></span><span class="sig-name descname"><span class="pre">IssueLabel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator_registry/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator_registry.data_model.IssueLabel" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>An enumeration.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.simulator_registry.data_model.IssueLabel.action_error">
@@ -336,7 +364,7 @@
 <span class="sig-name descname"><span class="pre">id</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator_registry/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.id" title="Permalink to this definition">#</a></dt>
 <dd><p>id of simulator (e.g., <cite>tellurium</cite> or <cite>vcell</cite>)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -347,7 +375,7 @@
 <span class="sig-name descname"><span class="pre">version</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator_registry/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.version" title="Permalink to this definition">#</a></dt>
 <dd><p>version of simulator (e.g., <cite>2.1.6</cite>)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -359,7 +387,7 @@
 <dd><p>URL for the specifications of the version of the simulator
 (e.g., <cite>https://raw.githubusercontent.com/biosimulators/Biosimulators_tellurium/2.1.6/biosimulators.json</cite>)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -370,7 +398,7 @@
 <span class="sig-name descname"><span class="pre">specifications_patch</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator_registry/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.specifications_patch" title="Permalink to this definition">#</a></dt>
 <dd><p>superseding specifications to those at <a class="reference internal" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.specifications_url" title="biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.specifications_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specifications_url</span></code></a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
 </dd>
 </dl>
@@ -381,7 +409,7 @@
 <span class="sig-name descname"><span class="pre">validate_image</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator_registry/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.validate_image" title="Permalink to this definition">#</a></dt>
 <dd><p>if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, validate Docker image</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
@@ -392,7 +420,7 @@
 <span class="sig-name descname"><span class="pre">commit_simulator</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator_registry/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.commit_simulator" title="Permalink to this definition">#</a></dt>
 <dd><p>if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, commit simulator to database</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
@@ -403,13 +431,13 @@
 <span class="sig-name descname"><span class="pre">is_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator_registry/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.is_equal" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine if two submissions are equal</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission" title="biosimulators_utils.simulator_registry.data_model.SimulatorSubmission"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SimulatorSubmission</span></code></a>) – another submission</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, if two submissions are equal</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
@@ -420,10 +448,10 @@
 <span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator_registry/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.to_tuple" title="Permalink to this definition">#</a></dt>
 <dd><p>Tuple representation of a person</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple representation of a person</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -433,19 +461,19 @@
 
 </section>
 <section id="module-biosimulators_utils.simulator_registry.process_submission">
-<span id="biosimulators-utils-simulator-registry-process-submission-module"></span><h2>biosimulators_utils.simulator_registry.process_submission module<a class="headerlink" href="#module-biosimulators_utils.simulator_registry.process_submission" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-simulator-registry-process-submission-module"></span><h2>biosimulators_utils.simulator_registry.process_submission module<a class="headerlink" href="#module-biosimulators_utils.simulator_registry.process_submission" title="Permalink to this heading">#</a></h2>
 <p>Methods for processing submissions to the BioSimulators registry</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020-12-06</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
@@ -454,13 +482,13 @@
 <span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator_registry.process_submission.</span></span><span class="sig-name descname"><span class="pre">get_simulator_submission_from_gh_issue_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator_registry/process_submission.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator_registry.process_submission.get_simulator_submission_from_gh_issue_body" title="Permalink to this definition">#</a></dt>
 <dd><p>Get a simulator submission from the YAML-structured data in an issue</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>body</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – body of a GitHub issue for the submission of a simulator</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>simulator submission</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SimulatorSubmission</span></code></p>
 </dd>
 </dl>
@@ -468,19 +496,19 @@
 
 </section>
 <section id="module-biosimulators_utils.simulator_registry.query">
-<span id="biosimulators-utils-simulator-registry-query-module"></span><h2>biosimulators_utils.simulator_registry.query module<a class="headerlink" href="#module-biosimulators_utils.simulator_registry.query" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-simulator-registry-query-module"></span><h2>biosimulators_utils.simulator_registry.query module<a class="headerlink" href="#module-biosimulators_utils.simulator_registry.query" title="Permalink to this heading">#</a></h2>
 <p>Methods for querying the BioSimulators registry</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020-12-06</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
@@ -489,16 +517,16 @@
 <span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator_registry.query.</span></span><span class="sig-name descname"><span class="pre">get_simulator_version_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator_registry/query.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator_registry.query.get_simulator_version_specs" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the specifications of the versions of a simulator in the BioSimulators registry</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – simulator id</p></li>
 <li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – configuration</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>specifications of the registered versions of the simulator</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
 </dd>
 </dl>
@@ -506,19 +534,19 @@
 
 </section>
 <section id="module-biosimulators_utils.simulator_registry.submit">
-<span id="biosimulators-utils-simulator-registry-submit-module"></span><h2>biosimulators_utils.simulator_registry.submit module<a class="headerlink" href="#module-biosimulators_utils.simulator_registry.submit" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-simulator-registry-submit-module"></span><h2>biosimulators_utils.simulator_registry.submit module<a class="headerlink" href="#module-biosimulators_utils.simulator_registry.submit" title="Permalink to this heading">#</a></h2>
 <p>Methods for submitting simulators to the BioSimulators registry</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020-12-06</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
@@ -527,13 +555,13 @@
 <span class="sig-prename descclassname"><span class="pre">biosimulators_utils.simulator_registry.submit.</span></span><span class="sig-name descname"><span class="pre">build_gh_issue_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">submission</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/simulator_registry/submit.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.simulator_registry.submit.build_gh_issue_body" title="Permalink to this definition">#</a></dt>
 <dd><p>Build the body of a GitHub issue for the submission of a simulator</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>submission</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">SimulatorSubmission</span></code>) – simulator</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>body for a GitHub issue for the submission of a simulator</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -548,14 +576,14 @@ This will create a GitHub issue which the BioSimulators Team will use to review 
 Instructions for creating an access token are available in the
 <cite>GitHub documentation &lt;https://docs.github.com/en/free-pro-team&#64;latest/github/authenticating-to-github/creating-a-personal-access-token</cite>&gt;_.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>simulator</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">SimulatorSubmission</span></code>) – simulator</p></li>
 <li><p><strong>gh_username</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – GitHub username (e.g., <cite>jonrkarr</cite>)</p></li>
 <li><p><strong>gh_access_token</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – GitHub personal access token.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>requests.exceptions.HTTPError</strong> – if the simulator is not successfully submitted for review</p>
 </dd>
 </dl>
@@ -565,27 +593,286 @@ Instructions for creating an access token are available in the
 </section>
 
 
-              </div>
-              
-              
-          </main>
+            </article>
+            
+            
+            
+          </div>
           
-
-      </div>
-    </div>
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
   
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
-    &copy; Copyright 2022, BioSimulators Team.<br>
-</p>
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.simulator_registry.data_model">
+   biosimulators_utils.simulator_registry.data_model module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.IssueLabel">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       IssueLabel
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.IssueLabel.action_error">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         IssueLabel.action_error
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.IssueLabel.approved">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         IssueLabel.approved
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.IssueLabel.invalid">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         IssueLabel.invalid
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.IssueLabel.validated">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         IssueLabel.validated
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       SimulatorSubmission
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.id">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SimulatorSubmission.id
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.version">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SimulatorSubmission.version
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.specifications_url">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SimulatorSubmission.specifications_url
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.specifications_patch">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SimulatorSubmission.specifications_patch
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.validate_image">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SimulatorSubmission.validate_image
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.commit_simulator">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SimulatorSubmission.commit_simulator
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.is_equal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SimulatorSubmission.is_equal()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.data_model.SimulatorSubmission.to_tuple">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SimulatorSubmission.to_tuple()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.simulator_registry.process_submission">
+   biosimulators_utils.simulator_registry.process_submission module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.process_submission.get_simulator_submission_from_gh_issue_body">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       get_simulator_submission_from_gh_issue_body()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.simulator_registry.query">
+   biosimulators_utils.simulator_registry.query module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.query.get_simulator_version_specs">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       get_simulator_version_specs()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.simulator_registry.submit">
+   biosimulators_utils.simulator_registry.submit module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.submit.build_gh_issue_body">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       build_gh_issue_body()
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.simulator_registry.submit.submit_simulator_to_biosimulators_registry">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       submit_simulator_to_biosimulators_registry()
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+</div>
+
+<div class="toc-item">
+  
+<div id="searchbox"></div>
+</div>
+
+<div class="toc-item">
+  
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/biosimulators/Biosimulators_utils/edit/dev/docs-src/source/biosimulators_utils.simulator_registry.rst">
+        <i class="fa-solid fa-pencil"></i> Edit this page
+    </a>
+</div>
+
+</div>
+
+<div class="toc-item">
+  
+<div class="tocsection sourcelink">
+    <a href="../_sources/source/biosimulators_utils.simulator_registry.rst.txt">
+        <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+</div>
+
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
     </div>
-    
   </div>
-</footer>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2022, BioSimulators Team.<br>
+
+</p>
+
+  </div>
+  
+</div>
+  </footer>
   </body>
 </html>

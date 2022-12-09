@@ -131,7 +131,7 @@ def get_parameters_variables_for_simulation_version_1(model, xml_root, simulatio
             private_interface_in = variable.attrib.get('private_interface', None) == 'in'
             variable_is_hidden = private_interface_in or public_interface_in
 
-            if(variable_is_hidden and observable_only):
+            if variable_is_hidden and observable_only:
                 continue
             initial_value = variable.attrib.get('initial_value', None)
             if initial_value is not None:

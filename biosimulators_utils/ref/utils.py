@@ -285,7 +285,26 @@ def download_pubmed_central_record(id, ftp_path, local_filename, local_dirname, 
         if not os.path.isdir(os.path.join(local_dirname, id)):
             try:
                 with tarfile.open(local_filename) as file:
-                    file.extractall(path=local_dirname)
+                    def is_within_directory(directory, target):
+                        
+                        abs_directory = os.path.abspath(directory)
+                        abs_target = os.path.abspath(target)
+                    
+                        prefix = os.path.commonprefix([abs_directory, abs_target])
+                        
+                        return prefix == abs_directory
+                    
+                    def safe_extract(tar, path=".", members=None, *, numeric_owner=False):
+                    
+                        for member in tar.getmembers():
+                            member_path = os.path.join(path, member.name)
+                            if not is_within_directory(path, member_path):
+                                raise Exception("Attempted Path Traversal in Tar File")
+                    
+                        tar.extractall(path, members, numeric_owner=numeric_owner) 
+                        
+                    
+                    safe_extract(file, path=local_dirname)
                 return
             except tarfile.ReadError:
                 os.remove(local_filename)

@@ -4,95 +4,160 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>biosimulators_utils.gh_action package &#8212; BioSimulators utils 0.1.171 documentation</title>
-    
+    <title>biosimulators_utils.gh_action package &#8212; BioSimulators utils 0.1.172 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/styles/theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/bootstrap.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="icon" sizes="16x16" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png" />
+    <link rel="icon" sizes="32x32" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png" />
     <link rel="stylesheet" type="text/css" href="../_static/css/biosimulators.css" />
-    
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94">
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'source/biosimulators_utils.gh_action';</script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="biosimulators_utils.kisao package" href="biosimulators_utils.kisao.html" />
     <link rel="prev" title="biosimulators_utils.combine package" href="biosimulators_utils.combine.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-      
-      <link rel="icon" sizes="16x16" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png">
-      
-    
-      
-      <link rel="icon" sizes="32x32" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png">
-      
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
 
-    
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Enter text to search for ..." aria-label="Enter text to search for ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
   <div id="navbar-start">
     
     
+  
 
-<a class="navbar-brand" href="../index.html">
-  <img src="../_static/biosimulators-logo.svg" class="logo" alt="logo">
+
+<a class="navbar-brand logo" href="../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="Logo image">
+    <img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="Logo image">
+  
+  
 </a>
-
-
     
   </div>
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
   
-  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+  <div class="col-lg-9 navbar-header-items">
     <div id="navbar-center" class="mr-auto">
       
     </div>
 
     <div id="navbar-end">
       
+        <div class="navbar-end-item navbar-persistent--container">
+          
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+        </div>
+      
+      
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Quick links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/biosimulators/Biosimulators_utils" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github"></i></span>
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github"></i></span>
             <label class="sr-only">GitHub</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://twitter.com/biosimulators" rel="noopener" target="_blank" title="Twitter"><span><i class="fab fa-twitter"></i></span>
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter"></i></span>
             <label class="sr-only">Twitter</label></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="mailto:info@biosimulators.org" rel="noopener" target="_blank" title="Email"><span><i class="fas fa-envelope"></i></span>
+          
+          
+          
+          
+          
+          
+          
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fas fa-envelope"></i></span>
             <label class="sr-only">Email</label></a>
         </li>
       </ul>
@@ -100,206 +165,179 @@
       
     </div>
   </div>
+
+
+  
+  
+    <div class="navbar-persistent--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+    </div>
+  
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
 </div>
-    </nav>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
     
 
-    <div class="container-xl">
-      <div class="row">
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Quick links">
+        <li class="nav-item">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Enter text to search for ..." aria-label="Enter text to search for ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <div class="bd-toc-item active">
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fab fa-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fas fa-envelope"></i></span>
+            <label class="sr-only">Email</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+  <div class="sidebar-start-items sidebar-primary__section">
+    <div class="sidebar-start-items__item">
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Enter text to search for ..." aria-label="Enter text to search for ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">
+    Section Navigation
+  </p>
+  <div class="bd-toc-item navbar-nav">
     <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.archive.html">
-   biosimulators_utils.archive package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.biosimulations.html">
-   biosimulators_utils.biosimulations package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.combine.html">
-   biosimulators_utils.combine package
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   biosimulators_utils.gh_action package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.kisao.html">
-   biosimulators_utils.kisao package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.licensing.html">
-   biosimulators_utils.licensing package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.log.html">
-   biosimulators_utils.log package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.model_lang.html">
-   biosimulators_utils.model_lang package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.omex_meta.html">
-   biosimulators_utils.omex_meta package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.ref.html">
-   biosimulators_utils.ref package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.report.html">
-   biosimulators_utils.report package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.sedml.html">
-   biosimulators_utils.sedml package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.simulator.html">
-   biosimulators_utils.simulator package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.simulator_registry.html">
-   biosimulators_utils.simulator_registry package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.utils.html">
-   biosimulators_utils.utils package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.viz.html">
-   biosimulators_utils.viz package
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="biosimulators_utils.xml.html">
-   biosimulators_utils.xml package
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.archive.html">biosimulators_utils.archive package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.biosimulations.html">biosimulators_utils.biosimulations package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.combine.html">biosimulators_utils.combine package</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">biosimulators_utils.gh_action package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.kisao.html">biosimulators_utils.kisao package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.licensing.html">biosimulators_utils.licensing package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.log.html">biosimulators_utils.log package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.model_lang.html">biosimulators_utils.model_lang package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.omex_meta.html">biosimulators_utils.omex_meta package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.ref.html">biosimulators_utils.ref package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.report.html">biosimulators_utils.report package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.sedml.html">biosimulators_utils.sedml package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.simulator.html">biosimulators_utils.simulator package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.simulator_registry.html">biosimulators_utils.simulator_registry package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.utils.html">biosimulators_utils.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.viz.html">biosimulators_utils.viz package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="biosimulators_utils.xml.html">biosimulators_utils.xml package</a></li>
 </ul>
 
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+  
+  <div id="rtd-footer-container"></div>
+
+      </div>
+      <main id="main-content" class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
             </div>
             
-          
-
-          
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
             
+            <article class="bd-article" role="main">
               
-              <div class="toc-item">
-                
-<div class="tocsection onthispage mt-5 pt-1 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
-
-<nav id="bd-toc-nav">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#submodules">
-   Submodules
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.gh_action.core">
-   biosimulators_utils.gh_action.core module
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-biosimulators_utils.gh_action.data_model">
-   biosimulators_utils.gh_action.data_model module
-  </a>
- </li>
-</ul>
-
-</nav>
-              </div>
-              
-              <div class="toc-item">
-                
-
-<div class="tocsection editthispage">
-    <a href="https://github.com/biosimulators/Biosimulators_utils/edit/dev/docs-src/source/biosimulators_utils.gh_action.rst">
-        <i class="fas fa-pencil-alt"></i> Edit this page
-    </a>
-</div>
-
-              </div>
-              
-            
-          </div>
-          
-
-          
-          
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
-              
-              <div>
-                
   <section id="module-biosimulators_utils.gh_action">
-<span id="biosimulators-utils-gh-action-package"></span><h1>biosimulators_utils.gh_action package<a class="headerlink" href="#module-biosimulators_utils.gh_action" title="Permalink to this headline">#</a></h1>
+<span id="biosimulators-utils-gh-action-package"></span><h1>biosimulators_utils.gh_action package<a class="headerlink" href="#module-biosimulators_utils.gh_action" title="Permalink to this heading">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </section>
 <section id="module-biosimulators_utils.gh_action.core">
-<span id="biosimulators-utils-gh-action-core-module"></span><h2>biosimulators_utils.gh_action.core module<a class="headerlink" href="#module-biosimulators_utils.gh_action.core" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-gh-action-core-module"></span><h2>biosimulators_utils.gh_action.core module<a class="headerlink" href="#module-biosimulators_utils.gh_action.core" title="Permalink to this heading">#</a></h2>
 <p>Utilities for GitHub action workflows for reviewing and committing simulators to the BioSimulators registry</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020-12-08</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.gh_action.core.GitHubAction">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.gh_action.core.</span></span><span class="sig-name descname"><span class="pre">GitHubAction</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>A GitHub continuous integration action</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.gh_action.core.GitHubAction.gh_auth">
 <span class="sig-name descname"><span class="pre">gh_auth</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.gh_auth" title="Permalink to this definition">#</a></dt>
 <dd><p>authorization for GitHub (user and access token</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -310,7 +348,7 @@
 <span class="sig-name descname"><span class="pre">gh_repo</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.gh_repo" title="Permalink to this definition">#</a></dt>
 <dd><p>owner and name of the repository which triggered the action</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -346,7 +384,7 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_comment_to_issue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.add_comment_to_issue" title="Permalink to this definition">#</a></dt>
 <dd><p>Post a comment to the GitHub issue</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p></li>
 <li><p><strong>comment</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – comment</p></li>
@@ -360,14 +398,14 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_error_comment_to_issue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.add_error_comment_to_issue" title="Permalink to this definition">#</a></dt>
 <dd><p>Post an error to the GitHub issue</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p></li>
 <li><p><strong>comments</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Comment</span></code>) – comment</p></li>
 <li><p><strong>raise_error</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, raise error</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – </p>
 </dd>
 </dl>
@@ -378,7 +416,7 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_labels_to_issue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.add_labels_to_issue" title="Permalink to this definition">#</a></dt>
 <dd><p>Add one or more labels to an issue</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p></li>
 <li><p><strong>labels</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – labels to add to the issue</p></li>
@@ -392,7 +430,7 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assign_issue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">users</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.assign_issue" title="Permalink to this definition">#</a></dt>
 <dd><p>Assign an issue to a list of users</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p></li>
 <li><p><strong>users</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – GitHub ids of users to assign to issue</p></li>
@@ -406,7 +444,7 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close_issue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.close_issue" title="Permalink to this definition">#</a></dt>
 <dd><p>Close a GitHub issue</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p>
 </dd>
 </dl>
@@ -417,13 +455,13 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_error_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comment</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.format_error_comment" title="Permalink to this definition">#</a></dt>
 <dd><p>Format comment to display as error</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>comment</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – comment to format as error</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>formatted comment</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -434,13 +472,13 @@
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_data_in_issue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_data_in_issue" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the YAML-structured data in an issue</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>issue</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>) – properties of the GitHub issue for the submission</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>YAML-structured data in an issue</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd>
 </dl>
@@ -451,10 +489,10 @@
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_gh_action_run_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_id" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the id for the current GitHub action run</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>GitHub action run id</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -465,10 +503,10 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_gh_action_run_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_url" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the URL for a GitHub action run</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>URL for a GitHub action run</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -479,10 +517,10 @@
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_gh_auth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_auth" title="Permalink to this definition">#</a></dt>
 <dd><p>Get authorization for GitHub</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>authorization for GitHub (user and access token)</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -493,10 +531,10 @@
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_gh_repo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_repo" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the owner and name of the repository which triggered the action</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>owner and name of the repository which triggered the action</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -507,13 +545,13 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_issue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_issue" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the properties of the GitHub issue for the submission</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>properties of the GitHub issue for the submission</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
 </dd>
 </dl>
@@ -524,10 +562,10 @@
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_issue_number</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_issue_number" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the number of the issue which triggered the action</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>issue number</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -538,13 +576,13 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_labels_for_issue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.get_labels_for_issue" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the labels for an issue</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>labels</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -555,7 +593,7 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_label_from_issue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.remove_label_from_issue" title="Permalink to this definition">#</a></dt>
 <dd><p>Remove a label from an issue</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p></li>
 <li><p><strong>label</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – labels to add to the issue</p></li>
@@ -569,7 +607,7 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reset_issue_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels_to_remove</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubAction.reset_issue_labels" title="Permalink to this definition">#</a></dt>
 <dd><p>Reset the labels for an issue</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>issue_number</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – issue number</p></li>
 <li><p><strong>labels_to_remove</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – labels to remove</p></li>
@@ -595,7 +633,7 @@
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">catch_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uncaught_exception_msg_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caught_error_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncaught_error_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling.catch_errors" title="Permalink to this definition">#</a></dt>
 <dd><p>Generator for a decorator for CI actions that catches errors and reports them as comments to an issue</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>uncaught_exception_msg_func</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">types.FunctionType</span></code>, optional) – function to calculate error message to display to users</p></li>
 <li><p><strong>caught_error_labels</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – labels to apply to caught errors</p></li>
@@ -612,14 +650,14 @@
 exception of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code> method for a GitHub action workflow (exceptions of all types
 except <code class="xref py py-obj docutils literal notranslate"><span class="pre">GitHubActionCaughtError</span></code>)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>exception</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code>) – a failure encountered during the exception of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>
 method for the workflow</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>error message to display to users</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -629,19 +667,19 @@ method for the workflow</p>
 
 </section>
 <section id="module-biosimulators_utils.gh_action.data_model">
-<span id="biosimulators-utils-gh-action-data-model-module"></span><h2>biosimulators_utils.gh_action.data_model module<a class="headerlink" href="#module-biosimulators_utils.gh_action.data_model" title="Permalink to this headline">#</a></h2>
+<span id="biosimulators-utils-gh-action-data-model-module"></span><h2>biosimulators_utils.gh_action.data_model module<a class="headerlink" href="#module-biosimulators_utils.gh_action.data_model" title="Permalink to this heading">#</a></h2>
 <p>Data model for GitHub action workflows</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Jonathan Karr &lt;<a class="reference external" href="mailto:karr&#37;&#52;&#48;mssm&#46;edu">karr<span>&#64;</span>mssm<span>&#46;</span>edu</a>&gt;</p>
 </dd>
-<dt class="field-even">Date</dt>
+<dt class="field-even">Date<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020-12-08</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>2020, Center for Reproducible Biomedical Modeling</p>
 </dd>
-<dt class="field-even">License</dt>
+<dt class="field-even">License<span class="colon">:</span></dt>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
@@ -655,7 +693,7 @@ method for the workflow</p>
 <span class="sig-name descname"><span class="pre">text</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.data_model.Comment.text" title="Permalink to this definition">#</a></dt>
 <dd><p>text</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
@@ -666,7 +704,7 @@ method for the workflow</p>
 <span class="sig-name descname"><span class="pre">error</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.data_model.Comment.error" title="Permalink to this definition">#</a></dt>
 <dd><p>if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, format as error</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
@@ -677,7 +715,7 @@ method for the workflow</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="biosimulators_utils.gh_action.data_model.GitHubActionCaughtError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.gh_action.data_model.</span></span><span class="sig-name descname"><span class="pre">GitHubActionCaughtError</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/gh_action/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.gh_action.data_model.GitHubActionCaughtError" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.exceptions.BioSimulatorsException" title="biosimulators_utils.exceptions.BioSimulatorsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">biosimulators_utils.exceptions.BioSimulatorsException</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="biosimulators_utils.html#biosimulators_utils.exceptions.BioSimulatorsException" title="biosimulators_utils.exceptions.BioSimulatorsException"><code class="xref py py-class docutils literal notranslate"><span class="pre">BioSimulatorsException</span></code></a></p>
 <p>An error caught during the execution of a GitHub action</p>
 </dd></dl>
 
@@ -685,27 +723,400 @@ method for the workflow</p>
 </section>
 
 
-              </div>
-              
-              
-          </main>
+            </article>
+            
+            
+            
+          </div>
           
-
-      </div>
-    </div>
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
   
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
-    &copy; Copyright 2022, BioSimulators Team.<br>
-</p>
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#submodules">
+   Submodules
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.gh_action.core">
+   biosimulators_utils.gh_action.core module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       GitHubAction
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.gh_auth">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.gh_auth
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.gh_repo">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.gh_repo
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.GH_ACTION_RUN_URL">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.GH_ACTION_RUN_URL
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_ASIGNEES_ENDPOINT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.ISSUE_ASIGNEES_ENDPOINT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_COMMENTS_ENDPOINT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.ISSUE_COMMENTS_ENDPOINT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_ENDPOINT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.ISSUE_ENDPOINT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.ISSUE_LABELS_ENDPOINT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.ISSUE_LABELS_ENDPOINT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.add_comment_to_issue">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.add_comment_to_issue()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.add_error_comment_to_issue">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.add_error_comment_to_issue()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.add_labels_to_issue">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.add_labels_to_issue()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.assign_issue">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.assign_issue()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.close_issue">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.close_issue()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.format_error_comment">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.format_error_comment()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.get_data_in_issue">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.get_data_in_issue()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_id">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.get_gh_action_run_id()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_action_run_url">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.get_gh_action_run_url()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_auth">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.get_gh_auth()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.get_gh_repo">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.get_gh_repo()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.get_issue">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.get_issue()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.get_issue_number">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.get_issue_number()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.get_labels_for_issue">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.get_labels_for_issue()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.remove_label_from_issue">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.remove_label_from_issue()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.reset_issue_labels">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.reset_issue_labels()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubAction.run">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubAction.run()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       GitHubActionErrorHandling
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling.catch_errors">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubActionErrorHandling.catch_errors()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.core.GitHubActionErrorHandling.get_uncaught_exception_msg">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         GitHubActionErrorHandling.get_uncaught_exception_msg()
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-biosimulators_utils.gh_action.data_model">
+   biosimulators_utils.gh_action.data_model module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.data_model.Comment">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       Comment
+      </span>
+     </code>
+    </a>
+    <ul class="visible nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.data_model.Comment.text">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         Comment.text
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.data_model.Comment.error">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         Comment.error
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#biosimulators_utils.gh_action.data_model.GitHubActionCaughtError">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       GitHubActionCaughtError
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+</div>
+
+<div class="toc-item">
+  
+<div id="searchbox"></div>
+</div>
+
+<div class="toc-item">
+  
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/biosimulators/Biosimulators_utils/edit/dev/docs-src/source/biosimulators_utils.gh_action.rst">
+        <i class="fa-solid fa-pencil"></i> Edit this page
+    </a>
+</div>
+
+</div>
+
+<div class="toc-item">
+  
+<div class="tocsection sourcelink">
+    <a href="../_sources/source/biosimulators_utils.gh_action.rst.txt">
+        <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+</div>
+
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
     </div>
-    
   </div>
-</footer>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2022, BioSimulators Team.<br>
+
+</p>
+
+  </div>
+  
+</div>
+  </footer>
   </body>
 </html>

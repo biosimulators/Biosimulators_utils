@@ -93,6 +93,7 @@ class ExecCombineTestCase(unittest.TestCase):
 
                 config.COLLECT_COMBINE_ARCHIVE_RESULTS = True
                 results, _ = exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, config=config)
+
                 self.assertEqual(results, SedDocumentResults({
                     'sim.sedml': ReportResults({
                         'report1': 'ABC',
@@ -253,6 +254,7 @@ class ExecCombineTestCase(unittest.TestCase):
                 config.BUNDLE_OUTPUTS = False
                 config.KEEP_INDIVIDUAL_OUTPUTS = False
                 exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, config=config)
+
         self.assertEqual(sorted(os.listdir(out_dir)), sorted(['log.yml', 'extra-file', 'dir1']))
         self.assertEqual(sorted(os.listdir(os.path.join(out_dir, 'dir1'))), sorted(['extra-file']))
 
