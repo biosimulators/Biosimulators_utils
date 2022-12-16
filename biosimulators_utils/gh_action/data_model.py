@@ -27,7 +27,7 @@ class Comment(object):
         error (:obj:`bool`): if :obj:`True`, format as error
     """
 
-    def __init__(self, text=None, error=None):
+    def __init__(self, text: str = None, error: bool = None):
         """
         Args:
             text (:obj:`str`): text
