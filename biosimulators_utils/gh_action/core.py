@@ -7,6 +7,7 @@
 """
 
 from .data_model import Comment, GitHubActionCaughtError
+from ..globals import JSONType
 import abc
 import functools
 import io
@@ -107,7 +108,7 @@ class GitHubAction(abc.ABC):
         pass  # pragma: no cover
 
     @staticmethod
-    def get_gh_repo():
+    def get_gh_repo() -> str:
         """ Get the owner and name of the repository which triggered the action
 
         Returns:
@@ -116,7 +117,7 @@ class GitHubAction(abc.ABC):
         return os.getenv('GH_REPO')
 
     @staticmethod
-    def get_issue_number():
+    def get_issue_number() -> str:
         """ Get the number of the issue which triggered the action
 
         Returns:
@@ -125,14 +126,14 @@ class GitHubAction(abc.ABC):
         return os.getenv('GH_ISSUE_NUMBER')
 
     @classmethod
-    def get_issue(cls, issue_number):
+    def get_issue(cls, issue_number: str) -> JSONType:
         """ Get the properties of the GitHub issue for the submission
 
         Args:
             issue_number (:obj:`str`): issue number
 
         Returns:
-            :obj:`dict`: properties of the GitHub issue for the submission
+            :obj:`dict`: properties of the GitHub issue for the submission in json format
         """
         response = requests.get(
             cls.ISSUE_ENDPOINT.format(cls.get_gh_repo(), issue_number),
@@ -141,14 +142,14 @@ class GitHubAction(abc.ABC):
         return response.json()
 
     @staticmethod
-    def get_data_in_issue(issue):
+    def get_data_in_issue(issue: JSONType):
         """ Get the YAML-structured data in an issue
 
         Args:
-           issue (:obj:`dict`): properties of the GitHub issue for the submission
+           issue (:obj:`dict`): properties of the GitHub issue for the submission in json format
 
         Returns:
-            :obj:`object`: YAML-structured data in an issue
+            :obj:`object`: YAML-structured data in an issue (as :obj:`dict`)
         """
         body = io.StringIO(issue['body'].replace('\r', ''))
 
@@ -161,7 +162,7 @@ class GitHubAction(abc.ABC):
         return data
 
     @classmethod
-    def get_labels_for_issue(cls, issue_number):
+    def get_labels_for_issue(cls, issue_number: str) -> list[str]:
         """ Get the labels for an issue
 
         Args:
@@ -170,18 +171,18 @@ class GitHubAction(abc.ABC):
         Returns:
             :obj:`list` of :obj:`str`: labels
         """
-        response = requests.get(
+        response: requests.Response = requests.get(
             cls.ISSUE_LABELS_ENDPOINT.format(cls.get_gh_repo(), issue_number),
             auth=cls.get_gh_auth())
         response.raise_for_status()
 
-        labels = []
+        labels: list = []
         for label in response.json():
             labels.append(label['name'])
         return labels
 
     @classmethod
-    def add_labels_to_issue(cls, issue_number, labels):
+    def add_labels_to_issue(cls, issue_number: str, labels: list[str]):
         """ Add one or more labels to an issue
 
         Args:
@@ -196,12 +197,12 @@ class GitHubAction(abc.ABC):
         response.raise_for_status()
 
     @classmethod
-    def remove_label_from_issue(cls, issue_number, label):
+    def remove_label_from_issue(cls, issue_number: str, label):
         """ Remove a label from an issue
 
         Args:
             issue_number (:obj:`str`): issue number
-            label (:obj:`str`): labels to add to the issue
+            label (:obj:`str`): label to remove from the issue
         """
         response = requests.delete(
             cls.ISSUE_LABELS_ENDPOINT.format(cls.get_gh_repo(), issue_number) + '/' + label,
@@ -209,7 +210,7 @@ class GitHubAction(abc.ABC):
         response.raise_for_status()
 
     @classmethod
-    def reset_issue_labels(cls, issue_number, labels_to_remove):
+    def reset_issue_labels(cls, issue_number: str, labels_to_remove: list[str]):
         """ Reset the labels for an issue
 
         Args:
@@ -223,14 +224,14 @@ class GitHubAction(abc.ABC):
             cls.remove_label_from_issue(issue_number, label)
 
     @classmethod
-    def add_comment_to_issue(cls, issue_number, comment):
+    def add_comment_to_issue(cls, issue_number: str, comment: str):
         """ Post a comment to the GitHub issue
 
         Args:
             issue_number (:obj:`str`): issue number
             comment (:obj:`str`): comment
         """
-        response = requests.post(
+        response: requests.Response = requests.post(
             cls.ISSUE_COMMENTS_ENDPOINT.format(cls.get_gh_repo(), issue_number),
             headers={'accept': 'application/vnd.github.v3+json'},
             auth=cls.get_gh_auth(),

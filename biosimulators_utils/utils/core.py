@@ -259,7 +259,7 @@ def parse_value(str_val, type):
     raise NotImplementedError('Type {} is not supported'.format(type))
 
 
-def patch_dict(dictionary, patch):
+def patch_dict(dictionary: dict, patch: dict):
     """ Recursively patch the attributes of a dictionary
 
     Args:
@@ -272,7 +272,7 @@ def patch_dict(dictionary, patch):
         props, props_patch = patch_queue.pop()
         for key, new_val in props_patch.items():
             if isinstance(props, dict):
-                value = props.get(key, None)
+                value = props.get(key)
             else:
                 if key >= len(props):
                     props.extend([None] * (key + 1 - len(props)))

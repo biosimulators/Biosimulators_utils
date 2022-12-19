@@ -9,13 +9,14 @@
 from ..biosimulations.utils import validate_biosimulations_api_response
 from ..config import get_config
 from ..utils.core import patch_dict
+from ..globals import JSONType
 import json
 import os
 import requests
 import simplejson.errors
 
 
-def read_simulator_specs(path_or_url, patch=None, validate=True):
+def read_simulator_specs(path_or_url: str, patch: dict = None, validate: bool = True):
     """ Read the specifications of a simulator
 
     Args:
@@ -34,8 +35,8 @@ def read_simulator_specs(path_or_url, patch=None, validate=True):
     if os.path.isfile(path_or_url):
         with open(path_or_url, 'r') as file:
             try:
-                specs = json.load(file)
-            except json.JSONDecodeError as error:
+                specs: JSONType = json.load(file)
+            except json.JSONDecodeError as error:  # Change to simplejson call like below?
                 raise ValueError(''.join([
                     'Simulator specifications from {} could not be parsed. '.format(path_or_url),
                     'Specifications must be encoded into JSON.\n\n  {}'.format(str(error).replace('\n', '\n  ')),
@@ -43,7 +44,7 @@ def read_simulator_specs(path_or_url, patch=None, validate=True):
 
     else:
         # download specifications
-        response = requests.get(path_or_url)
+        response: requests.Response = requests.get(path_or_url)
         try:
             response.raise_for_status()
         except requests.RequestException as error:
@@ -65,8 +66,8 @@ def read_simulator_specs(path_or_url, patch=None, validate=True):
 
     # validate specifications
     if validate:
-        api_endpoint = get_config().BIOSIMULATORS_API_ENDPOINT
-        response = requests.post('{}simulators/validate'.format(api_endpoint), json=specs)
+        api_endpoint: str = get_config().BIOSIMULATORS_API_ENDPOINT
+        response: requests.Request = requests.post('{}simulators/validate'.format(api_endpoint), json=specs)
         intro_failure_msg = ''.join([
             "The simulator specifications from `{}` are invalid. ".format(path_or_url),
             "The specifications of simulation tools must adhere to BioSimulators' schema. ",
