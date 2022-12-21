@@ -13,6 +13,7 @@ from ..globals import JSONType
 import json
 import os
 import requests
+import simplejson as complexjson
 import simplejson.errors
 
 
@@ -54,6 +55,9 @@ def read_simulator_specs(path_or_url: str, patch: dict = None, validate: bool = 
         # check that specifications is valid JSON
         try:
             specs = response.json()
+            with open("specifications.json", "a") as specFile:
+                print(complexjson.dumps(specs), file=specFile)
+
         except simplejson.errors.JSONDecodeError as error:
             raise ValueError(''.join([
                 'Simulator specifications from {} could not be parsed. '.format(path_or_url),
