@@ -37,7 +37,7 @@ def login_to_docker_registry(registry: str, username: str, password: str):
     return docker_client
 
 
-def get_docker_image(docker_client: docker.client.DockerClient, tag: str, pull: bool = True)  -> Image:
+def get_docker_image(docker_client: docker.client.DockerClient, tag: str, pull: bool = True) -> Image:
     """ Get a Docker image for a simulator
 
     Args:
