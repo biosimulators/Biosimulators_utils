@@ -64,10 +64,10 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y --no-install-recommends wget make gcc libx11-dev libc6-dev
 
-      - name: Install XPP (Latest)
+      - name: Install XPP
         run: |
           cd /tmp
-          wget --tries=3 http://www.math.pitt.edu/~bard/bardware/xppaut_latest.tar.gz
+          wget --tries=3 http://www.math.pitt.edu/~bard/bardware/xppaut_latest.tar.gz || wget --tries=1 https://web.archive.org/web/20210425172021/http://www.math.pitt.edu/~bard/bardware/xppaut_latest.tar.gz
           mkdir xpp
           tar zxvf xppaut_latest.tar.gz --directory xpp
           cd xpp
@@ -77,21 +77,6 @@ jobs:
           cd /tmp
           rm xppaut_latest.tar.gz
           rm -r xpp
-
-      - name: Install XPP (Backup)
-        run: |
-          cd /tmp
-          wget --tries=3 https://web.archive.org/web/20210425172021/http://www.math.pitt.edu/~bard/bardware/xppaut_latest.tar.gz
-          mkdir xpp
-          tar zxvf xppaut_latest.tar.gz --directory xpp
-          cd xpp
-          make
-          sudo make install
-
-          cd /tmp
-          rm xppaut_latest.tar.gz
-          rm -r xpp
-        if: ${{ failure() }}
 
       - name: Install Singularity # to validate that the Docker image can be converted into a Singularity image
         uses: eWaterCycle/setup-singularity@v5
