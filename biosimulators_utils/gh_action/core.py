@@ -182,7 +182,7 @@ class GitHubAction(abc.ABC):
         return labels
 
     @classmethod
-    def add_labels_to_issue(cls, issue_number: str, labels: list[str]):
+    def add_labels_to_issue(cls, issue_number: str, labels: list[str]) -> None:
         """ Add one or more labels to an issue
 
         Args:
