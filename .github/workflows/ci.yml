@@ -67,7 +67,7 @@ jobs:
       - name: Install XPP (Latest)
         run: |
           cd /tmp
-          wget http://www.math.pitt.edu/~bard/bardware/xppaut_latest.tar.gz
+          wget --tries=3 http://www.math.pitt.edu/~bard/bardware/xppaut_latest.tar.gz
           mkdir xpp
           tar zxvf xppaut_latest.tar.gz --directory xpp
           cd xpp
@@ -81,7 +81,7 @@ jobs:
       - name: Install XPP (Backup)
         run: |
           cd /tmp
-          wget https://web.archive.org/web/20210425172021/http://www.math.pitt.edu/~bard/bardware/xppaut_latest.tar.gz
+          wget --tries=3 https://web.archive.org/web/20210425172021/http://www.math.pitt.edu/~bard/bardware/xppaut_latest.tar.gz
           mkdir xpp
           tar zxvf xppaut_latest.tar.gz --directory xpp
           cd xpp
