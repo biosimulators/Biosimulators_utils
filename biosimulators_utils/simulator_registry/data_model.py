@@ -29,10 +29,9 @@ class SimulatorSubmission(object):
         commit_simulator (:obj:`bool`): if :obj:`True`, commit simulator to database
     """
 
-    def __init__(self, id=None, version=None, specifications_url=None,
-                 specifications_patch=None,
-                 validate_image=False, commit_simulator=False,
-                 validated=False, approved=False, committed=False):
+    def __init__(self, id: str = None, version: str = None, specifications_url: str = None,
+                 specifications_patch: dict = None,
+                 validate_image: bool = False, commit_simulator: bool = False):
         """
         Args:
             id (:obj:`str`, optional): id of simulator
@@ -42,12 +41,12 @@ class SimulatorSubmission(object):
             validate_image (:obj:`bool`, optional): if :obj:`True`, validate Docker image
             commit_simulator (:obj:`bool`, optional): if :obj:`True`, commit simulator to database
         """
-        self.id = id
-        self.version = version
-        self.specifications_url = specifications_url
-        self.specifications_patch = specifications_patch or {}
-        self.validate_image = validate_image
-        self.commit_simulator = commit_simulator
+        self.id: str = id
+        self.version: str = version
+        self.specifications_url: str = specifications_url
+        self.specifications_patch: dict = specifications_patch or {}
+        self.validate_image: bool = validate_image
+        self.commit_simulator: bool = commit_simulator
 
     def to_tuple(self):
         """ Tuple representation of a person

@@ -10,6 +10,7 @@ import docker
 import json
 import os
 import subprocess
+from docker.models.images import Image
 
 __all__ = [
     'login_to_docker_registry',
@@ -20,7 +21,7 @@ __all__ = [
 ]
 
 
-def login_to_docker_registry(registry, username, password):
+def login_to_docker_registry(registry: str, username: str, password: str):
     """ Login to a Docker registry
 
     Args:
@@ -31,12 +32,12 @@ def login_to_docker_registry(registry, username, password):
     Returns:
         :obj:`docker.client.DockerClient`: Docker client
     """
-    docker_client = docker.from_env()
+    docker_client: docker.client.DockerClient = docker.from_env()
     docker_client.login(registry=registry, username=username, password=password)
     return docker_client
 
 
-def get_docker_image(docker_client, tag, pull=True):
+def get_docker_image(docker_client: docker.client.DockerClient, tag: str, pull: bool = True) -> Image:
     """ Get a Docker image for a simulator
 
     Args:
@@ -47,6 +48,7 @@ def get_docker_image(docker_client, tag, pull=True):
     Returns:
         :obj:`docker.models.images.Image`: Docker image
     """
+    image: Image
     try:
         image = docker_client.images.get(tag)
         if pull:
@@ -104,35 +106,35 @@ def tag_and_push_docker_image(docker_client, image, tag):
             tag, response.get('errorDetail', {}).get('message', response['error'])))
 
 
-def convert_docker_image_to_singularity(docker_image, singularity_filename=None):
+def convert_docker_image_to_singularity(docker_image_url: str, singularity_filename: str = None):
     """ Convert a locally cached Docker image to a Singularity image.
 
     Remotely published Docker images (e.g., images published to Docker Hub, GitHub Container Registry, etc.)
     should first be pulled (e.g., using :obj:`pull_docker_image` or ``docker pull {image}``).
 
     Args:
-        docker_image (:obj:`str`)
+        docker_image_url (:obj:`str`)
         singularity_filename (:obj:`str`, optional): file name for saving Singularity image
 
     Returns:
         :obj:`str`: path where Singularity image was saved
     """
-    cmd = ['singularity', 'build']
+    cmd: list[str] = ['singularity', 'build']
 
-    if ':' not in docker_image:
-        docker_image += ':latest'
+    if ':' not in docker_image_url:
+        docker_image_url += ':latest'
 
     if not singularity_filename:
-        singularity_filename = os.path.join(
+        singularity_filename: str = os.path.join(
             os.path.expanduser('~'), '.biosimulators-utils', 'singularity',
-            docker_image.replace('/', '_').replace(':', '_') + '.sif')
+            docker_image_url.replace('/', '_').replace(':', '_') + '.sif')
 
     if not os.path.isdir(os.path.dirname(singularity_filename)):
         os.makedirs(os.path.dirname(singularity_filename))
 
     cmd.append(singularity_filename)
 
-    cmd.append('docker-daemon://' + docker_image)
+    cmd.append('docker-daemon://' + docker_image_url)
 
     if not os.path.isfile(singularity_filename):
         subprocess.check_call(cmd)
