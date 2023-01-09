@@ -1,40 +1,41 @@
 #################################
 ## Model languages
 [bngl]
-bionetgen >= 0.7.2
+jupyter-events <= 0.5.0
+bionetgen >= 0.7.2, <= 0.7.8
 
 [cellml]
-libcellml
+libcellml <= 0.2.0.dev21
 
 [lems]
-pylems
-pyneuroml
-pint
+pylems <= 0.5.9
+pyneuroml <= 0.7.1
+pint <= 0.19.2
 
 [neuroml]
-libneuroml
-pyneuroml >= 0.5.18
+libneuroml <= 0.4.0
+pyneuroml >= 0.5.18, <= 0.7.1
 
 # [rba]
 # python -m pip install git+https://github.com/biosimulators/RBApy.git#egg=rbapy
 
 [sbml]
-python_libsbml
+python_libsbml <= 5.19.6
 
 [smoldyn]
-smoldyn >= 2.66
+smoldyn >= 2.66, <= 2.68
 
 #################################
 ## Visualization formats
 [escher]
-bezier
+bezier <= 2021.2.12
 
 #################################
 ## Docker images
 [containers]
-docker >= 4.4
+docker >= 4.4, <= 5.0.3
 
 #################################
 ## Console logging
 [logging]
-capturer
+capturer <= 3.0
