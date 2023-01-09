@@ -1,4 +1,4 @@
-appdirs <= 1.4.4
+appdirs <=1.4.4
 biopython <= 1.79
 cement <= 3.0.6
 evalidate <= 1.0.2
@@ -26,4 +26,4 @@ simplejson <= 3.16.0
 termcolor <= 1.1.0
 uritools <= 4.0.0
 yamldown <= 0.1.8
-python_version >=3.8, < 3.10
+python_version >= 3.8, < 3.10
