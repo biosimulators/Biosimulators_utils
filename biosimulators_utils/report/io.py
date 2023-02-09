@@ -244,10 +244,10 @@ class ReportReader(object):
             with h5py.File(filename, 'r') as file:
                 data_set = file[rel_path]
                 data_set_results = data_set[:]
-                file_data_set_ids = data_set.attrs['sedmlDataSetIds']
-                data_set_data_types = data_set.attrs['sedmlDataSetDataTypes']
+                file_data_set_ids = ReportReader.parse_dataset_str_list_values(data_set.attrs['sedmlDataSetIds'])
+                data_set_data_types = ReportReader.parse_dataset_str_list_values(data_set.attrs['sedmlDataSetDataTypes'])
                 data_set_shapes = []
-                for data_set_shape in data_set.attrs['sedmlDataSetShapes']:
+                for data_set_shape in ReportReader.parse_dataset_str_list_values(data_set.attrs['sedmlDataSetShapes']):
                     if data_set_shape:
                         data_set_shapes.append([int(dim_len) for dim_len in data_set_shape.split(',')])
                     else:
@@ -335,12 +335,32 @@ class ReportReader(object):
     @staticmethod
     def append_report_id(type, report_ids, name, object):
         if isinstance(object, h5py.Dataset):
-            data_set_type = object.attrs.get('_type', None)
-            if (
-                data_set_type and
-                (
-                    Hdf5DataSetType[data_set_type].value == type
-                    or issubclass(Hdf5DataSetType[data_set_type].value, type)
-                )
-            ):
+            dataset: h5py.Dataset = object
+            data_set_type = dataset.attrs.get('_type', None)
+            
+            if not data_set_type:
+                return
+
+            if not isinstance(data_set_type, str):
+                data_set_type = str(dataset.attrs.get('_type', None), encoding='utf-8')
+
+            debug = Hdf5DataSetType[data_set_type]
+            if (debug.value == type or issubclass(debug.value, type)):
                 report_ids.append(name)
+
+    @staticmethod
+    def parse_dataset_str_value(raw_value):
+        if raw_value and not isinstance(raw_value, str):
+            return str(raw_value, encoding='utf-8')
+        return raw_value
+
+    @staticmethod
+    def parse_dataset_str_list_values(raw_values: list):
+        parsedStrs: "list[str]" = []
+
+        for value in raw_values:
+            parsedStrs.append(ReportReader.parse_dataset_str_value(value))
+        
+        return parsedStrs
+
+                
