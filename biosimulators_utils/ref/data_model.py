@@ -116,7 +116,6 @@ class JournalArticle(Reference):
         else:
             return None
 
-
     def get_uri(self):
         """ Get a standard URI for the citation (e.g. http://identifiers.org/doi/10.1007/BF00713556).
 
