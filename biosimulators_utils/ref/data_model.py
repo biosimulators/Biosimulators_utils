@@ -117,6 +117,21 @@ class JournalArticle(Reference):
             return None
 
 
+    def get_uri(self):
+        """ Get a standard URI for the citation (e.g. http://identifiers.org/doi/10.1007/BF00713556).
+
+        Returns:
+            :obj:`str`: formatted URI
+        """
+        if self.doi is not None:
+            return "http://identifiers.org/doi/" + self.doi
+        if self.pubmed_id is not None:
+            return "http://identifiers.org/pubmed/" + self.pubmed_id
+        if self.pubmed_central_id is not None:
+            return "http://identifiers.org/pmc/" + self.pubmed_central_id
+        return None
+
+
 @dataclasses.dataclass
 class PubMedCentralOpenAccesGraphic(object):
     """ A PubMed Central open access graphic

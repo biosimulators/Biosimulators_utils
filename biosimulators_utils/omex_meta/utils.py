@@ -18,7 +18,7 @@ __all__ = ['build_omex_meta_file_for_model', 'get_local_combine_archive_content_
 def build_omex_meta_file_for_model(model_filename,
                                    metadata_filename,
                                    metadata_format=OmexMetadataOutputFormat.rdfxml_abbrev,
-                                   encoding='utf-8'):
+                                   encoding='utf-8', archive_uri=None):
     """ Create an OMEX metadata file for a model encoded in CellML or SBML. Also
     add missing metadata ids to the model file.
 
@@ -62,7 +62,8 @@ def build_omex_meta_file_for_model(model_filename,
 
 
 def _build_omex_meta_file_for_model_error_wrapper(model_filename, metadata_filename,
-                                                  metadata_format=OmexMetadataOutputFormat.rdfxml_abbrev.value, encoding='utf-8'):
+                                                  metadata_format=OmexMetadataOutputFormat.rdfxml_abbrev.value,
+                                                  encoding='utf-8', archive_uri=None):
     """ Wrapper for ``_build_omex_meta_file_for_model``
 
     Args:
@@ -72,13 +73,14 @@ def _build_omex_meta_file_for_model_error_wrapper(model_filename, metadata_filen
         encoding (:obj:`str`, optional): encoding (e.g., ``utf-8``)
     """
     try:
-        _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format, encoding)
+        _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format, encoding, archive_uri)
     except (ValueError, RuntimeError) as exception:
         raise SystemExit(str(exception))
 
 
 def _build_omex_meta_file_for_model(model_filename, metadata_filename,
-                                    metadata_format=OmexMetadataOutputFormat.rdfxml_abbrev.value, encoding='utf-8'):
+                                    metadata_format=OmexMetadataOutputFormat.rdfxml_abbrev.value,
+                                    encoding='utf-8', archive_uri=None,):
     """ Create an OMEX metadata file for a model encoded in CellML or SBML. Also
     add missing metadata ids to the model file.
 
@@ -90,6 +92,9 @@ def _build_omex_meta_file_for_model(model_filename, metadata_filename,
     """
     metadata_format = OmexMetadataOutputFormat(metadata_format)
     rdf = pyomexmeta.RDF()
+    if archive_uri:
+        rdf.set_archive_uri(archive_uri)
+    rdf.set_model_uri(os.path.basename(model_filename))
 
     pyomexmeta_log_level = pyomexmeta.Logger.get_level()
     pyomexmeta.Logger.clear()
