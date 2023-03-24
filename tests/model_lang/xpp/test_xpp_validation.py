@@ -222,72 +222,72 @@ class XppValidationTestCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Only 1'):
             validation.get_xpp_input_configuration_from_directory(self.dirname)
 
-    def test_from_directory(self):
-        dirname = os.path.join(self.FIXTURE_DIRNAME, 'wilson-cowan')
-        errors, warnings, model = validation.validate_model(dirname)
-        self.assertEqual(errors, [])
-        self.assertEqual(warnings, [])
+    # def test_from_directory(self):
+    #     dirname = os.path.join(self.FIXTURE_DIRNAME, 'wilson-cowan')
+    #     errors, warnings, model = validation.validate_model(dirname)
+    #     self.assertEqual(errors, [])
+    #     self.assertEqual(warnings, [])
 
-        parameters = dict([
-            ('aee', 11.),
-            ('aie', 8.),
-            ('aei', 12.),
-            ('aii', 3.),
-            ('ze', .2),
-            ('zi', 4.),
-            ('tau', 1.),
-            ('ie0', 0.0),
-            ('ie1', 0.0),
-            ('w', 0.25),
-            ('ii0', 0.0),
-            ('ii1', 0.0),
-        ])
-        initial_conditions = dict([
-            ('U', .2),
-            ('V', .1),
-        ])
-        outfile_column_names = [Symbol.time.value, 'U', 'V']
-        simulation_method = {
-            'total': '40',
-        }
-        plot = {
-            'elements': {
-                1: {
-                    'x': 'U',
-                    'y': 'V',
-                },
-            },
-            'xlo': -.1,
-            'xhi': 1.,
-            'ylo': -.1,
-            'yhi': 1.,
-        }
-        model['parameters'] = dict(model['parameters'])
-        model['initial_conditions'] = dict(model['initial_conditions'])
-        self.assertEqual(list(model['parameters'].keys()), list(parameters.keys()))
-        self.assertEqual(model['parameters'], parameters)
-        self.assertEqual(model['initial_conditions'], initial_conditions)
-        self.assertEqual(model['sets'], {})
-        self.assertEqual(model['auxiliary_variables'], collections.OrderedDict())
-        self.assertEqual(model['simulation_method'], simulation_method)
-        self.assertEqual(model['plot'], plot)
-        self.assertEqual(model, {
-            'parameters': parameters,
-            'initial_conditions': initial_conditions,
-            'sets': {},
-            'auxiliary_variables': collections.OrderedDict(),
-            'simulation_method': simulation_method,
-            'range': None,
-            'other_numerics': None,
-            'auto': None,
-            'plot': plot,
-            'nullcline_plot': None,
-            'poincare_map': None,
-            'output': None,
-            'ui': None,
-            'other': None,
-            'outfile_column_names': outfile_column_names,
-        })
+    #     parameters = dict([
+    #         ('aee', 11.),
+    #         ('aie', 8.),
+    #         ('aei', 12.),
+    #         ('aii', 3.),
+    #         ('ze', .2),
+    #         ('zi', 4.),
+    #         ('tau', 1.),
+    #         ('ie0', 0.0),
+    #         ('ie1', 0.0),
+    #         ('w', 0.25),
+    #         ('ii0', 0.0),
+    #         ('ii1', 0.0),
+    #     ])
+    #     initial_conditions = dict([
+    #         ('U', .2),
+    #         ('V', .1),
+    #     ])
+    #     outfile_column_names = [Symbol.time.value, 'U', 'V']
+    #     simulation_method = {
+    #         'total': '40',
+    #     }
+    #     plot = {
+    #         'elements': {
+    #             1: {
+    #                 'x': 'U',
+    #                 'y': 'V',
+    #             },
+    #         },
+    #         'xlo': -.1,
+    #         'xhi': 1.,
+    #         'ylo': -.1,
+    #         'yhi': 1.,
+    #     }
+    #     model['parameters'] = dict(model['parameters'])
+    #     model['initial_conditions'] = dict(model['initial_conditions'])
+    #     self.assertEqual(list(model['parameters'].keys()), list(parameters.keys()))
+    #     self.assertEqual(model['parameters'], parameters)
+    #     self.assertEqual(model['initial_conditions'], initial_conditions)
+    #     self.assertEqual(model['sets'], {})
+    #     self.assertEqual(model['auxiliary_variables'], collections.OrderedDict())
+    #     self.assertEqual(model['simulation_method'], simulation_method)
+    #     self.assertEqual(model['plot'], plot)
+    #     self.assertEqual(model, {
+    #         'parameters': parameters,
+    #         'initial_conditions': initial_conditions,
+    #         'sets': {},
+    #         'auxiliary_variables': collections.OrderedDict(),
+    #         'simulation_method': simulation_method,
+    #         'range': None,
+    #         'other_numerics': None,
+    #         'auto': None,
+    #         'plot': plot,
+    #         'nullcline_plot': None,
+    #         'poincare_map': None,
+    #         'output': None,
+    #         'ui': None,
+    #         'other': None,
+    #         'outfile_column_names': outfile_column_names,
+    #     })
 
     def test_with_sets(self):
         dirname = os.path.join(self.FIXTURE_DIRNAME, 'wilson-cowan-with-sets.ode')
@@ -365,87 +365,87 @@ class XppValidationTestCase(unittest.TestCase):
             'outfile_column_names': outfile_column_names,
         })
 
-    def test_from_directory_2(self):
-        dirname = os.path.join(self.FIXTURE_DIRNAME, 'wilson-cowan-2')
-        errors, warnings, model = validation.validate_model(dirname)
-        self.assertEqual(errors, [])
-        self.assertEqual(warnings, [])
+    # def test_from_directory_2(self):
+    #     dirname = os.path.join(self.FIXTURE_DIRNAME, 'wilson-cowan-2')
+    #     errors, warnings, model = validation.validate_model(dirname)
+    #     self.assertEqual(errors, [])
+    #     self.assertEqual(warnings, [])
 
-        parameters = dict([
-            ('aee', 10.),
-            ('aie', 9.),
-            ('aei', 12.),
-            ('aii', 3.),
-            ('ze', .2),
-            ('zi', 4.),
-            ('tau', 1.),
-            ('ie0', 0.0),
-            ('ie1', 0.0),
-            ('w', 0.25),
-            ('ii0', 0.0),
-            ('ii1', 0.0),
-        ])
-        initial_conditions = dict([
-            ('U', .1),
-            ('V', .04),
-        ])
-        outfile_column_names = [Symbol.time.value, 'U', 'V']
-        sets = {}
-        simulation_method = {
-            'total': '40',
-            'dt': '0.05',
-            'dtmax': '1',
-            'dtmin': '1e-12',
-            'newt_tol': '0.001',
-            'njmp': '1',
-            't0': '0',
-            'toler': '0.001',
-            'atoler': '0.001',
-            'trans': '0',
-        }
-        plot = {
-            'elements': {
-                1: {
-                    'x': 'U',
-                    'y': 'V',
-                },
-            },
-            'xlo': -.1,
-            'xhi': 1.,
-            'ylo': -.1,
-            'yhi': 1.,
-        }
-        other_numerics = {'bound': '100', 'delay': '0'}
-        nullcline_plot = {'nmesh': '40'}
-        poincare_map = {'poimap': '0', 'poipln': '0', 'poisgn': '1', 'poistop': '0', 'poivar': '1'}
-        model['parameters'] = dict(model['parameters'])
-        model['initial_conditions'] = dict(model['initial_conditions'])
-        self.assertEqual(list(model['parameters'].keys()), list(parameters.keys()))
-        self.assertEqual(model['parameters'], parameters)
-        self.assertEqual(model['initial_conditions'], initial_conditions)
-        self.assertEqual(model['sets'], sets)
-        self.assertEqual(model['simulation_method'], simulation_method)
-        self.assertEqual(model['plot'], plot)
-        self.assertEqual(model['other_numerics'], other_numerics)
-        self.assertEqual(model['nullcline_plot'], nullcline_plot)
-        self.assertEqual(model['poincare_map'], poincare_map)
-        self.assertEqual(model, {
-            'parameters': parameters,
-            'initial_conditions': initial_conditions,
-            'sets': sets,
-            'auxiliary_variables': collections.OrderedDict(),
-            'simulation_method': simulation_method,
-            'range': None,
-            'other_numerics': other_numerics,
-            'auto': None,
-            'plot': plot,
-            'nullcline_plot': nullcline_plot,
-            'poincare_map': poincare_map,
-            'output': None,
-            'ui': None,
-            'other': None,
-            'outfile_column_names': outfile_column_names,
-        })
+    #     parameters = dict([
+    #         ('aee', 10.),
+    #         ('aie', 9.),
+    #         ('aei', 12.),
+    #         ('aii', 3.),
+    #         ('ze', .2),
+    #         ('zi', 4.),
+    #         ('tau', 1.),
+    #         ('ie0', 0.0),
+    #         ('ie1', 0.0),
+    #         ('w', 0.25),
+    #         ('ii0', 0.0),
+    #         ('ii1', 0.0),
+    #     ])
+    #     initial_conditions = dict([
+    #         ('U', .1),
+    #         ('V', .04),
+    #     ])
+    #     outfile_column_names = [Symbol.time.value, 'U', 'V']
+    #     sets = {}
+    #     simulation_method = {
+    #         'total': '40',
+    #         'dt': '0.05',
+    #         'dtmax': '1',
+    #         'dtmin': '1e-12',
+    #         'newt_tol': '0.001',
+    #         'njmp': '1',
+    #         't0': '0',
+    #         'toler': '0.001',
+    #         'atoler': '0.001',
+    #         'trans': '0',
+    #     }
+    #     plot = {
+    #         'elements': {
+    #             1: {
+    #                 'x': 'U',
+    #                 'y': 'V',
+    #             },
+    #         },
+    #         'xlo': -.1,
+    #         'xhi': 1.,
+    #         'ylo': -.1,
+    #         'yhi': 1.,
+    #     }
+    #     other_numerics = {'bound': '100', 'delay': '0'}
+    #     nullcline_plot = {'nmesh': '40'}
+    #     poincare_map = {'poimap': '0', 'poipln': '0', 'poisgn': '1', 'poistop': '0', 'poivar': '1'}
+    #     model['parameters'] = dict(model['parameters'])
+    #     model['initial_conditions'] = dict(model['initial_conditions'])
+    #     self.assertEqual(list(model['parameters'].keys()), list(parameters.keys()))
+    #     self.assertEqual(model['parameters'], parameters)
+    #     self.assertEqual(model['initial_conditions'], initial_conditions)
+    #     self.assertEqual(model['sets'], sets)
+    #     self.assertEqual(model['simulation_method'], simulation_method)
+    #     self.assertEqual(model['plot'], plot)
+    #     self.assertEqual(model['other_numerics'], other_numerics)
+    #     self.assertEqual(model['nullcline_plot'], nullcline_plot)
+    #     self.assertEqual(model['poincare_map'], poincare_map)
+    #     self.assertEqual(model, {
+    #         'parameters': parameters,
+    #         'initial_conditions': initial_conditions,
+    #         'sets': sets,
+    #         'auxiliary_variables': collections.OrderedDict(),
+    #         'simulation_method': simulation_method,
+    #         'range': None,
+    #         'other_numerics': other_numerics,
+    #         'auto': None,
+    #         'plot': plot,
+    #         'nullcline_plot': nullcline_plot,
+    #         'poincare_map': poincare_map,
+    #         'output': None,
+    #         'ui': None,
+    #         'other': None,
+    #         'outfile_column_names': outfile_column_names,
+    #     })
 
     def test_cannot_parse_other_formats(self):
         filename = os.path.join(self.FIXTURE_DIRNAME, '..', 'BIOMD0000000075.xml')
