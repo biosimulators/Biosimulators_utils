@@ -51,6 +51,14 @@ class OmexMetaUtilsTestCase(unittest.TestCase):
         with self.assertRaisesRegex(NotImplementedError, 'is not supported'):
             build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
 
+    def test_build_omex_meta_file_for_model_archive_uri_error_handling(self):
+        model_filename = 'not a file'
+        metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
+        archive_uri = "demo1.omex"
+        with self.assertRaisesRegex(FileNotFoundError, 'is not a file'):
+            build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format, archive_uri)
+
     def test__build_omex_meta_file_for_model_error_handling(self):
         model_filename = os.path.join(self.temp_dirname, 'model.xml')
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
