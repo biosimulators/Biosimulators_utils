@@ -41,25 +41,45 @@ def build_omex_meta_file_for_model(model_filename,
     # TODO: uncomment and delete below once pyomexmeta has better error handling
     # _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format.value, encoding, archive_uri)
 
-    process = subprocess.run(
-        [
-            sys.executable, '-c',
-            'from {} import {}; {}("{}", "{}", "{}", "{}", archive_uri={})'.format(
-                _build_omex_meta_file_for_model_error_wrapper.__module__,
-                _build_omex_meta_file_for_model_error_wrapper.__name__,
-                _build_omex_meta_file_for_model_error_wrapper.__name__,
-                model_filename.replace('"', '\\"'),
-                metadata_filename.replace('"', '\\"'),
-                metadata_format.value.replace('"', '\\"'),
-                encoding.replace('"', '\\"'),
-                archive_uri,
-            )
-        ],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.PIPE,
-        text=True)
-    if process.returncode != 0:
-        raise RuntimeError(process.stderr or 'Model `{}` could not be read'.format(model_filename))
+    if archive_uri:
+        process = subprocess.run(
+            [
+                sys.executable, '-c',
+                'from {} import {}; {}("{}", "{}", "{}", "{}", "{}")'.format(
+                    _build_omex_meta_file_for_model_error_wrapper.__module__,
+                    _build_omex_meta_file_for_model_error_wrapper.__name__,
+                    _build_omex_meta_file_for_model_error_wrapper.__name__,
+                    model_filename.replace('"', '\\"'),
+                    metadata_filename.replace('"', '\\"'),
+                    metadata_format.value.replace('"', '\\"'),
+                    encoding.replace('"', '\\"'),
+                    archive_uri.replace('"', '\\"'),
+                )
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True)
+        if process.returncode != 0:
+            raise RuntimeError(process.stderr or 'Model `{}` could not be read'.format(model_filename))
+    else:
+        process = subprocess.run(
+            [
+                sys.executable, '-c',
+                'from {} import {}; {}("{}", "{}", "{}", "{}")'.format(
+                    _build_omex_meta_file_for_model_error_wrapper.__module__,
+                    _build_omex_meta_file_for_model_error_wrapper.__name__,
+                    _build_omex_meta_file_for_model_error_wrapper.__name__,
+                    model_filename.replace('"', '\\"'),
+                    metadata_filename.replace('"', '\\"'),
+                    metadata_format.value.replace('"', '\\"'),
+                    encoding.replace('"', '\\"'),
+                )
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True)
+        if process.returncode != 0:
+            raise RuntimeError(process.stderr or 'Model `{}` could not be read'.format(model_filename))
 
 
 def _build_omex_meta_file_for_model_error_wrapper(model_filename, metadata_filename,
