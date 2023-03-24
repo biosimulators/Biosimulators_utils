@@ -39,12 +39,12 @@ def build_omex_meta_file_for_model(model_filename,
         raise NotImplementedError('Output format `{}` is not supported.'.format(metadata_format))
 
     # TODO: uncomment and delete below once pyomexmeta has better error handling
-    # _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format.value, encoding)
+    # _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format.value, encoding, archive_uri)
 
     process = subprocess.run(
         [
             sys.executable, '-c',
-            'from {} import {}; {}("{}", "{}", "{}", "{}")'.format(
+            'from {} import {}; {}("{}", "{}", "{}", "{}", archive_uri={})'.format(
                 _build_omex_meta_file_for_model_error_wrapper.__module__,
                 _build_omex_meta_file_for_model_error_wrapper.__name__,
                 _build_omex_meta_file_for_model_error_wrapper.__name__,
@@ -52,6 +52,7 @@ def build_omex_meta_file_for_model(model_filename,
                 metadata_filename.replace('"', '\\"'),
                 metadata_format.value.replace('"', '\\"'),
                 encoding.replace('"', '\\"'),
+                archive_uri,
             )
         ],
         stdout=subprocess.DEVNULL,
