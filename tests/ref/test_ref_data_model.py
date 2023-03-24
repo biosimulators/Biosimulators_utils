@@ -119,3 +119,14 @@ class RefDataModeTestCase(unittest.TestCase):
             doi="10.1128/AEM.70.9.5477-5484.2004",
             )
         self.assertEqual(ref.get_uri(), 'http://identifiers.org/doi/10.1128/AEM.70.9.5477-5484.2004')
+
+        ref = JournalArticle(
+            authors=['John Doe', 'Jane Doe', 'Jim Doe'],
+            title='My title',
+            journal='Journal',
+            volume='10',
+            issue='1',
+            pages='10-20',
+            year='2021',
+        )
+        self.assertEqual(ref.get_uri(), None)
