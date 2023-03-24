@@ -24,6 +24,14 @@ class OmexMetaUtilsTestCase(unittest.TestCase):
 
         build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format)
 
+    def test_build_omex_meta_file_for_model_archive_uri(self):
+        model_filename = os.path.join(self.FIXTURE_DIRNAME, 'omex-metadata', 'demo1.xml')
+        metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
+        metadata_format = OmexMetadataOutputFormat.rdfxml_abbrev
+        archive_uri = "demo1.omex"
+
+        build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format, archive_uri=archive_uri)
+
     def test_build_omex_meta_file_for_model_error_handling(self):
         model_filename = 'not a file'
         metadata_filename = os.path.join(self.temp_dirname, 'metadata.rdf')
