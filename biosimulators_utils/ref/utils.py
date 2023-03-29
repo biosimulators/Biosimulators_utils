@@ -180,7 +180,7 @@ def get_reference_from_crossref(id, session=requests):
         raise
     record = response.json()['message']
 
-    return JournalArticle(
+    article = JournalArticle(
         pubmed_id=None,
         pubmed_central_id=None,
         doi=id,
@@ -190,12 +190,18 @@ def get_reference_from_crossref(id, session=requests):
         ],
         title=record['title'][0].strip('.') if record['title'] else None,
         journal=record['container-title'][0],
-        volume=record['volume'],
-        issue=record.get('journal-issue', {}).get('issue', None),
-        pages=record.get('page', record.get('article-number', None)),
-        year=str(record['published']['date-parts'][0][0]),
-        date='-'.join('{:02d}'.format(date_part) for date_part in record['published']['date-parts'][0][0:3]),
     )
+    if 'volume' in record:
+        article.volume = record['volume']
+    if 'issue' in record:
+        article.issue = record['issue']
+    if 'pages' in record:
+        article.pages = record['pages']
+    if 'year' in record:
+        article.year = record['year']
+    if 'published' in record and 'date-parts' in record['published']:
+        article.date = '-'.join('{:02d}'.format(date_part) for date_part in record['published']['date-parts'][0][0:3])
+    return article
 
 
 def get_pubmed_central_open_access_graphics(id, dirname, session=requests):
