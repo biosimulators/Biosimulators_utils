@@ -201,7 +201,7 @@ def get_reference_from_crossref(id, session=requests):
         article.year = record['year']
     if 'published' in record and 'date-parts' in record['published']:
         article.date = '-'.join('{:02d}'.format(date_part) for date_part in record['published']['date-parts'][0][0:3])
-        article.year = record['published']['date-parts'][0][0]
+        article.year = str(record['published']['date-parts'][0][0])
     return article
 
 
