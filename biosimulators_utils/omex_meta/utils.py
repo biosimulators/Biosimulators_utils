@@ -184,7 +184,7 @@ def get_global_combine_archive_content_uri(content_rel_uri, archive_uri=None):
         :obj:`str`: global URI for the content item
     """
     if archive_uri:
-        content_rel_uri = os.path.relpath(content_rel_uri, '.')
+        content_rel_uri = os.path.relpath(content_rel_uri, '.').replace("\\", "/")
         if content_rel_uri == '.':
             return archive_uri
         else:
