@@ -189,7 +189,7 @@ def get_reference_from_crossref(id, session=requests):
             for author in record.get('author', [])
         ],
         title=record['title'][0].strip('.') if record['title'] else None,
-        journal=record['container-title'][0],
+        journal=record['container-title'][0] if record['container-title'] and len(record['container-title']) > 0 else None,
     )
     if 'volume' in record:
         article.volume = record['volume']
