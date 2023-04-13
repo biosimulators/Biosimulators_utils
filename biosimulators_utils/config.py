@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from typing import Optional
 from .omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, OmexMetadataSchema
 from .report.data_model import ReportFormat  # noqa: F401
 from .viz.data_model import VizFormat  # noqa: F401
@@ -68,35 +69,35 @@ class Config(object):
     """
 
     def __init__(self,
-                 OMEX_METADATA_INPUT_FORMAT=DEFAULT_OMEX_METADATA_INPUT_FORMAT,
-                 OMEX_METADATA_OUTPUT_FORMAT=DEFAULT_OMEX_METADATA_OUTPUT_FORMAT,
-                 OMEX_METADATA_SCHEMA=DEFAULT_OMEX_METADATA_SCHEMA,
-                 VALIDATE_OMEX_MANIFESTS=True,
-                 VALIDATE_SEDML=True,
-                 VALIDATE_SEDML_MODELS=True,
-                 VALIDATE_IMPORTED_MODEL_FILES=True,
-                 VALIDATE_OMEX_METADATA=True,
-                 VALIDATE_IMAGES=True,
-                 VALIDATE_RESULTS=True,
-                 ALGORITHM_SUBSTITUTION_POLICY=DEFAULT_ALGORITHM_SUBSTITUTION_POLICY,
-                 COLLECT_COMBINE_ARCHIVE_RESULTS=False,
-                 COLLECT_SED_DOCUMENT_RESULTS=False,
-                 SAVE_PLOT_DATA=True,
-                 REPORT_FORMATS=[ReportFormat.h5],
-                 VIZ_FORMATS=[VizFormat.pdf],
-                 H5_REPORTS_PATH=DEFAULT_H5_REPORTS_PATH,
-                 REPORTS_PATH=DEFAULT_REPORTS_PATH,
-                 PLOTS_PATH=DEFAULT_PLOTS_PATH,
-                 BUNDLE_OUTPUTS=True,
-                 KEEP_INDIVIDUAL_OUTPUTS=True,
-                 LOG=True,
-                 LOG_PATH=DEFAULT_LOG_PATH,
-                 BIOSIMULATORS_API_ENDPOINT=DEFAULT_BIOSIMULATORS_API_ENDPOINT,
-                 BIOSIMULATIONS_API_ENDPOINT=DEFAULT_BIOSIMULATIONS_API_ENDPOINT,
-                 BIOSIMULATIONS_API_AUTH_ENDPOINT=DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT,
-                 BIOSIMULATIONS_API_AUDIENCE=DEFAULT_BIOSIMULATIONS_API_AUDIENCE,
-                 VERBOSE=False,
-                 DEBUG=False):
+                 OMEX_METADATA_INPUT_FORMAT:OmexMetadataInputFormat=DEFAULT_OMEX_METADATA_INPUT_FORMAT,
+                 OMEX_METADATA_OUTPUT_FORMAT:OmexMetadataInputFormat=DEFAULT_OMEX_METADATA_OUTPUT_FORMAT,
+                 OMEX_METADATA_SCHEMA:OmexMetadataSchema=DEFAULT_OMEX_METADATA_SCHEMA,
+                 VALIDATE_OMEX_MANIFESTS:bool=True,
+                 VALIDATE_SEDML:bool=True,
+                 VALIDATE_SEDML_MODELS:bool=True,
+                 VALIDATE_IMPORTED_MODEL_FILES:bool=True,
+                 VALIDATE_OMEX_METADATA:bool=True,
+                 VALIDATE_IMAGES:bool=True,
+                 VALIDATE_RESULTS:bool=True,
+                 ALGORITHM_SUBSTITUTION_POLICY:AlgorithmSubstitutionPolicy=DEFAULT_ALGORITHM_SUBSTITUTION_POLICY,
+                 COLLECT_COMBINE_ARCHIVE_RESULTS:bool=False,
+                 COLLECT_SED_DOCUMENT_RESULTS:bool=False,
+                 SAVE_PLOT_DATA:bool=True,
+                 REPORT_FORMATS:list=[ReportFormat.h5],
+                 VIZ_FORMATS:list=[VizFormat.pdf],
+                 H5_REPORTS_PATH:str=DEFAULT_H5_REPORTS_PATH,
+                 REPORTS_PATH:str=DEFAULT_REPORTS_PATH,
+                 PLOTS_PATH:str=DEFAULT_PLOTS_PATH,
+                 BUNDLE_OUTPUTS:bool=True,
+                 KEEP_INDIVIDUAL_OUTPUTS:bool=True,
+                 LOG:bool=True,
+                 LOG_PATH:str=DEFAULT_LOG_PATH,
+                 BIOSIMULATORS_API_ENDPOINT:str=DEFAULT_BIOSIMULATORS_API_ENDPOINT,
+                 BIOSIMULATIONS_API_ENDPOINT:str=DEFAULT_BIOSIMULATIONS_API_ENDPOINT,
+                 BIOSIMULATIONS_API_AUTH_ENDPOINT:str=DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT,
+                 BIOSIMULATIONS_API_AUDIENCE:str=DEFAULT_BIOSIMULATIONS_API_AUDIENCE,
+                 VERBOSE:bool=False,
+                 DEBUG:bool=False):
         """
         Args:
             OMEX_METADATA_INPUT_FORMAT (:obj:`OmexMetadataInputFormat`, optional): format to validate OMEX Metadata files against
@@ -164,19 +165,19 @@ class Config(object):
         self.DEBUG = DEBUG
 
 
-def get_config():
+def get_config(report_format:str='h5', viz_format:str='pdf'):
     """ Get the configuration
 
     Returns:
         :obj:`Config`: configuration
     """
-    report_formats = os.environ.get('REPORT_FORMATS', 'h5').strip()
+    report_formats = os.environ.get('REPORT_FORMATS', report_format).strip()
     if report_formats:
         report_formats = [ReportFormat(format.strip().lower()) for format in report_formats.split(',')]
     else:
         report_formats = []
 
-    viz_formats = os.environ.get('VIZ_FORMATS', 'pdf').strip()
+    viz_formats = os.environ.get('VIZ_FORMATS', viz_format).strip()
     if viz_formats:
         viz_formats = [VizFormat(format.strip().lower()) for format in viz_formats.split(',')]
     else:
@@ -217,6 +218,9 @@ def get_config():
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
     )
+
+
+
 
 
 Colors = enum.Enum('Colors',
