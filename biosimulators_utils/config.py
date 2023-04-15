@@ -90,7 +90,7 @@ class Config(object):
                  PLOTS_PATH:str=DEFAULT_PLOTS_PATH,
                  BUNDLE_OUTPUTS:bool=True,
                  KEEP_INDIVIDUAL_OUTPUTS:bool=True,
-                 LOG:bool=True,
+                 LOG:Optional[bool]=True,
                  LOG_PATH:str=DEFAULT_LOG_PATH,
                  BIOSIMULATORS_API_ENDPOINT:str=DEFAULT_BIOSIMULATORS_API_ENDPOINT,
                  BIOSIMULATIONS_API_ENDPOINT:str=DEFAULT_BIOSIMULATIONS_API_ENDPOINT,
@@ -165,7 +165,7 @@ class Config(object):
         self.DEBUG = DEBUG
 
 
-def get_config(report_format:str='h5', viz_format:str='pdf'):
+def get_config(report_format:str='h5', viz_format:str='pdf', log_source=os.environ.get('LOG', '1').lower() in ['1', 'true']):
     """ Get the configuration
 
     Returns:
@@ -209,7 +209,8 @@ def get_config(report_format:str='h5', viz_format:str='pdf'):
         PLOTS_PATH=os.environ.get('PLOTS_PATH', DEFAULT_PLOTS_PATH),
         BUNDLE_OUTPUTS=os.environ.get('BUNDLE_OUTPUTS', '1').lower() in ['1', 'true'],
         KEEP_INDIVIDUAL_OUTPUTS=os.environ.get('KEEP_INDIVIDUAL_OUTPUTS', '1').lower() in ['1', 'true'],
-        LOG=os.environ.get('LOG', '1').lower() in ['1', 'true'],
+        #LOG=os.environ.get('LOG', '1').lower() in ['1', 'true'],
+        LOG=log_source,
         LOG_PATH=os.environ.get('LOG_PATH', DEFAULT_LOG_PATH),
         BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', DEFAULT_BIOSIMULATORS_API_ENDPOINT),
         BIOSIMULATIONS_API_ENDPOINT=os.environ.get('BIOSIMULATIONS_API_ENDPOINT', DEFAULT_BIOSIMULATIONS_API_ENDPOINT),
