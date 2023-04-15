@@ -165,7 +165,7 @@ class Config(object):
         self.DEBUG = DEBUG
 
 
-def get_config(report_format: str='h5', viz_format: str='pdf', log_source=os.environ.get('LOG', '1').lower() in ['1', 'true']):
+def get_config(report_format: str = 'h5', viz_format: str = 'pdf', log_source: str = os.environ.get('LOG', '1').lower() in ['1', 'true']):
     """ Get the configuration
 
     Returns:
@@ -218,9 +218,6 @@ def get_config(report_format: str='h5', viz_format: str='pdf', log_source=os.env
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
     )
-
-
-
 
 
 Colors = enum.Enum('Colors',
