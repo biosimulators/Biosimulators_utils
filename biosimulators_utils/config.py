@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from typing import Optional
+from typing import List, Optional
 from .omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, OmexMetadataSchema
 from .report.data_model import ReportFormat  # noqa: F401
 from .viz.data_model import VizFormat  # noqa: F401
@@ -69,35 +69,35 @@ class Config(object):
     """
 
     def __init__(self,
-                 OMEX_METADATA_INPUT_FORMAT:OmexMetadataInputFormat=DEFAULT_OMEX_METADATA_INPUT_FORMAT,
-                 OMEX_METADATA_OUTPUT_FORMAT:OmexMetadataInputFormat=DEFAULT_OMEX_METADATA_OUTPUT_FORMAT,
-                 OMEX_METADATA_SCHEMA:OmexMetadataSchema=DEFAULT_OMEX_METADATA_SCHEMA,
-                 VALIDATE_OMEX_MANIFESTS:bool=True,
-                 VALIDATE_SEDML:bool=True,
-                 VALIDATE_SEDML_MODELS:bool=True,
-                 VALIDATE_IMPORTED_MODEL_FILES:bool=True,
-                 VALIDATE_OMEX_METADATA:bool=True,
-                 VALIDATE_IMAGES:bool=True,
-                 VALIDATE_RESULTS:bool=True,
-                 ALGORITHM_SUBSTITUTION_POLICY:AlgorithmSubstitutionPolicy=DEFAULT_ALGORITHM_SUBSTITUTION_POLICY,
-                 COLLECT_COMBINE_ARCHIVE_RESULTS:bool=False,
-                 COLLECT_SED_DOCUMENT_RESULTS:bool=False,
-                 SAVE_PLOT_DATA:bool=True,
-                 REPORT_FORMATS:list=[ReportFormat.h5],
-                 VIZ_FORMATS:list=[VizFormat.pdf],
-                 H5_REPORTS_PATH:str=DEFAULT_H5_REPORTS_PATH,
-                 REPORTS_PATH:str=DEFAULT_REPORTS_PATH,
-                 PLOTS_PATH:str=DEFAULT_PLOTS_PATH,
-                 BUNDLE_OUTPUTS:bool=True,
-                 KEEP_INDIVIDUAL_OUTPUTS:bool=True,
-                 LOG:Optional[bool]=True,
-                 LOG_PATH:str=DEFAULT_LOG_PATH,
-                 BIOSIMULATORS_API_ENDPOINT:str=DEFAULT_BIOSIMULATORS_API_ENDPOINT,
-                 BIOSIMULATIONS_API_ENDPOINT:str=DEFAULT_BIOSIMULATIONS_API_ENDPOINT,
-                 BIOSIMULATIONS_API_AUTH_ENDPOINT:str=DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT,
-                 BIOSIMULATIONS_API_AUDIENCE:str=DEFAULT_BIOSIMULATIONS_API_AUDIENCE,
-                 VERBOSE:bool=False,
-                 DEBUG:bool=False):
+                 OMEX_METADATA_INPUT_FORMAT: OmexMetadataInputFormat = DEFAULT_OMEX_METADATA_INPUT_FORMAT,
+                 OMEX_METADATA_OUTPUT_FORMAT: OmexMetadataInputFormat = DEFAULT_OMEX_METADATA_OUTPUT_FORMAT,
+                 OMEX_METADATA_SCHEMA: OmexMetadataSchema = DEFAULT_OMEX_METADATA_SCHEMA,
+                 VALIDATE_OMEX_MANIFESTS: bool = True,
+                 VALIDATE_SEDML: bool = True,
+                 VALIDATE_SEDML_MODELS: bool = True,
+                 VALIDATE_IMPORTED_MODEL_FILES: bool = True,
+                 VALIDATE_OMEX_METADATA: bool = True,
+                 VALIDATE_IMAGES: bool = True,
+                 VALIDATE_RESULTS: bool = True,
+                 ALGORITHM_SUBSTITUTION_POLICY: AlgorithmSubstitutionPolicy = DEFAULT_ALGORITHM_SUBSTITUTION_POLICY,
+                 COLLECT_COMBINE_ARCHIVE_RESULTS: bool = False,
+                 COLLECT_SED_DOCUMENT_RESULTS: bool = False,
+                 SAVE_PLOT_DATA: bool = True,
+                 REPORT_FORMATS: List = [ReportFormat.h5],
+                 VIZ_FORMATS: List = [VizFormat.pdf],
+                 H5_REPORTS_PATH: str = DEFAULT_H5_REPORTS_PATH,
+                 REPORTS_PATH: str = DEFAULT_REPORTS_PATH,
+                 PLOTS_PATH: str = DEFAULT_PLOTS_PATH,
+                 BUNDLE_OUTPUTS: bool = True,
+                 KEEP_INDIVIDUAL_OUTPUTS: bool = True,
+                 LOG: Optional[bool] = True,
+                 LOG_PATH: str = DEFAULT_LOG_PATH,
+                 BIOSIMULATORS_API_ENDPOINT: str = DEFAULT_BIOSIMULATORS_API_ENDPOINT,
+                 BIOSIMULATIONS_API_ENDPOINT: str = DEFAULT_BIOSIMULATIONS_API_ENDPOINT,
+                 BIOSIMULATIONS_API_AUTH_ENDPOINT: str = DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT,
+                 BIOSIMULATIONS_API_AUDIENCE: str = DEFAULT_BIOSIMULATIONS_API_AUDIENCE,
+                 VERBOSE: bool = False,
+                 DEBUG: bool = False):
         """
         Args:
             OMEX_METADATA_INPUT_FORMAT (:obj:`OmexMetadataInputFormat`, optional): format to validate OMEX Metadata files against
@@ -165,7 +165,7 @@ class Config(object):
         self.DEBUG = DEBUG
 
 
-def get_config(report_format:str='h5', viz_format:str='pdf', log_source=os.environ.get('LOG', '1').lower() in ['1', 'true']):
+def get_config(report_format: str='h5', viz_format: str='pdf', log_source=os.environ.get('LOG', '1').lower() in ['1', 'true']):
     """ Get the configuration
 
     Returns:
@@ -209,7 +209,6 @@ def get_config(report_format:str='h5', viz_format:str='pdf', log_source=os.envir
         PLOTS_PATH=os.environ.get('PLOTS_PATH', DEFAULT_PLOTS_PATH),
         BUNDLE_OUTPUTS=os.environ.get('BUNDLE_OUTPUTS', '1').lower() in ['1', 'true'],
         KEEP_INDIVIDUAL_OUTPUTS=os.environ.get('KEEP_INDIVIDUAL_OUTPUTS', '1').lower() in ['1', 'true'],
-        #LOG=os.environ.get('LOG', '1').lower() in ['1', 'true'],
         LOG=log_source,
         LOG_PATH=os.environ.get('LOG_PATH', DEFAULT_LOG_PATH),
         BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', DEFAULT_BIOSIMULATORS_API_ENDPOINT),
