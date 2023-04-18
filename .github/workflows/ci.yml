@@ -18,7 +18,7 @@ jobs:
           TAG: ${{ github.ref }}
         run: |
           version="${TAG/refs\/tags\//}"
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
 
   build:
     name: Lint, test, and compile documentation
@@ -183,7 +183,7 @@ jobs:
           else
             changed=0
           fi
-          echo "::set-output name=changed::$changed"
+          echo "changed=$changed" >> $GITHUB_OUTPUT
 
       # compile and push documentation
       - name: Install the requirements for compiling the documentation
@@ -209,7 +209,7 @@ jobs:
           else
             changed=0
           fi
-          echo "::set-output name=changed::$changed"
+          echo "changed=$changed" >> $GITHUB_OUTPUT
 
       - name: Push the compiled documentation
         if: steps.commit-identifiers-namespaces.outputs.changed == '1' || steps.commit-docs.outputs.changed == '1'
