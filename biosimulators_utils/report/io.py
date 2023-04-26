@@ -337,7 +337,7 @@ class ReportReader(object):
         if isinstance(object, h5py.Dataset):
             dataset: h5py.Dataset = object
             data_set_type = dataset.attrs.get('_type', None)
-            
+
             if not data_set_type:
                 return
 
@@ -360,7 +360,5 @@ class ReportReader(object):
 
         for value in raw_values:
             parsedStrs.append(ReportReader.parse_dataset_str_value(value))
-        
-        return parsedStrs
 
-                
+        return parsedStrs
