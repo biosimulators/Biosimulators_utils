@@ -266,6 +266,8 @@ def get_pubmed_central_open_access_graphics(id, dirname, session=requests):
                 filename=os.path.join(dirname, id, graphic.attrib['{{{}}}href'.format(graphic.nsmap['xlink'])] + ".jpg"),
             ))
 
+    os.remove(tgz_filename)
+
     return graphics
 
 
