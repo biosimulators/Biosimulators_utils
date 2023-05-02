@@ -332,7 +332,7 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
             else:
                 sys.stdout = self._stdout
                 sys.stderr = self._stderr
-                
+             
     def __getstate__(self):
         """Get the state for pickling."""
         if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
@@ -343,7 +343,7 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
             return state
         else:
             return self.__dict__
-        
+    
     def __setstate__(self, state):
         """Set the state for unpickling."""
         self.__dict__.update(state)
