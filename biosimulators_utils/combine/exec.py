@@ -320,4 +320,4 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         log.export()
 
     # return results and log
-    return (results, log)
+    return (results, log) # noqa W292
