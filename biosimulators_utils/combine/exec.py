@@ -13,7 +13,7 @@ from biosimulators_utils.log.data_model import Status, CombineArchiveLog, Standa
 from biosimulators_utils.log.utils import init_combine_archive_log, get_summary_combine_archive_log, StandardOutputErrorCapturer
 from biosimulators_utils.report.data_model import VariableResults, ReportFormat, SedDocumentResults  # noqa: F401
 from biosimulators_utils.sedml.data_model import (SedDocument, Task, Output, Report, DataSet, Plot2D, Curve,  # noqa: F401
-                                Plot3D, Surface, Variable)
+                                                  Plot3D, Surface, Variable)
 from biosimulators_utils.utils.core import flatten_nested_list_of_strings
 from biosimulators_utils.warnings import warn, BioSimulatorsWarning
 from biosimulators_utils.combine.exceptions import CombineArchiveExecutionError, NoSedmlError
