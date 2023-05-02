@@ -6,22 +6,22 @@
 :License: MIT
 """
 
-from ..archive.io import ArchiveWriter
-from ..archive.utils import build_archive_from_paths
-from ..config import get_config, Config  # noqa: F401
-from ..log.data_model import Status, CombineArchiveLog, StandardOutputErrorCapturerLevel  # noqa: F401
-from ..log.utils import init_combine_archive_log, get_summary_combine_archive_log, StandardOutputErrorCapturer
-from ..report.data_model import VariableResults, ReportFormat, SedDocumentResults  # noqa: F401
-from ..sedml.data_model import (SedDocument, Task, Output, Report, DataSet, Plot2D, Curve,  # noqa: F401
+from biosimulators_utils.archive.io import ArchiveWriter
+from biosimulators_utils.archive.utils import build_archive_from_paths
+from biosimulators_utils.config import get_config, Config  # noqa: F401
+from biosimulators_utils.log.data_model import Status, CombineArchiveLog, StandardOutputErrorCapturerLevel  # noqa: F401
+from biosimulators_utils.log.utils import init_combine_archive_log, get_summary_combine_archive_log, StandardOutputErrorCapturer
+from biosimulators_utils.report.data_model import VariableResults, ReportFormat, SedDocumentResults  # noqa: F401
+from biosimulators_utils.sedml.data_model import (SedDocument, Task, Output, Report, DataSet, Plot2D, Curve,  # noqa: F401
                                 Plot3D, Surface, Variable)
-from ..utils.core import flatten_nested_list_of_strings
-from ..warnings import warn, BioSimulatorsWarning
-from .exceptions import CombineArchiveExecutionError, NoSedmlError
-from .data_model import CombineArchive
-from .io import CombineArchiveReader
-from .utils import get_sedml_contents, get_summary_sedml_contents
-from .validation import validate
-from ..viz.data_model import VizFormat  # noqa: F401
+from biosimulators_utils.utils.core import flatten_nested_list_of_strings
+from biosimulators_utils.warnings import warn, BioSimulatorsWarning
+from biosimulators_utils.combine.exceptions import CombineArchiveExecutionError, NoSedmlError
+from biosimulators_utils.combine.data_model import CombineArchive
+from biosimulators_utils.combine.io import CombineArchiveReader
+from biosimulators_utils.combine.utils import get_sedml_contents, get_summary_sedml_contents
+from biosimulators_utils.combine.validation import validate
+from biosimulators_utils.viz.data_model import VizFormat  # noqa: F401
 import copy
 import datetime
 import glob

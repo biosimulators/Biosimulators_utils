@@ -6,16 +6,16 @@
 :License: MIT
 """
 
-from ..combine.data_model import CombineArchive  # noqa: F401
-from ..combine.utils import get_sedml_contents
-from ..config import Config  # noqa: F401
-from ..sedml.data_model import SedDocument, Task, Output, Report, Plot2D, Plot3D, DataSet, Curve, Surface
-from ..sedml.io import SedmlSimulationReader
-from ..warnings import warn
-from .data_model import (Status, CombineArchiveLog, SedDocumentLog,  # noqa: F401
+from biosimulators_utils.combine.data_model import CombineArchive  # noqa: F401
+from biosimulators_utils.combine.utils import get_sedml_contents
+from biosimulators_utils.config import Config  # noqa: F401
+from biosimulators_utils.sedml.data_model import SedDocument, Task, Output, Report, Plot2D, Plot3D, DataSet, Curve, Surface
+from biosimulators_utils.sedml.io import SedmlSimulationReader
+from biosimulators_utils.warnings import warn
+from biosimulators_utils.log.data_model import (Status, CombineArchiveLog, SedDocumentLog,  # noqa: F401
                          TaskLog, OutputLog, ReportLog, Plot2DLog, Plot3DLog,
                          StandardOutputErrorCapturerLevel)
-from .warnings import StandardOutputNotLoggedWarning
+from biosimulators_utils.log.warnings import StandardOutputNotLoggedWarning
 try:
     import capturer
 except ModuleNotFoundError:
@@ -324,7 +324,7 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
                 sys.stderr = self
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self):
         """ Exit a context """
         if not self.disabled:
             if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
@@ -332,6 +332,23 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
             else:
                 sys.stdout = self._stdout
                 sys.stderr = self._stderr
+                
+    def __getstate__(self):
+        """Get the state for pickling."""
+        if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
+            state = self.__dict__.copy()
+            # Remove capturer's attributes from the state dictionary
+            for attr in ('_captured',):
+                state.pop(attr, None)
+            return state
+        else:
+            return self.__dict__
+        
+    def __setstate__(self, state):
+        """Set the state for unpickling."""
+        self.__dict__.update(state)
+        if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
+            self._captured = capturer.CaptureOutput(merged=True, relay=self.relay, termination_delay=0.01)
 
     def write(self, message):
         if self.relay:

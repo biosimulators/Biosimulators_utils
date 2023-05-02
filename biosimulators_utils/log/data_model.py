@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..config import get_config
+from biosimulators_utils.config import get_config
 import enum
 import os
 import yaml
