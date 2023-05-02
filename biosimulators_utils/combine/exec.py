@@ -40,7 +40,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                                sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
                                log_level=StandardOutputErrorCapturerLevel.c,
                                config=None,
-                               output_capturer=None):
+                               output_capturer: StandardOutputErrorCapturer = None):
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
 
     Args:
@@ -97,7 +97,9 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
     if not config:
         config = get_config()
 
-    with StandardOutputErrorCapturer(relay=True, level=log_level, disabled=not config.LOG) as archive_captured:
+    output_capturer = output_capturer or StandardOutputErrorCapturer(relay=True, level=log_level, disabled=not config.LOG)
+    
+    with output_capturer as archive_captured:
         verbose = config.VERBOSE
 
         # initialize status and output
