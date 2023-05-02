@@ -324,7 +324,7 @@ class StandardOutputErrorCapturer(contextlib.AbstractContextManager):
                 sys.stderr = self
         return self
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, traceback):
         """ Exit a context """
         if not self.disabled:
             if self.level >= StandardOutputErrorCapturerLevel.c and capturer:
