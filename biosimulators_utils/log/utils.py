@@ -13,7 +13,7 @@ from biosimulators_utils.sedml.data_model import SedDocument, Task, Output, Repo
 from biosimulators_utils.sedml.io import SedmlSimulationReader
 from biosimulators_utils.warnings import warn
 from biosimulators_utils.log.data_model import (Status, CombineArchiveLog, SedDocumentLog,  # noqa: F401
-                                                TaskLog, OutputLog, ReportLog, Plot2DLog, Plot3DLog, # noqa: W291
+                                                TaskLog, OutputLog, ReportLog, Plot2DLog, Plot3DLog,  # noqa: W291
                                                 StandardOutputErrorCapturerLevel)
 from biosimulators_utils.log.warnings import StandardOutputNotLoggedWarning
 try:

@@ -98,7 +98,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
         config = get_config()
 
     output_capturer = output_capturer or StandardOutputErrorCapturer(relay=True, level=log_level, disabled=not config.LOG)
-    
+
     with output_capturer as archive_captured:
         verbose = config.VERBOSE
 
