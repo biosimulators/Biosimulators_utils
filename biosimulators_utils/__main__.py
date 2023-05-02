@@ -6,11 +6,11 @@
 :License: MIT
 """
 
-from .combine.data_model import CombineArchiveContentFormat
-from .config import get_config
-from .sedml.data_model import ModelLanguage, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation
-from .utils.core import flatten_nested_list_of_strings
-from .warnings import warn, BioSimulatorsWarning
+from biosimulators_utils.combine.data_model import CombineArchiveContentFormat
+from biosimulators_utils.config import get_config
+from biosimulators_utils.sedml.data_model import ModelLanguage, OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation
+from biosimulators_utils.utils.core import flatten_nested_list_of_strings
+from biosimulators_utils.warnings import warn, BioSimulatorsWarning
 import biosimulators_utils
 import cement
 import json

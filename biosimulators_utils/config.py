@@ -6,9 +6,9 @@
 :License: MIT
 """
 
-from .omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, OmexMetadataSchema
-from .report.data_model import ReportFormat  # noqa: F401
-from .viz.data_model import VizFormat  # noqa: F401
+from biosimulators_utils.omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, OmexMetadataSchema
+from biosimulators_utils.report.data_model import ReportFormat  # noqa: F401
+from biosimulators_utils.viz.data_model import VizFormat  # noqa: F401
 from kisao import AlgorithmSubstitutionPolicy  # noqa: F401
 import appdirs
 import enum
