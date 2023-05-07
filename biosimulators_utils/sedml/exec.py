@@ -33,6 +33,7 @@ import sys
 import tempfile
 import termcolor
 import types  # noqa: F401
+from typing import Union, Tuple
 
 
 __all__ = [
@@ -47,11 +48,12 @@ __all__ = [
 ]
 
 
-def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=None,
-                 apply_xml_model_changes=False,
-                 log=None, indent=0, pretty_print_modified_xml_models=False,
-                 log_level=StandardOutputErrorCapturerLevel.c,
-                 config=None):
+def exec_sed_doc(task_executer: types.FunctionType, doc: Union[SedDocument, str], 
+                 working_dir: str, base_out_path: str, rel_out_path: str = None, 
+                 apply_xml_model_changes: bool = False, log: SedDocumentLog = None, 
+                 indent: int = 0, pretty_print_modified_xml_models: bool = False,
+                 log_level: StandardOutputErrorCapturerLevel = None, 
+                 config: Config = None) -> Tuple[ReportResults, SedDocumentLog]:
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -103,6 +105,9 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     """
     if not config:
         config = get_config()
+        
+    if not log_level:
+        log_level = config.STDOUT_CAPTURE_LEVEL
 
     # process arguments
     if not isinstance(doc, SedDocument):

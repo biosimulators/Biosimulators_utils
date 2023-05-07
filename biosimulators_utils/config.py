@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from .log.data_model import StandardOutputErrorCapturerLevel
 from .omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, OmexMetadataSchema
 from .report.data_model import ReportFormat  # noqa: F401
 from .viz.data_model import VizFormat  # noqa: F401
@@ -13,14 +14,17 @@ from kisao import AlgorithmSubstitutionPolicy  # noqa: F401
 import appdirs
 import enum
 import os
+from typing import List 
 
 __all__ = ['Config', 'get_config', 'Colors', 'get_app_dirs']
 
+DEFAULT_STDOUT_CAPTURE_LEVEL = StandardOutputErrorCapturerLevel.python 
 DEFAULT_OMEX_METADATA_INPUT_FORMAT = OmexMetadataInputFormat.rdfxml
 DEFAULT_OMEX_METADATA_OUTPUT_FORMAT = OmexMetadataOutputFormat.rdfxml_abbrev
 DEFAULT_OMEX_METADATA_SCHEMA = OmexMetadataSchema.biosimulations
 DEFAULT_ALGORITHM_SUBSTITUTION_POLICY = AlgorithmSubstitutionPolicy.SIMILAR_VARIABLES
 DEFAULT_H5_REPORTS_PATH = 'reports.h5'
+DEFAULT_CSV_REPORTS_PATH = 'reports.csv'
 DEFAULT_REPORTS_PATH = 'reports.zip'
 DEFAULT_PLOTS_PATH = 'plots.zip'
 DEFAULT_LOG_PATH = 'log.yml'
@@ -28,6 +32,7 @@ DEFAULT_BIOSIMULATORS_API_ENDPOINT = 'https://api.biosimulators.org/'
 DEFAULT_BIOSIMULATIONS_API_ENDPOINT = 'https://api.biosimulations.org/'
 DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT = 'https://auth.biosimulations.org/oauth/token'
 DEFAULT_BIOSIMULATIONS_API_AUDIENCE = 'api.biosimulations.org'
+
 
 
 class Config(object):
@@ -82,7 +87,7 @@ class Config(object):
                  COLLECT_COMBINE_ARCHIVE_RESULTS=False,
                  COLLECT_SED_DOCUMENT_RESULTS=False,
                  SAVE_PLOT_DATA=True,
-                 REPORT_FORMATS=[ReportFormat.h5],
+                 REPORT_FORMATS=[ReportFormat.csv],
                  VIZ_FORMATS=[VizFormat.pdf],
                  H5_REPORTS_PATH=DEFAULT_H5_REPORTS_PATH,
                  REPORTS_PATH=DEFAULT_REPORTS_PATH,
@@ -96,7 +101,8 @@ class Config(object):
                  BIOSIMULATIONS_API_AUTH_ENDPOINT=DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT,
                  BIOSIMULATIONS_API_AUDIENCE=DEFAULT_BIOSIMULATIONS_API_AUDIENCE,
                  VERBOSE=False,
-                 DEBUG=False):
+                 DEBUG=False,
+                 STDOUT_CAPTURE_LEVEL=DEFAULT_STDOUT_CAPTURE_LEVEL):
         """
         Args:
             OMEX_METADATA_INPUT_FORMAT (:obj:`OmexMetadataInputFormat`, optional): format to validate OMEX Metadata files against
@@ -162,21 +168,23 @@ class Config(object):
         self.BIOSIMULATIONS_API_AUDIENCE = BIOSIMULATIONS_API_AUDIENCE
         self.VERBOSE = VERBOSE
         self.DEBUG = DEBUG
+        self.STDOUT_CAPTURE_LEVEL = STDOUT_CAPTURE_LEVEL
 
+    
 
-def get_config():
+def get_config(report_format: str = 'csv', viz_format: str = 'pdf'):
     """ Get the configuration
 
     Returns:
         :obj:`Config`: configuration
     """
-    report_formats = os.environ.get('REPORT_FORMATS', 'h5').strip()
+    report_formats = os.environ.get('REPORT_FORMATS', report_format).strip()
     if report_formats:
         report_formats = [ReportFormat(format.strip().lower()) for format in report_formats.split(',')]
     else:
         report_formats = []
 
-    viz_formats = os.environ.get('VIZ_FORMATS', 'pdf').strip()
+    viz_formats = os.environ.get('VIZ_FORMATS', viz_format).strip()
     if viz_formats:
         viz_formats = [VizFormat(format.strip().lower()) for format in viz_formats.split(',')]
     else:
@@ -216,6 +224,7 @@ def get_config():
         BIOSIMULATIONS_API_AUDIENCE=os.environ.get('BIOSIMULATIONS_API_AUDIENCE', DEFAULT_BIOSIMULATIONS_API_AUDIENCE),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
+        STDOUT_CAPTURE_LEVEL=os.environ.get('STDOUT_CAPTURE_LEVEL', DEFAULT_STDOUT_CAPTURE_LEVEL),
     )
 
 
