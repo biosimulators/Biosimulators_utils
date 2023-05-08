@@ -6,16 +6,25 @@
 :License: MIT
 """
 
-from .omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, OmexMetadataSchema
-from .report.data_model import ReportFormat  # noqa: F401
-from .viz.data_model import VizFormat  # noqa: F401
-from kisao import AlgorithmSubstitutionPolicy  # noqa: F401
-import appdirs
 import enum
 import os
+import platform
+import appdirs
+from kisao import AlgorithmSubstitutionPolicy  # noqa: F401
+from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel
+from biosimulators_utils.omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, OmexMetadataSchema
+from biosimulators_utils.report.data_model import ReportFormat  # noqa: F401
+from biosimulators_utils.viz.data_model import VizFormat  # noqa: F401
+
 
 __all__ = ['Config', 'get_config', 'Colors', 'get_app_dirs']
 
+CURRENT_PLATFORM = platform.system()
+try:
+    assert CURRENT_PLATFORM == "Darwin"
+    DEFAULT_STDOUT_LEVEL = StandardOutputErrorCapturerLevel.python
+except AssertionError as e:
+    DEFAULT_STDOUT_LEVEL = StandardOutputErrorCapturerLevel.c
 DEFAULT_OMEX_METADATA_INPUT_FORMAT = OmexMetadataInputFormat.rdfxml
 DEFAULT_OMEX_METADATA_OUTPUT_FORMAT = OmexMetadataOutputFormat.rdfxml_abbrev
 DEFAULT_OMEX_METADATA_SCHEMA = OmexMetadataSchema.biosimulations
@@ -65,6 +74,7 @@ class Config(object):
         BIOSIMULATIONS_API_AUDIENCE (:obj:`str`): audience for the BioSimulations API
         VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
         DEBUG (:obj:`bool`): whether to raise exceptions rather than capturing them
+        STDOUT_LEVEL (:obj:`StandardOutputErrorCapturerLevel`): level at which to log the output
     """
 
     def __init__(self,
@@ -82,7 +92,7 @@ class Config(object):
                  COLLECT_COMBINE_ARCHIVE_RESULTS=False,
                  COLLECT_SED_DOCUMENT_RESULTS=False,
                  SAVE_PLOT_DATA=True,
-                 REPORT_FORMATS=[ReportFormat.h5],
+                 REPORT_FORMATS=[ReportFormat.csv],
                  VIZ_FORMATS=[VizFormat.pdf],
                  H5_REPORTS_PATH=DEFAULT_H5_REPORTS_PATH,
                  REPORTS_PATH=DEFAULT_REPORTS_PATH,
@@ -96,7 +106,8 @@ class Config(object):
                  BIOSIMULATIONS_API_AUTH_ENDPOINT=DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT,
                  BIOSIMULATIONS_API_AUDIENCE=DEFAULT_BIOSIMULATIONS_API_AUDIENCE,
                  VERBOSE=False,
-                 DEBUG=False):
+                 DEBUG=False,
+                 STDOUT_LEVEL=DEFAULT_STDOUT_LEVEL):
         """
         Args:
             OMEX_METADATA_INPUT_FORMAT (:obj:`OmexMetadataInputFormat`, optional): format to validate OMEX Metadata files against
@@ -117,7 +128,7 @@ class Config(object):
             COLLECT_SED_DOCUMENT_RESULTS (:obj:`bool`, optional): whether to assemble an in memory data structure with all of the
                 simulation results of SED documents
             SAVE_PLOT_DATA (:obj:`bool`, optional): whether to save data for plots alongside data for reports in CSV/HDF5 files
-            REPORT_FORMATS (:obj:`list` of :obj:`str`, optional): default formats to generate reports in
+            REPORT_FORMATS (:obj:`list` of :obj:`str`, optional): default formats to generate reports in-->defaults to 'csv'
             VIZ_FORMATS (:obj:`list` of :obj:`str`, optional): default formats to generate plots in
             H5_REPORTS_PATH (:obj:`str`, optional): path to save reports in HDF5 format relative to base output directory
             REPORTS_PATH (:obj:`str`, optional): path to save zip archive of reports relative to base output directory
@@ -132,6 +143,7 @@ class Config(object):
             BIOSIMULATIONS_API_AUDIENCE (:obj:`str`, optional): audience for the BioSimulations API
             VERBOSE (:obj:`bool`, optional): whether to display the detailed output of the execution of each task
             DEBUG (:obj:`bool`, optional): whether to raise exceptions rather than capturing them
+            STDOUT_LEVEL (:obj:`StandardOutputErrorCapturerLevel`): level at which to log the output
         """
         self.OMEX_METADATA_INPUT_FORMAT = OMEX_METADATA_INPUT_FORMAT
         self.OMEX_METADATA_OUTPUT_FORMAT = OMEX_METADATA_OUTPUT_FORMAT
@@ -162,21 +174,30 @@ class Config(object):
         self.BIOSIMULATIONS_API_AUDIENCE = BIOSIMULATIONS_API_AUDIENCE
         self.VERBOSE = VERBOSE
         self.DEBUG = DEBUG
+        self.STDOUT_LEVEL = STDOUT_LEVEL
 
 
-def get_config():
+def get_config(report_format: str = 'csv',
+               viz_format: str = 'pdf'):
     """ Get the configuration
-
+    Args:
+        :str:`report_format`: output format for reports
+        :str:`viz_format`: output format for visualizations
     Returns:
         :obj:`Config`: configuration
     """
-    report_formats = os.environ.get('REPORT_FORMATS', 'h5').strip()
+    
+    if not verify_formats(report_format, viz_format):
+        raise Exception 
+    
+    report_formats = os.environ.get('REPORT_FORMATS', report_format).strip()
+    
     if report_formats:
         report_formats = [ReportFormat(format.strip().lower()) for format in report_formats.split(',')]
     else:
         report_formats = []
 
-    viz_formats = os.environ.get('VIZ_FORMATS', 'pdf').strip()
+    viz_formats = os.environ.get('VIZ_FORMATS', viz_format).strip()
     if viz_formats:
         viz_formats = [VizFormat(format.strip().lower()) for format in viz_formats.split(',')]
     else:
@@ -216,6 +237,7 @@ def get_config():
         BIOSIMULATIONS_API_AUDIENCE=os.environ.get('BIOSIMULATIONS_API_AUDIENCE', DEFAULT_BIOSIMULATIONS_API_AUDIENCE),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
+        STDOUT_LEVEL=os.environ.get('STDOUT_LEVEL', DEFAULT_STDOUT_LEVEL)
     )
 
 
@@ -244,3 +266,15 @@ def get_app_dirs():
         :obj:`appdirs.AppDirs`: application directories
     """
     return appdirs.AppDirs("BioSimulatorsUtils", "BioSimulatorsTeam")
+
+
+def verify_formats(acceptable_format: enum.Enum, form: str, default: str):
+    acceptable_formats = [v.value for v in acceptable_format]
+    if not form in acceptable_formats:
+        print(
+            f'''Sorry, you must enter one of the following acceptable formats: {acceptable_formats}.
+                \nSetting to default format: {default}'''
+        )
+        return False 
+    else:
+        return True
