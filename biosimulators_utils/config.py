@@ -92,8 +92,8 @@ class Config(object):
                  COLLECT_COMBINE_ARCHIVE_RESULTS=False,
                  COLLECT_SED_DOCUMENT_RESULTS=False,
                  SAVE_PLOT_DATA=True,
-                 REPORT_FORMATS=[ReportFormat.csv],
-                 VIZ_FORMATS=[VizFormat.pdf],
+                 REPORT_FORMATS=None,
+                 VIZ_FORMATS=None,
                  H5_REPORTS_PATH=DEFAULT_H5_REPORTS_PATH,
                  REPORTS_PATH=DEFAULT_REPORTS_PATH,
                  PLOTS_PATH=DEFAULT_PLOTS_PATH,
@@ -160,8 +160,8 @@ class Config(object):
         self.COLLECT_COMBINE_ARCHIVE_RESULTS = COLLECT_COMBINE_ARCHIVE_RESULTS
         self.COLLECT_SED_DOCUMENT_RESULTS = COLLECT_SED_DOCUMENT_RESULTS
         self.SAVE_PLOT_DATA = SAVE_PLOT_DATA
-        self.REPORT_FORMATS = REPORT_FORMATS
-        self.VIZ_FORMATS = VIZ_FORMATS
+        self.REPORT_FORMATS = REPORT_FORMATS or [ReportFormat.csv]
+        self.VIZ_FORMATS = VIZ_FORMATS or [VizFormat.pdf]
         self.H5_REPORTS_PATH = H5_REPORTS_PATH
         self.REPORTS_PATH = REPORTS_PATH
         self.PLOTS_PATH = PLOTS_PATH
