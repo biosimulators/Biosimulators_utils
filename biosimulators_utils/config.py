@@ -5,17 +5,26 @@
 :Copyright: 2020, Center for Reproducible Biomedical Modeling
 :License: MIT
 """
-
-from .omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, OmexMetadataSchema
-from .report.data_model import ReportFormat  # noqa: F401
-from .viz.data_model import VizFormat  # noqa: F401
-from kisao import AlgorithmSubstitutionPolicy  # noqa: F401
-import appdirs
 import enum
 import os
+import platform
+from types import FunctionType
+from typing import Dict, List, Union
+from kisao import AlgorithmSubstitutionPolicy  # noqa: F401
+from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel
+from biosimulators_utils.omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, OmexMetadataSchema
+from biosimulators_utils.report.data_model import ReportFormat  # noqa: F401
+from biosimulators_utils.viz.data_model import VizFormat  # noqa: F401
+import appdirs
 
 __all__ = ['Config', 'get_config', 'Colors', 'get_app_dirs']
 
+CURRENT_PLATFORM = platform.system()
+try:
+    assert CURRENT_PLATFORM == "Darwin"
+    DEFAULT_STDOUT_LEVEL = StandardOutputErrorCapturerLevel.python
+except AssertionError as e:
+    DEFAULT_STDOUT_LEVEL = StandardOutputErrorCapturerLevel.c
 DEFAULT_OMEX_METADATA_INPUT_FORMAT = OmexMetadataInputFormat.rdfxml
 DEFAULT_OMEX_METADATA_OUTPUT_FORMAT = OmexMetadataOutputFormat.rdfxml_abbrev
 DEFAULT_OMEX_METADATA_SCHEMA = OmexMetadataSchema.biosimulations
@@ -65,6 +74,7 @@ class Config(object):
         BIOSIMULATIONS_API_AUDIENCE (:obj:`str`): audience for the BioSimulations API
         VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
         DEBUG (:obj:`bool`): whether to raise exceptions rather than capturing them
+        STDOUT_LEVEL (:obj:`StandardOutputErrorCapturerLevel`): level at which to log the output
     """
 
     def __init__(self,
@@ -82,8 +92,8 @@ class Config(object):
                  COLLECT_COMBINE_ARCHIVE_RESULTS=False,
                  COLLECT_SED_DOCUMENT_RESULTS=False,
                  SAVE_PLOT_DATA=True,
-                 REPORT_FORMATS=[ReportFormat.h5],
-                 VIZ_FORMATS=[VizFormat.pdf],
+                 REPORT_FORMATS=None,
+                 VIZ_FORMATS=None,
                  H5_REPORTS_PATH=DEFAULT_H5_REPORTS_PATH,
                  REPORTS_PATH=DEFAULT_REPORTS_PATH,
                  PLOTS_PATH=DEFAULT_PLOTS_PATH,
@@ -96,7 +106,9 @@ class Config(object):
                  BIOSIMULATIONS_API_AUTH_ENDPOINT=DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT,
                  BIOSIMULATIONS_API_AUDIENCE=DEFAULT_BIOSIMULATIONS_API_AUDIENCE,
                  VERBOSE=False,
-                 DEBUG=False):
+                 DEBUG=False,
+                 STDOUT_LEVEL=DEFAULT_STDOUT_LEVEL,
+                 **CUSTOM_SETTINGS):
         """
         Args:
             OMEX_METADATA_INPUT_FORMAT (:obj:`OmexMetadataInputFormat`, optional): format to validate OMEX Metadata files against
@@ -117,7 +129,7 @@ class Config(object):
             COLLECT_SED_DOCUMENT_RESULTS (:obj:`bool`, optional): whether to assemble an in memory data structure with all of the
                 simulation results of SED documents
             SAVE_PLOT_DATA (:obj:`bool`, optional): whether to save data for plots alongside data for reports in CSV/HDF5 files
-            REPORT_FORMATS (:obj:`list` of :obj:`str`, optional): default formats to generate reports in
+            REPORT_FORMATS (:obj:`list` of :obj:`str`, optional): default formats to generate reports in-->defaults to 'csv'
             VIZ_FORMATS (:obj:`list` of :obj:`str`, optional): default formats to generate plots in
             H5_REPORTS_PATH (:obj:`str`, optional): path to save reports in HDF5 format relative to base output directory
             REPORTS_PATH (:obj:`str`, optional): path to save zip archive of reports relative to base output directory
@@ -132,6 +144,7 @@ class Config(object):
             BIOSIMULATIONS_API_AUDIENCE (:obj:`str`, optional): audience for the BioSimulations API
             VERBOSE (:obj:`bool`, optional): whether to display the detailed output of the execution of each task
             DEBUG (:obj:`bool`, optional): whether to raise exceptions rather than capturing them
+            STDOUT_LEVEL (:obj:`StandardOutputErrorCapturerLevel`): level at which to log the output
         """
         self.OMEX_METADATA_INPUT_FORMAT = OMEX_METADATA_INPUT_FORMAT
         self.OMEX_METADATA_OUTPUT_FORMAT = OMEX_METADATA_OUTPUT_FORMAT
@@ -147,8 +160,8 @@ class Config(object):
         self.COLLECT_COMBINE_ARCHIVE_RESULTS = COLLECT_COMBINE_ARCHIVE_RESULTS
         self.COLLECT_SED_DOCUMENT_RESULTS = COLLECT_SED_DOCUMENT_RESULTS
         self.SAVE_PLOT_DATA = SAVE_PLOT_DATA
-        self.REPORT_FORMATS = REPORT_FORMATS
-        self.VIZ_FORMATS = VIZ_FORMATS
+        self.REPORT_FORMATS = REPORT_FORMATS or [ReportFormat.csv]
+        self.VIZ_FORMATS = VIZ_FORMATS or [VizFormat.pdf]
         self.H5_REPORTS_PATH = H5_REPORTS_PATH
         self.REPORTS_PATH = REPORTS_PATH
         self.PLOTS_PATH = PLOTS_PATH
@@ -162,23 +175,65 @@ class Config(object):
         self.BIOSIMULATIONS_API_AUDIENCE = BIOSIMULATIONS_API_AUDIENCE
         self.VERBOSE = VERBOSE
         self.DEBUG = DEBUG
+        self.STDOUT_LEVEL = STDOUT_LEVEL
+        self.CUSTOM_SETTINGS = self.__getcustomsettings(CUSTOM_SETTINGS)
+        
+    def __getcustomsettings(self, settings: Dict = None):
+        for key in settings.keys():
+            setattr(self, key, settings[key])
+        return self 
 
 
-def get_config():
-    """ Get the configuration
-
+def get_config(report_format: str = None,
+               viz_format: str = None,
+               acceptable_report_formats: Union[List[str], ReportFormat] = ReportFormat,
+               acceptable_viz_formats: Union[List[str], VizFormat] = VizFormat,
+               *_default_format_settings):
+    """ Get the configuration based on specified optional settings. Handles sets default values for 
+    `report_format` and `viz_format` if these respective variables are empty. 
+    
+    Args:
+        :str:`report_format`: output format for reports. Defaults to `None`
+        
+        :str:`viz_format`: output format for visualizations. Defaults to `None`
+        
+        :Union:`acceptable_report_formats`: acceptable formats for output report data. Defaults to `biosimulators_utils.report.data_model.ReportFormat`
+        
+        :Union:`acceptable_viz_formats`: acceptable formats for output viz data. Defaults to `biosimulators_utils.viz.data_model.VizFormat`
+        
     Returns:
         :obj:`Config`: configuration
     """
-    report_formats = os.environ.get('REPORT_FORMATS', 'h5').strip()
+    
+    if not _default_format_settings:  #get
+        _default_format_settings = ('csv', 'pdf')  #set
+        
+    user_report_format = verify_formats(
+        report_format, 
+        acceptable_report_formats, 
+        _default_format_settings[0]
+    )
+    
+    user_viz_format = verify_formats(
+        viz_format, 
+        acceptable_viz_formats, 
+        _default_format_settings[1]
+    )
+    
+    report_formats = os.environ.get('REPORT_FORMATS', user_report_format).strip()
+    
     if report_formats:
-        report_formats = [ReportFormat(format.strip().lower()) for format in report_formats.split(',')]
+        report_formats = [
+            ReportFormat(format.strip().lower()) for format in report_formats.split(',')
+        ]
     else:
         report_formats = []
 
-    viz_formats = os.environ.get('VIZ_FORMATS', 'pdf').strip()
+    viz_formats = os.environ.get('VIZ_FORMATS', user_viz_format).strip()
     if viz_formats:
-        viz_formats = [VizFormat(format.strip().lower()) for format in viz_formats.split(',')]
+        viz_formats = [
+            VizFormat(format.strip().lower()) for format in viz_formats.split(',')
+        ]
     else:
         viz_formats = []
 
@@ -216,6 +271,7 @@ def get_config():
         BIOSIMULATIONS_API_AUDIENCE=os.environ.get('BIOSIMULATIONS_API_AUDIENCE', DEFAULT_BIOSIMULATIONS_API_AUDIENCE),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
+        STDOUT_LEVEL=os.environ.get('STDOUT_LEVEL', DEFAULT_STDOUT_LEVEL)
     )
 
 
@@ -244,3 +300,37 @@ def get_app_dirs():
         :obj:`appdirs.AppDirs`: application directories
     """
     return appdirs.AppDirs("BioSimulatorsUtils", "BioSimulatorsTeam")
+
+
+def verify_formats(format_type: str, acceptable_format: enum.Enum, default: str):
+    
+    def verify_format(format_type, acceptable_format):
+        acceptable_formats = acceptable_formats(acceptable_format)
+        if format_type not in acceptable_formats:
+            print(
+                f'''Sorry, you must enter one of the following acceptable formats:
+                    {acceptable_formats}. \nSetting to default format: {default}'''
+            )
+            return False 
+        else:
+            return True
+    
+    return default if not verify_format(format_type, acceptable_format)\
+        else format_type
+
+
+def acceptable_viz_formats():
+    return acceptable_formats(VizFormat)
+
+def acceptable_report_formats():
+    return acceptable_formats(ReportFormat)
+
+def acceptable_formats(acceptable_formats: enum.Enum):
+    return [v.value for v in acceptable_formats]
+
+    
+
+
+
+
+
