@@ -303,9 +303,8 @@ def get_app_dirs():
 
 
 def verify_formats(format_type: str, acceptable_format: enum.Enum, default: str):
-    
     def verify_format(format_type, acceptable_format):
-        acceptable_formats = [v.value for v in acceptable_format]
+        acceptable_formats = _get_acceptable_formats(acceptable_format)
         if format_type not in acceptable_formats:
             print(
                 f'''Sorry, you must enter one of the following acceptable formats:
@@ -317,3 +316,13 @@ def verify_formats(format_type: str, acceptable_format: enum.Enum, default: str)
     
     return default if not verify_format(format_type, acceptable_format)\
         else format_type
+
+
+def acceptable_viz_formats():
+    return _get_acceptable_formats(VizFormat)
+
+def acceptable_report_formats():
+    return _get_acceptable_formats(ReportFormat)
+
+def _get_acceptable_formats(acceptable_formats: enum.Enum):
+    return [v.value for v in acceptable_formats]
