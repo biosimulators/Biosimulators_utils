@@ -144,7 +144,7 @@ def get_config(report_format: str = None,
 
     print(user_viz_format, user_report_format)
 
-    '''report_formats = os.environ.get('REPORT_FORMATS', user_report_format).strip()
+    report_formats = os.environ.get('REPORT_FORMATS', user_report_format).strip()
 
     if report_formats:
         report_formats = [
@@ -198,9 +198,9 @@ def get_config(report_format: str = None,
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
         STDOUT_LEVEL=os.environ.get('STDOUT_LEVEL', DEFAULT_STDOUT_LEVEL),
         EASY_LOG=None if not easy_log else easy_log
-    )'''
+    )
 
-get_config()
+
 
 Colors = enum.Enum('Colors',
                    {
