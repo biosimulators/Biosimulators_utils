@@ -277,15 +277,15 @@ class EasyLog:
         else:
             make_dir()
 
-    def add_msg(self, message, function="none", status="none"):
+    def add_msg(self, message, func="none", status="none"):
         size = self.__getsize__()
         entry_number = 1 if size < 1 else size
         now = self.__getnow__()
         verify = lambda v: v != "none"
-        function = function.__name__ if verify(function) else function
+        func = func.__name__ if verify(func) else func
         status = str(status)
         entry = f"""{now} | NOTES: {message} | CALLED FROM: {self.working_file} 
-                          | METHOD CALLED: {function} | STATUS: {status.upper()}"""
+                          | METHOD CALLED: {func} | STATUS: {status.upper()}"""
         self.log[entry_number] = entry
         return self.log
 
