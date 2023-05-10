@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from .config import Colors
+from biosimulators_utils.config import Colors
 import termcolor
 import warnings
 
