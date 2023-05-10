@@ -50,7 +50,7 @@ __all__ = [
 def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=None,
                  apply_xml_model_changes=False,
                  log=None, indent=0, pretty_print_modified_xml_models=False,
-                 log_level=StandardOutputErrorCapturerLevel.c,
+                 log_level=None,
                  config=None):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
@@ -103,6 +103,9 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     """
     if not config:
         config = get_config()
+
+    if not log_level:
+        log_level = config.STDOUT_LEVEL
 
     # process arguments
     if not isinstance(doc, SedDocument):

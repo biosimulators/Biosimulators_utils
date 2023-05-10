@@ -5,19 +5,26 @@
 :Copyright: 2020, Center for Reproducible Biomedical Modeling
 :License: MIT
 """
+
 import enum
 import os
+import json
 import platform
-from types import FunctionType
+from datetime import datetime
 from typing import Dict, List, Union
 from kisao import AlgorithmSubstitutionPolicy  # noqa: F401
 from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel
-from biosimulators_utils.omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, OmexMetadataSchema
+from biosimulators_utils.omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, \
+    OmexMetadataSchema
 from biosimulators_utils.report.data_model import ReportFormat  # noqa: F401
 from biosimulators_utils.viz.data_model import VizFormat  # noqa: F401
 import appdirs
 
-__all__ = ['Config', 'get_config', 'Colors', 'get_app_dirs']
+__all__ = [
+    'Config', 'get_config', 'Colors',
+    'get_app_dirs', 'acceptable_report_formats',
+    'acceptable_viz_formats'
+]
 
 CURRENT_PLATFORM = platform.system()
 try:
@@ -177,18 +184,24 @@ class Config(object):
         self.DEBUG = DEBUG
         self.STDOUT_LEVEL = STDOUT_LEVEL
         self.CUSTOM_SETTINGS = self.__getcustomsettings(CUSTOM_SETTINGS)
-        
+        if "EASY_LOG" in self.CUSTOM_SETTINGS:
+            self.logger = self.easy_log()
+
     def __getcustomsettings(self, settings: Dict = None):
         for key in settings.keys():
             setattr(self, key, settings[key])
-        return self 
+        return self
+
+    def easy_log(self):
+        return EasyLog(os.getcwd())
 
 
 def get_config(report_format: str = None,
                viz_format: str = None,
                acceptable_report_formats: Union[List[str], ReportFormat] = ReportFormat,
                acceptable_viz_formats: Union[List[str], VizFormat] = VizFormat,
-               *_default_format_settings):
+               easy_log: bool = False,
+               *_default_format_settings) -> Config:
     """ Get the configuration based on specified optional settings. Handles sets default values for 
     `report_format` and `viz_format` if these respective variables are empty. 
     
@@ -204,24 +217,24 @@ def get_config(report_format: str = None,
     Returns:
         :obj:`Config`: configuration
     """
-    
-    if not _default_format_settings:  #get
-        _default_format_settings = ('csv', 'pdf')  #set
-        
+
+    if not _default_format_settings:  # get
+        _default_format_settings = ('csv', 'pdf')  # set
+
     user_report_format = verify_formats(
-        report_format, 
-        acceptable_report_formats, 
+        report_format,
+        acceptable_report_formats,
         _default_format_settings[0]
     )
-    
+
     user_viz_format = verify_formats(
-        viz_format, 
-        acceptable_viz_formats, 
+        viz_format,
+        acceptable_viz_formats,
         _default_format_settings[1]
     )
-    
+
     report_formats = os.environ.get('REPORT_FORMATS', user_report_format).strip()
-    
+
     if report_formats:
         report_formats = [
             ReportFormat(format.strip().lower()) for format in report_formats.split(',')
@@ -267,11 +280,13 @@ def get_config(report_format: str = None,
         LOG_PATH=os.environ.get('LOG_PATH', DEFAULT_LOG_PATH),
         BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', DEFAULT_BIOSIMULATORS_API_ENDPOINT),
         BIOSIMULATIONS_API_ENDPOINT=os.environ.get('BIOSIMULATIONS_API_ENDPOINT', DEFAULT_BIOSIMULATIONS_API_ENDPOINT),
-        BIOSIMULATIONS_API_AUTH_ENDPOINT=os.environ.get('BIOSIMULATIONS_API_AUTH_ENDPOINT', DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT),
+        BIOSIMULATIONS_API_AUTH_ENDPOINT=os.environ.get('BIOSIMULATIONS_API_AUTH_ENDPOINT',
+                                                        DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT),
         BIOSIMULATIONS_API_AUDIENCE=os.environ.get('BIOSIMULATIONS_API_AUDIENCE', DEFAULT_BIOSIMULATIONS_API_AUDIENCE),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
-        STDOUT_LEVEL=os.environ.get('STDOUT_LEVEL', DEFAULT_STDOUT_LEVEL)
+        STDOUT_LEVEL=os.environ.get('STDOUT_LEVEL', DEFAULT_STDOUT_LEVEL),
+        EASY_LOG=None if not easy_log else easy_log
     )
 
 
@@ -302,35 +317,85 @@ def get_app_dirs():
     return appdirs.AppDirs("BioSimulatorsUtils", "BioSimulatorsTeam")
 
 
+def acceptable_viz_formats():
+    return get_acceptable_formats(VizFormat)
+
+
+def acceptable_report_formats():
+    return get_acceptable_formats(ReportFormat)
+
+
+def get_acceptable_formats(acceptable_formats: enum.Enum):
+    return [v.value for v in acceptable_formats]
+
+
 def verify_formats(format_type: str, acceptable_format: enum.Enum, default: str):
-    
-    def verify_format(format_type, acceptable_format):
-        acceptable_formats = acceptable_formats(acceptable_format)
-        if format_type not in acceptable_formats:
+    def verify_format(form_type, acceptable_form):
+        acceptable_formats = get_acceptable_formats(acceptable_form)
+        if form_type not in acceptable_formats:
             print(
                 f'''Sorry, you must enter one of the following acceptable formats:
                     {acceptable_formats}. \nSetting to default format: {default}'''
             )
-            return False 
+            return False
         else:
             return True
-    
-    return default if not verify_format(format_type, acceptable_format)\
+
+    return default if not verify_format(format_type, acceptable_format) \
         else format_type
 
 
-def acceptable_viz_formats():
-    return acceptable_formats(VizFormat)
+class EasyLog:
+    def __init__(self, log_dir, fresh: bool = False):
+        self.working_file = __file__
+        self._make_logdir(log_dir, fresh)
+        self.log = {}
+        self.index = list(range(len(self.log)))
 
-def acceptable_report_formats():
-    return acceptable_formats(ReportFormat)
+    def __getsize__(self):
+        return len(self.log)
 
-def acceptable_formats(acceptable_formats: enum.Enum):
-    return [v.value for v in acceptable_formats]
+    def __getnow__(self):
+        return datetime.now().strftime("%d.%m.%Y..%H.%M.%S")
 
-    
+    def _make_logdir(self, log_dir: str, fresh_log: bool):
+        make_dir = lambda: os.os.mkdir(log_dir) if not os.path.exists(log_dir) else None
+        if fresh_log:
+            filepaths = []
+            for root, _, files in os.walk(log_dir):
+                filepaths.append(os.path.join(root, f) for f in files)
+            for f in filepaths:
+                os.remove(f)
+            os.rmdir(log_dir)
+            make_dir()
+        else:
+            make_dir()
 
+    def add_msg(self, message, function="none", status="none"):
+        size = self.__getsize__()
+        entry_number = 1 if size < 1 else size
+        now = self.__getnow__()
+        verify = lambda v: v != "none"
+        function = function.__name__ if verify(function) else function
+        status = str(status)
+        entry = f"""{now} | NOTES: {message} | CALLED FROM: {self.working_file} 
+                          | METHOD CALLED: {function} | STATUS: {status.upper()}"""
+        self.log[entry_number] = entry
+        return self.log
 
+    def flush(self):
+        for n in self.index:
+            self.log.pop(n)
+        return self.log
 
+    def write(self, log_fp: str = None):
+        if not log_fp:
+            now = self.__getnow__()
+            log_fp = f"log_{now}.json"
+        with open(log_fp, "w"):
+            json.dump(self.log, log_fp, indent=4)
 
-
+    def flush_log(self, log_fp: str = None):
+        self.write(log_fp)
+        self.flush()
+        return

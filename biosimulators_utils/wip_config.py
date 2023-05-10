@@ -5,7 +5,7 @@ import platform
 from datetime import datetime
 from typing import Dict, List, Union
 from kisao import AlgorithmSubstitutionPolicy  # noqa: F401
-#from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel
+# from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel
 from biosimulators_utils.omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, \
     OmexMetadataSchema
 from biosimulators_utils.report.data_model import ReportFormat  # noqa: F401
@@ -17,6 +17,7 @@ __all__ = [
     'get_app_dirs', 'acceptable_report_formats',
     'acceptable_viz_formats'
 ]
+
 
 class StandardOutputErrorCapturerLevel(str, enum.Enum):
     python = 'python'
@@ -126,7 +127,6 @@ def get_config(report_format: str = None,
                acceptable_viz_formats: Union[List[str], VizFormat] = VizFormat,
                easy_log: bool = False,
                *_default_format_settings) -> Config:
-
     if not _default_format_settings:  # get
         _default_format_settings = ('csv', 'pdf')  # set
 
@@ -199,7 +199,6 @@ def get_config(report_format: str = None,
         STDOUT_LEVEL=os.environ.get('STDOUT_LEVEL', DEFAULT_STDOUT_LEVEL),
         EASY_LOG=None if not easy_log else easy_log
     )
-
 
 
 Colors = enum.Enum('Colors',
@@ -311,6 +310,3 @@ class EasyLog:
         self.write(log_fp)
         self.flush()
         return
-
-
-
