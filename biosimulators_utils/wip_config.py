@@ -148,7 +148,7 @@ def get_config(report_format: str = None,
 
     if report_formats:
         report_formats = [
-            ReportFormat(format.strip().lower()) for format in report_formats.split(',')
+            ReportFormat(f.strip().lower()) for f in report_formats.split(',')
         ]
     else:
         report_formats = []
@@ -156,7 +156,7 @@ def get_config(report_format: str = None,
     viz_formats = os.environ.get('VIZ_FORMATS', user_viz_format).strip()
     if viz_formats:
         viz_formats = [
-            VizFormat(format.strip().lower()) for format in viz_formats.split(',')
+            VizFormat(f.strip().lower()) for f in viz_formats.split(',')
         ]
     else:
         viz_formats = []
