@@ -5,7 +5,7 @@ import platform
 from datetime import datetime
 from typing import Dict, List, Union
 from kisao import AlgorithmSubstitutionPolicy  # noqa: F401
-# from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel
+from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel
 from biosimulators_utils.omex_meta.data_model import OmexMetadataInputFormat, OmexMetadataOutputFormat, \
     OmexMetadataSchema
 from biosimulators_utils.report.data_model import ReportFormat  # noqa: F401
@@ -17,11 +17,6 @@ __all__ = [
     'get_app_dirs', 'acceptable_report_formats',
     'acceptable_viz_formats'
 ]
-
-
-class StandardOutputErrorCapturerLevel(str, enum.Enum):
-    python = 'python'
-    c = 'c'
 
 
 CURRENT_PLATFORM = platform.system()
