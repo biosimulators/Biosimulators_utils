@@ -241,7 +241,7 @@ def verify_formats(format_type: str, acceptable_format: enum.Enum, default: str)
         if form_type not in acceptable_formats:
             print(
                 f'''Sorry, you must enter one of the following acceptable formats:
-                    {acceptable_formats}. \nSetting to default format: {default}'''
+                    {acceptable_formats}.\nSetting to default format: {default}'''
             )
             return False
         else:
