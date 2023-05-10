@@ -304,4 +304,3 @@ class EasyLog:
     def flush_log(self, log_fp: str = None):
         self.write(log_fp)
         self.flush()
-        return
