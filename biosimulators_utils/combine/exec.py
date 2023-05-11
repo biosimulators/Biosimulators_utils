@@ -6,6 +6,13 @@
 :License: MIT
 """
 
+import copy
+import datetime
+import glob
+import os
+import tempfile
+import shutil
+import types  # noqa: F401
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config, Config  # noqa: F401
@@ -22,13 +29,7 @@ from .io import CombineArchiveReader
 from .utils import get_sedml_contents, get_summary_sedml_contents
 from .validation import validate
 from ..viz.data_model import VizFormat  # noqa: F401
-import copy
-import datetime
-import glob
-import os
-import tempfile
-import shutil
-import types  # noqa: F401
+
 
 __all__ = [
     'exec_sedml_docs_in_archive',
@@ -38,8 +39,8 @@ __all__ = [
 def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, apply_xml_model_changes=False,
                                sed_doc_executer_supported_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
                                sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
-                               log_level=StandardOutputErrorCapturerLevel.c,
-                               config=None):
+                               log_level: StandardOutputErrorCapturerLevel = None,
+                               config: Config = None):
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
 
     Args:
@@ -94,7 +95,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             * :obj:`CombineArchiveLog`: log
     """
     if not config:
-        config = get_config()
+        config = get_config(easy_log=True)
+
+    if not log_level:
+        log_level = config.STDOUT_LEVEL
 
     with StandardOutputErrorCapturer(relay=True, level=log_level, disabled=not config.LOG) as archive_captured:
         verbose = config.VERBOSE

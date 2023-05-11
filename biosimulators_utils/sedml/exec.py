@@ -6,6 +6,18 @@
 :License: MIT
 """
 
+
+import copy
+import datetime
+import numpy
+import os
+import sys
+import tempfile
+import termcolor
+import types  # noqa: F401
+from lxml import etree  # noqa: F401
+from types import FunctionType
+from typing import List, Tuple, Union 
 from ..config import get_config, Config, Colors  # noqa: F401
 from ..log.data_model import Status, SedDocumentLog, TaskLog, ReportLog, Plot2DLog, Plot3DLog, StandardOutputErrorCapturerLevel  # noqa: F401
 from ..log.utils import init_sed_document_log, StandardOutputErrorCapturer
@@ -24,15 +36,7 @@ from .utils import (resolve_model_and_apply_xml_changes, get_variables_for_task,
                     apply_changes_to_xml_model, get_first_last_models_executed_by_task,
                     is_model_language_encoded_in_xml)
 from .warnings import NoTasksWarning, NoOutputsWarning, SedmlFeatureNotSupportedWarning
-from lxml import etree  # noqa: F401
-import copy
-import datetime
-import numpy
-import os
-import sys
-import tempfile
-import termcolor
-import types  # noqa: F401
+
 
 
 __all__ = [
@@ -47,11 +51,11 @@ __all__ = [
 ]
 
 
-def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=None,
-                 apply_xml_model_changes=False,
-                 log=None, indent=0, pretty_print_modified_xml_models=False,
-                 log_level=StandardOutputErrorCapturerLevel.c,
-                 config=None):
+def exec_sed_doc(task_executer: FunctionType, doc: Union[SedDocument, str],
+                 working_dir: str, base_out_path: str, rel_out_path: str = None,
+                 apply_xml_model_changes: bool = False, log: SedDocumentLog = None, 
+                 indent: int = 0, pretty_print_modified_xml_models: bool = False,
+                 log_level: StandardOutputErrorCapturerLevel = None, config: Config = None):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -101,16 +105,19 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             * :obj:`ReportResults`: results of each report
             * :obj:`SedDocumentLog`: log of the document
     """
-    if not config:
-        config = get_config()
+    if not config:  # python:S3776
+        config = get_config(easy_log=True)
+
+    if not log_level: # python:S3776
+        log_level = config.STDOUT_LEVEL
 
     # process arguments
-    if not isinstance(doc, SedDocument):
+    if not isinstance(doc, SedDocument): # python:S3776
         doc = SedmlSimulationReader().run(doc, config=config)
     else:
         doc = copy.deepcopy(doc)
 
-    if config.LOG and not log:
+    if config.LOG and not log: # python:S3776
         log = init_sed_document_log(doc)
 
     verbose = config.VERBOSE
@@ -119,7 +126,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     exceptions = []
 
     # execute tasks
-    if not doc.tasks:
+    if not doc.tasks: # python:S3776
         warn('SED document does not describe any tasks.', NoTasksWarning)
 
     # TODO: initialize reports with their eventual shapes; this requires individual simulation tools to pass
@@ -755,7 +762,9 @@ def exec_plot_2d(plot, variable_results, base_out_path, rel_out_path, formats, t
     return status, data_gen_exceptions, task_contributes_to_plot
 
 
-def exec_plot_3d(plot, variable_results, base_out_path, rel_out_path, formats, task, log):
+def exec_plot_3d(plot: Plot3D, variable_results: VariableResults, 
+                 base_out_path: str, rel_out_path: str, formats: List[VizFormat], 
+                 task: Task, log: ReportLog) -> Tuple[Status, Exception, bool]:
     """ Execute a 3D plot, generating the surfaces which are available
 
     Args:

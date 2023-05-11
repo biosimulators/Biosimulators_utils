@@ -5,8 +5,9 @@
 :Copyright: 2020, Center for Reproducible Biomedical Modeling
 :License: MIT
 """
-
-from ..config import get_config
+import sys
+sys.path.insert(0, "C:/Users/apatrie/Desktop/wip-biosimulators-utils-repo/Biosimulators_utils")
+from biosimulators_utils.config import get_config
 import enum
 import os
 import yaml

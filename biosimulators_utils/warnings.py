@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from .config import Colors
+from wip_config import Colors
 import termcolor
 import warnings
 
