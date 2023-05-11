@@ -39,8 +39,8 @@ __all__ = [
 def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, apply_xml_model_changes=False,
                                sed_doc_executer_supported_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
                                sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
-                               log_level=StandardOutputErrorCapturerLevel.c,
-                               config=None):
+                               log_level: StandardOutputErrorCapturerLevel = None,
+                               config: Config = None):
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
 
     Args:
@@ -95,7 +95,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             * :obj:`CombineArchiveLog`: log
     """
     if not config:
-        config = get_config()
+        config = get_config(easy_log=True)
+
+    if not log_level:
+        log_level = config.STDOUT_LEVEL
 
     with StandardOutputErrorCapturer(relay=True, level=log_level, disabled=not config.LOG) as archive_captured:
         verbose = config.VERBOSE
