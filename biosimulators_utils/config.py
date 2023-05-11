@@ -29,11 +29,8 @@ __all__ = [
 
 
 CURRENT_PLATFORM = platform.system()
-try:
-    assert CURRENT_PLATFORM == "Darwin"
-    DEFAULT_STDOUT_LEVEL = StandardOutputErrorCapturerLevel.python
-except AssertionError as e:
-    DEFAULT_STDOUT_LEVEL = StandardOutputErrorCapturerLevel.c
+DEFAULT_STDOUT_LEVEL = StandardOutputErrorCapturerLevel.c if not "Darwin" in CURRENT_PLATFORM \
+    else StandardOutputErrorCapturerLevel.python
 DEFAULT_OMEX_METADATA_INPUT_FORMAT = OmexMetadataInputFormat.rdfxml
 DEFAULT_OMEX_METADATA_OUTPUT_FORMAT = OmexMetadataOutputFormat.rdfxml_abbrev
 DEFAULT_OMEX_METADATA_SCHEMA = OmexMetadataSchema.biosimulations
@@ -50,7 +47,7 @@ DEFAULT_BIOSIMULATIONS_API_AUDIENCE = 'api.biosimulations.org'
 
 class Config(object):
     """ Configuration
-    
+
     Attributes:
         OMEX_METADATA_INPUT_FORMAT (:obj:`OmexMetadataInputFormat`): format to validate OMEX Metadata files against
         OMEX_METADATA_OUTPUT_FORMAT (:obj:`OmexMetadataOutputFormat`): format to export OMEX Metadata files
@@ -86,6 +83,7 @@ class Config(object):
         STDOUT_LEVEL (:obj:`StandardOutputErrorCapturerLevel`): level at which to log the output
         CUSTOM_SETTINGS (:obj:`**kwargs`)
     """
+
     def __init__(self,
                  OMEX_METADATA_INPUT_FORMAT=DEFAULT_OMEX_METADATA_INPUT_FORMAT,
                  OMEX_METADATA_OUTPUT_FORMAT=DEFAULT_OMEX_METADATA_OUTPUT_FORMAT,
@@ -156,7 +154,7 @@ class Config(object):
             STDOUT_LEVEL (:obj:`StandardOutputErrorCapturerLevel`): level at which to log the output
         """
 
-        self.OMEX_METADATA_INPUT_FORMAT = OMEX_METADATA_INPUT_FORMAT # noqa C0103   
+        self.OMEX_METADATA_INPUT_FORMAT = OMEX_METADATA_INPUT_FORMAT  # noqa C0103
         self.OMEX_METADATA_OUTPUT_FORMAT = OMEX_METADATA_OUTPUT_FORMAT
         self.OMEX_METADATA_SCHEMA = OMEX_METADATA_SCHEMA
         self.VALIDATE_OMEX_MANIFESTS = VALIDATE_OMEX_MANIFESTS
@@ -207,20 +205,20 @@ def get_config(report_format: str = None,
                *_default_format_settings) -> Config:
     """ Get the configuration based on specified optional settings. Handles sets default values for 
     `report_format` and `viz_format` if these respective variables are empty. 
-    
+
     Args:
         :str:`report_format`: output format for reports. Defaults to `None`
-        
+
         :str:`viz_format`: output format for visualizations. Defaults to `None`
-        
+
         :Union:`acceptable_report_formats`: acceptable formats for output report data. Defaults to `biosimulators_utils.report.data_model.ReportFormat`
-        
+
         :Union:`acceptable_viz_formats`: acceptable formats for output viz data. Defaults to `biosimulators_utils.viz.data_model.VizFormat`
-        
+
     Returns:
         :obj:`Config`: configuration
     """
-    
+
     if not _default_format_settings:  # get
         _default_format_settings = ('csv', 'pdf')  # set
 
@@ -385,7 +383,7 @@ def _verify_formats(format_type: str, acceptable_format: enum.Enum, default: str
 
 class EasyLog:
     """Utility class for quickly logging and capturing executed actions.
-    
+
     Attributes:
         working_file: (:obj:`str`): currently executed file. Defaults to `__file__` 
 
@@ -398,7 +396,7 @@ class EasyLog:
         """
         Args:
             log_dir: (:obj:`str`): filepath of logging dir.
-            
+
             fresh: (:obj:`bool`): If `True`, destroy previous log, logdir and creates a new one.
         """
         self.working_file = __file__
@@ -453,4 +451,3 @@ class EasyLog:
     def flush_log(self, log_fp: str = None):
         self.write(log_fp)
         self.flush()
-
