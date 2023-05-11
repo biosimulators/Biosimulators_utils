@@ -6,6 +6,13 @@
 :License: MIT
 """
 
+import copy
+import datetime
+import glob
+import os
+import tempfile
+import shutil
+import types  # noqa: F401
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config, Config  # noqa: F401
@@ -22,13 +29,7 @@ from .io import CombineArchiveReader
 from .utils import get_sedml_contents, get_summary_sedml_contents
 from .validation import validate
 from ..viz.data_model import VizFormat  # noqa: F401
-import copy
-import datetime
-import glob
-import os
-import tempfile
-import shutil
-import types  # noqa: F401
+
 
 __all__ = [
     'exec_sedml_docs_in_archive',
