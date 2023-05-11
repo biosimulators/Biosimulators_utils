@@ -105,19 +105,19 @@ def exec_sed_doc(task_executer: FunctionType, doc: Union[SedDocument, str],
             * :obj:`ReportResults`: results of each report
             * :obj:`SedDocumentLog`: log of the document
     """
-    if not config:
+    if not config:  # python:S3776
         config = get_config(easy_log=True)
 
-    if not log_level:
+    if not log_level: # python:S3776
         log_level = config.STDOUT_LEVEL
 
     # process arguments
-    if not isinstance(doc, SedDocument):
+    if not isinstance(doc, SedDocument): # python:S3776
         doc = SedmlSimulationReader().run(doc, config=config)
     else:
         doc = copy.deepcopy(doc)
 
-    if config.LOG and not log:
+    if config.LOG and not log: # python:S3776
         log = init_sed_document_log(doc)
 
     verbose = config.VERBOSE
@@ -126,7 +126,7 @@ def exec_sed_doc(task_executer: FunctionType, doc: Union[SedDocument, str],
     exceptions = []
 
     # execute tasks
-    if not doc.tasks:
+    if not doc.tasks: # python:S3776
         warn('SED document does not describe any tasks.', NoTasksWarning)
 
     # TODO: initialize reports with their eventual shapes; this requires individual simulation tools to pass

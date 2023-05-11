@@ -24,12 +24,12 @@ from biosimulators_utils.viz.data_model import VizFormat  # noqa: F401
 __all__ = [
     'Config', 'get_config', 'Colors',
     'get_app_dirs', 'get_acceptable_report_formats',
-    'get_acceptable_viz_formats'
+    'get_acceptable_viz_formats', 'EasyLog'
 ]
 
 
 CURRENT_PLATFORM = platform.system()
-DEFAULT_STDOUT_LEVEL = StandardOutputErrorCapturerLevel.c if not "Darwin" in CURRENT_PLATFORM \
+DEFAULT_STDOUT_LEVEL = StandardOutputErrorCapturerLevel.c if "Darwin" not in CURRENT_PLATFORM \
     else StandardOutputErrorCapturerLevel.python
 DEFAULT_OMEX_METADATA_INPUT_FORMAT = OmexMetadataInputFormat.rdfxml
 DEFAULT_OMEX_METADATA_OUTPUT_FORMAT = OmexMetadataOutputFormat.rdfxml_abbrev
