@@ -28,7 +28,8 @@ class MathTestCase(unittest.TestCase):
             "1 && 1": 1.0,
             "0.0 || 0.0": 0.0,
             "1.0 || 0.0": 1.0,
-            "1 || 1": 1.0
+            "1 || 1": 1.0,
+            "5 * -2": -10.0,
         }
         for (orig_infix, expected_value) in test_cases.items():
             # round trip to libsedml to ensure proper integration

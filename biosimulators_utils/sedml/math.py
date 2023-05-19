@@ -147,6 +147,7 @@ VALID_MATH_EXPRESSION_NODES = [
     'GtE',
     'LtE',
     'Sub',
+    'USub',
     'Mult',
     'Div',
     'Pow',
