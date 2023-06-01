@@ -852,13 +852,13 @@ def get_report_for_plot2d(plot):
         data_sets[curve.x_data_generator.id] = DataSet(
             id=curve.x_data_generator.id,
             name=curve.x_data_generator.name,
-            label=curve.x_data_generator.id,
+            label=curve.x_data_generator.name,
             data_generator=curve.x_data_generator,
         )
         data_sets[curve.y_data_generator.id] = DataSet(
             id=curve.y_data_generator.id,
-            name=curve.y_data_generator.name,
-            label=curve.y_data_generator.id,
+            name=curve.name or curve.y_data_generator.name,
+            label=curve.name or curve.y_data_generator.name,
             data_generator=curve.y_data_generator,
         )
     return Report(
