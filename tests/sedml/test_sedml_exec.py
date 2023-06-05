@@ -1110,6 +1110,7 @@ class ExecTaskCase(unittest.TestCase):
 
         doc.data_generators.append(data_model.DataGenerator(
             id='data_gen_time',
+            name='Time',
             variables=[
                 data_model.Variable(
                     id='time',
@@ -1145,6 +1146,7 @@ class ExecTaskCase(unittest.TestCase):
                 ),
                 data_model.Curve(
                     id='curve2',
+                    name='var_curve',
                     x_data_generator=doc.data_generators[1],
                     y_data_generator=doc.data_generators[1],
                     x_scale=data_model.AxisScale.linear,
@@ -1953,3 +1955,6 @@ class ExecTaskCase(unittest.TestCase):
                 output_results, log = exec.exec_sed_doc(exec_task, filename, working_dir, out_dir, config=config)
         self.assertEqual(output_results, None)
         self.assertEqual(log, None)
+
+if __name__ == "__main__":
+    unittest.main()
