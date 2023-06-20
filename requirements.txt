@@ -3,7 +3,7 @@ biopython
 cement
 evalidate
 h5py
-kisao >= 2.29
+kisao >= 2.32
 lxml
 matplotlib
 mpmath
