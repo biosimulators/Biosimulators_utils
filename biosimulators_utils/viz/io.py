@@ -58,7 +58,7 @@ def write_plot_2d(plot, data_generator_results, base_path, rel_path, format=VizF
             axes.plot(x_result, y_result)
 
         x_name = curve.x_data_generator.name or x_id
-        y_name = curve.y_data_generator.name or y_id
+        y_name = curve.name or curve.y_data_generator.name or y_id
         x_names.add(x_name)
         y_names.add(y_name)
 
@@ -191,7 +191,7 @@ def write_plot_3d(plot, data_generator_results, base_path, rel_path, format=VizF
 
         x_name = surface.x_data_generator.name or x_id
         y_name = surface.y_data_generator.name or y_id
-        z_name = surface.z_data_generator.name or z_id
+        z_name = surface.name or surface.z_data_generator.name or z_id
         x_names.add(x_name)
         y_names.add(y_name)
         z_names.add(z_name)
