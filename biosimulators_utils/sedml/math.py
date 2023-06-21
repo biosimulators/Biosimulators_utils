@@ -179,7 +179,6 @@ def compile_math(math):
             .replace('^', '**')
         )
 
-    
     model = evalidate.base_eval_model.clone()
     model.nodes.extend(VALID_MATH_EXPRESSION_NODES)
     model.allowed_functions.extend(MATHEMATICAL_FUNCTIONS.keys())
