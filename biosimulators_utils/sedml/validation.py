@@ -1773,7 +1773,7 @@ def validate_calculation(calculation):
             compiled_math = compile_math(calculation.math)
         except TypeError as e:
             errors.append(['The mathematical expression must be a `string`, not a `{}`.'.format(calculation.math.__class__)])
-            errors.append(str(e))
+            errors.append(e.what())
             return (errors, warnings)
         except (SyntaxError, CompilationException) as exception:
             errors.append(['The syntax of the mathematical expression `{}` is invalid.'.format(calculation.math), [[str(exception)]]])
