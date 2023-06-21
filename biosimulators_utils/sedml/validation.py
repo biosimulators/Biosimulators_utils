@@ -1770,7 +1770,7 @@ def validate_calculation(calculation):
                 workspace[calculation.range.id] = 1
 
         try:
-            compiled_math = compile_math(calculation.math)
+            compiled_math = compile_math(str(calculation.math))
         except TypeError as exception:
             errors.append(['The mathematical expression must be a `string`, not a `{}`:'.format(calculation.math.__class__), [[str(exception)]]])
             return (errors, warnings)
