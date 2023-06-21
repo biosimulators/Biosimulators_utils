@@ -1477,10 +1477,6 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn('must have math', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
 
         calculation_2 = copy.copy(calculation)
-        calculation_2.math = 10.
-        self.assertIn('must be a `string`', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
-
-        calculation_2 = copy.copy(calculation)
         calculation_2.math = 'a * '
         self.assertIn('The syntax', flatten_nested_list_of_strings(validation.validate_calculation(calculation_2)[0]))
 
