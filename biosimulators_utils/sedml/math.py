@@ -179,10 +179,16 @@ def compile_math(math):
             .replace('^', '**')
         )
 
-    math_node = evalidate.evalidate(math,
-                                    addnodes=VALID_MATH_EXPRESSION_NODES,
-                                    funcs=MATHEMATICAL_FUNCTIONS.keys())
-    compiled_math = compile(math_node, '<math>', 'eval')
+    
+    model = evalidate.base_eval_model.clone()
+    model.nodes.extend(VALID_MATH_EXPRESSION_NODES)
+    model.allowed_functions.extend(MATHEMATICAL_FUNCTIONS.keys())
+
+    math_node = evalidate.Expr(math, model=model)
+    # math_node = evalidate.evalidate(math,
+    #                                 addnodes=VALID_MATH_EXPRESSION_NODES,
+    #                                 funcs=MATHEMATICAL_FUNCTIONS.keys())
+    compiled_math = compile(math_node.code, '<math>', 'eval')
     return compiled_math
 
 

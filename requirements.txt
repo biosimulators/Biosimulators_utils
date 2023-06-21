@@ -1,7 +1,7 @@
 appdirs
 biopython
 cement
-evalidate
+evalidate >= 2.0.0
 h5py
 kisao >= 2.32
 lxml
