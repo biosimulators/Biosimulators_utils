@@ -184,9 +184,6 @@ def compile_math(math):
     model.allowed_functions.extend(MATHEMATICAL_FUNCTIONS.keys())
 
     math_node = evalidate.Expr(math, model=model)
-    # math_node = evalidate.evalidate(math,
-    #                                 addnodes=VALID_MATH_EXPRESSION_NODES,
-    #                                 funcs=MATHEMATICAL_FUNCTIONS.keys())
     compiled_math = compile(math_node.node, '<math>', 'eval')
     return compiled_math
 
