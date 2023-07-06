@@ -1781,7 +1781,7 @@ class ExecTaskCase(unittest.TestCase):
             file.write('  <variable id="z" value="3" />')
             file.write('</model>')
 
-        def task_executer(task, variables, log=None, config=None):
+        def task_executer(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults({
                 'x': numpy.linspace(10., 15., 6),
                 'y': numpy.linspace(20., 25., 6),
@@ -1829,7 +1829,7 @@ class ExecTaskCase(unittest.TestCase):
             file.write('  <variable id="x" value="1" />')
             file.write('</model>')
 
-        def task_executer(task, variables, log=None, config=None):
+        def task_executer(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults({
                 'x': numpy.linspace(10., 15., 6),
             })
