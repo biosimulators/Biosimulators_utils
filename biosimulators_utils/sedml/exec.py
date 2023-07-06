@@ -535,7 +535,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                     variable_values[variable.id] = get_value_of_variable_model_xml_targets(variable, model_etrees)
 
             new_value = calc_compute_model_change_new_value(change, variable_values=variable_values, range_values=current_range_values)
-            
+
             if set_value_executer:
                 set_value_executer(change.model, change.target, change.symbol, new_value, preprocessed_task)
             else:
