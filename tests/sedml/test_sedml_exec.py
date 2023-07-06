@@ -186,7 +186,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults()
             if task.id == 'task_1_ss':
                 results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
@@ -555,7 +555,7 @@ class ExecTaskCase(unittest.TestCase):
             os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-three-species.xml'),
             os.path.join(working_dir, 'model1.xml'))
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             et = etree.parse(task.model.source)
 
             results = VariableResults()
@@ -591,7 +591,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename)
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             return VariableResults(), log
 
         out_dir = os.path.join(self.tmp_dir, 'results')
@@ -651,7 +651,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             if task.id == 'task1':
                 return VariableResults({'data_gen_1_var_1': numpy.array(1.)}), log
             else:
@@ -720,7 +720,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             return VariableResults(), log
 
         working_dir = os.path.dirname(filename)
@@ -786,7 +786,7 @@ class ExecTaskCase(unittest.TestCase):
             ],
         ))
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[0].variables[1].id] = numpy.array((1.,))
@@ -827,7 +827,7 @@ class ExecTaskCase(unittest.TestCase):
             )
         ]
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             return results, log
@@ -875,7 +875,7 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[0].variables[1].id] = numpy.array((1., 2.))
@@ -947,7 +947,7 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1.,))
             results[doc.data_generators[1].variables[0].id] = numpy.array((1., 2.))
@@ -1045,7 +1045,7 @@ class ExecTaskCase(unittest.TestCase):
             ),
         ]
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
             results[doc.data_generators[1].variables[0].id] = numpy.array((2., 3.))
@@ -1171,7 +1171,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.linspace(0., 10., 10 + 1)
             results[doc.data_generators[1].variables[0].id] = 2 * results[doc.data_generators[0].variables[0].id]
@@ -1274,7 +1274,7 @@ class ExecTaskCase(unittest.TestCase):
         )
 
         # error with a task
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = None
             results[doc.data_generators[1].variables[0].id] = 2 * numpy.linspace(0., 10., 10 + 1)
@@ -1421,7 +1421,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults()
             x = numpy.arange(-5, 5, 0.25)
             x, _ = numpy.meshgrid(x, x)
@@ -1906,7 +1906,7 @@ class ExecTaskCase(unittest.TestCase):
         filename = os.path.join(self.tmp_dir, 'test.sedml')
         io.SedmlSimulationWriter().run(doc, filename, validate_models_with_languages=False)
 
-        def exec_task(task, variables, log=None, config=None):
+        def exec_task(task, variables, log=None, config=None, preprocessed_task=None):
             results = VariableResults()
             results[doc.data_generators[0].variables[0].id] = numpy.array((1., 2.))
             return results, log
