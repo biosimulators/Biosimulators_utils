@@ -768,7 +768,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         }
 
         change.variables[0].target = "/model/parameter[@id='x']"
-        with self.assertRaisesRegex(ValueError, 'not a valid XPath'):
+        with self.assertRaisesRegex(NotImplementedError, 'cannot be obtained by examining the XML'):
             utils.get_value_of_variable_model_xml_targets(change.variables[0], models)
 
         change.variables[0].target = "/model/parameter/@value"
@@ -864,7 +864,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change.target = "/model/parameter[@type='parameter']"
         et = etree.parse(in_file)
-        with self.assertRaisesRegex(ValueError, 'not a valid XPath to an attribute'):
+        with self.assertRaisesRegex(NotImplementedError, 'cannot be changed by XML manipulation'):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None, variable_values=variable_values)
 
         with open(in_file, 'w') as file:
@@ -879,6 +879,43 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change.target_namespaces['qual'] = "https://qual.sbml.org"
         utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None, variable_values=variable_values)
+
+    def test_apply_compute_model_change_new_value_only_objects(self):
+        change = data_model.ComputeModelChange(
+            target="/model/parameter[@id='p1']",
+            parameters=[
+                data_model.Parameter(id='a', value=1.5),
+                data_model.Parameter(id='b', value=2.25),
+                data_model.Parameter(id='c', value=2.),
+            ],
+            variables=[
+                data_model.Variable(id='x', model=data_model.Model(id='model_1'), target="/model/parameter[@id='x']"),
+                data_model.Variable(id='y', model=data_model.Model(id='model_2'), target="/model/parameter[@id='y']"),
+            ],
+            math='a * x + b * y',
+        )
+
+        # get values of variables
+        model_filename = os.path.join(self.tmp_dir, 'model_1.xml')
+        with open(model_filename, 'w') as file:
+            file.write('<model>')
+            file.write('<parameter id="x" value="2.0" strValue="a value" qual:attrA="2.3" xmlns:qual="https://qual.sbml.org" />')
+            file.write('<parameter id="y" value="3.0" />')
+            file.write('</model>')
+        models = {
+            'model_1': etree.parse(model_filename),
+            'model_2': etree.parse(model_filename),
+        }
+
+        change.variables[0].target = None
+        change.variables[0].symbol = True
+
+        change.variables[0].target = "/model/parameter[@id='x']"
+        change.variables[0].symbol = None
+        with self.assertRaisesRegex(NotImplementedError, 'cannot be obtained by examining the XML'):
+            self.assertEqual(utils.get_value_of_variable_model_xml_targets(change.variables[0], models), 2.0)
+        with self.assertRaisesRegex(NotImplementedError, 'cannot be obtained by examining the XML'):
+            self.assertEqual(utils.get_value_of_variable_model_xml_targets(change.variables[1], models), 3.0)
 
     def test_set_value_calc_compute_model_change_new_value(self):
         change = data_model.SetValueComputeModelChange(
@@ -1647,3 +1684,6 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             ],
         )
         self.assertEqual(utils.get_task_results_shape(task), (5, 1, 3, 2, 11))
+
+if __name__ == "__main__":
+    unittest.main()
