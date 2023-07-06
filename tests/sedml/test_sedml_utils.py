@@ -685,7 +685,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
         et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(NotImplementedError):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
         change = data_model.ModelAttributeChange(
