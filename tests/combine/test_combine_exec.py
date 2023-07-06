@@ -383,7 +383,7 @@ class ExecCombineTestCase(unittest.TestCase):
         archive_filename = os.path.join(self.tmp_dir, 'archive.omex')
         CombineArchiveWriter().run(archive, archive_dirname, archive_filename)
 
-        def sed_task_executer(task, variables, log=None, config=None):
+        def sed_task_executer(task, variables, log=None, config=None, preprocessed_task=None):
             if log:
                 log.algorithm = task.simulation.algorithm.kisao_id
                 log.simulator_details = {

@@ -1662,7 +1662,7 @@ class ExecTaskCase(unittest.TestCase):
             model2.id: etree.parse(model_filename2),
         }
 
-        def task_executer(task, variables, log=None, config=None):
+        def task_executer(task, variables, log=None, config=None, preprocessed_task=None):
             et = etree.parse(task.model.source)
 
             if task.id == task1.id:
