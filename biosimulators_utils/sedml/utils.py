@@ -424,7 +424,8 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
             # get object to change
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if sep != '/@':
-                raise NotImplementedError('target {} cannot be changed by XML manipulation, as the target is not an attribute of a model element'.format(change.target))
+                raise NotImplementedError('target ' + change.target + ' cannot be changed by XML manipulation, as the target '
+                                          'is not an attribute of a model element')
             objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
             if validate_unique_xml_targets and len(objs) != 1:
                 raise ValueError('xpath {} must match a single object'.format(obj_xpath))
@@ -502,7 +503,8 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
             # get object to change
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if sep != '/@':
-                raise NotImplementedError('target {} cannot be changed by XML manipulation, as the target is not an attribute of a model element'.format(change.target))
+                raise NotImplementedError('target ' + change.target +' cannot be changed by XML manipulation, as the target '
+                                          'is not an attribute of a model element')
             objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
             if validate_unique_xml_targets and len(objs) != 1:
                 raise ValueError('xpath {} must match a single object'.format(obj_xpath))
@@ -575,7 +577,8 @@ def get_value_of_variable_model_xml_targets(variable, model_etrees):
 
     obj_xpath, sep, attr = variable.target.rpartition('/@')
     if sep != '/@':
-        raise NotImplementedError('the value of target {} cannot be obtained by examining the XML, as the target is not an attribute of a model element'.format(variable.target))
+        raise NotImplementedError('the value of target ' + variable.target + 
+                                  ' cannot be obtained by examining the XML, as the target is not an attribute of a model element')
 
     et = model_etrees[variable.model.id]
     obj = eval_xpath(et, obj_xpath, variable.target_namespaces)

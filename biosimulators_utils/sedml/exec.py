@@ -187,10 +187,9 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                 if preprocessed_task_executer:
                     preprocessed_task = preprocessed_task_executer(task, task_vars, config=config)
 
-
                 # execute task
                 if isinstance(task, Task):
-                    task_var_results = exec_task(task, task_executer, task_vars, doc, 
+                    task_var_results = exec_task(task, task_executer, task_vars, doc,
                                                  preprocessed_task=preprocessed_task, log=task_log, config=config)
 
                 elif isinstance(task, RepeatedTask):
@@ -472,7 +471,8 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
 
     sub_tasks = sorted(task.sub_tasks, key=lambda sub_task: sub_task.order)
     for prev_sub_task, next_sub_task in zip(sub_tasks[0:-1], sub_tasks[1:]):
-        if get_first_last_models_executed_by_task(prev_sub_task.task)[-1] == get_first_last_models_executed_by_task(next_sub_task.task)[0] and not reset_executer:
+        if get_first_last_models_executed_by_task(prev_sub_task.task)[-1] == get_first_last_models_executed_by_task(next_sub_task.task)[0] \
+           and not reset_executer:
             msg = (
                 'Only independent execution of sub-tasks is supported. '
                 'Successive sub-tasks will not be executed starting from the end state of the previous sub-task.'
