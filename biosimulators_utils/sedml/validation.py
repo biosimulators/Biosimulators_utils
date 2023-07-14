@@ -1386,8 +1386,8 @@ def validate_data_generator_variables(variables, model_etrees=None, validate_tar
         if not variable.id:
             variable_errors.append(['Variable must have an id.'])
 
-        if variable.model:
-            variable_errors.append(['Variable should not reference a model.'])
+        # if variable.model:
+        #     variable_errors.append(['Variable should not reference a model.'])
 
         if variable.task:
             task_types.add(get_task_results_shape(variable.task))
