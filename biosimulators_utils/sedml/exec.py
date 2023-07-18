@@ -27,6 +27,7 @@ from .warnings import NoTasksWarning, NoOutputsWarning, SedmlFeatureNotSupported
 from lxml import etree  # noqa: F401
 import copy
 import datetime
+import functools
 import numpy
 import os
 import sys
@@ -165,14 +166,24 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                 original_model_changes = {}
                 temp_model_sources = []
                 model_etrees = {}
+                preprocessed_task = None
+
+                task_vars = get_variables_for_task(doc, task)
+                preprocessed_task_sub_executer = None
+                if preprocessed_task_executer:
+                    preprocessed_task_sub_executer = functools.partial(preprocessed_task_executer, 
+                                                                       task, task_vars, 
+                                                                       config=config)
+
                 for original_model in original_models:
                     original_model_sources[original_model.id] = original_model.source
                     original_model_changes[original_model.id] = original_model.changes
 
-                    temp_model, temp_model_source, model_etree = resolve_model_and_apply_xml_changes(
+                    temp_model, temp_model_source, model_etree, preprocessed_task = resolve_model_and_apply_xml_changes(
                         original_model, doc, working_dir,
                         apply_xml_model_changes=apply_xml_model_changes,
-                        pretty_print_modified_xml_models=pretty_print_modified_xml_models)
+                        pretty_print_modified_xml_models=pretty_print_modified_xml_models,
+                        set_value_executer=set_value_executer, preprocessed_task_sub_executer=preprocessed_task_sub_executer)
 
                     original_model.source = temp_model.source
                     original_model.changes = temp_model.changes
@@ -182,10 +193,9 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
 
                     model_etrees[original_model.id] = model_etree
 
-                task_vars = get_variables_for_task(doc, task)
-                preprocessed_task = None
-                if preprocessed_task_executer:
-                    preprocessed_task = preprocessed_task_executer(task, task_vars, config=config)
+                # The preprocessed task was not created if there was no set_value_executer, so create one now:
+                if not preprocessed_task and preprocessed_task_executer:
+                    preprocessed_task_sub_executer()
 
                 # execute task
                 if isinstance(task, Task):
