@@ -560,9 +560,6 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                 for obj in objs:
                     obj.set(attr, new_value)
 
-        else:
-            raise NotImplementedError('Change{} of type {} is not supported.'.format(
-                ' ' + change.name if change.name else '', change.__class__.__name__))
     return preprocessed_task
 
 
