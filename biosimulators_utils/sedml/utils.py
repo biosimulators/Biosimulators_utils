@@ -262,7 +262,7 @@ def resolve_model_and_apply_xml_changes(orig_model, sed_doc, working_dir,
                                         apply_xml_model_changes=True,
                                         save_to_file=True,
                                         pretty_print_modified_xml_models=False,
-                                        set_value_executer=None, 
+                                        set_value_executer=None,
                                         preprocessed_task_sub_executer=None):
     """ Resolve the source of a model and, optionally, apply XML changes to the model.
 
@@ -429,7 +429,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
         validate_unique_xml_targets (:obj:`bool`, optional): whether to validate the XML targets match
             uniue objects
     """
-    
+
     # First pass:  Must-be-XML changes:
     for change in model.changes:
         if isinstance(change, AddElementModelChange):
@@ -478,7 +478,6 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
 
         elif isinstance(change, ModelAttributeChange) or isinstance(change, ComputeModelChange):
             change.model = model
-            pass #for now
 
         else:
             raise NotImplementedError('Change{} of type {} is not supported.'.format(
@@ -510,14 +509,14 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                 objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
                 if validate_unique_xml_targets and len(objs) != 1:
                     raise ValueError('xpath {} must match a single object'.format(obj_xpath))
-    
+
                 ns_prefix, _, attr = attr.rpartition(':')
                 if ns_prefix:
                     ns = change.target_namespaces.get(ns_prefix, None)
                     if ns is None:
                         raise ValueError('No namespace is defined with prefix `{}`'.format(ns_prefix))
                     attr = '{{{}}}{}'.format(ns, attr)
-    
+
                 # change value
                 for obj in objs:
                     obj.set(attr, change.new_value)

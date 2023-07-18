@@ -171,8 +171,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                 task_vars = get_variables_for_task(doc, task)
                 preprocessed_task_sub_executer = None
                 if preprocessed_task_executer:
-                    preprocessed_task_sub_executer = functools.partial(preprocessed_task_executer, 
-                                                                       task, task_vars, 
+                    preprocessed_task_sub_executer = functools.partial(preprocessed_task_executer,
+                                                                       task, task_vars,
                                                                        config=config)
 
                 for original_model in original_models:
