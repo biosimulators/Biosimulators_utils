@@ -1558,7 +1558,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             file.write('<sbml>')
             file.write('</sbml>')
 
-        temp_model, temp_model_source, temp_model_etree = utils.resolve_model_and_apply_xml_changes(
+        temp_model, temp_model_source, temp_model_etree, __ = utils.resolve_model_and_apply_xml_changes(
             model, sed_doc, self.tmp_dir, save_to_file=False)
 
         self.assertEqual(temp_model.source, model_filename)
@@ -1577,7 +1577,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         model.language = data_model.ModelLanguage.BNGL.value
         with open(model_filename, 'w') as file:
             file.write('sbml')
-        temp_model, temp_model_source, temp_model_etree = utils.resolve_model_and_apply_xml_changes(
+        temp_model, temp_model_source, temp_model_etree, __ = utils.resolve_model_and_apply_xml_changes(
             model, sed_doc, self.tmp_dir, save_to_file=False)
 
         self.assertEqual(temp_model.source, model_filename)
