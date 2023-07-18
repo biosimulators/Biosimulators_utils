@@ -296,6 +296,7 @@ def resolve_model_and_apply_xml_changes(orig_model, sed_doc, working_dir,
 
     # resolve model
     temp_model_source = resolve_model(model, sed_doc, working_dir)
+    preprocessed_task = None
 
     # apply changes to model
     if apply_xml_model_changes and model.language and is_model_language_encoded_in_xml(model.language):
