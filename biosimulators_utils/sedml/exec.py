@@ -195,7 +195,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
 
                 # The preprocessed task was not created if there was no set_value_executer, so create one now:
                 if not preprocessed_task and preprocessed_task_executer:
-                    preprocessed_task_sub_executer()
+                    preprocessed_task = preprocessed_task_sub_executer()
 
                 # execute task
                 if isinstance(task, Task):
