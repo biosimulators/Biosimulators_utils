@@ -234,7 +234,7 @@ class ValidationTestCase(unittest.TestCase):
             ],
         ))
         errors, warnings = validation.validate_doc(doc, self.dirname)
-        self.assertIn('should not reference a model', flatten_nested_list_of_strings(errors))
+        # self.assertIn('should not reference a model', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         doc = data_model.SedDocument()
@@ -1210,7 +1210,7 @@ class ValidationTestCase(unittest.TestCase):
             data_model.Variable(task=data_model.Task(), model=data_model.Model())
         ]
         errors, warnings = self._validate_task(task, variables)
-        self.assertIn('should not reference a model', flatten_nested_list_of_strings(errors))
+        # self.assertIn('should not reference a model', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         variables = [

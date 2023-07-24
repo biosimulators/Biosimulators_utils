@@ -383,7 +383,7 @@ class ExecCombineTestCase(unittest.TestCase):
         archive_filename = os.path.join(self.tmp_dir, 'archive.omex')
         CombineArchiveWriter().run(archive, archive_dirname, archive_filename)
 
-        def sed_task_executer(task, variables, log=None, config=None):
+        def sed_task_executer(task, variables, log=None, config=None, preprocessed_task=None):
             if log:
                 log.algorithm = task.simulation.algorithm.kisao_id
                 log.simulator_details = {
@@ -395,7 +395,7 @@ class ExecCombineTestCase(unittest.TestCase):
                 'var_2': numpy.linspace(10., 20., task.simulation.number_of_points + 1),
             }), log
 
-        def sed_task_executer_error(task, variables, log=None, config=None):
+        def sed_task_executer_error(task, variables, log=None, config=None, preprocessed_task=None):
             raise ValueError('Big error')
 
         out_dir = os.path.join(self.tmp_dir, 'outputs')
@@ -464,7 +464,7 @@ class ExecCombineTestCase(unittest.TestCase):
                          indent=0, log=None, log_level=None, config=None):
             return None, None
 
-        def sed_task_executer(task, variables):
+        def sed_task_executer(task, variables, preprocessed_task=None):
             pass
 
         sed_doc_executer = functools.partial(exec_sed_doc, sed_task_executer)
