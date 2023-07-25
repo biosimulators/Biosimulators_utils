@@ -293,6 +293,7 @@ def resolve_model_and_apply_xml_changes(orig_model, sed_doc, working_dir,
     model = copy.deepcopy(orig_model)
     # We need to save this because we're going to change it, then change it back.
     orig_model_source = orig_model.source
+    orig_model_changes = orig_model.changes
 
     # resolve model
     temp_model_source = resolve_model(model, sed_doc, working_dir)
@@ -309,6 +310,7 @@ def resolve_model_and_apply_xml_changes(orig_model, sed_doc, working_dir,
         if model.changes:
             # Change source here so that tasks point to actual source they can find.
             orig_model.source = model.source
+            orig_model.changes = model.changes
             # apply changes
             preprocessed_task = apply_changes_to_xml_model(model, model_etree, sed_doc, working_dir,
                                                            set_value_executer=set_value_executer,
@@ -332,6 +334,7 @@ def resolve_model_and_apply_xml_changes(orig_model, sed_doc, working_dir,
 
     # Reset the model source, in case it matters.
     orig_model.source = orig_model_source
+    orig_model.changes = orig_model_changes
     return model, temp_model_source, model_etree, preprocessed_task
 
 
