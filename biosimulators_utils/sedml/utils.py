@@ -544,24 +544,6 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
             # change value
             for obj in objs:
                 obj.set(attr, new_value)
-            # get object to change
-            obj_xpath, sep, attr = change.target.rpartition('/@')
-            if sep != '/@':
-                continue
-            objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
-            if validate_unique_xml_targets and len(objs) != 1:
-                raise ValueError('xpath {} must match a single object'.format(obj_xpath))
-
-            ns_prefix, _, attr = attr.rpartition(':')
-            if ns_prefix:
-                ns = change.target_namespaces.get(ns_prefix, None)
-                if ns is None:
-                    raise ValueError('No namespace is defined with prefix `{}`'.format(ns_prefix))
-                attr = '{{{}}}{}'.format(ns, attr)
-
-            # change value
-            for obj in objs:
-                obj.set(attr, change.new_value)
 
         else:
             raise NotImplementedError('Change{} of type {} is not supported.'.format(
