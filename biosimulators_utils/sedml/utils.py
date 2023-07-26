@@ -435,6 +435,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
     """
 
     # First pass:  Must-be-XML changes:
+    non_xml_changes = []
     for change in model.changes:
         if isinstance(change, AddElementModelChange):
             parents = eval_xpath(model_etree, change.target, change.target_namespaces)
@@ -480,50 +481,31 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                 parent = element.getparent()
                 parent.remove(element)
 
-        elif isinstance(change, ModelAttributeChange) or isinstance(change, ComputeModelChange):
-            change.model = model
+        elif isinstance(change, ModelAttributeChange):
+            obj_xpath, sep, attr = change.target.rpartition('/@')
+            if sep != '/@':
+                change.model = model
+                non_xml_changes.append(change)
+                continue
+            # get object to change
+            obj_xpath, sep, attr = change.target.rpartition('/@')
+            if sep != '/@':
+                raise NotImplementedError('target ' + change.target + ' cannot be changed by XML manipulation, as the target '
+                                          'is not an attribute of a model element')
+            objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
+            if validate_unique_xml_targets and len(objs) != 1:
+                raise ValueError('xpath {} must match a single object'.format(obj_xpath))
 
-        else:
-            raise NotImplementedError('Change{} of type {} is not supported.'.format(
-                ' ' + change.name if change.name else '', change.__class__.__name__))
+            ns_prefix, _, attr = attr.rpartition(':')
+            if ns_prefix:
+                ns = change.target_namespaces.get(ns_prefix, None)
+                if ns is None:
+                    raise ValueError('No namespace is defined with prefix `{}`'.format(ns_prefix))
+                attr = '{{{}}}{}'.format(ns, attr)
 
-    # Interlude:  set up the preprocessed task, if there's a set_value_executor
-    preprocessed_task = None
-    if set_value_executer:
-        model_etree.write(model.source,
-                          xml_declaration=True,
-                          encoding="utf-8",
-                          standalone=False,
-                          pretty_print=True)
-
-        if preprocessed_task_sub_executer:
-            preprocessed_task = preprocessed_task_sub_executer()
-
-    # Second pass:  changes that might need to be interpreter-based:
-    for change in model.changes:
-        if isinstance(change, ModelAttributeChange):
-            if set_value_executer:
-                set_value_executer(change.model, change.target, None, change.new_value, preprocessed_task)
-            else:
-                # get object to change
-                obj_xpath, sep, attr = change.target.rpartition('/@')
-                if sep != '/@':
-                    raise NotImplementedError('target ' + change.target + ' cannot be changed by XML manipulation, as the target '
-                                              'is not an attribute of a model element')
-                objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
-                if validate_unique_xml_targets and len(objs) != 1:
-                    raise ValueError('xpath {} must match a single object'.format(obj_xpath))
-
-                ns_prefix, _, attr = attr.rpartition(':')
-                if ns_prefix:
-                    ns = change.target_namespaces.get(ns_prefix, None)
-                    if ns is None:
-                        raise ValueError('No namespace is defined with prefix `{}`'.format(ns_prefix))
-                    attr = '{{{}}}{}'.format(ns, attr)
-
-                # change value
-                for obj in objs:
-                    obj.set(attr, change.new_value)
+            # change value
+            for obj in objs:
+                obj.set(attr, change.new_value)
 
         elif isinstance(change, ComputeModelChange):
             # get the values of model variables referenced by compute model changes
@@ -540,28 +522,77 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
             else:
                 new_value = str(new_value)
 
-            if set_value_executer:
-                set_value_executer(change.model, change.target, change.symbol, new_value, preprocessed_task)
+            # get object to change
+            obj_xpath, sep, attr = change.target.rpartition('/@')
+            if sep != '/@':
+                #Save this for the next pass:
+                change.model = model
+                change.new_value = new_value
+                non_xml_changes.append(change)
+                continue
+            objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
+            if validate_unique_xml_targets and len(objs) != 1:
+                raise ValueError('xpath {} must match a single object'.format(obj_xpath))
+
+            ns_prefix, _, attr = attr.rpartition(':')
+            if ns_prefix:
+                ns = change.target_namespaces.get(ns_prefix, None)
+                if ns is None:
+                    raise ValueError('No namespace is defined with prefix `{}`'.format(ns_prefix))
+                attr = '{{{}}}{}'.format(ns, attr)
+
+            # change value
+            for obj in objs:
+                obj.set(attr, new_value)
+            # get object to change
+            obj_xpath, sep, attr = change.target.rpartition('/@')
+            if sep != '/@':
+                continue
+            objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
+            if validate_unique_xml_targets and len(objs) != 1:
+                raise ValueError('xpath {} must match a single object'.format(obj_xpath))
+
+            ns_prefix, _, attr = attr.rpartition(':')
+            if ns_prefix:
+                ns = change.target_namespaces.get(ns_prefix, None)
+                if ns is None:
+                    raise ValueError('No namespace is defined with prefix `{}`'.format(ns_prefix))
+                attr = '{{{}}}{}'.format(ns, attr)
+
+            # change value
+            for obj in objs:
+                obj.set(attr, change.new_value)
+
+        else:
+            raise NotImplementedError('Change{} of type {} is not supported.'.format(
+                ' ' + change.name if change.name else '', change.__class__.__name__))
+
+    # Interlude:  set up the preprocessed task, if there's a set_value_executor
+    preprocessed_task = None
+    if preprocessed_task_sub_executer:
+        model_etree.write(model.source,
+                          xml_declaration=True,
+                          encoding="utf-8",
+                          standalone=False,
+                          pretty_print=True)
+
+        preprocessed_task = preprocessed_task_sub_executer()
+
+    # Second pass:  changes that need to be interpreter-based:
+    for change in non_xml_changes:
+        if isinstance(change, ModelAttributeChange):
+            if not set_value_executer:
+                raise NotImplementedError('target ' + change.target + ' cannot be changed by XML manipulation, as the target '
+                                          'is not an attribute of a model element')
             else:
-                # get object to change
-                obj_xpath, sep, attr = change.target.rpartition('/@')
-                if sep != '/@':
-                    raise NotImplementedError('target ' + change.target + ' cannot be changed by XML manipulation, as the target '
-                                              'is not an attribute of a model element')
-                objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
-                if validate_unique_xml_targets and len(objs) != 1:
-                    raise ValueError('xpath {} must match a single object'.format(obj_xpath))
-
-                ns_prefix, _, attr = attr.rpartition(':')
-                if ns_prefix:
-                    ns = change.target_namespaces.get(ns_prefix, None)
-                    if ns is None:
-                        raise ValueError('No namespace is defined with prefix `{}`'.format(ns_prefix))
-                    attr = '{{{}}}{}'.format(ns, attr)
-
-                # change value
-                for obj in objs:
-                    obj.set(attr, new_value)
+                set_value_executer(change.model, change.target, None, change.new_value, preprocessed_task)
+                    
+        elif isinstance(change, ComputeModelChange):
+            obj_xpath, sep, attr = change.target.rpartition('/@')
+            if not set_value_executer:
+                raise NotImplementedError('target ' + change.target + ' cannot be changed by XML manipulation, as the target '
+                                          'is not an attribute of a model element')
+            set_value_executer(change.model, change.target, change.symbol, change.new_value, preprocessed_task)
 
     return preprocessed_task
 
