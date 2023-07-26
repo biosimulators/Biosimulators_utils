@@ -525,7 +525,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
             # get object to change
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if sep != '/@':
-                #Save this for the next pass:
+                # Save this for the next pass:
                 change.model = model
                 change.new_value = new_value
                 non_xml_changes.append(change)
@@ -586,7 +586,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                                           'is not an attribute of a model element')
             else:
                 set_value_executer(change.model, change.target, None, change.new_value, preprocessed_task)
-                    
+
         elif isinstance(change, ComputeModelChange):
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if not set_value_executer:
