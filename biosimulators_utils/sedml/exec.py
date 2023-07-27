@@ -537,16 +537,23 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
             variable_values = {}
             for variable in change.variables:
                 if get_value_executer and preprocessed_task:
-                    value = get_value_executer(change.model, variable, preprocessed_task)
-                    variable_values[variable.id] = value
-                elif not apply_xml_model_changes:
-                    raise NotImplementedError('Set value changes that involve variables of non-XML-encoded models are not supported.')
-                else:
-                    variable_values[variable.id] = get_value_of_variable_model_xml_targets(variable, model_etrees)
+                    try:
+                        value = get_value_executer(change.model, variable, preprocessed_task)
+                        variable_values[variable.id] = value
+                    except Exception:
+                        # Even if the above fails, getting the value from the XML directly might be possible.
+                        pass
+                if variable.id not in variable_values:
+                    if not apply_xml_model_changes:
+                        raise NotImplementedError('Set value changes that involve variables of non-XML-encoded models are not supported.')
+                    else:
+                        variable_values[variable.id] = get_value_of_variable_model_xml_targets(variable, model_etrees)
 
             new_value = calc_compute_model_change_new_value(change, variable_values=variable_values, range_values=current_range_values)
 
             if set_value_executer:
+                # Unlike above, we don't try to set values that the set_value_executer doesn't know about by editing the XML.
+                # This is because there's no good way to set some values this way and some with a model editor.
                 set_value_executer(change.model, change.target, change.symbol, new_value, preprocessed_task)
             else:
                 if new_value == int(new_value):
