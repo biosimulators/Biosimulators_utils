@@ -540,7 +540,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                     try:
                         value = get_value_executer(change.model, variable, preprocessed_task)
                         variable_values[variable.id] = value
-                    except:
+                    except Exception:
                         # Even if the above fails, getting the value from the XML directly might be possible.
                         pass
                 if variable.id not in variable_values:
