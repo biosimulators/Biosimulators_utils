@@ -22,7 +22,10 @@ pyneuroml >= 0.5.18
 python_libsbml
 
 [smoldyn]
-smoldyn >= 2.66
+smoldyn >= 2.72
+
+# [simularium]
+# biosimulators-simularium
 
 #################################
 ## Visualization formats

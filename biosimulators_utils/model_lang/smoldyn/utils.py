@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+from biosimulators_simularium.converters.io import generate_new_simularium_file
 from ...config import Config  # noqa: F401
 from ...sedml.data_model import (SedDocument, ModelAttributeChange, Variable,  # noqa: F401
                                  Symbol, Simulation, UniformTimeCourseSimulation, Algorithm,
@@ -17,7 +18,7 @@ import os
 import re
 import types  # noqa: F401
 
-__all__ = ['get_parameters_variables_outputs_for_simulation']
+__all__ = ['generate_new_simularium_file', 'get_parameters_variables_outputs_for_simulation']
 
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
