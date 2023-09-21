@@ -6,19 +6,41 @@
 :License: MIT
 """
 
-from biosimulators_simularium.converters.io import generate_new_simularium_file
+
 from ...config import Config  # noqa: F401
 from ...sedml.data_model import (SedDocument, ModelAttributeChange, Variable,  # noqa: F401
                                  Symbol, Simulation, UniformTimeCourseSimulation, Algorithm,
                                  Task)
 from ...utils.core import flatten_nested_list_of_strings
 from .validation import validate_model
+from .simularium_converter import CombineArchive, SmoldynDataConverter
 from smoldyn.biosimulators.utils import read_simulation
+from ..smoldyn.simularium_converter import SmoldynDataConverter
 import os
 import re
 import types  # noqa: F401
+from typing import Optional  # noqa: F401
 
-__all__ = ['generate_new_simularium_file', 'get_parameters_variables_outputs_for_simulation']
+
+__all__ = [
+    'get_parameters_variables_outputs_for_simulation',
+    'generate_new_simularium_file'
+]
+
+
+def generate_new_simularium_file(archive_rootpath: str, simularium_filename: Optional[str] = None) -> None:
+    """Generate a new `.simularium` file for the Smoldyn `model.txt` in a given COMBINE/OMEX archive.
+
+        Args:
+            archive_rootpath(:obj:`str`): path of the root relative to your COMBINE/OMEX archive.
+            simularium_filename(:obj:`str`): `Optional`: desired path by which to save the new .simularium file. If `None` is passed, file will be stored by a generic name in the archive root.
+
+        Returns:
+            `None`
+    """
+    archive_obj = CombineArchive(rootpath=archive_rootpath, simularium_filename=simularium_filename)
+    converter = SmoldynDataConverter(archive=archive_obj)
+    return converter.generate_simularium_file(simularium_filename=simularium_filename)
 
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
