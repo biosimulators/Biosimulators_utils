@@ -15,7 +15,7 @@ from ...utils.core import flatten_nested_list_of_strings
 from .validation import validate_model
 from .simularium_converter import CombineArchive, SmoldynDataConverter
 from smoldyn.biosimulators.utils import read_simulation
-from ..smoldyn.simularium_converter import SmoldynDataConverter
+from ..smoldyn.simularium_converter import SmoldynDataConverter, CombineArchive
 import os
 import re
 import types  # noqa: F401
@@ -24,7 +24,9 @@ from typing import Optional  # noqa: F401
 
 __all__ = [
     'get_parameters_variables_outputs_for_simulation',
-    'generate_new_simularium_file'
+    'generate_new_simularium_file',
+    'SmoldynDataConverter',
+    'CombineArchive'
 ]
 
 
