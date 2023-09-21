@@ -23,6 +23,7 @@ python_libsbml
 
 [smoldyn]
 smoldyn >= 2.70
+# simulariumio
 
 [simularium]
 simulariumio
