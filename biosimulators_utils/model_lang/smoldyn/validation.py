@@ -101,9 +101,7 @@ def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str
         for f in files:
             if f.endswith('.txt') and 'model' not in f:
                 f = os.path.join(root, f)
-                new_f = 'modelout.txt'
-                output_fp = os.path.join(root, new_f)
-                os.rename(f, output_fp)
+                os.rename(f, archive.model_output_filename)
 
 
 generate_new_simularium_file(TEST_ARCHIVE_ROOTPATH, 'myTest')
