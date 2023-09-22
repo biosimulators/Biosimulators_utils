@@ -1,6 +1,5 @@
 appdirs
 biopython
-# biosimulators-simularium
 cement
 evalidate >= 2.0.0
 h5py
