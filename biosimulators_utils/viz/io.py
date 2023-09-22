@@ -21,7 +21,7 @@ import os
 __all__ = ['write_plot_2d', 'write_plot_3d']
 
 
-def write_plot_2d(plot, data_generator_results, base_path, rel_path, format=VizFormat.pdf, style='seaborn-paper'):
+def write_plot_2d(plot, data_generator_results, base_path, rel_path, format=VizFormat.pdf, style='seaborn'):
     """ Generate a 2D plot
 
     Args:
@@ -102,7 +102,7 @@ def write_plot_2d(plot, data_generator_results, base_path, rel_path, format=VizF
 
 
 def write_plot_3d(plot, data_generator_results, base_path, rel_path, format=VizFormat.pdf,
-                  style='seaborn-paper',
+                  style='seaborn',
                   colormaps=[ColorMap.viridis, ColorMap.plasma, ColorMap.inferno, ColorMap.magma, ColorMap.cividis]):
     """ Generate a 3D plot
 
