@@ -136,7 +136,3 @@ def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str
         df.to_csv(csv_fp)
 
     return converter.generate_simularium_file()
-
-
-TEST_ROOTPATH = 'minE_Andrews'
-generate_new_simularium_file(archive_rootpath=TEST_ROOTPATH, simularium_filename='myTest', save_output_df=True)
