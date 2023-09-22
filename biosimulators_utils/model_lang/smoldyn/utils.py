@@ -12,7 +12,7 @@ from ...sedml.data_model import (SedDocument, ModelAttributeChange, Variable,  #
                                  Symbol, Simulation, UniformTimeCourseSimulation, Algorithm,
                                  Task)
 from ...utils.core import flatten_nested_list_of_strings
-from .validation import generate_model_validation_object
+from .validation import generate_model_validation_object, validate_model
 from smoldyn.biosimulators.utils import read_simulation
 from ..smoldyn.simularium_converter import SmoldynDataConverter, CombineArchive
 import os
