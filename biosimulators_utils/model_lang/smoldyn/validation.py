@@ -82,13 +82,16 @@ def validate_model(filename, name=None, config=None):
     return (errors, warnings, (model, config))
 
 
-def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str):
+def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str, save_output_df=False) -> None:
     """Generate a new `.simularium` file based on the `model.txt` in the passed-archive rootpath using the above
         validation method. Raises an `Exception` if there are errors present.
 
     Args:
-        archive_rootpath (:obj:`str`): Parent dirpath relative to the model.txt file
-        simularium_filename (:obj:`str`): Desired save name for the simularium file to be saved in the `archive_rootpath`
+        archive_rootpath (:obj:`str`): Parent dirpath relative to the model.txt file.
+        simularium_filename (:obj:`str`): Desired save name for the simularium file to be saved
+            in the `archive_rootpath`.
+        save_output_df (:obj:`bool`): Whether to save the modelout.txt contents as a pandas df in csv form. Defaults
+            to `False`.
 
     Returns:
         None
@@ -110,12 +113,14 @@ def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str
 
     converter = SmoldynDataConverter(archive)
 
-    df = converter.read_model_output_dataframe()
-    print(df)
+    if save_output_df:
+        df = converter.read_model_output_dataframe()
+        csv_fp = archive.model_output_filename.replace('txt', 'csv')
+        df.to_csv(csv_fp)
 
 
 TEST_ARCHIVE_ROOTPATH = 'minE_Andrews'
-generate_new_simularium_file(TEST_ARCHIVE_ROOTPATH, 'myTest')
+generate_new_simularium_file(TEST_ARCHIVE_ROOTPATH, 'myTest', True)
 
 
 
