@@ -11,7 +11,6 @@ from typing import Optional, Tuple, Dict, List, Union
 from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
-# import zarr  # noqa: F401
 from simulariumio import (
     CameraData,
     UnitData,
@@ -20,10 +19,10 @@ from simulariumio import (
     DISPLAY_TYPE,
     BinaryWriter,
 )
-from simulariumio.smoldyn.smoldyn_data import InputFileData, SmoldynData
+from simulariumio.smoldyn.smoldyn_data import InputFileData
 from simulariumio.smoldyn import SmoldynConverter, SmoldynData
 from simulariumio.filters import TranslateFilter
-from simulariumio.data_objects.trajectory_data import TrajectoryData
+from simulariumio.data_objects.trajectory_data import TrajectoryData, AgentData
 
 
 __all__ = [
@@ -126,8 +125,10 @@ class BiosimulatorsDataConverter(ABC):
             os.mkdir(dirpath)
         return os.path.join(dirpath, simularium_config.get('simularium_fname'))
 
-    @staticmethod
-    def prepare_agent_data():
+    def prepare_agent_data(self) -> AgentData:
+        """Create a new instance of an `AgentData` object following the specifications of the simulation within the
+            relative combine archive.
+        """
         pass
 
     @staticmethod
