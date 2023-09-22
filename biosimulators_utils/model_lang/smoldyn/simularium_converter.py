@@ -77,45 +77,6 @@ class CombineArchive:
                 return full_path
 
 
-class OutputData(ABC):
-    def __init__(self, value, n_dim: int):
-        self.value = value
-        self.n_dim = n_dim
-
-
-class TranslatedData(ABC):
-    def __init__(self, data: OutputData, box_size: float):
-        self.data = data
-        self.c = self._set_converter(self.data)
-        self.box_size = box_size
-
-    @abstractmethod
-    def _set_converter(self, data):
-        pass
-
-
-class SmoldynOutputData(OutputData):
-    def __init__(self, value: SmoldynData, n_dim=3):
-        super().__init__(value, n_dim)
-
-
-class TranslatedSmoldynData(TranslatedData):
-    def __init__(self, data: SmoldynOutputData, box_size: float):
-        super().__init__(data, box_size)
-        self.c = self._set_converter(data)
-        self.box_size = box_size
-        translation_magnitude = -self.box_size / 2
-        self.filtered_data = self.c.filter_data([
-            TranslateFilter(
-                translation_per_type={},
-                default_translation=translation_magnitude * np.ones(data.n_dim)
-            ),
-        ])
-
-    def _set_converter(self, data: SmoldynOutputData):
-        return SmoldynConverter(data.value)
-
-
 class BiosimulatorsDataConverter(ABC):
     def __init__(self, archive: CombineArchive):
         """This class serves as the abstract interface for a simulator-specific implementation
@@ -139,7 +100,7 @@ class BiosimulatorsDataConverter(ABC):
         pass
 
     @abstractmethod
-    def translate_data_object(self, data_object: OutputData, box_size, n_dim) -> TrajectoryData:
+    def translate_data_object(self, data_object, box_size, n_dim) -> TrajectoryData:
         """Create a mirrored negative image of a distribution and apply it to 3dimensions if
             AND ONLY IF it contains all non-negative values.
         """
@@ -271,15 +232,6 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
                 archive (:obj:`CombineArchive`): new instance of a `CombineArchive` object.
         """
         super().__init__(archive)
-        if not os.path.exists(self.archive.model_output_filename):
-            self.__generate_model_output_file()
-
-    def __generate_model_output_file(self) -> None:
-        """Method required for checking the existence of a `modelout.txt` file and running the simulation
-            with graphics turned off if not.
-        """
-        simulation = init_smoldyn_simulation_from_configuration_file(self.archive.model_path)
-        return simulation.runSim()
 
     def read_model_output_dataframe(self) -> pd.DataFrame:
         colnames = ['mol_name', 'x', 'y', 'z', 't']
@@ -289,14 +241,31 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
             self,
             file_data: InputFileData,
             display_data: Optional[Dict[str, DisplayData]] = None,
+            meta_data: Optional[MetaData] = None,
             spatial_units="nm",
             temporal_units="ns",
             ) -> SmoldynData:
+        """Generate a new instance of `SmoldynData`. If passing `meta_data`, please create a new `MetaData` instance
+            using the `self.generate_metadata_object` interface of this same class.
+
+        Args:
+            file_data: (:obj:`InputFileData`): `simulariumio.InputFileData` instance based on model output.
+            display_data: (:obj:`Dict[Dict[str, DisplayData]]`): `Optional`: if passing this parameter, please
+                use the `self.generate_display_object_dict` interface of this same class.
+            meta_data: (:obj:`Metadata`): new instance of `Metadata` object. If passing this parameter, please use the
+                `self.generate_metadata_object` interface method of this same class.
+            spatial_units: (:obj:`str`): spatial units by which to measure this simularium output. Defaults to `nm`.
+            temporal_units: (:obj:`str`): time units to base this simularium instance on. Defaults to `ns`.
+
+        Returns:
+            :obj:`SmoldynData` 
+        """
         return SmoldynData(
             smoldyn_file=file_data,
             spatial_units=UnitData(spatial_units),
             time_units=UnitData(temporal_units),
             display_data=display_data,
+            meta_data=meta_data
         )
 
     def translate_data_object(self, data_object: SmoldynData, box_size: float, n_dim=3) -> TrajectoryData:
