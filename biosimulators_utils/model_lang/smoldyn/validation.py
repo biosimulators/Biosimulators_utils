@@ -6,9 +6,10 @@
 :License: MIT
 """
 
-from ...config import Config  # noqa: F401
-from ...log.data_model import StandardOutputErrorCapturerLevel  # noqa: E402
-from ...log.utils import StandardOutputErrorCapturer  # noqa: E402
+from biosimulators_utils.model_lang.smoldyn.simularium_converter import CombineArchive
+from biosimulators_utils.config import Config  # noqa: F401
+from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel  # noqa: E402
+from biosimulators_utils.log.utils import StandardOutputErrorCapturer  # noqa: E402
 from smoldyn.biosimulators.combine import (  # noqa: E402
     read_smoldyn_simulation_configuration,
     disable_smoldyn_graphics_in_simulation_configuration,
@@ -17,6 +18,7 @@ from smoldyn.biosimulators.combine import (  # noqa: E402
 )
 import os  # noqa: E402
 import tempfile  # noqa: E402
+from typing import Tuple, Optional, Dict, Union
 
 
 def validate_model(filename, name=None, config=None):
@@ -66,3 +68,40 @@ def validate_model(filename, name=None, config=None):
         errors.append(['`filename` must be a path to a file, not `{}`.'.format(filename or '')])
 
     return (errors, warnings, (model, config))
+
+
+TEST_ARCHIVE_ROOTPATH = 'minE_Andrews'
+
+
+class ModelValidation:
+    def __init__(self, validation: Tuple):
+        self.errors = validation[0]
+        self.warnings = validation[1]
+        self.simulation = validation[2][0]
+        self.config = validation[2][1]
+
+
+def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str):
+    archive = CombineArchive(rootpath=archive_rootpath, name=simularium_filename)
+    validation = validate_model(filename=archive.model_path)
+    model_validation = ModelValidation(validation)
+    simulation = model_validation.simulation
+    simulation.runSim()
+
+    for root, _, files in os.walk(archive.rootpath):
+        for f in files:
+            if f.endswith('.txt') and 'model' not in f:
+                f = os.path.join(root, f)
+                new_f = 'modelout.txt'
+                output_fp = os.path.join(root, new_f)
+                os.rename(f, output_fp)
+
+
+generate_new_simularium_file(TEST_ARCHIVE_ROOTPATH, 'myTest')
+
+
+
+
+
+
+

@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 dist/
 build/
+.idea/
 
 # coverage files
 htmlcov/
@@ -18,3 +19,6 @@ docs/.buildinfo
 docs/.doctrees/
 docs/_raw_sources/
 docs/_sources/
+
+#test files
+minE_Andrews/

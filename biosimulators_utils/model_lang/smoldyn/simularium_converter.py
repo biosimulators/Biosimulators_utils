@@ -42,9 +42,6 @@ from simulariumio.filters import TranslateFilter
 from simulariumio.data_objects.trajectory_data import TrajectoryData
 
 
-ECOLI_ARCHIVE_ROOTPATH = 'biosimulators_simularium/test_files/archives/Andrews_ecoli_0523'
-
-
 class CombineArchive:
     def __init__(self,
                  rootpath: str,
@@ -78,12 +75,6 @@ class CombineArchive:
             full_path = self.paths[k]
             if model_filename in full_path:
                 return full_path
-
-
-'''a = CombineArchive(rootpath=ECOLI_ARCHIVE_ROOTPATH)
-
-print('it is: ' + a.model_path)
-print(a.paths)'''
 
 
 class OutputData(ABC):
