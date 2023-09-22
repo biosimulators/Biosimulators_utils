@@ -18,7 +18,7 @@ from ..smoldyn.simularium_converter import SmoldynDataConverter, CombineArchive
 import os
 import re
 import types  # noqa: F401
-from typing import Optional  # noqa: F401
+from typing import Optional, List  # noqa: F401
 
 
 __all__ = [
@@ -27,7 +27,7 @@ __all__ = [
 ]
 
 
-def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str, save_output_df: bool = False) -> None:
+def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str, save_output_df: bool = False) -> List[str]:
     """Generate a new `.simularium` file based on the `model.txt` in the passed-archive rootpath using the above
         validation method. Raises an `Exception` if there are errors present.
 
@@ -39,7 +39,7 @@ def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str
             to `False`.
 
     Returns:
-        None
+        :obj:`List[str]` of log items noting either success or failure.
     """
     archive = CombineArchive(rootpath=archive_rootpath, name=simularium_filename)
     model_validation = generate_model_validation_object(archive)
