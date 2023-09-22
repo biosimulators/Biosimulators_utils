@@ -6,8 +6,7 @@
 :License: MIT
 """
 
-
-import smoldyn
+import smoldyn  # noqa: F401
 from biosimulators_utils.model_lang.smoldyn.simularium_converter import CombineArchive
 from biosimulators_utils.config import Config  # noqa: F401
 from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel  # noqa: E402
