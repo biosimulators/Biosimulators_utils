@@ -19,11 +19,11 @@ from smoldyn.biosimulators.combine import (  # noqa: E402
 )
 import os  # noqa: E402
 import tempfile  # noqa: E402
-from typing import Tuple
+from typing import Tuple, List
 
 
 class ModelValidation:
-    def __init__(self, validation: Tuple):
+    def __init__(self, validation: Tuple[List[str], List[str], Tuple[smoldyn.Simulation, List[str]]]):
         self.errors = validation[0]
         self.warnings = validation[1]
         self.simulation = validation[2][0]
