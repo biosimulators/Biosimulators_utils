@@ -7,34 +7,18 @@
 
 
 import os
-from enum import Enum
-from dataclasses import dataclass
 from typing import Optional, Tuple, Dict, List, Union
 from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
 # import zarr  # noqa: F401
-from smoldyn import Simulation
-from smoldyn.biosimulators.data_model import SmoldynOutputFile
-from smoldyn.biosimulators.combine import (
-    init_smoldyn_simulation_from_configuration_file,
-    validate_variables,
-    disable_smoldyn_graphics_in_simulation_configuration,
-    read_smoldyn_simulation_configuration,
-    write_smoldyn_simulation_configuration,
-)
 from simulariumio import (
-    TrajectoryData,
     CameraData,
-    TrajectoryConverter,
-    AgentData,
     UnitData,
     MetaData,
     DisplayData,
     DISPLAY_TYPE,
-    ModelMetaData,
     BinaryWriter,
-    InputFileData,
 )
 from simulariumio.smoldyn.smoldyn_data import InputFileData, SmoldynData
 from simulariumio.smoldyn import SmoldynConverter, SmoldynData
@@ -310,4 +294,3 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
             or os.path.join(self.archive.rootpath, self.archive.simularium_filename)
         self.save_simularium_file(translated, simularium_filename)
         print('New Simularium file generated!!')
-
