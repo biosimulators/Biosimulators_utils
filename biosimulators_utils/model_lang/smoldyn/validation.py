@@ -5,6 +5,7 @@
 :Copyright: 2021, Center for Reproducible Biomedical Modeling
 :License: MIT
 """
+import smoldyn
 
 from biosimulators_utils.model_lang.smoldyn.simularium_converter import (
     CombineArchive,
@@ -22,7 +23,7 @@ from smoldyn.biosimulators.combine import (  # noqa: E402
 import pandas as pd
 import os  # noqa: E402
 import tempfile  # noqa: E402
-from typing import Tuple, Optional, Dict, Union
+from typing import Tuple, Optional, Dict, Union, List
 
 
 class ModelValidation:
@@ -82,6 +83,21 @@ def validate_model(filename, name=None, config=None):
     return (errors, warnings, (model, config))
 
 
+def generate_model_validation_object(archive: CombineArchive) -> ModelValidation:
+    """Generate an instance of `ModelValidation` based on the output of `archive.model_path`
+        with above `validate_model` method.
+
+    Args:
+        archive: (:obj:`CombineArchive`): Instance of `CombineArchive` to generate model validation on.
+
+    Returns:
+        :obj:`ModelValidation`
+    """
+    validation_info = validate_model(archive.model_path)
+    validation = ModelValidation(validation_info)
+    return validation
+
+
 def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str, save_output_df: bool = False) -> None:
     """Generate a new `.simularium` file based on the `model.txt` in the passed-archive rootpath using the above
         validation method. Raises an `Exception` if there are errors present.
@@ -97,13 +113,14 @@ def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str
         None
     """
     archive = CombineArchive(rootpath=archive_rootpath, name=simularium_filename)
-    validation = validate_model(filename=archive.model_path)
-    model_validation = ModelValidation(validation)
+    model_validation = generate_model_validation_object(archive)
     if model_validation.errors:
         print(f'There are errors involving your model file:\n{model_validation.errors}\nPlease adjust your model file.')
         raise Exception
     simulation = model_validation.simulation
+    print('Running simulation...')
     simulation.runSim()
+    print('...Simulation complete!')
 
     for root, _, files in os.walk(archive.rootpath):
         for f in files:
@@ -118,59 +135,8 @@ def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str
         csv_fp = archive.model_output_filename.replace('txt', 'csv')
         df.to_csv(csv_fp)
 
-
-TEST_ARCHIVE_ROOTPATH = 'minE_Andrews'
-generate_new_simularium_file(TEST_ARCHIVE_ROOTPATH, 'myTest', True)
+    return converter.generate_simularium_file()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+TEST_ROOTPATH = 'minE_Andrews'
+generate_new_simularium_file(archive_rootpath=TEST_ROOTPATH, simularium_filename='myTest', save_output_df=True)
