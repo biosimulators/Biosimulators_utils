@@ -45,7 +45,7 @@ def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str
     model_validation = generate_model_validation_object(archive)
     if model_validation.errors:
         print(f'There are errors involving your model file:\n{model_validation.errors}\nPlease adjust your model file.')
-        raise Exception
+        raise ValueError
     simulation = model_validation.simulation
     print('Running simulation...')
     simulation.runSim()
