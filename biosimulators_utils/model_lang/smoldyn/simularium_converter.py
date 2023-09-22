@@ -271,18 +271,8 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
                 archive (:obj:`CombineArchive`): new instance of a `CombineArchive` object.
         """
         super().__init__(archive)
-        self.__disable_graphics()
         if not os.path.exists(self.archive.model_output_filename):
             self.__generate_model_output_file()
-
-    def __disable_graphics(self):
-        """Helper method to wrap smoldyn functions. Read the passed `CombineArchive.model_path` as a list, turn off the
-            graphics using Smoldyn, and rewrite the model file with turned off graphics. NOTE: This method
-            is required for automation on the command-line.
-        """
-        smoldyn_config = read_smoldyn_simulation_configuration(self.archive.model_path)
-        disable_smoldyn_graphics_in_simulation_configuration(smoldyn_config)
-        write_smoldyn_simulation_configuration(smoldyn_config, self.archive.model_path)
 
     def __generate_model_output_file(self) -> None:
         """Method required for checking the existence of a `modelout.txt` file and running the simulation
@@ -342,9 +332,9 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
         print('New Simularium file generated!!')
 
 
-class SimulationSetupParams(str, Enum):
-    project_root = 'biosimulators_simularium'
-    model_fp = 'biosimulators_simularium/test_files/models/ecoli_model.txt'
-    ecoli_archive_dirpath = 'biosimulators_simularium/test_files/archives/Andrews_ecoli_0523'
-    sed_doc = os.path.join(ecoli_archive_dirpath, 'simulation.sedml')
-    outputs_dirpath = 'biosimulators_simularium/outputs'
+class ModelValidation:
+    def __init__(self, validation: Tuple):
+        self.errors = validation[0]
+        self.warnings = validation[1]
+        self.simulation = validation[2][0]
+        self.config = validation[2][1]

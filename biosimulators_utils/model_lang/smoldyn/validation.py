@@ -6,7 +6,11 @@
 :License: MIT
 """
 
-from biosimulators_utils.model_lang.smoldyn.simularium_converter import CombineArchive
+from biosimulators_utils.model_lang.smoldyn.simularium_converter import (
+    CombineArchive,
+    SmoldynDataConverter,
+    ModelValidation
+)
 from biosimulators_utils.config import Config  # noqa: F401
 from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel  # noqa: E402
 from biosimulators_utils.log.utils import StandardOutputErrorCapturer  # noqa: E402
@@ -16,6 +20,7 @@ from smoldyn.biosimulators.combine import (  # noqa: E402
     write_smoldyn_simulation_configuration,
     init_smoldyn_simulation_from_configuration_file,
 )
+import pandas as pd
 import os  # noqa: E402
 import tempfile  # noqa: E402
 from typing import Tuple, Optional, Dict, Union
@@ -73,16 +78,9 @@ def validate_model(filename, name=None, config=None):
 TEST_ARCHIVE_ROOTPATH = 'minE_Andrews'
 
 
-class ModelValidation:
-    def __init__(self, validation: Tuple):
-        self.errors = validation[0]
-        self.warnings = validation[1]
-        self.simulation = validation[2][0]
-        self.config = validation[2][1]
-
-
 def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str):
-    """Generate a new `.simularium` file based on the `model.txt` in the passed-archive rootpath.
+    """Generate a new `.simularium` file based on the `model.txt` in the passed-archive rootpath using the above
+        validation method. Raises an `Exception` if there are errors present.
 
     Args:
         archive_rootpath (:obj:`str`): Parent dirpath relative to the model.txt file
@@ -94,6 +92,9 @@ def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str
     archive = CombineArchive(rootpath=archive_rootpath, name=simularium_filename)
     validation = validate_model(filename=archive.model_path)
     model_validation = ModelValidation(validation)
+    if model_validation.errors:
+        print(f'There are errors involving your model file:\n{model_validation.errors}\nPlease adjust your model file.')
+        raise Exception
     simulation = model_validation.simulation
     simulation.runSim()
 
@@ -105,6 +106,57 @@ def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str
 
 
 generate_new_simularium_file(TEST_ARCHIVE_ROOTPATH, 'myTest')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
