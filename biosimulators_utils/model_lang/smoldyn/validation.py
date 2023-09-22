@@ -9,7 +9,6 @@
 from biosimulators_utils.model_lang.smoldyn.simularium_converter import (
     CombineArchive,
     SmoldynDataConverter,
-    ModelValidation
 )
 from biosimulators_utils.config import Config  # noqa: F401
 from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel  # noqa: E402
@@ -24,6 +23,14 @@ import pandas as pd
 import os  # noqa: E402
 import tempfile  # noqa: E402
 from typing import Tuple, Optional, Dict, Union
+
+
+class ModelValidation:
+    def __init__(self, validation: Tuple):
+        self.errors = validation[0]
+        self.warnings = validation[1]
+        self.simulation = validation[2][0]
+        self.config = validation[2][1]
 
 
 def validate_model(filename, name=None, config=None):
@@ -75,9 +82,6 @@ def validate_model(filename, name=None, config=None):
     return (errors, warnings, (model, config))
 
 
-TEST_ARCHIVE_ROOTPATH = 'minE_Andrews'
-
-
 def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str):
     """Generate a new `.simularium` file based on the `model.txt` in the passed-archive rootpath using the above
         validation method. Raises an `Exception` if there are errors present.
@@ -104,13 +108,14 @@ def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str
                 f = os.path.join(root, f)
                 os.rename(f, archive.model_output_filename)
 
+    converter = SmoldynDataConverter(archive)
 
+    df = converter.read_model_output_dataframe()
+    print(df)
+
+
+TEST_ARCHIVE_ROOTPATH = 'minE_Andrews'
 generate_new_simularium_file(TEST_ARCHIVE_ROOTPATH, 'myTest')
-
-
-
-
-
 
 
 

@@ -42,6 +42,13 @@ from simulariumio.filters import TranslateFilter
 from simulariumio.data_objects.trajectory_data import TrajectoryData
 
 
+__all__ = [
+    'CombineArchive',
+    'BiosimulatorsDataConverter',
+    'SmoldynDataConverter',
+]
+
+
 class CombineArchive:
     def __init__(self,
                  rootpath: str,
@@ -258,7 +265,7 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
             temporal_units: (:obj:`str`): time units to base this simularium instance on. Defaults to `ns`.
 
         Returns:
-            :obj:`SmoldynData` 
+            :obj:`SmoldynData`
         """
         return SmoldynData(
             smoldyn_file=file_data,
@@ -300,10 +307,3 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
         self.save_simularium_file(translated, simularium_filename)
         print('New Simularium file generated!!')
 
-
-class ModelValidation:
-    def __init__(self, validation: Tuple):
-        self.errors = validation[0]
-        self.warnings = validation[1]
-        self.simulation = validation[2][0]
-        self.config = validation[2][1]
