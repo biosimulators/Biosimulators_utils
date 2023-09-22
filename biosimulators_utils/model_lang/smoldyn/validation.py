@@ -82,7 +82,7 @@ def validate_model(filename, name=None, config=None):
     return (errors, warnings, (model, config))
 
 
-def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str, save_output_df=False) -> None:
+def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str, save_output_df: bool = False) -> None:
     """Generate a new `.simularium` file based on the `model.txt` in the passed-archive rootpath using the above
         validation method. Raises an `Exception` if there are errors present.
 
