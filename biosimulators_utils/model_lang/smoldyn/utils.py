@@ -12,8 +12,7 @@ from ...sedml.data_model import (SedDocument, ModelAttributeChange, Variable,  #
                                  Symbol, Simulation, UniformTimeCourseSimulation, Algorithm,
                                  Task)
 from ...utils.core import flatten_nested_list_of_strings
-from .validation import validate_model
-from .simularium_converter import CombineArchive, SmoldynDataConverter
+from .validation import generate_model_validation_object
 from smoldyn.biosimulators.utils import read_simulation
 from ..smoldyn.simularium_converter import SmoldynDataConverter, CombineArchive
 import os
@@ -25,24 +24,47 @@ from typing import Optional  # noqa: F401
 __all__ = [
     'get_parameters_variables_outputs_for_simulation',
     'generate_new_simularium_file',
-    'SmoldynDataConverter',
-    'CombineArchive'
 ]
 
 
-def generate_new_simularium_file(archive_rootpath: str, simularium_filename: Optional[str] = None) -> None:
-    """Generate a new `.simularium` file for the Smoldyn `model.txt` in a given COMBINE/OMEX archive.
+def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str, save_output_df: bool = False) -> None:
+    """Generate a new `.simularium` file based on the `model.txt` in the passed-archive rootpath using the above
+        validation method. Raises an `Exception` if there are errors present.
 
-        Args:
-            archive_rootpath(:obj:`str`): path of the root relative to your COMBINE/OMEX archive.
-            simularium_filename(:obj:`str`): `Optional`: desired path by which to save the new .simularium file. If `None` is passed, file will be stored by a generic name in the archive root.
+    Args:
+        archive_rootpath (:obj:`str`): Parent dirpath relative to the model.txt file.
+        simularium_filename (:obj:`str`): Desired save name for the simularium file to be saved
+            in the `archive_rootpath`.
+        save_output_df (:obj:`bool`): Whether to save the modelout.txt contents as a pandas df in csv form. Defaults
+            to `False`.
 
-        Returns:
-            `None`
+    Returns:
+        None
     """
-    archive_obj = CombineArchive(rootpath=archive_rootpath, simularium_filename=simularium_filename)
-    converter = SmoldynDataConverter(archive=archive_obj)
-    return converter.generate_simularium_file(simularium_filename=simularium_filename)
+    archive = CombineArchive(rootpath=archive_rootpath, name=simularium_filename)
+    model_validation = generate_model_validation_object(archive)
+    if model_validation.errors:
+        print(f'There are errors involving your model file:\n{model_validation.errors}\nPlease adjust your model file.')
+        raise Exception
+    simulation = model_validation.simulation
+    print('Running simulation...')
+    simulation.runSim()
+    print('...Simulation complete!')
+
+    for root, _, files in os.walk(archive.rootpath):
+        for f in files:
+            if f.endswith('.txt') and 'model' not in f:
+                f = os.path.join(root, f)
+                os.rename(f, archive.model_output_filename)
+
+    converter = SmoldynDataConverter(archive)
+
+    if save_output_df:
+        df = converter.read_model_output_dataframe()
+        csv_fp = archive.model_output_filename.replace('txt', 'csv')
+        df.to_csv(csv_fp)
+
+    return converter.generate_simularium_file()
 
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
