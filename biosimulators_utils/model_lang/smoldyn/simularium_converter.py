@@ -244,6 +244,10 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
         colnames = ['mol_name', 'x', 'y', 'z', 't']
         return pd.read_csv(self.archive.model_output_filename, sep=" ", header=None, skiprows=1, names=colnames)
 
+    def write_model_output_dataframe_to_csv(self, save_fp: str) -> None:
+        df = self.read_model_output_dataframe()
+        return df.to_csv(save_fp)
+
     def generate_output_data_object(
             self,
             file_data: InputFileData,
