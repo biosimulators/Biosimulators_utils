@@ -142,9 +142,8 @@ class BiosimulatorsDataConverter(ABC):
             ) -> CameraData:
         return CameraData(position=position, look_at_position=look_position, up_vector=up_vector)
 
-    @classmethod
+    @staticmethod
     def generate_display_data_object(
-            cls,
             name: str,
             radius: float,
             display_type=DISPLAY_TYPE.SPHERE,
@@ -157,10 +156,7 @@ class BiosimulatorsDataConverter(ABC):
             color=obj_color
         )
 
-    @classmethod
-    def generate_display_data_object_dict(
-            cls,
-            agent_names: List[Tuple[str, str, float, str]]) -> Dict[str, DisplayData]:
+    def generate_display_data_object_dict(self, agent_names: List[Tuple[str, str, float, str]]) -> Dict[str, DisplayData]:
         """Generate a display object dict.
 
             Args:
@@ -172,7 +168,7 @@ class BiosimulatorsDataConverter(ABC):
         """
         data = {}
         for name in agent_names:
-            data[name[0]] = cls.generate_display_data_object(
+            data[name[0]] = self.generate_display_data_object(
                 name=name[0],
                 radius=name[2],
                 obj_color=name[3]
