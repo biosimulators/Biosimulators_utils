@@ -22,7 +22,7 @@ pyneuroml >= 0.5.18
 python_libsbml
 
 [smoldyn]
-smoldyn >= 2.70
+smoldyn >= 2.66
 # simulariumio
 
 [simularium]
