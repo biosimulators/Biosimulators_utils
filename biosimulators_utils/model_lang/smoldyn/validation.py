@@ -82,6 +82,15 @@ class ModelValidation:
 
 
 def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str):
+    """Generate a new `.simularium` file based on the `model.txt` in the passed-archive rootpath.
+
+    Args:
+        archive_rootpath (:obj:`str`): Parent dirpath relative to the model.txt file
+        simularium_filename (:obj:`str`): Desired save name for the simularium file to be saved in the `archive_rootpath`
+
+    Returns:
+        None
+    """
     archive = CombineArchive(rootpath=archive_rootpath, name=simularium_filename)
     validation = validate_model(filename=archive.model_path)
     model_validation = ModelValidation(validation)
