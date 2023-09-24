@@ -19,6 +19,7 @@ import os
 import re
 import types  # noqa: F401
 from typing import Optional, List  # noqa: F401
+from datetime import datetime
 
 
 __all__ = [
@@ -46,12 +47,12 @@ def generate_new_simularium_file(archive_rootpath: str,
     archive = CombineArchive(rootpath=archive_rootpath, name=simularium_filename)
     model_validation = generate_model_validation_object(archive)
     if model_validation.errors:
-        print(f'There are errors involving your model file:\n{model_validation.errors}\nPlease adjust your model file.')
-        raise ValueError
+        raise ValueError(f'There are errors involving your model file:\n{model_validation.errors}\nPlease adjust your model file.')
     simulation = model_validation.simulation
-    print('Running simulation...')
-    simulation.runSim()
-    print('...Simulation complete!')
+    if not os.path.exists(archive.model_output_filename):
+        print('Running simulation...')
+        simulation.runSim()
+        print('Simulation Complete...')
 
     for root, _, files in os.walk(archive.rootpath):
         for f in files:

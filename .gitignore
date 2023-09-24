@@ -4,7 +4,7 @@ __pycache__/
 *.pyc
 dist/
 build/
-.idea/
+# .idea/
 
 # coverage files
 htmlcov/
@@ -22,4 +22,3 @@ docs/_sources/
 
 #test files
 minE_Andrews/
-TEST.py
