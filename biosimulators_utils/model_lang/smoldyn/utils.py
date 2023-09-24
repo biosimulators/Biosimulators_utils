@@ -19,7 +19,6 @@ import os
 import re
 import types  # noqa: F401
 from typing import Optional, List  # noqa: F401
-from datetime import datetime
 
 
 __all__ = [
