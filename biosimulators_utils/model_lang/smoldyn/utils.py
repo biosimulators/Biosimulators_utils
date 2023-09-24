@@ -27,14 +27,16 @@ __all__ = [
 ]
 
 
-def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str, save_output_df: bool = False) -> None:
+def generate_new_simularium_file(archive_rootpath: str,
+                                 simularium_filename: Optional[str] = None,
+                                 save_output_df: bool = False) -> None:
     """Generate a new `.simularium` file based on the `model.txt` in the passed-archive rootpath using the above
         validation method. Raises an `Exception` if there are errors present.
 
     Args:
         archive_rootpath (:obj:`str`): Parent dirpath relative to the model.txt file.
-        simularium_filename (:obj:`str`): Desired save name for the simularium file to be saved
-            in the `archive_rootpath`.
+        simularium_filename (:obj:`str`): `Optional`: Desired save name for the simularium file to be saved
+            in the `archive_rootpath`. Defaults to `None`.
         save_output_df (:obj:`bool`): Whether to save the modelout.txt contents as a pandas df in csv form. Defaults
             to `False`.
 
@@ -64,7 +66,7 @@ def generate_new_simularium_file(archive_rootpath: str, simularium_filename: str
         csv_fp = archive.model_output_filename.replace('txt', 'csv')
         df.to_csv(csv_fp)
 
-    return converter.generate_simularium_file()
+    return converter.generate_simularium_file(simularium_filename=simularium_filename)
 
 
 def get_parameters_variables_outputs_for_simulation(model_filename, model_language, simulation_type, algorithm_kisao_id=None,
