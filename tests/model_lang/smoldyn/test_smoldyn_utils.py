@@ -108,7 +108,7 @@ class SmoldynUtilsTestCase(unittest.TestCase):
             new_value=[1., 0., 0., 2.],
         )))
 
-    def tezst_get_parameters_variables_for_simulation_native_ids_data_types(self):
+    def test_get_parameters_variables_for_simulation_native_ids_data_types(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None,
                                                                                     native_ids=True, native_data_types=True)
 
