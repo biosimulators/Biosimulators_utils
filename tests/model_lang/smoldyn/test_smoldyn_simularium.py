@@ -20,7 +20,6 @@ def test_plot_3d_from_df():
     data_generators = list(set(df['mol_name'].tolist()))
     print(data_generators)
     plot_type = Plot3D()
-    results = DataGeneratorResults()
     # plot = write_plot_3d(plot_type,
 
 

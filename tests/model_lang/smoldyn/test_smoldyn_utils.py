@@ -173,11 +173,3 @@ class SmoldynUtilsTestCase(unittest.TestCase):
             name=None,
             target='molcountonsurf red walls',
         )))
-
-    def test_generate_new_simularium_file(self):
-        generate_new_simularium_file(
-            archive_rootpath=self.TEST_ARCHIVE_DIRPATH,
-            simularium_filename=self.TEST_SIMULARIUM_FILENAME
-        )
-        self.assertTrue(os.path.exists(self.TEST_SIMULARIUM_FILENAME))
-

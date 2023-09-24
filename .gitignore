@@ -4,7 +4,6 @@ __pycache__/
 *.pyc
 dist/
 build/
-.idea/
 
 # coverage files
 htmlcov/
