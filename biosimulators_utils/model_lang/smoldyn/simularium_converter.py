@@ -23,6 +23,7 @@ from simulariumio.smoldyn.smoldyn_data import InputFileData
 from simulariumio.smoldyn import SmoldynConverter, SmoldynData
 from simulariumio.filters import TranslateFilter
 from simulariumio.data_objects.trajectory_data import TrajectoryData, AgentData
+from biosimulators_utils.combine.io import CombineArchiveReader
 
 
 __all__ = [
@@ -70,12 +71,13 @@ class SmoldynCombineArchive:
         """Read SmoldynCombineArchive manifest files. Return all filepaths containing the word 'manifest'.
 
             Returns:
-                :obj:`str`: path
+                :obj:`str`: path if there is just one manifest file, otherwise `List[str]` of manifest filepaths.
         """
         manifest = []
         for v in list(self.paths.values()):
             if 'manifest' in v:
                 manifest.append(v)
+                self.paths['manifest'] = v
         return manifest if len(manifest) > 1 else manifest[0]
 
 
@@ -88,6 +90,14 @@ class BiosimulatorsDataConverter(ABC):
                     :param:`archive`:(`CombineArchive`): new instance of a `CombineArchive` object.
         """
         self.archive = archive
+        self.has_smoldyn = self.verify_smoldyn_in_manifest()
+
+    def verify_smoldyn_in_manifest(self):
+        manifest = self.archive.get_manifest_filepath()
+        reader = CombineArchiveReader()
+        manifest_contents = [c.to_tuple() for c in reader.read_manifest(manifest)]
+        model_info = manifest_contents[0][1]
+        return 'smoldyn' in model_info
 
     @abstractmethod
     def generate_output_data_object(

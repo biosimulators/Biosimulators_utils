@@ -19,12 +19,19 @@ def test_plot_3d_from_df():
     print(data_generators)
 
 
+def test_generate_simularium_file():
+    archive = SmoldynCombineArchive(rootpath=ARCHIVE_PATH, simularium_filename=SIMULARIUM_FILE)
+    converter = SmoldynDataConverter(archive)
+    print(f'Has smoldyn: {converter.has_smoldyn}')
+
+
 if __name__ == '__main__':
-    generate_new_simularium_file(
-        archive_rootpath=ARCHIVE_PATH,
-        simularium_filename=SIMULARIUM_FILE
-    )
+    # generate_new_simularium_file(
+    #     archive_rootpath=ARCHIVE_PATH,
+    #     simularium_filename=SIMULARIUM_FILE
+    # )
     # test_plot_3d_from_df()
+    test_generate_simularium_file()
 
 
 
