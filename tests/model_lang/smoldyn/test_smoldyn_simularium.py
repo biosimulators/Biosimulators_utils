@@ -1,6 +1,6 @@
 import os
 from biosimulators_utils.model_lang.smoldyn.utils import generate_new_simularium_file
-from biosimulators_utils.model_lang.smoldyn.simularium_converter import SmoldynDataConverter, CombineArchive
+from biosimulators_utils.model_lang.smoldyn.simularium_converter import SmoldynDataConverter, SmoldynCombineArchive
 
 
 ARCHIVE_NAME = 'minE_Andrews_0523'
@@ -9,7 +9,7 @@ SIMULARIUM_FILE = os.path.join(ARCHIVE_PATH, f'{ARCHIVE_NAME}')
 
 
 def test_plot_3d_from_df():
-    archive = CombineArchive(rootpath=ARCHIVE_PATH, simularium_filename=SIMULARIUM_FILE)
+    archive = SmoldynCombineArchive(rootpath=ARCHIVE_PATH, simularium_filename=SIMULARIUM_FILE)
     converter = SmoldynDataConverter(archive)
 
     # NOTE: Add Sub-method for plotting to 3d

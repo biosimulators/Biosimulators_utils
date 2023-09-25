@@ -26,13 +26,13 @@ from simulariumio.data_objects.trajectory_data import TrajectoryData, AgentData
 
 
 __all__ = [
-    'CombineArchive',
+    'SmoldynCombineArchive',
     'BiosimulatorsDataConverter',
     'SmoldynDataConverter',
 ]
 
 
-class CombineArchive:
+class SmoldynCombineArchive:
     def __init__(self,
                  rootpath: str,
                  outputs_dirpath: Optional[str] = None,
@@ -68,7 +68,7 @@ class CombineArchive:
 
 
 class BiosimulatorsDataConverter(ABC):
-    def __init__(self, archive: CombineArchive):
+    def __init__(self, archive: SmoldynCombineArchive):
         """This class serves as the abstract interface for a simulator-specific implementation
             of utilities through which the user may convert Biosimulators outputs to a valid simularium File.
 
@@ -211,7 +211,7 @@ class BiosimulatorsDataConverter(ABC):
 
 
 class SmoldynDataConverter(BiosimulatorsDataConverter):
-    def __init__(self, archive: CombineArchive):
+    def __init__(self, archive: SmoldynCombineArchive):
         """General class for converting Smoldyn output (modelout.txt) to .simularium. Checks the passed archive object
             directory for a `modelout.txt` file (standard Smoldyn naming convention) and runs the simulation by default if
             not.

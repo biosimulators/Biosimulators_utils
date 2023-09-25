@@ -7,7 +7,7 @@
 """
 
 import smoldyn  # noqa: F401
-from biosimulators_utils.model_lang.smoldyn.simularium_converter import CombineArchive
+from biosimulators_utils.model_lang.smoldyn.simularium_converter import SmoldynCombineArchive
 from biosimulators_utils.config import Config  # noqa: F401
 from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel  # noqa: E402
 from biosimulators_utils.log.utils import StandardOutputErrorCapturer  # noqa: E402
@@ -79,7 +79,7 @@ def validate_model(filename, name=None, config=None):
     return (errors, warnings, (model, config))
 
 
-def generate_model_validation_object(archive: CombineArchive) -> ModelValidation:
+def generate_model_validation_object(archive: SmoldynCombineArchive) -> ModelValidation:
     """Generate an instance of `ModelValidation` based on the output of `archive.model_path`
         with above `validate_model` method.
 

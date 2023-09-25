@@ -14,7 +14,7 @@ from ...sedml.data_model import (SedDocument, ModelAttributeChange, Variable,  #
 from ...utils.core import flatten_nested_list_of_strings
 from .validation import generate_model_validation_object, validate_model
 from smoldyn.biosimulators.utils import read_simulation
-from ..smoldyn.simularium_converter import SmoldynDataConverter, CombineArchive
+from ..smoldyn.simularium_converter import SmoldynDataConverter, SmoldynCombineArchive
 import os
 import re
 import types  # noqa: F401
@@ -43,7 +43,7 @@ def generate_new_simularium_file(archive_rootpath: str,
     Returns:
         None
     """
-    archive = CombineArchive(rootpath=archive_rootpath, name=simularium_filename)
+    archive = SmoldynCombineArchive(rootpath=archive_rootpath, name=simularium_filename)
     model_validation = generate_model_validation_object(archive)
     if model_validation.errors:
         raise ValueError(f'There are errors involving your model file:\n{model_validation.errors}\nPlease adjust your model file.')
