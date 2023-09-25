@@ -6,6 +6,9 @@
 """
 
 
+# pragma: no cover
+
+
 import os
 import zipfile
 from typing import Optional, Tuple, Dict, List, Union
@@ -54,6 +57,8 @@ class SmoldynCombineArchive:
                  model_output_filename: Optional[str] = None,
                  simularium_filename: Optional[str] = None,
                  name='my_combine_archive'):
+        """Object for handling the output of Smoldyn simulation data. An implementation of the abstract class
+            `SpatialCombineArchive`. """
         self.rootpath = rootpath
         self.outputs_dirpath = outputs_dirpath
         self.simularium_filename = simularium_filename or f'{name}_output_for_simularium'
