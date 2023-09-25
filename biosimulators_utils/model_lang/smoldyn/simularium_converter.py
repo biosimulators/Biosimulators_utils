@@ -119,19 +119,6 @@ class BiosimulatorsDataConverter(ABC):
         self.archive = archive
         self.has_smoldyn = self.archive.verify_smoldyn_in_manifest()
 
-    '''def verify_smoldyn_in_manifest(self) -> bool:
-        """Pass the return value of `self.get_manifest_filepath()` into a new instance of `CombineArchiveReader`
-            such that the string manifest object tuples are evaluated for the presence of `smoldyn`.
-
-            Returns:
-                `bool`: Whether there exists a smoldyn model in the archive based on the archive's manifest.
-        """
-        manifest = self.archive.get_manifest_filepath()
-        reader = CombineArchiveReader()
-        manifest_contents = [c.to_tuple() for c in reader.read_manifest(manifest)]
-        model_info = manifest_contents[0][1]
-        return 'smoldyn' in model_info'''
-
     @abstractmethod
     def generate_output_data_object(
             self,
