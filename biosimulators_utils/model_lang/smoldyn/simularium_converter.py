@@ -66,6 +66,18 @@ class SmoldynCombineArchive:
             if model_filename in full_path:
                 return full_path
 
+    def get_manifest_filepath(self) -> Union[List[str], str]:
+        """Read SmoldynCombineArchive manifest files. Return all filepaths containing the word 'manifest'.
+
+            Returns:
+                :obj:`str`: path
+        """
+        manifest = []
+        for v in list(self.paths.values()):
+            if 'manifest' in v:
+                manifest.append(v)
+        return manifest if len(manifest) > 1 else manifest[0]
+
 
 class BiosimulatorsDataConverter(ABC):
     def __init__(self, archive: SmoldynCombineArchive):
