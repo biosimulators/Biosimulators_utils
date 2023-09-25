@@ -273,7 +273,7 @@ class CliTestCase(unittest.TestCase):
         with biosimulators_utils.__main__.App(argv=[
             'exec',
             'ghcr.io/biosimulators/copasi:latest',
-            '-i', os.path.join(os.path.dirname(__file__), 'fixtures', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex'),
+            '-i', os.path.join(os.path.dirname(__file__), 'fixtures', 'Caravagna-J-Theor-Biol-2010-tumor-suppressive-oscillations.omex'),
             '-o', os.path.join(self.tmp_dir, 'results'),
             '--env', 'KEY1=value1', 'KEY2=value2',
             '--user', str(os.getuid()),
