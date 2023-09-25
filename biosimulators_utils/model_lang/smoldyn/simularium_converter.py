@@ -7,6 +7,7 @@
 
 
 import os
+import zipfile
 from typing import Optional, Tuple, Dict, List, Union
 from abc import ABC, abstractmethod
 import numpy as np
@@ -24,6 +25,7 @@ from simulariumio.smoldyn import SmoldynConverter, SmoldynData
 from simulariumio.filters import TranslateFilter
 from simulariumio.data_objects.trajectory_data import TrajectoryData, AgentData
 from biosimulators_utils.combine.io import CombineArchiveReader
+from biosimulators_utils.archive.io import ArchiveReader
 
 
 __all__ = [
@@ -31,6 +33,18 @@ __all__ = [
     'BiosimulatorsDataConverter',
     'SmoldynDataConverter',
 ]
+
+
+def extract_omex(zipped_path, output=None):
+    reader = ArchiveReader()
+    if output is None:
+        output = zipped_path.replace('.omex', '')
+    reader.run(zipped_path, output)
+
+
+def __extract_omex(omex_filename, output_folder):
+    with zipfile.ZipFile(omex_filename, 'r') as zip_ref:
+        zip_ref.extractall(output_folder)
 
 
 class SmoldynCombineArchive:
