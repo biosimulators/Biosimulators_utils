@@ -6,7 +6,7 @@
 :License: MIT
 """
 
-from ..model_lang.smoldyn.simularium_converter import SmoldynCombineArchive, SmoldynDataConverter
+
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config, Config  # noqa: F401
