@@ -87,7 +87,7 @@ class BiosimulatorsDataConverter(ABC):
             of utilities through which the user may convert Biosimulators outputs to a valid simularium File.
 
                 Args:
-                    :param:`archive`:(`CombineArchive`): new instance of a `CombineArchive` object.
+                    :param:`archive`:(`SmoldynCombineArchive`): instance of a `CombineArchive` object.
         """
         self.archive = archive
         self.has_smoldyn = self.verify_smoldyn_in_manifest()
@@ -239,7 +239,7 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
             not.
 
             Args:
-                archive (:obj:`CombineArchive`): new instance of a `CombineArchive` object.
+                archive (:obj:`SmoldynCombineArchive`): instance of a `SmoldynCombineArchive` object.
         """
         super().__init__(archive)
 
