@@ -6,9 +6,11 @@
 :License: MIT
 """
 
-from ...config import Config  # noqa: F401
-from ...log.data_model import StandardOutputErrorCapturerLevel  # noqa: E402
-from ...log.utils import StandardOutputErrorCapturer  # noqa: E402
+import smoldyn  # noqa: F401
+from biosimulators_utils.model_lang.smoldyn.simularium_converter import SmoldynCombineArchive
+from biosimulators_utils.config import Config  # noqa: F401
+from biosimulators_utils.log.data_model import StandardOutputErrorCapturerLevel  # noqa: E402
+from biosimulators_utils.log.utils import StandardOutputErrorCapturer  # noqa: E402
 from smoldyn.biosimulators.combine import (  # noqa: E402
     read_smoldyn_simulation_configuration,
     disable_smoldyn_graphics_in_simulation_configuration,
@@ -17,6 +19,15 @@ from smoldyn.biosimulators.combine import (  # noqa: E402
 )
 import os  # noqa: E402
 import tempfile  # noqa: E402
+from typing import Tuple, List
+
+
+class ModelValidation:
+    def __init__(self, validation: Tuple[List[str], List[str], Tuple[smoldyn.Simulation, List[str]]]):
+        self.errors = validation[0]
+        self.warnings = validation[1]
+        self.simulation = validation[2][0]
+        self.config = validation[2][1]
 
 
 def validate_model(filename, name=None, config=None):
@@ -66,3 +77,18 @@ def validate_model(filename, name=None, config=None):
         errors.append(['`filename` must be a path to a file, not `{}`.'.format(filename or '')])
 
     return (errors, warnings, (model, config))
+
+
+def generate_model_validation_object(archive: SmoldynCombineArchive) -> ModelValidation:
+    """Generate an instance of `ModelValidation` based on the output of `archive.model_path`
+        with above `validate_model` method.
+
+    Args:
+        archive: (:obj:`CombineArchive`): Instance of `CombineArchive` to generate model validation on.
+
+    Returns:
+        :obj:`ModelValidation`
+    """
+    validation_info = validate_model(archive.model_path)
+    validation = ModelValidation(validation_info)
+    return validation

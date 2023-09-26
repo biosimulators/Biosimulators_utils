@@ -1,4 +1,4 @@
-from biosimulators_utils.model_lang.smoldyn.utils import get_parameters_variables_outputs_for_simulation
+from biosimulators_utils.model_lang.smoldyn.utils import get_parameters_variables_outputs_for_simulation, generate_new_simularium_file
 from biosimulators_utils.sedml.data_model import Symbol, ModelAttributeChange, Variable, SteadyStateSimulation, UniformTimeCourseSimulation
 import os
 import unittest
@@ -9,6 +9,9 @@ class SmoldynUtilsTestCase(unittest.TestCase):
     COMP_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'smoldyn', 'compart.txt')
     COMP_FIXTURE_FILENAME_2 = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'smoldyn', 'compart-2.txt')
     INVALID_FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'smoldyn', 'invalid.txt')
+    TEST_ARCHIVE_NAME = 'min_E_Andrews_0523'
+    TEST_ARCHIVE_DIRPATH = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures', 'smoldyn', TEST_ARCHIVE_NAME)
+    TEST_SIMULARIUM_FILENAME = os.path.join(TEST_ARCHIVE_DIRPATH, TEST_ARCHIVE_NAME)
 
     def test_get_parameters_variables_for_simulation_error_handling(self):
         with self.assertRaisesRegex(ValueError, 'is not a path to a model file'):
@@ -105,7 +108,7 @@ class SmoldynUtilsTestCase(unittest.TestCase):
             new_value=[1., 0., 0., 2.],
         )))
 
-    def tezst_get_parameters_variables_for_simulation_native_ids_data_types(self):
+    def test_get_parameters_variables_for_simulation_native_ids_data_types(self):
         params, sims, vars, plots = get_parameters_variables_outputs_for_simulation(self.FIXTURE_FILENAME, None, UniformTimeCourseSimulation, None,
                                                                                     native_ids=True, native_data_types=True)
 

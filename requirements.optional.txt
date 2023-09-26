@@ -23,6 +23,10 @@ python_libsbml
 
 [smoldyn]
 smoldyn >= 2.66
+# simulariumio
+
+[simularium]
+simulariumio
 
 #################################
 ## Visualization formats

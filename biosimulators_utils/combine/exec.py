@@ -6,6 +6,7 @@
 :License: MIT
 """
 
+
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config, Config  # noqa: F401
@@ -239,6 +240,14 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                     doc_log.export()
 
         print('')
+
+        # handle smoldyn output/simularium conversion
+        # arch = SmoldynCombineArchive(rootpath=archive_tmp_dir)
+        # if arch.verify_smoldyn_in_manifest():
+        #     converter = SmoldynDataConverter(arch)
+        #     simularium_fp = os.path.join(arch.rootpath, 'simularium_output')
+        #     arch.simularium_filename = simularium_fp
+        #     converter.generate_simularium_file()
 
         if config.BUNDLE_OUTPUTS:
             print('Bundling outputs ...')
