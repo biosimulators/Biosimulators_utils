@@ -7,6 +7,7 @@
 """
 
 
+from biosimulators_simularium import generate_new_simularium_file
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config, Config  # noqa: F401
@@ -221,6 +222,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                         log_level=log_level,
                         indent=1,
                         config=config)
+                    if config.SPATIAL:
+                        generate_new_simularium_file(
+                            archive_rootpath=archive_tmp_dir
+                        )
                     if config.COLLECT_COMBINE_ARCHIVE_RESULTS:
                         results[content.location] = doc_results
                     if config.LOG:

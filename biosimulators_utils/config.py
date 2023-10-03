@@ -96,7 +96,8 @@ class Config(object):
                  BIOSIMULATIONS_API_AUTH_ENDPOINT=DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT,
                  BIOSIMULATIONS_API_AUDIENCE=DEFAULT_BIOSIMULATIONS_API_AUDIENCE,
                  VERBOSE=False,
-                 DEBUG=False):
+                 DEBUG=False,
+                 SPATIAL=False):
         """
         Args:
             OMEX_METADATA_INPUT_FORMAT (:obj:`OmexMetadataInputFormat`, optional): format to validate OMEX Metadata files against
@@ -162,6 +163,7 @@ class Config(object):
         self.BIOSIMULATIONS_API_AUDIENCE = BIOSIMULATIONS_API_AUDIENCE
         self.VERBOSE = VERBOSE
         self.DEBUG = DEBUG
+        self.SPATIAL = SPATIAL
 
 
 def get_config():
