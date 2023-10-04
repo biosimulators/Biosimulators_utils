@@ -28,7 +28,6 @@ from simulariumio import (
     UnitData,
     MetaData,
     DisplayData,
-    DISPLAY_TYPE,
     BinaryWriter,
     JsonWriter,
     TrajectoryConverter,
@@ -68,9 +67,8 @@ class ModelValidation:
         self.config = validation[2][1]
 
 
+"""*Spatial Combine Archives*"""
 
-
-"""*Combine Archives*"""
 
 # TODO: Add more robust rezipping
 class SpatialCombineArchive(ABC):
@@ -316,9 +314,8 @@ class SmoldynCombineArchive(SpatialCombineArchive):
         return validation
 
 
-
-
 """*Converters*"""
+
 
 class BiosimulatorsDataConverter(ABC):
     has_smoldyn: bool
@@ -697,7 +694,7 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
             box_size: Union[float, int],
             n_dim=3,
             translation_magnitude: Optional[Union[int, float]] = None
-        ) -> TrajectoryData:
+            ) -> TrajectoryData:
         """Translate the data object's data if the coordinates are all positive to center the data in the
             simularium viewer.
 
@@ -711,7 +708,7 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
                 `TrajectoryData`: translated data object instance.
         """
         translation_magnitude = translation_magnitude or -box_size / 2
-        return c.filter_data([
+        return data_object_converter.filter_data([
             TranslateFilter(
                 translation_per_type={},
                 default_translation=translation_magnitude * np.ones(n_dim)

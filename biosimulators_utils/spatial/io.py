@@ -64,3 +64,4 @@ def generate_new_simularium_file(
         )
     else:
         raise ValueError('The only currently available format is "smoldyn".')
+    

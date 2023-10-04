@@ -7,6 +7,7 @@
 """
 
 
+from biosimulators_utils.model_lang.smoldyn.validation import validate_model
 from biosimulators_utils.spatial.data_model import SpatialCombineArchive, ModelValidation
 
 
