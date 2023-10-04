@@ -274,7 +274,7 @@ class SmoldynCombineArchive(SpatialCombineArchive):
         self.model_output_filename = os.path.join(self.rootpath, model_output_filename)
         self.paths['model_output_file'] = self.model_output_filename
 
-    def set_model_filepath(self, model_filename: Optional[str] = None, model_default='model.txt'):
+    def set_model_filepath(self, model_default='model.txt', model_filename: Optional[str] = None):
         """Recursively read the full paths of all files in `self.paths` and return the full path of the file
             containing the term 'model.txt', which is the naming convention.
             Implementation of ancestral abstract method.
@@ -347,7 +347,10 @@ class BiosimulatorsDataConverter(ABC):
         pass
 
     @abstractmethod
-    def translate_data_object(self, data_object, box_size, n_dim) -> TrajectoryData:
+    def translate_data_object(self,
+                              data_object_converter: TrajectoryConverter,
+                              box_size: Union[float, int],
+                              n_dim: str = 3) -> TrajectoryData:
         """Factory to create a mirrored negative image of a distribution and apply it to 3dimensions if
             AND ONLY IF it contains all non-negative values.
         """
