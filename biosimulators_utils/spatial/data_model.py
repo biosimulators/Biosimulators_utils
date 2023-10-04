@@ -693,8 +693,8 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
 
     def translate_data_object(
             self,
-            c: SmoldynConverter,
-            box_size: float,
+            data_object_converter: SmoldynConverter,
+            box_size: Union[float, int],
             n_dim=3,
             translation_magnitude: Optional[Union[int, float]] = None
         ) -> TrajectoryData:
@@ -702,7 +702,7 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
             simularium viewer.
 
             Args:
-                c: Instance of `SmoldynConverter` loaded with `SmoldynData`.
+                data_object_converter: Instance of `SmoldynConverter` loaded with `SmoldynData`.
                 box_size: size of the simularium viewer box.
                 n_dim: n dimensions of the simulation output. Defaults to `3`.
                 translation_magnitude: magnitude by which to translate and filter. Defaults to `-box_size / 2`.
