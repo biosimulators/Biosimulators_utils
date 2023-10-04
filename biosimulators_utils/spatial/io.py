@@ -22,6 +22,7 @@ def generate_new_simularium_file(
         archive_rootpath: str,
         simularium_filename: Optional[str] = None,
         save_output_df: bool = False,
+        io_format: str = 'json',
         __fmt: str = 'smoldyn'
         ) -> None:
     """Generate a new `.simularium` file based on the `model.txt` within the passed-archive rootpath using the above
@@ -33,8 +34,10 @@ def generate_new_simularium_file(
             in the `archive_rootpath`. Defaults to `None`.
         save_output_df (:obj:`bool`): Whether to save the modelout.txt contents as a pandas df in csv form. Defaults
             to `False`.
+        io_format (:obj:`str`): format by which to save the simularium file. Options are `'binary'` and `'json'`.
+            defaults to `'json'`.
         __fmt (:obj:`str`): format by which to convert and save the simularium file. Currently, only 'smoldyn' is
-            supported. Defaults to `smoldyn`.
+            supported. Defaults to `'smoldyn'`.
     """
 
     # verify smoldyn combine archive
@@ -55,6 +58,9 @@ def generate_new_simularium_file(
             df = converter.read_model_output_dataframe()
             csv_fp = archive.model_output_filename.replace('txt', 'csv')
             df.to_csv(csv_fp)
-        return converter.generate_simularium_file(simularium_filename=simularium_filename)
+        return converter.generate_simularium_file(
+            simularium_filename=simularium_filename,
+            io_format=io_format
+        )
     else:
         raise ValueError('The only currently available format is "smoldyn".')
