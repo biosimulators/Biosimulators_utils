@@ -395,7 +395,7 @@ class BiosimulatorsDataConverter(ABC):
                 `AgentData` instance.
         """
         positions = positions or np.random.uniform(size=(total_steps, n_agents, 3)) * box_size - box_size * 0.5
-        radii = (max_radius - min_radius) * np.random.uniform(size=(total_steps, n_agents)) + min_radius
+        radii = radii or (max_radius - min_radius) * np.random.uniform(size=(total_steps, n_agents)) + min_radius
         return AgentData(
             times=timestep * np.array(list(range(total_steps))),
             n_agents=np.array(total_steps * [n_agents]),
