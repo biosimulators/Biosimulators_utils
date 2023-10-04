@@ -74,6 +74,8 @@ class ModelValidation:
 
 # TODO: Add more robust rezipping
 class SpatialCombineArchive(ABC):
+    __zipped_file_format: str
+    was_unzipped: bool
     paths: Dict[str, str]
 
     def __init__(self,
@@ -96,19 +98,27 @@ class SpatialCombineArchive(ABC):
         self.__parse_rootpath()
         self.paths = self.get_all_archive_filepaths()
 
+    @property
+    def __zipped_file_format(self) -> str:
+        return '.omex'
+
     def __parse_rootpath(self):
         """Private method for parsing whether `self.rootpath` is the path to a directory or single OMEX/COMBINE
-            zipped file. If .omex, then decompress the input path into an unzipped directory for working.
+            zipped file. If .omex, then decompress the input path into an unzipped directory for working and sets
+            `self.was_unzipped` to `True` and `False` if not.
         """
-        if self.rootpath.endswith('.omex'):
+        if self.rootpath.endswith(self.__zipped_file_format):
             self.unzip()
+            self.was_unzipped = True
+        else:
+            self.was_unzipped = False
 
     def unzip(self, unzipped_output_location: str = None):
         reader = ArchiveReader()
         try:
             if not unzipped_output_location:
                 unzipped_output_location = self.rootpath.replace(
-                    '.omex',
+                    self.__zipped_file_format,
                     '_UNZIPPED'
                 )  # TODO: make tempdir here instead
             reader.run(self.rootpath, unzipped_output_location)
@@ -118,7 +128,7 @@ class SpatialCombineArchive(ABC):
             warn(f'Omex could not be unzipped because: {e}')
 
     def rezip(self, paths_to_write: Optional[List[str]] = None, destination: Optional[str] = None):
-        if '.omex' in self.rootpath:
+        if self.__zipped_file_format in self.rootpath:
             writer = ArchiveWriter()
             if not paths_to_write:
                 paths_to_write = list(self.get_all_archive_filepaths().values())
@@ -776,7 +786,7 @@ class SmoldynDataConverter(BiosimulatorsDataConverter):
         self.archive.add_simularium_file_to_manifest(simularium_fp=simularium_filename)
 
         # re-zip the archive if it was passed as an omex file
-        if '.omex' in self.archive.rootpath:
+        if self.archive.was_unzipped:
             writer = ArchiveWriter()
             paths = list(self.archive.get_all_archive_filepaths().values())
             writer.run(paths, self.archive.rootpath)
