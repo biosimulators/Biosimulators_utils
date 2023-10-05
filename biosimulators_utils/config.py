@@ -28,8 +28,10 @@ DEFAULT_BIOSIMULATORS_API_ENDPOINT = 'https://api.biosimulators.org/'
 DEFAULT_BIOSIMULATIONS_API_ENDPOINT = 'https://api.biosimulations.org/'
 DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT = 'https://auth.biosimulations.org/oauth/token'
 DEFAULT_BIOSIMULATIONS_API_AUDIENCE = 'api.biosimulations.org'
+DEFAULT_SUPPORTED_SPATIAL_SIMULATOR = 'smoldyn'
 
 
+# noinspection PyPep8Naming,PyDefaultArgument
 class Config(object):
     """ Configuration
 
@@ -97,7 +99,8 @@ class Config(object):
                  BIOSIMULATIONS_API_AUDIENCE=DEFAULT_BIOSIMULATIONS_API_AUDIENCE,
                  VERBOSE=False,
                  DEBUG=False,
-                 SPATIAL=False):
+                 SPATIAL=False,
+                 SUPPORTED_SPATIAL_SIMULATOR=DEFAULT_SUPPORTED_SPATIAL_SIMULATOR):
         """
         Args:
             OMEX_METADATA_INPUT_FORMAT (:obj:`OmexMetadataInputFormat`, optional): format to validate OMEX Metadata files against
@@ -133,6 +136,8 @@ class Config(object):
             BIOSIMULATIONS_API_AUDIENCE (:obj:`str`, optional): audience for the BioSimulations API
             VERBOSE (:obj:`bool`, optional): whether to display the detailed output of the execution of each task
             DEBUG (:obj:`bool`, optional): whether to raise exceptions rather than capturing them
+            SPATIAL (:obj:`bool`, optional): whether the simulation is spatial in nature and able to be simularium-ed
+            SUPPORTED_SPATIAL_SIMULATOR (:obj:`strl`, optional): spatial simulator that this config supports.
         """
         self.OMEX_METADATA_INPUT_FORMAT = OMEX_METADATA_INPUT_FORMAT
         self.OMEX_METADATA_OUTPUT_FORMAT = OMEX_METADATA_OUTPUT_FORMAT
@@ -164,6 +169,7 @@ class Config(object):
         self.VERBOSE = VERBOSE
         self.DEBUG = DEBUG
         self.SPATIAL = SPATIAL
+        self.SUPPORTED_SPATIAL_SIMULATOR = SUPPORTED_SPATIAL_SIMULATOR
 
 
 def get_config():
@@ -218,6 +224,8 @@ def get_config():
         BIOSIMULATIONS_API_AUDIENCE=os.environ.get('BIOSIMULATIONS_API_AUDIENCE', DEFAULT_BIOSIMULATIONS_API_AUDIENCE),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
+        SPATIAL=os.environ.get('SPATIAL', '0').lower() in ['1', 'true'],
+        SUPPORTED_SPATIAL_SIMULATOR=os.environ.get('SUPPORTED_SPATIAL_SIMULATOR', DEFAULT_SUPPORTED_SPATIAL_SIMULATOR)
     )
 
 

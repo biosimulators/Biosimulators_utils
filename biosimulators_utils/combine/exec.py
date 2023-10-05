@@ -7,6 +7,7 @@
 """
 
 
+from ..spatial.data_model import SmoldynCombineArchive, SmoldynDataConverter
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config, Config  # noqa: F401
@@ -196,6 +197,9 @@ def exec_sedml_docs_in_archive(sed_doc_executer: FunctionType,
 
         # get archive contents and check for spatial
         archive_contents = archive.get_master_content()
+        for content in archive_contents:
+            if 'smoldyn'.lower() in content.location:
+                config.SPATIAL = True
 
         # execute SED-ML files: execute tasks and save output
         exceptions = []
@@ -247,6 +251,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer: FunctionType,
                     doc_log.output = doc_captured.get_text()
                     doc_log.duration = (datetime.datetime.now() - doc_start_time).total_seconds()
                     doc_log.export()
+
+                # generate simularium file if spatial
+                if config.SPATIAL:
+                    spatial_archive = SmoldynCombineArchive
 
         print('')
 
