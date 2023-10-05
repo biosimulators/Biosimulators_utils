@@ -7,7 +7,6 @@
 """
 
 
-from biosimulators_simularium import generate_new_simularium_file
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config, Config  # noqa: F401
@@ -30,18 +29,24 @@ import glob
 import os
 import tempfile
 import shutil
-import types  # noqa: F401
+from typing import Optional
+from types import FunctionType  # noqa: F401
+
 
 __all__ = [
     'exec_sedml_docs_in_archive',
 ]
 
 
-def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, apply_xml_model_changes=False,
+# noinspection PyIncorrectDocstring
+def exec_sedml_docs_in_archive(sed_doc_executer: FunctionType,
+                               archive_filename: str,
+                               out_dir: str,
+                               apply_xml_model_changes=False,
                                sed_doc_executer_supported_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
                                sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
                                log_level=StandardOutputErrorCapturerLevel.c,
-                               config=None):
+                               config: Optional[Config] = None):
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
 
     Args:
@@ -222,10 +227,6 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                         log_level=log_level,
                         indent=1,
                         config=config)
-                    if config.SPATIAL:
-                        generate_new_simularium_file(
-                            archive_rootpath=archive_tmp_dir
-                        )
                     if config.COLLECT_COMBINE_ARCHIVE_RESULTS:
                         results[content.location] = doc_results
                     if config.LOG:
