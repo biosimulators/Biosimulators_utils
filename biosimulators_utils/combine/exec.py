@@ -48,7 +48,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer,
                                sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
                                log_level=StandardOutputErrorCapturerLevel.c,
                                config: Optional[Config] = None):
-    """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
+    """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs). If 'smoldyn' is detected
+        in the archive, a simularium file will automatically be generated.
 
     Args:
         sed_doc_executer (:obj:`types.FunctionType`): function to execute each SED document in the archive.
