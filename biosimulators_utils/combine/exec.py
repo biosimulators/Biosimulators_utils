@@ -194,6 +194,9 @@ def exec_sedml_docs_in_archive(sed_doc_executer: FunctionType,
         else:
             log = None
 
+        # get archive contents and check for spatial
+        archive_contents = archive.get_master_content()
+
         # execute SED-ML files: execute tasks and save output
         exceptions = []
         for i_content, content in enumerate(sedml_contents):
