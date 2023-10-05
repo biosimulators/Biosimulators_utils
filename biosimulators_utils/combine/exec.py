@@ -198,7 +198,7 @@ def exec_sedml_docs_in_archive(sed_doc_executer: FunctionType,
         # get archive contents and check for spatial
         archive_contents = archive.get_master_content()
         for content in archive_contents:
-            if 'smoldyn'.lower() in content.location:
+            if config.SUPPORTED_SPATIAL_SIMULATOR.lower() in content.location:
                 config.SPATIAL = True
 
         # execute SED-ML files: execute tasks and save output
@@ -254,7 +254,23 @@ def exec_sedml_docs_in_archive(sed_doc_executer: FunctionType,
 
                 # generate simularium file if spatial
                 if config.SPATIAL:
-                    spatial_archive = SmoldynCombineArchive
+                    simularium_filename = os.path.join(out_dir, 'output')
+                    spatial_archive = SmoldynCombineArchive(rootpath=out_dir, simularium_filename=simularium_filename)
+
+                    # check if modelout file exists
+                    if not os.path.exists(spatial_archive.model_path):
+                        generate_model_output_file = True
+                    else:
+                        generate_model_output_file = False
+
+                    # construct converter
+                    converter = SmoldynDataConverter(
+                        archive=spatial_archive,
+                        generate_model_output=generate_model_output_file
+                    )
+
+                    # generate simularium file
+                    converter.generate_simularium_file(io_format='json')
 
         print('')
 
