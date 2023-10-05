@@ -40,7 +40,7 @@ __all__ = [
 
 
 # noinspection PyIncorrectDocstring
-def exec_sedml_docs_in_archive(sed_doc_executer: FunctionType,
+def exec_sedml_docs_in_archive(sed_doc_executer,
                                archive_filename: str,
                                out_dir: str,
                                apply_xml_model_changes=False,
