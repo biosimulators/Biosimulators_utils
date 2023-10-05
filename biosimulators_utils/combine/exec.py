@@ -274,14 +274,6 @@ def exec_sedml_docs_in_archive(sed_doc_executer: FunctionType,
 
         print('')
 
-        # handle smoldyn output/simularium conversion
-        # arch = SmoldynCombineArchive(rootpath=archive_tmp_dir)
-        # if arch.verify_smoldyn_in_manifest():
-        #     converter = SmoldynDataConverter(arch)
-        #     simularium_fp = os.path.join(arch.rootpath, 'simularium_output')
-        #     arch.simularium_filename = simularium_fp
-        #     converter.generate_simularium_file()
-
         if config.BUNDLE_OUTPUTS:
             print('Bundling outputs ...')
 
