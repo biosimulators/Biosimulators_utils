@@ -99,9 +99,8 @@ class SpatialCombineArchive(ABC):
             Args:
                 rootpath: root of the unzipped archive. Consider this your working dirpath.
                 simularium_filename:`Optional`: full path which to assign to the newly generated simularium file.
-                If using this value, it EXPECTS a full path. Defaults to `{name}_output_for_simularium`.
-                name: Commonplace name for the archive to be used if no `simularium_filename` is passed. Defaults to
-                    `new_spatial_archive`.
+                    If using this value, it EXPECTS a full path. Defaults to `{name}_output_for_simularium`.
+
         """
         super().__init__()
         self.rootpath = rootpath
