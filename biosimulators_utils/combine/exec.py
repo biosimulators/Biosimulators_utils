@@ -31,7 +31,6 @@ import tempfile
 import shutil
 from typing import Optional, Tuple
 from types import FunctionType  # noqa: F401
-import importlib
 
 
 __all__ = [
@@ -39,7 +38,7 @@ __all__ = [
 ]
 
 
-# noinspection PyIncorrectDocstring
+# noinspection PyIncorrectDocstring,PyRedundantParentheses
 def exec_sedml_docs_in_archive(
         sed_doc_executer,
         archive_filename: str,
@@ -268,9 +267,12 @@ def exec_sedml_docs_in_archive(
 
                 # generate simularium file if spatial
                 if config.SPATIAL:
-                    biosimularium = importlib.import_module('biosimulators_simularium')
+                    import biosimulators_simularium as biosimularium
                     simularium_filename = os.path.join(out_dir, 'output')
-                    spatial_archive = biosimularium.SmoldynCombineArchive(rootpath=out_dir, simularium_filename=simularium_filename)
+                    spatial_archive = biosimularium.SmoldynCombineArchive(
+                        rootpath=out_dir,
+                        simularium_filename=simularium_filename
+                    )
 
                     # check if modelout file exists
                     if not os.path.exists(spatial_archive.model_path):
@@ -279,7 +281,7 @@ def exec_sedml_docs_in_archive(
                         generate_model_output_file = False
 
                     # construct converter
-                    converter = SmoldynDataConverter(
+                    converter = biosimularium.SmoldynDataConverter(
                         archive=spatial_archive,
                         generate_model_output=generate_model_output_file
                     )
@@ -295,8 +297,8 @@ def exec_sedml_docs_in_archive(
             # bundle CSV files of reports into zip archive
             report_formats = config.REPORT_FORMATS
             archive_paths = [
-                os.path.join(out_dir, '**', '*.' + format.value)
-                    for format in report_formats if format != ReportFormat.h5
+                os.path.join(out_dir, '**', '*.' + f.value)
+                for f in report_formats if f != ReportFormat.h5
             ]
             archive = build_archive_from_paths(archive_paths, out_dir)
             if archive.files:
@@ -304,7 +306,7 @@ def exec_sedml_docs_in_archive(
 
             # bundle PDF files of plots into zip archive
             viz_formats = config.VIZ_FORMATS
-            archive_paths = [os.path.join(out_dir, '**', '*.' + format.value) for format in viz_formats]
+            archive_paths = [os.path.join(out_dir, '**', '*.' + f.value) for f in viz_formats]
             archive = build_archive_from_paths(archive_paths, out_dir)
             if archive.files:
                 ArchiveWriter().run(archive, os.path.join(out_dir, config.PLOTS_PATH))
@@ -317,10 +319,10 @@ def exec_sedml_docs_in_archive(
             viz_formats = config.VIZ_FORMATS
             path_patterns = (
                 [
-                    os.path.join(out_dir, '**', '*.' + format.value)
-                        for format in report_formats if format != ReportFormat.h5
+                    os.path.join(out_dir, '**', '*.' + f.value)
+                    for f in report_formats if format != ReportFormat.h5
                 ]
-                + [os.path.join(out_dir, '**', '*.' + format.value) for format in viz_formats]
+                + [os.path.join(out_dir, '**', '*.' + f.value) for f in viz_formats]
             )
             for path_pattern in path_patterns:
                 for path in glob.glob(path_pattern, recursive=True):

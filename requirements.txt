@@ -26,4 +26,3 @@ simplejson
 termcolor
 uritools
 yamldown
-importlib
