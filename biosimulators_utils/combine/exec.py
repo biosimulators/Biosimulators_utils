@@ -29,19 +29,27 @@ import glob
 import os
 import tempfile
 import shutil
-import types  # noqa: F401
+from typing import Optional, Tuple
+from types import FunctionType  # noqa: F401
+
 
 __all__ = [
     'exec_sedml_docs_in_archive',
 ]
 
 
-def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, apply_xml_model_changes=False,
-                               sed_doc_executer_supported_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
-                               sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
-                               log_level=StandardOutputErrorCapturerLevel.c,
-                               config=None):
-    """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs)
+def exec_sedml_docs_in_archive(
+        sed_doc_executer,
+        archive_filename: str,
+        out_dir: str,
+        apply_xml_model_changes=False,
+        sed_doc_executer_supported_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
+        sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
+        log_level=StandardOutputErrorCapturerLevel.c,
+        config: Optional[Config] = None
+        ) -> Tuple[SedDocumentResults, CombineArchiveLog]:
+    """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs). If 'smoldyn' is detected
+        in the archive, a simularium file will automatically be generated.
 
     Args:
         sed_doc_executer (:obj:`types.FunctionType`): function to execute each SED document in the archive.
@@ -53,8 +61,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                     ''' Execute the tasks specified in a SED document and generate the specified outputs
 
                     Args:
-                        doc (:obj:`SedDocument` of :obj:`str`): SED document or a path to SED-ML file which defines a SED document
-                        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
+                        doc (:obj:`SedDocument` of :obj:`str`): SED document or a
+                            path to SED-ML file which defines a SED document
+                        working_dir (:obj:`str`): working directory of the
+                            SED document (path relative to which models are located)
 
                         out_path (:obj:`str`): path to store the outputs
 
@@ -64,7 +74,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                               with reports at keys ``{rel_out_path}/{report.id}`` within the HDF5 file
 
                         rel_out_path (:obj:`str`, optional): path relative to :obj:`out_path` to store the outputs
-                        apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file
+                        apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`,
+                            apply any model changes specified in the SED-ML file
                         log (:obj:`SedDocumentLog`, optional): execution status of document
                         log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
                         indent (:obj:`int`, optional): degree to indent status messages
@@ -77,14 +88,17 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             * CSV: directory in which to save outputs to files
               ``{ out_dir }/{ relative-path-to-SED-ML-file-within-archive }/{ report.id }.csv``
             * HDF5: directory in which to save a single HDF5 file (``{ out_dir }/reports.h5``),
-              with reports at keys ``{ relative-path-to-SED-ML-file-within-archive }/{ report.id }`` within the HDF5 file
+              with reports at keys ``{ relative-path-to-SED-ML-file-within-archive }/{ report.id }``
+              within the HDF5 file
 
-        apply_xml_model_changes (:obj:`bool`): if :obj:`True`, apply any model changes specified in the SED-ML files before
-            calling :obj:`task_executer`.
-        sed_doc_executer_supported_features (:obj:`list` of :obj:`type`, optional): list of the types of elements that the
-            SED document executer supports. Default: tasks, reports, plots, data sets, curves, and surfaces.
-        sed_doc_executer_logged_features (:obj:`list` of :obj:`type`, optional): list of the types fo elements which that
-            the SED document executer logs. Default: tasks, reports, plots, data sets, curves, and surfaces.
+        apply_xml_model_changes (:obj:`bool`): if :obj:`True`, apply any model changes specified in the
+            SED-ML files before calling :obj:`task_executer`.
+        sed_doc_executer_supported_features (:obj:`list` of :obj:`type`, optional): list of the types
+            of elements that the SED document executer supports. Default: tasks, reports, plots, data sets,
+            curves, and surfaces.
+        sed_doc_executer_logged_features (:obj:`list` of :obj:`type`, optional): list of the types of elements
+            which that the SED document executer logs. Default: tasks, reports,
+            plots, data sets, curves, and surfaces.
         log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
         config (:obj:`Config`): configuration
 
@@ -225,6 +239,34 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
                         results[content.location] = doc_results
                     if config.LOG:
                         doc_log.status = Status.SUCCEEDED
+
+                    # check the manifest for a smoldyn model
+                    for file_contents in archive.contents:
+                        if 'smoldyn' in file_contents.location:
+                            config.SPATIAL = True
+                            print('There is spatial!')
+
+                    # generate simularium file if spatial
+                    if config.SPATIAL:
+                        import biosimulators_simularium as biosimularium
+                        simularium_filename = os.path.join(out_dir, 'output')
+                        spatial_archive = biosimularium.SmoldynCombineArchive(
+                            rootpath=out_dir,
+                            simularium_filename=simularium_filename
+                        )
+                        # check if modelout file exists
+                        if not os.path.exists(spatial_archive.model_output_filename):
+                            generate_model_output_file = True
+                        else:
+                            generate_model_output_file = False
+                        # construct converter
+                        converter = biosimularium.SmoldynDataConverter(
+                            archive=spatial_archive,
+                            generate_model_output=generate_model_output_file
+                        )
+                        # generate simularium file
+                        converter.generate_simularium_file(io_format='json')
+
                 except Exception as exception:
                     if config.DEBUG:
                         raise
@@ -241,30 +283,34 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
 
         print('')
 
-        # handle smoldyn output/simularium conversion
-        # arch = SmoldynCombineArchive(rootpath=archive_tmp_dir)
-        # if arch.verify_smoldyn_in_manifest():
-        #     converter = SmoldynDataConverter(arch)
-        #     simularium_fp = os.path.join(arch.rootpath, 'simularium_output')
-        #     arch.simularium_filename = simularium_fp
-        #     converter.generate_simularium_file()
-
         if config.BUNDLE_OUTPUTS:
             print('Bundling outputs ...')
 
             # bundle CSV files of reports into zip archive
             report_formats = config.REPORT_FORMATS
-            archive_paths = [os.path.join(out_dir, '**', '*.' + format.value) for format in report_formats if format != ReportFormat.h5]
+            archive_paths = [
+                os.path.join(out_dir, '**', '*.' + f.value)
+                for f in report_formats if f != ReportFormat.h5
+            ]
             archive = build_archive_from_paths(archive_paths, out_dir)
             if archive.files:
                 ArchiveWriter().run(archive, os.path.join(out_dir, config.REPORTS_PATH))
 
             # bundle PDF files of plots into zip archive
             viz_formats = config.VIZ_FORMATS
-            archive_paths = [os.path.join(out_dir, '**', '*.' + format.value) for format in viz_formats]
+            archive_paths = [os.path.join(out_dir, '**', '*.' + f.value) for f in viz_formats]
             archive = build_archive_from_paths(archive_paths, out_dir)
             if archive.files:
                 ArchiveWriter().run(archive, os.path.join(out_dir, config.PLOTS_PATH))
+
+            # bundle Simularium file into zip archive
+            if config.SPATIAL:
+                simularium_format = ['simularium']
+                archive_paths = [os.path.join(out_dir, '**', '*.' + f) for f in simularium_format]
+                archive = build_archive_from_paths(archive_paths, out_dir)
+                if archive.files:
+                    ArchiveWriter().run(archive, os.path.join(out_dir, 'simularium.zip'))
+
 
         # cleanup temporary files
         print('Cleaning up ...')
@@ -273,8 +319,11 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
             report_formats = config.REPORT_FORMATS
             viz_formats = config.VIZ_FORMATS
             path_patterns = (
-                [os.path.join(out_dir, '**', '*.' + format.value) for format in report_formats if format != ReportFormat.h5]
-                + [os.path.join(out_dir, '**', '*.' + format.value) for format in viz_formats]
+                [
+                    os.path.join(out_dir, '**', '*.' + f.value)
+                    for f in report_formats if format != ReportFormat.h5
+                ]
+                + [os.path.join(out_dir, '**', '*.' + f.value) for f in viz_formats]
             )
             for path_pattern in path_patterns:
                 for path in glob.glob(path_pattern, recursive=True):
@@ -330,3 +379,9 @@ def exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir, appl
 
     # return results and log
     return (results, log)
+
+
+
+
+
+

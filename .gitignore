@@ -19,3 +19,6 @@ docs/.buildinfo
 docs/.doctrees/
 docs/_raw_sources/
 docs/_sources/
+
+# test files (to be deleted)
+test_spatial_exec.py
