@@ -30,7 +30,7 @@ import glob
 import os
 import tempfile
 import shutil
-from typing import Optional
+from typing import Optional, Tuple
 from types import FunctionType  # noqa: F401
 
 
@@ -40,14 +40,16 @@ __all__ = [
 
 
 # noinspection PyIncorrectDocstring
-def exec_sedml_docs_in_archive(sed_doc_executer,
-                               archive_filename: str,
-                               out_dir: str,
-                               apply_xml_model_changes=False,
-                               sed_doc_executer_supported_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
-                               sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
-                               log_level=StandardOutputErrorCapturerLevel.c,
-                               config: Optional[Config] = None):
+def exec_sedml_docs_in_archive(
+        sed_doc_executer,
+        archive_filename: str,
+        out_dir: str,
+        apply_xml_model_changes=False,
+        sed_doc_executer_supported_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
+        sed_doc_executer_logged_features=(Task, Report, DataSet, Plot2D, Curve, Plot3D, Surface),
+        log_level=StandardOutputErrorCapturerLevel.c,
+        config: Optional[Config] = None
+        ) -> Tuple[SedDocumentResults, CombineArchiveLog]:
     """ Execute the SED-ML files in a COMBINE/OMEX archive (execute tasks and save outputs). If 'smoldyn' is detected
         in the archive, a simularium file will automatically be generated.
 
@@ -61,8 +63,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer,
                     ''' Execute the tasks specified in a SED document and generate the specified outputs
 
                     Args:
-                        doc (:obj:`SedDocument` of :obj:`str`): SED document or a path to SED-ML file which defines a SED document
-                        working_dir (:obj:`str`): working directory of the SED document (path relative to which models are located)
+                        doc (:obj:`SedDocument` of :obj:`str`): SED document or a
+                            path to SED-ML file which defines a SED document
+                        working_dir (:obj:`str`): working directory of the
+                            SED document (path relative to which models are located)
 
                         out_path (:obj:`str`): path to store the outputs
 
@@ -72,7 +76,8 @@ def exec_sedml_docs_in_archive(sed_doc_executer,
                               with reports at keys ``{rel_out_path}/{report.id}`` within the HDF5 file
 
                         rel_out_path (:obj:`str`, optional): path relative to :obj:`out_path` to store the outputs
-                        apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file
+                        apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`,
+                            apply any model changes specified in the SED-ML file
                         log (:obj:`SedDocumentLog`, optional): execution status of document
                         log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
                         indent (:obj:`int`, optional): degree to indent status messages
@@ -85,14 +90,17 @@ def exec_sedml_docs_in_archive(sed_doc_executer,
             * CSV: directory in which to save outputs to files
               ``{ out_dir }/{ relative-path-to-SED-ML-file-within-archive }/{ report.id }.csv``
             * HDF5: directory in which to save a single HDF5 file (``{ out_dir }/reports.h5``),
-              with reports at keys ``{ relative-path-to-SED-ML-file-within-archive }/{ report.id }`` within the HDF5 file
+              with reports at keys ``{ relative-path-to-SED-ML-file-within-archive }/{ report.id }``
+              within the HDF5 file
 
-        apply_xml_model_changes (:obj:`bool`): if :obj:`True`, apply any model changes specified in the SED-ML files before
-            calling :obj:`task_executer`.
-        sed_doc_executer_supported_features (:obj:`list` of :obj:`type`, optional): list of the types of elements that the
-            SED document executer supports. Default: tasks, reports, plots, data sets, curves, and surfaces.
-        sed_doc_executer_logged_features (:obj:`list` of :obj:`type`, optional): list of the types fo elements which that
-            the SED document executer logs. Default: tasks, reports, plots, data sets, curves, and surfaces.
+        apply_xml_model_changes (:obj:`bool`): if :obj:`True`, apply any model changes specified in the
+            SED-ML files before calling :obj:`task_executer`.
+        sed_doc_executer_supported_features (:obj:`list` of :obj:`type`, optional): list of the types
+            of elements that the SED document executer supports. Default: tasks, reports, plots, data sets,
+            curves, and surfaces.
+        sed_doc_executer_logged_features (:obj:`list` of :obj:`type`, optional): list of the types of elements
+            which that the SED document executer logs. Default: tasks, reports,
+            plots, data sets, curves, and surfaces.
         log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
         config (:obj:`Config`): configuration
 
@@ -280,7 +288,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer,
 
             # bundle CSV files of reports into zip archive
             report_formats = config.REPORT_FORMATS
-            archive_paths = [os.path.join(out_dir, '**', '*.' + format.value) for format in report_formats if format != ReportFormat.h5]
+            archive_paths = [
+                os.path.join(out_dir, '**', '*.' + format.value)
+                    for format in report_formats if format != ReportFormat.h5
+            ]
             archive = build_archive_from_paths(archive_paths, out_dir)
             if archive.files:
                 ArchiveWriter().run(archive, os.path.join(out_dir, config.REPORTS_PATH))
@@ -299,7 +310,10 @@ def exec_sedml_docs_in_archive(sed_doc_executer,
             report_formats = config.REPORT_FORMATS
             viz_formats = config.VIZ_FORMATS
             path_patterns = (
-                [os.path.join(out_dir, '**', '*.' + format.value) for format in report_formats if format != ReportFormat.h5]
+                [
+                    os.path.join(out_dir, '**', '*.' + format.value)
+                        for format in report_formats if format != ReportFormat.h5
+                ]
                 + [os.path.join(out_dir, '**', '*.' + format.value) for format in viz_formats]
             )
             for path_pattern in path_patterns:

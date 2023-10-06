@@ -13,6 +13,7 @@ import numpy
 import pandas
 import re
 import tempfile
+from typing import *
 import types  # noqa: F401
 from biosimulators_utils.spatial.data_model import (
     SmoldynCommand,
@@ -24,15 +25,21 @@ from biosimulators_utils.spatial.data_model import (
     KISAO_ALGORITHM_PARAMETERS_MAP
 )
 from smoldyn import smoldyn
-from biosimulators_utils.combine.exec import exec_sedml_docs_in_archive
+from biosimulators_utils.combine.exec import exec_sedml_docs_in_archive as base_exec_combine_archive
 from biosimulators_utils.config import get_config, Config  # noqa: F401
-from biosimulators_utils.log.data_model import CombineArchiveLog, TaskLog, StandardOutputErrorCapturerLevel  # noqa: F401
+from biosimulators_utils.log.data_model import (CombineArchiveLog,
+                                                TaskLog,
+                                                StandardOutputErrorCapturerLevel,
+                                                SedDocumentLog)  # noqa: F401
 from biosimulators_utils.viz.data_model import VizFormat  # noqa: F401
-from biosimulators_utils.report.data_model import ReportFormat, VariableResults, SedDocumentResults  # noqa: F401
+from biosimulators_utils.report.data_model import (ReportFormat,
+                                                   ReportResults,
+                                                   VariableResults,
+                                                   SedDocumentResults)  # noqa: F401
 from biosimulators_utils.sedml import validation
 from biosimulators_utils.sedml.data_model import (Task, ModelLanguage, ModelAttributeChange,  # noqa: F401
                                                   UniformTimeCourseSimulation, AlgorithmParameterChange, Variable,
-                                                  Symbol)
+                                                  Symbol, SedDocument)
 from biosimulators_utils.sedml.exec import exec_sed_doc as base_exec_sed_doc
 from biosimulators_utils.utils.core import validate_str_value, parse_value, raise_errors_warnings
 
@@ -40,8 +47,12 @@ from biosimulators_utils.utils.core import validate_str_value, parse_value, rais
 __all__ = ['exec_sedml_docs_in_combine_archive', 'exec_sed_task', 'exec_sed_doc', 'preprocess_sed_task']
 
 
-def exec_sedml_docs_in_combine_archive(archive_filename, out_dir, config=None):
-    ''' Execute the SED tasks defined in a COMBINE/OMEX archive and save the outputs
+def exec_sedml_docs_in_combine_archive(
+        archive_filename: str,
+        out_dir: str,
+        config: Optional[Config] = None
+        ) -> Tuple[SedDocumentResults, CombineArchiveLog]:
+    """ Execute the SED tasks defined in a COMBINE/OMEX archive and save the outputs
 
     Args:
         archive_filename (:obj:`str`): path to COMBINE/OMEX archive
@@ -59,16 +70,28 @@ def exec_sedml_docs_in_combine_archive(archive_filename, out_dir, config=None):
 
             * :obj:`SedDocumentResults`: results
             * :obj:`CombineArchiveLog`: log
-    '''
-    return exec_sedml_docs_in_archive(exec_sed_doc, archive_filename, out_dir,
-                                      apply_xml_model_changes=False,
-                                      config=config)
+    """
+    return base_exec_combine_archive(
+        exec_sed_doc,
+        archive_filename,
+        out_dir,
+        apply_xml_model_changes=False,
+        config=config
+    )
 
 
-def exec_sed_doc(doc, working_dir, base_out_path, rel_out_path=None,
-                 apply_xml_model_changes=True,
-                 log=None, indent=0, pretty_print_modified_xml_models=False,
-                 log_level=StandardOutputErrorCapturerLevel.c, config=None):
+def exec_sed_doc(
+        doc: Union[SedDocument, str],
+        working_dir: str,
+        base_out_path: str,
+        apply_xml_model_changes=True,
+        indent=0,
+        pretty_print_modified_xml_models=False,
+        log_level=StandardOutputErrorCapturerLevel.c,
+        log: Optional[SedDocumentLog]=None,
+        rel_out_path: Optional[str]=None,
+        config: Optional[Config]=None
+        ) -> Tuple[ReportResults, SedDocumentLog]:
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -83,8 +106,8 @@ def exec_sed_doc(doc, working_dir, base_out_path, rel_out_path=None,
               with reports at keys ``{rel_out_path}/{report.id}`` within the HDF5 file
 
         rel_out_path (:obj:`str`, optional): path relative to :obj:`base_out_path` to store the outputs
-        apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in the SED-ML file before
-            calling :obj:`task_executer`.
+        apply_xml_model_changes (:obj:`bool`, optional): if :obj:`True`, apply any model changes specified in
+            the SED-ML file before calling :obj:`task_executer`.
         log (:obj:`SedDocumentLog`, optional): log of the document
         indent (:obj:`int`, optional): degree to indent status messages
         pretty_print_modified_xml_models (:obj:`bool`, optional): if :obj:`True`, pretty print modified XML models
@@ -108,7 +131,14 @@ def exec_sed_doc(doc, working_dir, base_out_path, rel_out_path=None,
                              config=config)
 
 
-def exec_sed_task(task, variables, preprocessed_task=None, log=None, config=None):
+# noinspection PyShadowingNames
+def exec_sed_task(
+        task: Task,
+        variables: List[Variable],
+        preprocessed_task: Optional[Dict] = None,
+        log: Optional[TaskLog] = None,
+        config: Optional[Config] = None
+        ) -> Tuple[VariableResults, TaskLog]:
     ''' Execute a task and save its results
 
     Args:
@@ -137,8 +167,10 @@ def exec_sed_task(task, variables, preprocessed_task=None, log=None, config=None
 
     if preprocessed_task is None:
         preprocessed_task = preprocess_sed_task(task, variables, config=config)
-        sed_model_changes = list(filter(lambda change: change.target in preprocessed_task['sed_smoldyn_simulation_change_map'],
-                                        sed_model_changes))
+        sed_model_changes = list(filter(
+            lambda change: change.target in preprocessed_task['sed_smoldyn_simulation_change_map'],
+            sed_model_changes
+        ))
 
     # read Smoldyn configuration
     smoldyn_simulation = preprocessed_task['simulation']
@@ -148,7 +180,9 @@ def exec_sed_task(task, variables, preprocessed_task=None, log=None, config=None
     for change in sed_model_changes:
         smoldyn_change = sed_smoldyn_simulation_change_map.get(change.target, None)
         if smoldyn_change is None or smoldyn_change.execution != SimulationChangeExecution.simulation:
-            raise NotImplementedError('Target `{}` can only be changed during simulation preprocessing.'.format(change.target))
+            raise NotImplementedError(
+                'Target `{}` can only be changed during simulation preprocessing.'.format(change.target)
+            )
         apply_change_to_smoldyn_simulation(
             smoldyn_simulation, change, smoldyn_change)
 
@@ -165,7 +199,12 @@ def exec_sed_task(task, variables, preprocessed_task=None, log=None, config=None
     # get the result of each SED variable
     variable_output_cmd_map = preprocessed_task['variable_output_cmd_map']
     smoldyn_output_files = preprocessed_task['output_files']
-    variable_results = get_variable_results(sed_simulation.number_of_steps, variables, variable_output_cmd_map, smoldyn_output_files)
+    variable_results = get_variable_results(
+        sed_simulation.number_of_steps,
+        variables,
+        variable_output_cmd_map,
+        smoldyn_output_files
+    )
 
     # cleanup output files
     for smoldyn_output_file in smoldyn_output_files.values():
@@ -207,12 +246,15 @@ def preprocess_sed_task(task, variables, config=None):
                               error_summary='Task `{}` is invalid.'.format(task.id))
         raise_errors_warnings(validation.validate_model_language(sed_model.language, ModelLanguage.Smoldyn),
                               error_summary='Language for model `{}` is not supported.'.format(sed_model.id))
-        raise_errors_warnings(validation.validate_model_change_types(sed_model.changes, (ModelAttributeChange, )),
+        raise_errors_warnings(validation.validate_model_change_types(sed_model.changes,
+                                                                     (ModelAttributeChange, )),
                               error_summary='Changes for model `{}` are not supported.'.format(sed_model.id))
         raise_errors_warnings(*validation.validate_model_changes(sed_model),
                               error_summary='Changes for model `{}` are invalid.'.format(sed_model.id))
-        raise_errors_warnings(validation.validate_simulation_type(sed_simulation, (UniformTimeCourseSimulation, )),
-                              error_summary='{} `{}` is not supported.'.format(sed_simulation.__class__.__name__, sed_simulation.id))
+        raise_errors_warnings(validation.validate_simulation_type(sed_simulation,
+                                                                  (UniformTimeCourseSimulation, )),
+                              error_summary='{} `{}` is not supported.'.format(sed_simulation.__class__.__name__,
+                                                                               sed_simulation.id))
         raise_errors_warnings(*validation.validate_simulation(sed_simulation),
                               error_summary='Simulation `{}` is invalid.'.format(sed_simulation.id))
         raise_errors_warnings(*validation.validate_data_generator_variables(variables),
@@ -221,7 +263,8 @@ def preprocess_sed_task(task, variables, config=None):
     if sed_simulation.algorithm.kisao_id not in KISAO_ALGORITHMS_MAP:
         msg = 'Algorithm `{}` is not supported. The following algorithms are supported:{}'.format(
             sed_simulation.algorithm.kisao_id,
-            ''.join('\n  {}: {}'.format(kisao_id, alg_props['name']) for kisao_id, alg_props in KISAO_ALGORITHMS_MAP.items())
+            ''.join('\n  {}: {}'.format(kisao_id, alg_props['name'])
+                for kisao_id, alg_props in KISAO_ALGORITHMS_MAP.items())
         )
         raise NotImplementedError(msg)
 
@@ -635,7 +678,8 @@ def add_smoldyn_output_file(configuration_dirname, smoldyn_simulation):
     ''' Add an output file to a Smoldyn simulation
 
     Args:
-        configuration_dirname (:obj:`str`): path to the parent directory of the Smoldyn configuration file for the simulation
+        configuration_dirname (:obj:`str`): path to the parent directory of the Smoldyn configuration file
+            for the simulation
         smoldyn_simulation (:obj:`smoldyn.Simulation`): Smoldyn simulation
 
     Returns:
@@ -756,7 +800,12 @@ def validate_variables(variables):
 
         if output_command_args is not None:
             output_command_args = output_command_args.strip()
-            variable_output_cmd_map[(variable.target, variable.symbol)] = (output_command_args, include_header, shape, results_slicer)
+            variable_output_cmd_map[(variable.target, variable.symbol)] = (
+                output_command_args,
+                include_header,
+                shape,
+                results_slicer
+            )
 
     if invalid_symbols:
         msg = '{} symbols cannot be recorded:\n  {}\n\nThe following symbols can be recorded:\n  {}'.format(
@@ -824,7 +873,12 @@ def results_matrix_slicer(results):
     return results.iloc[:, 1:]
 
 
-def add_smoldyn_output_files_for_sed_variables(configuration_dirname, variables, variable_output_cmd_map, smoldyn_simulation):
+def add_smoldyn_output_files_for_sed_variables(
+        configuration_dirname,
+        variables,
+        variable_output_cmd_map,
+        smoldyn_simulation
+        ) -> Dict[str, SmoldynOutputFile]:
     ''' Add Smoldyn output files for capturing each SED variable
 
     Args:
@@ -855,7 +909,8 @@ def add_smoldyn_output_file_for_output(configuration_dirname, smoldyn_simulation
     ''' Add a Smoldyn output file for molecule counts
 
     Args:
-        configuration_dirname (:obj:`str`): path to the parent directory of the Smoldyn configuration file for the simulation
+        configuration_dirname (:obj:`str`): path to the parent directory of the Smoldyn configuration
+            file for the simulation
         smoldyn_simulation (:obj:`smoldyn.Simulation`): Smoldyn simulation
         smoldyn_output_command (:obj:`str`): Smoldyn output command (e.g., ``molcount``)
         include_header (:obj:`bool`): whether to include a header
@@ -881,7 +936,8 @@ def get_variable_results(number_of_steps, variables, variable_output_cmd_map, sm
     Args:
         number_of_steps (:obj:`int`): number of steps
         variables (:obj:`list` of :obj:`Variable`): variables that should be recorded
-        variable_output_cmd_map (:obj:`dict`): dictionary that maps variable targets and symbols to Smoldyn output commands
+        variable_output_cmd_map (:obj:`dict`): dictionary that maps variable targets and symbols to Smoldyn output
+            commands
         smoldyn_output_files (:obj:`dict` of :obj:`str` => :obj:`SmoldynOutputFile`): Smoldyn output files
 
     Returns:
@@ -897,7 +953,13 @@ def get_variable_results(number_of_steps, variables, variable_output_cmd_map, sm
     variable_results = VariableResults()
     for variable in variables:
         output_command_args, _, shape, results_slicer = variable_output_cmd_map[(variable.target, variable.symbol)]
-        variable_result = get_smoldyn_output(output_command_args, True, shape, smoldyn_output_files, smoldyn_results)
+        variable_result = get_smoldyn_output(
+            output_command_args,
+            True,
+            shape,
+            smoldyn_output_files,
+            smoldyn_results
+        )
         if results_slicer:
             variable_result = results_slicer(variable_result)
 
