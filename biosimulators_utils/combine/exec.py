@@ -38,7 +38,6 @@ __all__ = [
 ]
 
 
-# noinspection PyIncorrectDocstring,PyRedundantParentheses
 def exec_sedml_docs_in_archive(
         sed_doc_executer,
         archive_filename: str,
@@ -203,12 +202,6 @@ def exec_sedml_docs_in_archive(
         else:
             log = None
 
-        # check the manifest for a smoldyn model
-        for content in archive.contents:
-            if 'smoldyn' in content.location:
-                config.SPATIAL = True
-                print('There is spatial!')
-
         # execute SED-ML files: execute tasks and save output
         exceptions = []
         for i_content, content in enumerate(sedml_contents):
@@ -246,6 +239,34 @@ def exec_sedml_docs_in_archive(
                         results[content.location] = doc_results
                     if config.LOG:
                         doc_log.status = Status.SUCCEEDED
+
+                    # check the manifest for a smoldyn model
+                    for file_contents in archive.contents:
+                        if 'smoldyn' in file_contents.location:
+                            config.SPATIAL = True
+                            print('There is spatial!')
+
+                    # generate simularium file if spatial
+                    if config.SPATIAL:
+                        import biosimulators_simularium as biosimularium
+                        simularium_filename = os.path.join(out_dir, 'output')
+                        spatial_archive = biosimularium.SmoldynCombineArchive(
+                            rootpath=out_dir,
+                            simularium_filename=simularium_filename
+                        )
+                        # check if modelout file exists
+                        if not os.path.exists(spatial_archive.model_output_filename):
+                            generate_model_output_file = True
+                        else:
+                            generate_model_output_file = False
+                        # construct converter
+                        converter = biosimularium.SmoldynDataConverter(
+                            archive=spatial_archive,
+                            generate_model_output=generate_model_output_file
+                        )
+                        # generate simularium file
+                        converter.generate_simularium_file(io_format='json')
+
                 except Exception as exception:
                     if config.DEBUG:
                         raise
@@ -259,30 +280,6 @@ def exec_sedml_docs_in_archive(
                     doc_log.output = doc_captured.get_text()
                     doc_log.duration = (datetime.datetime.now() - doc_start_time).total_seconds()
                     doc_log.export()
-
-                # generate simularium file if spatial
-                if config.SPATIAL:
-                    import biosimulators_simularium as biosimularium
-                    simularium_filename = os.path.join(out_dir, 'output')
-                    spatial_archive = biosimularium.SmoldynCombineArchive(
-                        rootpath=out_dir,
-                        simularium_filename=simularium_filename
-                    )
-
-                    # check if modelout file exists
-                    if not os.path.exists(spatial_archive.model_output_filename):
-                        generate_model_output_file = True
-                    else:
-                        generate_model_output_file = False
-
-                    # construct converter
-                    converter = biosimularium.SmoldynDataConverter(
-                        archive=spatial_archive,
-                        generate_model_output=generate_model_output_file
-                    )
-
-                    # generate simularium file
-                    converter.generate_simularium_file(io_format='json')
 
         print('')
 
@@ -305,6 +302,15 @@ def exec_sedml_docs_in_archive(
             archive = build_archive_from_paths(archive_paths, out_dir)
             if archive.files:
                 ArchiveWriter().run(archive, os.path.join(out_dir, config.PLOTS_PATH))
+
+            # bundle Simularium file into zip archive
+            if config.SPATIAL:
+                simularium_format = ['simularium']
+                archive_paths = [os.path.join(out_dir, '**', '*.' + f) for f in simularium_format]
+                archive = build_archive_from_paths(archive_paths, out_dir)
+                if archive.files:
+                    ArchiveWriter().run(archive, os.path.join(out_dir, 'simularium.zip'))
+
 
         # cleanup temporary files
         print('Cleaning up ...')
@@ -373,3 +379,9 @@ def exec_sedml_docs_in_archive(
 
     # return results and log
     return (results, log)
+
+
+
+
+
+
