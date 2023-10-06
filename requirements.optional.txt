@@ -26,8 +26,7 @@ smoldyn >= 2.66
 
 [spatial]
 smoldyn >= 2.66
-simulariumio
-zarr
+biosimulators_simularium
 
 #################################
 ## Visualization formats

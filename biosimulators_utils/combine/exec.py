@@ -7,7 +7,6 @@
 """
 
 
-from ..spatial.data_model import SmoldynCombineArchive, SmoldynDataConverter
 from ..archive.io import ArchiveWriter
 from ..archive.utils import build_archive_from_paths
 from ..config import get_config, Config  # noqa: F401
@@ -32,6 +31,7 @@ import tempfile
 import shutil
 from typing import Optional, Tuple
 from types import FunctionType  # noqa: F401
+import importlib
 
 
 __all__ = [
@@ -138,6 +138,11 @@ def exec_sedml_docs_in_archive(
         try:
             # unpack archive and read metadata
             archive = CombineArchiveReader().run(archive_filename, archive_tmp_dir, config=config)
+
+            # check the manifest for a smoldyn model
+            for content in archive.contents:
+                if 'smoldyn' in content.location:
+                    config.SPATIAL = True
 
             # validate archive
             errors, warnings = validate(archive, archive_tmp_dir, config=config)
@@ -263,8 +268,9 @@ def exec_sedml_docs_in_archive(
 
                 # generate simularium file if spatial
                 if config.SPATIAL:
+                    biosimularium = importlib.import_module('biosimulators_simularium')
                     simularium_filename = os.path.join(out_dir, 'output')
-                    spatial_archive = SmoldynCombineArchive(rootpath=out_dir, simularium_filename=simularium_filename)
+                    spatial_archive = biosimularium.SmoldynCombineArchive(rootpath=out_dir, simularium_filename=simularium_filename)
 
                     # check if modelout file exists
                     if not os.path.exists(spatial_archive.model_path):

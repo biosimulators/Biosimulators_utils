@@ -174,9 +174,9 @@ class Config(object):
         self.VERBOSE = VERBOSE
         self.DEBUG = DEBUG
         self.SPATIAL = SPATIAL
-        self.SUPPORTED_SPATIAL_SIMULATOR = DEFAULT_SUPPORTED_SPATIAL_SIMULATOR
+        self.__SUPPORTED_SPATIAL_SIMULATOR = DEFAULT_SUPPORTED_SPATIAL_SIMULATOR
         try:
-            assert self.SUPPORTED_SPATIAL_SIMULATOR == 'smoldyn'
+            assert self.__SUPPORTED_SPATIAL_SIMULATOR == 'smoldyn'
         except AssertionError:
             raise ValueError(
                 """
