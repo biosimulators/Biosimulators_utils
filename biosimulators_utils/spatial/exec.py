@@ -55,15 +55,16 @@ from biosimulators_utils.sedml.exec import exec_sed_doc as base_exec_sed_doc
 from biosimulators_utils.utils.core import validate_str_value, parse_value, raise_errors_warnings
 
 
-__all__ = ['exec_sedml_docs_in_combine_archive', 'exec_sed_task', 'exec_sed_doc', 'preprocess_sed_task']
+__all__ = ['exec_combine_archive', 'exec_sed_task', 'exec_sed_doc', 'preprocess_sed_task']
 
 
-def exec_sedml_docs_in_combine_archive(
+def exec_combine_archive(
         archive_filename: str,
         out_dir: str,
         config: Optional[Config] = None
         ) -> Tuple[SedDocumentResults, CombineArchiveLog]:
-    """ Execute the SED tasks defined in a COMBINE/OMEX archive and save the outputs
+    """ Execute the SED tasks defined in a COMBINE/OMEX archive whose contents relate to a Spatial simulation
+            and save the outputs.
 
     Args:
         archive_filename (:obj:`str`): path to COMBINE/OMEX archive
@@ -124,7 +125,6 @@ def exec_sed_doc(
         pretty_print_modified_xml_models (:obj:`bool`, optional): if :obj:`True`, pretty print modified XML models
         log_level (:obj:`StandardOutputErrorCapturerLevel`, optional): level at which to log output
         config (:obj:`Config`, optional): BioSimulators common configuration
-        simulator_config (:obj:`SimulatorConfig`, optional): tellurium configuration
 
     Returns:
         :obj:`tuple`:
@@ -132,14 +132,19 @@ def exec_sed_doc(
             * :obj:`ReportResults`: results of each report
             * :obj:`SedDocumentLog`: log of the document
     """
-    return base_exec_sed_doc(exec_sed_task, doc, working_dir, base_out_path,
-                             rel_out_path=rel_out_path,
-                             apply_xml_model_changes=apply_xml_model_changes,
-                             log=log,
-                             indent=indent,
-                             pretty_print_modified_xml_models=pretty_print_modified_xml_models,
-                             log_level=log_level,
-                             config=config)
+    return base_exec_sed_doc(
+        exec_sed_task,
+        doc,
+        working_dir,
+        base_out_path,
+        rel_out_path=rel_out_path,
+        apply_xml_model_changes=apply_xml_model_changes,
+        log=log,
+        indent=indent,
+        pretty_print_modified_xml_models=pretty_print_modified_xml_models,
+        log_level=log_level,
+        config=config
+    )
 
 
 # noinspection PyShadowingNames
