@@ -1,9 +1,14 @@
 """
+Objects related to the execution of SED-ML docs within COMBINE/OMEX archives whose simulation/model params
+are spatial in nature. Currently, this library's primary focus is the conversion of spatial output data to the
+`.simularium` file format using the `simulariumio` API. The only simulator is currently supported by both
+BioSimulators and Simularium is Smoldyn, and thus the only actual simulator that is available in this library
+(for now).
+
 :Author: Alexander Patrie <apatrie@uchc.edu>
 :Date: 2023-09-16
 :Copyright: 2023, UConn Health
 :License: MIT
-
 
 Using the Biosimulators side of Smoldyn to generate a modelout.txt Smoldyn file for a specified OMEX/COMBINE archive
 which then is used to generate a .simularium file for the given simulation. That .simularium file is then stored along
