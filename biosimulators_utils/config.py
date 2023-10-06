@@ -240,8 +240,7 @@ def get_config():
         BIOSIMULATIONS_API_AUDIENCE=os.environ.get('BIOSIMULATIONS_API_AUDIENCE', DEFAULT_BIOSIMULATIONS_API_AUDIENCE),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
-        SPATIAL=os.environ.get('SPATIAL', '0').lower() in ['1', 'true'],
-        SUPPORTED_SPATIAL_SIMULATOR=os.environ.get('SUPPORTED_SPATIAL_SIMULATOR', DEFAULT_SUPPORTED_SPATIAL_SIMULATOR)
+        SPATIAL=os.environ.get('SPATIAL', '0').lower() in ['1', 'true']
     )
 
 
