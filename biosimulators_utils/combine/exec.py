@@ -138,11 +138,6 @@ def exec_sedml_docs_in_archive(
             # unpack archive and read metadata
             archive = CombineArchiveReader().run(archive_filename, archive_tmp_dir, config=config)
 
-            # check the manifest for a smoldyn model
-            for content in archive.contents:
-                if 'smoldyn' in content.location:
-                    config.SPATIAL = True
-
             # validate archive
             errors, warnings = validate(archive, archive_tmp_dir, config=config)
             if warnings:
@@ -208,11 +203,11 @@ def exec_sedml_docs_in_archive(
         else:
             log = None
 
-        # get archive contents and check for spatial
-        archive_contents = archive.get_master_content()
-        for content in archive_contents:
-            if config.SUPPORTED_SPATIAL_SIMULATOR.lower() in content.location:
+        # check the manifest for a smoldyn model
+        for content in archive.contents:
+            if 'smoldyn' in content.location:
                 config.SPATIAL = True
+                print('There is spatial!')
 
         # execute SED-ML files: execute tasks and save output
         exceptions = []
@@ -275,7 +270,7 @@ def exec_sedml_docs_in_archive(
                     )
 
                     # check if modelout file exists
-                    if not os.path.exists(spatial_archive.model_path):
+                    if not os.path.exists(spatial_archive.model_output_filename):
                         generate_model_output_file = True
                     else:
                         generate_model_output_file = False
