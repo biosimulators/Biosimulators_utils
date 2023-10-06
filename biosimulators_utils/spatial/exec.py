@@ -55,10 +55,10 @@ from biosimulators_utils.sedml.exec import exec_sed_doc as base_exec_sed_doc
 from biosimulators_utils.utils.core import validate_str_value, parse_value, raise_errors_warnings
 
 
-__all__ = ['exec_combine_archive', 'exec_sed_task', 'exec_sed_doc', 'preprocess_sed_task']
+__all__ = ['exec_spatial_combine_archive', 'exec_sed_task', 'exec_sed_doc', 'preprocess_sed_task']
 
 
-def exec_combine_archive(
+def exec_spatial_combine_archive(
         archive_filename: str,
         out_dir: str,
         config: Optional[Config] = None
