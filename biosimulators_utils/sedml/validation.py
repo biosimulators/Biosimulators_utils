@@ -1709,7 +1709,6 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
                 else:
                     errors.append(['Target `{}` is not a valid XML XPath.'.format(target)])
 
-
     return errors, warnings
 
 
