@@ -1663,10 +1663,9 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
             namespaces.pop(None, None)
 
         try:
-            xpath = lxml.etree.XPath(target, namespaces=namespaces)
             root = lxml.etree.Element("root")
             try:
-                xpath.evaluate(root)
+                xpath = root.xpath(target, namespaces=namespaces)
 
                 if model_etree and check_in_model_source:
                     if context == DataGenerator and '/@' in target:
