@@ -1663,9 +1663,10 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
             namespaces.pop(None, None)
 
         try:
+            xpath = lxml.etree.XPath(target, namespaces=namespaces)
             root = lxml.etree.Element("root")
             try:
-                xpath = root.xpath(target, namespaces=namespaces)
+                root.xpath(target, namespaces=namespaces)
 
                 if model_etree and check_in_model_source:
                     if context == DataGenerator and '/@' in target:
@@ -1707,6 +1708,8 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
                         ns_message = 'No namespaces are defined for the target.'
 
                     errors.append(['One or more namespaces required for target `{}` are not defined. {}'.format(target, ns_message)])
+                else:
+                    errors.append(['Target `{}` is not a valid XML XPath.'.format(target)])
 
         except lxml.etree.XPathSyntaxError:
             errors.append(['Target `{}` is not a valid XML XPath.'.format(target)])
