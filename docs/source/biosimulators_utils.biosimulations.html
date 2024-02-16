@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>biosimulators_utils.biosimulations package &#8212; BioSimulators utils 0.1.186 documentation</title>
+    <title>biosimulators_utils.biosimulations package &#8212; BioSimulators utils 0.1.187 documentation</title>
   
   
   
@@ -18,28 +18,29 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="icon" sizes="16x16" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png" />
     <link rel="icon" sizes="32x32" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png" />
     <link rel="stylesheet" type="text/css" href="../_static/css/biosimulators.css?v=ff938351" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=f52088cf"></script>
+    <script src="../_static/documentation_options.js?v=06489c40"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/biosimulators_utils.biosimulations';</script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -55,7 +56,15 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -90,18 +99,21 @@
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
 <div class="bd-header__inner bd-page-width">
   <label class="sidebar-toggle primary-toggle" for="__primary">
     <span class="fa-solid fa-bars"></span>
   </label>
   
-  <div class="navbar-header-items__start">
+  
+  <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
+
   
 
 <a class="navbar-brand logo" href="../index.html">
+  
   
   
   
@@ -111,14 +123,13 @@
       
     
     
-    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="BioSimulators utils 0.1.187 documentation - Home"/>
+    <script>document.write(`<img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="BioSimulators utils 0.1.187 documentation - Home"/>`);</script>
   
   
 </a></div>
     
   </div>
-  
   
   <div class="col-lg-9 navbar-header-items">
     
@@ -127,13 +138,16 @@
       
         <div class="navbar-item navbar-persistent--container">
           
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
         </div>
       
       
@@ -148,8 +162,8 @@ document.write(`
           
           
           
-          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github"></i></span>
-            <label class="sr-only">GitHub</label></a>
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -160,8 +174,8 @@ document.write(`
           
           
           
-          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter"></i></span>
-            <label class="sr-only">Twitter</label></a>
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Twitter</span></a>
         </li>
         <li class="nav-item">
           
@@ -172,8 +186,8 @@ document.write(`
           
           
           
-          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope"></i></span>
-            <label class="sr-only">Email</label></a>
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Email</span></a>
         </li>
 </ul></div>
       
@@ -183,27 +197,33 @@ document.write(`
   
   
     <div class="navbar-persistent--mobile">
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
     </div>
   
 
   
-    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
       <span class="fa-solid fa-outdent"></span>
     </label>
   
 </div>
 
-    </nav>
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -227,8 +247,8 @@ document.write(`
           
           
           
-          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github"></i></span>
-            <label class="sr-only">GitHub</label></a>
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -239,8 +259,8 @@ document.write(`
           
           
           
-          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter"></i></span>
-            <label class="sr-only">Twitter</label></a>
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Twitter</span></a>
         </li>
         <li class="nav-item">
           
@@ -251,8 +271,8 @@ document.write(`
           
           
           
-          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope"></i></span>
-            <label class="sr-only">Email</label></a>
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Email</span></a>
         </li>
 </ul></div>
         
@@ -278,7 +298,8 @@ document.write(`
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
-        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
@@ -328,8 +349,8 @@ document.write(`
 
 
 
-<nav aria-label="Breadcrumbs">
-  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="../index.html" class="nav-link" aria-label="Home">
@@ -339,7 +360,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="biosimulators_utils.html" class="nav-link">biosimulators_utils package</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">biosimulators_utils.biosimulations package</li>
+    <li class="breadcrumb-item active" aria-current="page">biosimulator...</li>
   </ul>
 </nav>
 </div>
@@ -354,15 +375,15 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section id="module-biosimulators_utils.biosimulations">
-<span id="biosimulators-utils-biosimulations-package"></span><h1>biosimulators_utils.biosimulations package<a class="headerlink" href="#module-biosimulators_utils.biosimulations" title="Permalink to this heading">#</a></h1>
+<span id="biosimulators-utils-biosimulations-package"></span><h1>biosimulators_utils.biosimulations package<a class="headerlink" href="#module-biosimulators_utils.biosimulations" title="Link to this heading">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 </section>
 <section id="module-biosimulators_utils.biosimulations.data_model">
-<span id="biosimulators-utils-biosimulations-data-model-module"></span><h2>biosimulators_utils.biosimulations.data_model module<a class="headerlink" href="#module-biosimulators_utils.biosimulations.data_model" title="Permalink to this heading">#</a></h2>
+<span id="biosimulators-utils-biosimulations-data-model-module"></span><h2>biosimulators_utils.biosimulations.data_model module<a class="headerlink" href="#module-biosimulators_utils.biosimulations.data_model" title="Link to this heading">#</a></h2>
 <p>Data model for BioSimulations metadata</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
@@ -380,12 +401,12 @@ document.write(`
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Citation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.data_model.</span></span><span class="sig-name descname"><span class="pre">Citation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">authors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">journal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">issue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.data_model.</span></span><span class="sig-name descname"><span class="pre">Citation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">authors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">journal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">issue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A citation</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Citation.title">
-<span class="sig-name descname"><span class="pre">title</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.title" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">title</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.title" title="Link to this definition">#</a></dt>
 <dd><p>title</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -396,7 +417,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Citation.authors">
-<span class="sig-name descname"><span class="pre">authors</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.authors" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">authors</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.authors" title="Link to this definition">#</a></dt>
 <dd><p>authors</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -407,7 +428,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Citation.journal">
-<span class="sig-name descname"><span class="pre">journal</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.journal" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">journal</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.journal" title="Link to this definition">#</a></dt>
 <dd><p>journal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -418,7 +439,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Citation.volume">
-<span class="sig-name descname"><span class="pre">volume</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.volume" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">volume</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.volume" title="Link to this definition">#</a></dt>
 <dd><p>volume</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -429,7 +450,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Citation.issue">
-<span class="sig-name descname"><span class="pre">issue</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.issue" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">issue</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.issue" title="Link to this definition">#</a></dt>
 <dd><p>issue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -440,7 +461,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Citation.pages">
-<span class="sig-name descname"><span class="pre">pages</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.pages" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">pages</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.pages" title="Link to this definition">#</a></dt>
 <dd><p>pages</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -451,7 +472,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Citation.year">
-<span class="sig-name descname"><span class="pre">year</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.year" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">year</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.year" title="Link to this definition">#</a></dt>
 <dd><p>year</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -462,7 +483,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Citation.identifiers">
-<span class="sig-name descname"><span class="pre">identifiers</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.identifiers" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">identifiers</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.identifiers" title="Link to this definition">#</a></dt>
 <dd><p>identifiers</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -473,7 +494,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Citation.is_equal">
-<span class="sig-name descname"><span class="pre">is_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.is_equal" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.is_equal" title="Link to this definition">#</a></dt>
 <dd><p>Determine if citations are equal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -490,7 +511,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Citation.to_tuple">
-<span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.to_tuple" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Citation.to_tuple" title="Link to this definition">#</a></dt>
 <dd><p>Get a tuple representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -506,12 +527,12 @@ document.write(`
 
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.ExternalReferences">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.data_model.</span></span><span class="sig-name descname"><span class="pre">ExternalReferences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">citations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.ExternalReferences" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.data_model.</span></span><span class="sig-name descname"><span class="pre">ExternalReferences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">citations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.ExternalReferences" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Identifiers and citations of an object</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.ExternalReferences.identifiers">
-<span class="sig-name descname"><span class="pre">identifiers</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.ExternalReferences.identifiers" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">identifiers</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.ExternalReferences.identifiers" title="Link to this definition">#</a></dt>
 <dd><p>identifiers</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -522,7 +543,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.ExternalReferences.citations">
-<span class="sig-name descname"><span class="pre">citations</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.ExternalReferences.citations" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">citations</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.ExternalReferences.citations" title="Link to this definition">#</a></dt>
 <dd><p>citations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -533,7 +554,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.ExternalReferences.is_equal">
-<span class="sig-name descname"><span class="pre">is_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.ExternalReferences.is_equal" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.ExternalReferences.is_equal" title="Link to this definition">#</a></dt>
 <dd><p>Determine if collections of external references are equal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -550,7 +571,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.ExternalReferences.to_tuple">
-<span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.ExternalReferences.to_tuple" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.ExternalReferences.to_tuple" title="Link to this definition">#</a></dt>
 <dd><p>Get a tuple representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -566,12 +587,12 @@ document.write(`
 
 <dl class="py class">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Metadata">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.data_model.</span></span><span class="sig-name descname"><span class="pre">Metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">authors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">references</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.data_model.</span></span><span class="sig-name descname"><span class="pre">Metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">authors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">references</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Metadata about an object</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Metadata.description">
-<span class="sig-name descname"><span class="pre">description</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.description" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">description</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.description" title="Link to this definition">#</a></dt>
 <dd><p>description</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -582,7 +603,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Metadata.tags">
-<span class="sig-name descname"><span class="pre">tags</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.tags" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">tags</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.tags" title="Link to this definition">#</a></dt>
 <dd><p>tags</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -593,7 +614,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Metadata.authors">
-<span class="sig-name descname"><span class="pre">authors</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.authors" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">authors</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.authors" title="Link to this definition">#</a></dt>
 <dd><p>authors</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -604,7 +625,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Metadata.references">
-<span class="sig-name descname"><span class="pre">references</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.references" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">references</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.references" title="Link to this definition">#</a></dt>
 <dd><p>identifiers and citations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -615,7 +636,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Metadata.license">
-<span class="sig-name descname"><span class="pre">license</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.license" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">license</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.license" title="Link to this definition">#</a></dt>
 <dd><p>license</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -626,7 +647,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Metadata.created">
-<span class="sig-name descname"><span class="pre">created</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.created" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">created</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.created" title="Link to this definition">#</a></dt>
 <dd><p>created date-time</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -637,7 +658,7 @@ document.write(`
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Metadata.updated">
-<span class="sig-name descname"><span class="pre">updated</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.updated" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">updated</span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.updated" title="Link to this definition">#</a></dt>
 <dd><p>updated date-time</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -648,7 +669,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Metadata.is_equal">
-<span class="sig-name descname"><span class="pre">is_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.is_equal" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.is_equal" title="Link to this definition">#</a></dt>
 <dd><p>Determine if metadata are equal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -665,7 +686,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.data_model.Metadata.to_tuple">
-<span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.to_tuple" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.data_model.Metadata.to_tuple" title="Link to this definition">#</a></dt>
 <dd><p>Get a tuple representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -681,7 +702,7 @@ document.write(`
 
 </section>
 <section id="module-biosimulators_utils.biosimulations.utils">
-<span id="biosimulators-utils-biosimulations-utils-module"></span><h2>biosimulators_utils.biosimulations.utils module<a class="headerlink" href="#module-biosimulators_utils.biosimulations.utils" title="Permalink to this heading">#</a></h2>
+<span id="biosimulators-utils-biosimulations-utils-module"></span><h2>biosimulators_utils.biosimulations.utils module<a class="headerlink" href="#module-biosimulators_utils.biosimulations.utils" title="Link to this heading">#</a></h2>
 <p>Utility methods for working with BioSimulations and runBioSimulations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
@@ -699,7 +720,7 @@ document.write(`
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.get_api_session">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_api_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_retries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backoff_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_api_session" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_api_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_retries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backoff_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_api_session" title="Link to this definition">#</a></dt>
 <dd><p>Get a session for the BioSimulations API with retrying</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -720,7 +741,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.get_authorization_for_client">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_authorization_for_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_authorization_for_client" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_authorization_for_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_authorization_for_client" title="Link to this definition">#</a></dt>
 <dd><p>Get the authorization for a client of the BioSimulations API</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -741,7 +762,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.get_file_extension_combine_uri_map">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_file_extension_combine_uri_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_file_extension_combine_uri_map" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_file_extension_combine_uri_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_file_extension_combine_uri_map" title="Link to this definition">#</a></dt>
 <dd><p>Get a map from file extensions to URIs for use with manifests of COMBINE/OMEX archives</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -758,7 +779,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.get_formats">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_formats" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_formats" title="Link to this definition">#</a></dt>
 <dd><p>Get information about the file formats used by BioSimulations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -775,7 +796,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.get_ontology_terms">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_ontology_terms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ontology</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_ontology_terms" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_ontology_terms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ontology</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_ontology_terms" title="Link to this definition">#</a></dt>
 <dd><p>Get the terms of an ontology used by BioSimulations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -795,7 +816,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.get_published_project">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_published_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_published_project" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">get_published_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.get_published_project" title="Link to this definition">#</a></dt>
 <dd><p>Publish a project to BioSimulations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -815,7 +836,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.publish_simulation_project">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">publish_simulation_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.publish_simulation_project" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">publish_simulation_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.publish_simulation_project" title="Link to this definition">#</a></dt>
 <dd><p>Publish a project to BioSimulations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -832,7 +853,7 @@ the future</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.run_simulation_project">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">run_simulation_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename_or_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'latest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">purpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'other'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.run_simulation_project" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">run_simulation_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename_or_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'latest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">purpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'other'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.run_simulation_project" title="Link to this definition">#</a></dt>
 <dd><p>Submit a simulation project (COMBINE/OMEX archive) to runBioSimulations and, optionally, BioSimulations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -865,7 +886,7 @@ the future</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.biosimulations.utils.validate_biosimulations_api_response">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">validate_biosimulations_api_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failure_introductory_message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exception_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.validate_biosimulations_api_response" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.biosimulations.utils.</span></span><span class="sig-name descname"><span class="pre">validate_biosimulations_api_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failure_introductory_message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exception_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/biosimulations/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.biosimulations.utils.validate_biosimulations_api_response" title="Link to this definition">#</a></dt>
 <dd><p>Validate a response from one of BioSimulation’s APIs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -889,17 +910,22 @@ the future</p></li>
               
               
               
+              
+              
             </div>
             
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
   <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav class="bd-toc-nav page-toc">
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-biosimulators_utils.biosimulations.data_model">biosimulators_utils.biosimulations.data_model module</a><ul class="visible nav section-nav flex-column">
@@ -953,6 +979,7 @@ the future</p></li>
   </nav></div>
 
   <div class="sidebar-secondary-item">
+
   
   <div class="tocsection editthispage">
     <a href="https://github.com/biosimulators/Biosimulators_utils/edit/dev/docs-src/source/biosimulators_utils.biosimulations.rst">
@@ -968,6 +995,7 @@ the future</p></li>
 </div>
 
   <div class="sidebar-secondary-item">
+
   <div class="tocsection sourcelink">
     <a href="../_sources/source/biosimulators_utils.biosimulations.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
@@ -988,8 +1016,8 @@ the future</p></li>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -997,9 +1025,10 @@ the future</p></li>
     <div class="footer-items__start">
       
         <div class="footer-item">
+
   <p class="copyright">
     
-      © Copyright 2023, BioSimulators Team.
+      © Copyright 2024, BioSimulators Team.
       <br/>
     
   </p>
@@ -1008,10 +1037,12 @@ the future</p></li>
     </div>
   
   
+  
     <div class="footer-items__end">
       
-        <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
 </p></div>
       
     </div>

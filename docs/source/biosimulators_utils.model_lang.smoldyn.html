@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>biosimulators_utils.model_lang.smoldyn package &#8212; BioSimulators utils 0.1.186 documentation</title>
+    <title>biosimulators_utils.model_lang.smoldyn package &#8212; BioSimulators utils 0.1.187 documentation</title>
   
   
   
@@ -18,28 +18,29 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="icon" sizes="16x16" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png" />
     <link rel="icon" sizes="32x32" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png" />
     <link rel="stylesheet" type="text/css" href="../_static/css/biosimulators.css?v=ff938351" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=f52088cf"></script>
+    <script src="../_static/documentation_options.js?v=06489c40"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/biosimulators_utils.model_lang.smoldyn';</script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -55,7 +56,15 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -90,18 +99,21 @@
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
 <div class="bd-header__inner bd-page-width">
   <label class="sidebar-toggle primary-toggle" for="__primary">
     <span class="fa-solid fa-bars"></span>
   </label>
   
-  <div class="navbar-header-items__start">
+  
+  <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
+
   
 
 <a class="navbar-brand logo" href="../index.html">
+  
   
   
   
@@ -111,14 +123,13 @@
       
     
     
-    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="BioSimulators utils 0.1.187 documentation - Home"/>
+    <script>document.write(`<img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="BioSimulators utils 0.1.187 documentation - Home"/>`);</script>
   
   
 </a></div>
     
   </div>
-  
   
   <div class="col-lg-9 navbar-header-items">
     
@@ -127,13 +138,16 @@
       
         <div class="navbar-item navbar-persistent--container">
           
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
         </div>
       
       
@@ -148,8 +162,8 @@ document.write(`
           
           
           
-          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github"></i></span>
-            <label class="sr-only">GitHub</label></a>
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -160,8 +174,8 @@ document.write(`
           
           
           
-          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter"></i></span>
-            <label class="sr-only">Twitter</label></a>
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Twitter</span></a>
         </li>
         <li class="nav-item">
           
@@ -172,8 +186,8 @@ document.write(`
           
           
           
-          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope"></i></span>
-            <label class="sr-only">Email</label></a>
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Email</span></a>
         </li>
 </ul></div>
       
@@ -183,27 +197,33 @@ document.write(`
   
   
     <div class="navbar-persistent--mobile">
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
     </div>
   
 
   
-    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
       <span class="fa-solid fa-outdent"></span>
     </label>
   
 </div>
 
-    </nav>
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -227,8 +247,8 @@ document.write(`
           
           
           
-          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github"></i></span>
-            <label class="sr-only">GitHub</label></a>
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -239,8 +259,8 @@ document.write(`
           
           
           
-          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter"></i></span>
-            <label class="sr-only">Twitter</label></a>
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Twitter</span></a>
         </li>
         <li class="nav-item">
           
@@ -251,8 +271,8 @@ document.write(`
           
           
           
-          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope"></i></span>
-            <label class="sr-only">Email</label></a>
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Email</span></a>
         </li>
 </ul></div>
         
@@ -278,7 +298,8 @@ document.write(`
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
-        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
@@ -338,8 +359,8 @@ document.write(`
 
 
 
-<nav aria-label="Breadcrumbs">
-  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="../index.html" class="nav-link" aria-label="Home">
@@ -352,7 +373,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="biosimulators_utils.model_lang.html" class="nav-link">biosimulators_utils.model_lang package</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">biosimulators_utils.model_lang.smoldyn package</li>
+    <li class="breadcrumb-item active" aria-current="page">biosimulator...</li>
   </ul>
 </nav>
 </div>
@@ -367,15 +388,234 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section id="module-biosimulators_utils.model_lang.smoldyn">
-<span id="biosimulators-utils-model-lang-smoldyn-package"></span><h1>biosimulators_utils.model_lang.smoldyn package<a class="headerlink" href="#module-biosimulators_utils.model_lang.smoldyn" title="Permalink to this heading">#</a></h1>
+<span id="biosimulators-utils-model-lang-smoldyn-package"></span><h1>biosimulators_utils.model_lang.smoldyn package<a class="headerlink" href="#module-biosimulators_utils.model_lang.smoldyn" title="Link to this heading">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-biosimulators_utils.model_lang.smoldyn.simularium_converter">
+<span id="biosimulators-utils-model-lang-smoldyn-simularium-converter-module"></span><h2>biosimulators_utils.model_lang.smoldyn.simularium_converter module<a class="headerlink" href="#module-biosimulators_utils.model_lang.smoldyn.simularium_converter" title="Link to this heading">#</a></h2>
+<p>Using the Biosimulators side of Smoldyn to generate a modelout.txt Smoldyn file for a specified OMEX/COMBINE archive which then
+is used to generate a .simularium file for the given simulation. That .simularium file is then stored along with the log.yml and
+report.{FORMAT} relative to the simulation. Remember: each simulation, while not inherently published, has the potential for publication
+based purely on the simulation’s ability to provide a valid OMEX/COMBINE archive. There exists (or should exist) an additional layer
+of abstraction to then validate and verify the contents therein.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.smoldyn.simularium_converter.</span></span><span class="sig-name descname"><span class="pre">BiosimulatorsDataConverter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive" title="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive"><span class="pre">SmoldynCombineArchive</span></a></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_camera_data_object">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_camera_data_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">look_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">up_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CameraData</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_camera_data_object" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_display_data_object">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_display_data_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DISPLAY_TYPE.SPHERE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DisplayData</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_display_data_object" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_display_data_object_dict">
+<span class="sig-name descname"><span class="pre">generate_display_data_object_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DisplayData</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_display_data_object_dict" title="Link to this definition">#</a></dt>
+<dd><p>Generate a display object dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>agent_names</strong> – <cite>List[Tuple[str, str, float]]</cite> -&gt; a list of tuples defining the Display Data configuration parameters.</p></li>
+<li><p><strong>such</strong> (<em>The Tuple is expected to be as</em>) – [(<cite>agent_name: str</cite>, <cite>display_name: str</cite>, <cite>radius: float</cite>, <cite>color</cite>: <cite>str</cite>)]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>Dict[str, DisplayData]</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_input_file_data_object">
+<span class="sig-name descname"><span class="pre">generate_input_file_data_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">InputFileData</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_input_file_data_object" title="Link to this definition">#</a></dt>
+<dd><p>Generates a new instance of <cite>simulariumio.data_model.InputFileData</cite> based on
+<cite>self.archive.model_output_filename</cite> (which itself is derived from the model file) if no <cite>model_output_file</cite>
+is passed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model_output_file</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – <cite>Optional</cite>: file on which to base the <cite>InputFileData</cite> instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>simulariumio input file data object based on <cite>self.archive.model_output_filename</cite></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(<code class="xref py py-obj docutils literal notranslate"><span class="pre">InputFileData</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_metadata_object">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_metadata_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CameraData</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">MetaData</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_metadata_object" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_output_data_object">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_output_data_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputFileData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DisplayData</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temporal_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ns'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_output_data_object" title="Link to this definition">#</a></dt>
+<dd><p>Generate a data object to fit the simulariumio.TrajectoryData interface.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_simularium_file">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_simularium_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simularium_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temporal_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ns'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DisplayData</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_simularium_file" title="Link to this definition">#</a></dt>
+<dd><p>Create a data_object, optionally translate it, convert to simularium, and save.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.prepare_agent_data">
+<span class="sig-name descname"><span class="pre">prepare_agent_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AgentData</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.prepare_agent_data" title="Link to this definition">#</a></dt>
+<dd><p>Create a new instance of an <cite>AgentData</cite> object following the specifications of the simulation within the
+relative combine archive.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.prepare_simularium_fp">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prepare_simularium_fp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">simularium_config</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.prepare_simularium_fp" title="Link to this definition">#</a></dt>
+<dd><p>Generate a simularium dir and joined path if not using the init object.</p>
+<dl class="simple">
+<dt>Kwargs:</dt><dd><p>(obj):<cite>**simularium_config</cite>: keys are ‘simularium_dirpath’ and ‘simularium_fname’</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>str</cite>: complete simularium filepath</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(obj)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.save_simularium_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_simularium_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SmoldynData</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">TrajectoryData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simularium_filename</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.save_simularium_file" title="Link to this definition">#</a></dt>
+<dd><p>Takes in either a <cite>SmoldynData</cite> or <cite>TrajectoryData</cite> instance and saves a simularium file based on it
+with the name of <cite>simularium_filename</cite>. If none is passed, the file will be saved in <cite>self.archive.rootpath</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[SmoldynData,</span> <span class="pre">TrajectoryData]</span></code>) – data object to save.</p></li>
+<li><p><strong>simularium_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – <cite>Optional</cite>: name by which to save the new simularium file. If None is
+passed, will default to <cite>self.archive.rootpath/self.archive.simularium_filename</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.translate_data_object">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">translate_data_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_dim</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TrajectoryData</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.translate_data_object" title="Link to this definition">#</a></dt>
+<dd><p>Create a mirrored negative image of a distribution and apply it to 3dimensions if
+AND ONLY IF it contains all non-negative values.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.smoldyn.simularium_converter.</span></span><span class="sig-name descname"><span class="pre">SmoldynCombineArchive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootpath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs_dirpath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_output_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simularium_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'my_combine_archive'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive.get_manifest_filepath">
+<span class="sig-name descname"><span class="pre">get_manifest_filepath</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive.get_manifest_filepath" title="Link to this definition">#</a></dt>
+<dd><p>Read SmoldynCombineArchive manifest files. Return all filepaths containing the word ‘manifest’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>path if there is just one manifest file, otherwise <cite>List[str]</cite> of manifest filepaths.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive.set_model_filepath">
+<span class="sig-name descname"><span class="pre">set_model_filepath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive.set_model_filepath" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive.verify_smoldyn_in_manifest">
+<span class="sig-name descname"><span class="pre">verify_smoldyn_in_manifest</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive.verify_smoldyn_in_manifest" title="Link to this definition">#</a></dt>
+<dd><p>Pass the return value of <cite>self.get_manifest_filepath()</cite> into a new instance of <cite>CombineArchiveReader</cite>
+such that the string manifest object tuples are evaluated for the presence of <cite>smoldyn</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether there exists a smoldyn model in the archive based on the archive’s manifest.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>bool</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.smoldyn.simularium_converter.</span></span><span class="sig-name descname"><span class="pre">SmoldynDataConverter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive" title="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive"><span class="pre">SmoldynCombineArchive</span></a></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter" title="biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.generate_output_data_object">
+<span class="sig-name descname"><span class="pre">generate_output_data_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InputFileData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DisplayData</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MetaData</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temporal_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ns'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SmoldynData</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.generate_output_data_object" title="Link to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>Generate a new instance of <cite>SmoldynData</cite>. If passing <cite>meta_data</cite>, please create a new <cite>MetaData</cite> instance</dt><dd><p>using the <cite>self.generate_metadata_object</cite> interface of this same class.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_data</strong> – (<code class="xref py py-obj docutils literal notranslate"><span class="pre">InputFileData</span></code>): <cite>simulariumio.InputFileData</cite> instance based on model output.</p></li>
+<li><p><strong>display_data</strong> – (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Dict[Dict[str,</span> <span class="pre">DisplayData]]</span></code>): <cite>Optional</cite>: if passing this parameter, please
+use the <cite>self.generate_display_object_dict</cite> interface of this same class.</p></li>
+<li><p><strong>meta_data</strong> – (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Metadata</span></code>): new instance of <cite>Metadata</cite> object. If passing this parameter, please use the
+<cite>self.generate_metadata_object</cite> interface method of this same class.</p></li>
+<li><p><strong>spatial_units</strong> – (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): spatial units by which to measure this simularium output. Defaults to <cite>nm</cite>.</p></li>
+<li><p><strong>temporal_units</strong> – (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): time units to base this simularium instance on. Defaults to <cite>ns</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SmoldynData</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.generate_simularium_file">
+<span class="sig-name descname"><span class="pre">generate_simularium_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temporal_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ns'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simularium_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DisplayData</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.generate_simularium_file" title="Link to this definition">#</a></dt>
+<dd><p>Create a data_object, optionally translate it, convert to simularium, and save.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.read_model_output_dataframe">
+<span class="sig-name descname"><span class="pre">read_model_output_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.read_model_output_dataframe" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.translate_data_object">
+<span class="sig-name descname"><span class="pre">translate_data_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SmoldynData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TrajectoryData</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.translate_data_object" title="Link to this definition">#</a></dt>
+<dd><p>Create a mirrored negative image of a distribution and apply it to 3dimensions if
+AND ONLY IF it contains all non-negative values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.write_model_output_dataframe_to_csv">
+<span class="sig-name descname"><span class="pre">write_model_output_dataframe_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_fp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/simularium_converter.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.write_model_output_dataframe_to_csv" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-biosimulators_utils.model_lang.smoldyn.utils">
-<span id="biosimulators-utils-model-lang-smoldyn-utils-module"></span><h2>biosimulators_utils.model_lang.smoldyn.utils module<a class="headerlink" href="#module-biosimulators_utils.model_lang.smoldyn.utils" title="Permalink to this heading">#</a></h2>
+<span id="biosimulators-utils-model-lang-smoldyn-utils-module"></span><h2>biosimulators_utils.model_lang.smoldyn.utils module<a class="headerlink" href="#module-biosimulators_utils.model_lang.smoldyn.utils" title="Link to this heading">#</a></h2>
 <p>Utilities for working with Smoldyn models</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
@@ -392,8 +632,31 @@ document.write(`
 </dd>
 </dl>
 <dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.utils.generate_new_simularium_file">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.smoldyn.utils.</span></span><span class="sig-name descname"><span class="pre">generate_new_simularium_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive_rootpath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simularium_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_output_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.utils.generate_new_simularium_file" title="Link to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>Generate a new <cite>.simularium</cite> file based on the <cite>model.txt</cite> in the passed-archive rootpath using the above</dt><dd><p>validation method. Raises an <cite>Exception</cite> if there are errors present.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>archive_rootpath</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – Parent dirpath relative to the model.txt file.</p></li>
+<li><p><strong>simularium_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – <cite>Optional</cite>: Desired save name for the simularium file to be saved
+in the <cite>archive_rootpath</cite>. Defaults to <cite>None</cite>.</p></li>
+<li><p><strong>save_output_df</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to save the modelout.txt contents as a pandas df in csv form. Defaults
+to <cite>False</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.utils.get_parameters_variables_outputs_for_simulation">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.smoldyn.utils.</span></span><span class="sig-name descname"><span class="pre">get_parameters_variables_outputs_for_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_kisao_id=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_level=&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.SedDocument'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_ids=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_data_types=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.utils.get_parameters_variables_outputs_for_simulation" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.smoldyn.utils.</span></span><span class="sig-name descname"><span class="pre">get_parameters_variables_outputs_for_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm_kisao_id=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_level=&lt;class</span> <span class="pre">'biosimulators_utils.sedml.data_model.SedDocument'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_ids=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_data_types=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config=None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/utils.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.utils.get_parameters_variables_outputs_for_simulation" title="Link to this definition">#</a></dt>
 <dd><p>Get the possible observables for a simulation of a model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -423,7 +686,7 @@ for the variable of an associated SED-ML data generator</p></li>
 
 </section>
 <section id="module-biosimulators_utils.model_lang.smoldyn.validation">
-<span id="biosimulators-utils-model-lang-smoldyn-validation-module"></span><h2>biosimulators_utils.model_lang.smoldyn.validation module<a class="headerlink" href="#module-biosimulators_utils.model_lang.smoldyn.validation" title="Permalink to this heading">#</a></h2>
+<span id="biosimulators-utils-model-lang-smoldyn-validation-module"></span><h2>biosimulators_utils.model_lang.smoldyn.validation module<a class="headerlink" href="#module-biosimulators_utils.model_lang.smoldyn.validation" title="Link to this heading">#</a></h2>
 <p>Utilities for validating Smoldyn models</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
@@ -439,9 +702,32 @@ for the variable of an associated SED-ML data generator</p></li>
 <dd class="field-even"><p>MIT</p>
 </dd>
 </dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.validation.ModelValidation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.smoldyn.validation.</span></span><span class="sig-name descname"><span class="pre">ModelValidation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">validation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Simulation</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.validation.ModelValidation" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.validation.generate_model_validation_object">
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.smoldyn.validation.</span></span><span class="sig-name descname"><span class="pre">generate_model_validation_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive" title="biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive"><span class="pre">SmoldynCombineArchive</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#biosimulators_utils.model_lang.smoldyn.validation.ModelValidation" title="biosimulators_utils.model_lang.smoldyn.validation.ModelValidation"><span class="pre">ModelValidation</span></a></span></span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.validation.generate_model_validation_object" title="Link to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>Generate an instance of <cite>ModelValidation</cite> based on the output of <cite>archive.model_path</cite></dt><dd><p>with above <cite>validate_model</cite> method.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>archive</strong> – (<code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineArchive</span></code>): Instance of <cite>CombineArchive</cite> to generate model validation on.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#biosimulators_utils.model_lang.smoldyn.validation.ModelValidation" title="biosimulators_utils.model_lang.smoldyn.validation.ModelValidation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelValidation</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.model_lang.smoldyn.validation.validate_model">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.smoldyn.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.validation.validate_model" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.model_lang.smoldyn.validation.</span></span><span class="sig-name descname"><span class="pre">validate_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/model_lang/smoldyn/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.model_lang.smoldyn.validation.validate_model" title="Link to this definition">#</a></dt>
 <dd><p>Check that a model is valid</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -480,24 +766,63 @@ for the variable of an associated SED-ML data generator</p></li>
               
               
               
+              
+              
             </div>
             
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
   <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav class="bd-toc-nav page-toc">
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-biosimulators_utils.model_lang.smoldyn.simularium_converter">biosimulators_utils.model_lang.smoldyn.simularium_converter module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_camera_data_object"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter.generate_camera_data_object()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_display_data_object"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter.generate_display_data_object()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_display_data_object_dict"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter.generate_display_data_object_dict()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_input_file_data_object"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter.generate_input_file_data_object()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_metadata_object"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter.generate_metadata_object()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_output_data_object"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter.generate_output_data_object()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.generate_simularium_file"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter.generate_simularium_file()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.prepare_agent_data"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter.prepare_agent_data()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.prepare_simularium_fp"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter.prepare_simularium_fp()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.save_simularium_file"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter.save_simularium_file()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.BiosimulatorsDataConverter.translate_data_object"><code class="docutils literal notranslate"><span class="pre">BiosimulatorsDataConverter.translate_data_object()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive"><code class="docutils literal notranslate"><span class="pre">SmoldynCombineArchive</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive.get_manifest_filepath"><code class="docutils literal notranslate"><span class="pre">SmoldynCombineArchive.get_manifest_filepath()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive.set_model_filepath"><code class="docutils literal notranslate"><span class="pre">SmoldynCombineArchive.set_model_filepath()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynCombineArchive.verify_smoldyn_in_manifest"><code class="docutils literal notranslate"><span class="pre">SmoldynCombineArchive.verify_smoldyn_in_manifest()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter"><code class="docutils literal notranslate"><span class="pre">SmoldynDataConverter</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.generate_output_data_object"><code class="docutils literal notranslate"><span class="pre">SmoldynDataConverter.generate_output_data_object()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.generate_simularium_file"><code class="docutils literal notranslate"><span class="pre">SmoldynDataConverter.generate_simularium_file()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.read_model_output_dataframe"><code class="docutils literal notranslate"><span class="pre">SmoldynDataConverter.read_model_output_dataframe()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.translate_data_object"><code class="docutils literal notranslate"><span class="pre">SmoldynDataConverter.translate_data_object()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.simularium_converter.SmoldynDataConverter.write_model_output_dataframe_to_csv"><code class="docutils literal notranslate"><span class="pre">SmoldynDataConverter.write_model_output_dataframe_to_csv()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-biosimulators_utils.model_lang.smoldyn.utils">biosimulators_utils.model_lang.smoldyn.utils module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.utils.generate_new_simularium_file"><code class="docutils literal notranslate"><span class="pre">generate_new_simularium_file()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.utils.get_parameters_variables_outputs_for_simulation"><code class="docutils literal notranslate"><span class="pre">get_parameters_variables_outputs_for_simulation()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-biosimulators_utils.model_lang.smoldyn.validation">biosimulators_utils.model_lang.smoldyn.validation module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.validation.ModelValidation"><code class="docutils literal notranslate"><span class="pre">ModelValidation</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.validation.generate_model_validation_object"><code class="docutils literal notranslate"><span class="pre">generate_model_validation_object()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.model_lang.smoldyn.validation.validate_model"><code class="docutils literal notranslate"><span class="pre">validate_model()</span></code></a></li>
 </ul>
 </li>
@@ -505,6 +830,7 @@ for the variable of an associated SED-ML data generator</p></li>
   </nav></div>
 
   <div class="sidebar-secondary-item">
+
   
   <div class="tocsection editthispage">
     <a href="https://github.com/biosimulators/Biosimulators_utils/edit/dev/docs-src/source/biosimulators_utils.model_lang.smoldyn.rst">
@@ -520,6 +846,7 @@ for the variable of an associated SED-ML data generator</p></li>
 </div>
 
   <div class="sidebar-secondary-item">
+
   <div class="tocsection sourcelink">
     <a href="../_sources/source/biosimulators_utils.model_lang.smoldyn.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
@@ -540,8 +867,8 @@ for the variable of an associated SED-ML data generator</p></li>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -549,9 +876,10 @@ for the variable of an associated SED-ML data generator</p></li>
     <div class="footer-items__start">
       
         <div class="footer-item">
+
   <p class="copyright">
     
-      © Copyright 2023, BioSimulators Team.
+      © Copyright 2024, BioSimulators Team.
       <br/>
     
   </p>
@@ -560,10 +888,12 @@ for the variable of an associated SED-ML data generator</p></li>
     </div>
   
   
+  
     <div class="footer-items__end">
       
-        <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
 </p></div>
       
     </div>
