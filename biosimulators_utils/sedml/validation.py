@@ -1662,6 +1662,8 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
             namespaces = dict(namespaces)
             namespaces.pop(None, None)
 
+        try:
+            xpath = lxml.etree.XPath(target, namespaces=namespaces)
             root = lxml.etree.Element("root")
             try:
                 root.xpath(target, namespaces=namespaces)
@@ -1706,8 +1708,9 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
                         ns_message = 'No namespaces are defined for the target.'
 
                     errors.append(['One or more namespaces required for target `{}` are not defined. {}'.format(target, ns_message)])
-                else:
-                    errors.append(['Target `{}` is not a valid XML XPath.'.format(target)])
+
+        except lxml.etree.XPathSyntaxError:
+            errors.append(['Target `{}` is not a valid XML XPath.'.format(target)])
 
     return errors, warnings
 
