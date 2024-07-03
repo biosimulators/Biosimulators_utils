@@ -105,7 +105,7 @@ MATHEMATICAL_FUNCTIONS = {
     'min': numpy.min,
     'max': numpy.max,
     'sum': numpy.sum,
-    'product': numpy.product,
+    'product': numpy.prod,
     'count': len,
     'mean': numpy.mean,
     'stdev': numpy.std,
