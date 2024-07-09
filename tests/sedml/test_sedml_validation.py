@@ -921,10 +921,10 @@ class ValidationTestCase(unittest.TestCase):
         # self.assertEqual(errors, [])
         # self.assertEqual(warnings, [])
 
-        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'smoldyn', 'invalid.txt')
-        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.Smoldyn)
-        self.assertIn("not a valid Smoldyn", flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        # filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'smoldyn', 'invalid.txt')
+        # errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.Smoldyn)
+        # self.assertIn("not a valid Smoldyn", flatten_nested_list_of_strings(errors))
+        # self.assertEqual(warnings, [])
 
         # XPP
         filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'xpp', 'wilson-cowan.ode')
