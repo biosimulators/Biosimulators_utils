@@ -8,38 +8,36 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.187 documentation</title>
+    <title>biosimulators_utils.sedml package &#8212; BioSimulators utils 0.1.188 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="icon" sizes="16x16" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png" />
-    <link rel="icon" sizes="32x32" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png" />
     <link rel="stylesheet" type="text/css" href="../_static/css/biosimulators.css?v=ff938351" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
-  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=06489c40"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/documentation_options.js?v=ee523f82"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/biosimulators_utils.sedml';</script>
     <link rel="author" title="About these documents" href="../about.html" />
@@ -56,27 +54,23 @@
 
   
   
-  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -98,18 +92,25 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <label class="sidebar-toggle primary-toggle" for="__primary">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
-  </label>
+  </button>
   
   
   <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
 
+  
+    
   
 
 <a class="navbar-brand logo" href="../index.html">
@@ -123,8 +124,8 @@
       
     
     
-    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="BioSimulators utils 0.1.187 documentation - Home"/>
-    <script>document.write(`<img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="BioSimulators utils 0.1.187 documentation - Home"/>`);</script>
+    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="BioSimulators utils 0.1.188 documentation - Home"/>
+    <script>document.write(`<img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="BioSimulators utils 0.1.188 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -141,7 +142,7 @@
 
  <script>
  document.write(`
-   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
     <span class="search-button__default-text">Search</span>
     <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -151,7 +152,7 @@
         </div>
       
       
-        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+        <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Quick links">
         <li class="nav-item">
           
@@ -162,7 +163,7 @@
           
           
           
-          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github fa-lg" aria-hidden="true"></i></span>
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -174,7 +175,7 @@
           
           
           
-          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></span>
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
             <span class="sr-only">Twitter</span></a>
         </li>
         <li class="nav-item">
@@ -186,7 +187,7 @@
           
           
           
-          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></span>
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
             <span class="sr-only">Email</span></a>
         </li>
 </ul></div>
@@ -200,7 +201,7 @@
 
  <script>
  document.write(`
-   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
     <span class="search-button__default-text">Search</span>
     <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -211,9 +212,9 @@
   
 
   
-    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
       <span class="fa-solid fa-outdent"></span>
-    </label>
+    </button>
   
 </div>
 
@@ -236,7 +237,7 @@
     
       <div class="sidebar-header-items__end">
         
-          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+          <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Quick links">
         <li class="nav-item">
           
@@ -247,7 +248,7 @@
           
           
           
-          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github fa-lg" aria-hidden="true"></i></span>
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -259,7 +260,7 @@
           
           
           
-          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></span>
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
             <span class="sr-only">Twitter</span></a>
         </li>
         <li class="nav-item">
@@ -271,7 +272,7 @@
           
           
           
-          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></span>
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
             <span class="sr-only">Email</span></a>
         </li>
 </ul></div>
@@ -334,13 +335,13 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
@@ -349,7 +350,7 @@
 
 
 
-<nav aria-label="Breadcrumb">
+<nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
     <li class="breadcrumb-item breadcrumb-home">
@@ -663,6 +664,12 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.data_model.</span></span><span class="sig-name descname"><span class="pre">AxisScale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.AxisScale" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Scale of an axis</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.AxisScale.__format__">
+<span class="sig-name descname"><span class="pre">__format__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_spec</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.AxisScale.__format__" title="Link to this definition">#</a></dt>
+<dd><p>Returns format using actual value type unless __str__ has been overridden.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.AxisScale.linear">
 <span class="sig-name descname"><span class="pre">linear</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'linear'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.AxisScale.linear" title="Link to this definition">#</a></dt>
@@ -1319,6 +1326,12 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.data_model.</span></span><span class="sig-name descname"><span class="pre">LineStyleType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.LineStyleType" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Style of a line of a curve</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.LineStyleType.__format__">
+<span class="sig-name descname"><span class="pre">__format__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_spec</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.LineStyleType.__format__" title="Link to this definition">#</a></dt>
+<dd><p>Returns format using actual value type unless __str__ has been overridden.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.LineStyleType.dash">
 <span class="sig-name descname"><span class="pre">dash</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dash'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.LineStyleType.dash" title="Link to this definition">#</a></dt>
@@ -1449,6 +1462,12 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.data_model.</span></span><span class="sig-name descname"><span class="pre">MarkerStyleType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.MarkerStyleType" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Style of a marker of a curve</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.MarkerStyleType.__format__">
+<span class="sig-name descname"><span class="pre">__format__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_spec</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.MarkerStyleType.__format__" title="Link to this definition">#</a></dt>
+<dd><p>Returns format using actual value type unless __str__ has been overridden.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.MarkerStyleType.circle">
 <span class="sig-name descname"><span class="pre">circle</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'circle'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.MarkerStyleType.circle" title="Link to this definition">#</a></dt>
@@ -1884,6 +1903,12 @@
 <span class="sig-name descname"><span class="pre">ZGINML</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'urn:sedml:language:zginml'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.ModelLanguage.ZGINML" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.ModelLanguage.__format__">
+<span class="sig-name descname"><span class="pre">__format__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_spec</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.ModelLanguage.__format__" title="Link to this definition">#</a></dt>
+<dd><p>Returns format using actual value type unless __str__ has been overridden.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.ModelLanguage.pharmML">
 <span class="sig-name descname"><span class="pre">pharmML</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'urn:sedml:language:pharmml'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.ModelLanguage.pharmML" title="Link to this definition">#</a></dt>
@@ -1996,6 +2021,12 @@
 <span class="sig-name descname"><span class="pre">ZGINML</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'format_9008'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.ZGINML" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.ModelLanguageEdamId.__format__">
+<span class="sig-name descname"><span class="pre">__format__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_spec</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.__format__" title="Link to this definition">#</a></dt>
+<dd><p>Returns format using actual value type unless __str__ has been overridden.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.ModelLanguageEdamId.pharmML">
 <span class="sig-name descname"><span class="pre">pharmML</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'format_9007'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.pharmML" title="Link to this definition">#</a></dt>
@@ -2107,6 +2138,12 @@
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.ModelLanguagePattern.ZGINML">
 <span class="sig-name descname"><span class="pre">ZGINML</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'^urn:sedml:language:zginml(\\.|$)'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.ModelLanguagePattern.ZGINML" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.ModelLanguagePattern.__format__">
+<span class="sig-name descname"><span class="pre">__format__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_spec</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.ModelLanguagePattern.__format__" title="Link to this definition">#</a></dt>
+<dd><p>Returns format using actual value type unless __str__ has been overridden.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.ModelLanguagePattern.pharmML">
@@ -3639,6 +3676,12 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.data_model.</span></span><span class="sig-name descname"><span class="pre">Symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.Symbol" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Variable sumbol</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.Symbol.__format__">
+<span class="sig-name descname"><span class="pre">__format__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_spec</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.Symbol.__format__" title="Link to this definition">#</a></dt>
+<dd><p>Returns format using actual value type unless __str__ has been overridden.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.data_model.Symbol.time">
 <span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'urn:sedml:symbol:time'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.data_model.Symbol.time" title="Link to this definition">#</a></dt>
@@ -4335,7 +4378,7 @@ The function must implement the following interface:</p>
 <li><p><strong>doc</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">SedDocument</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – SED document or a path to SED-ML file which defines a SED document</p></li>
 <li><p><strong>apply_xml_model_changes</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, apply any model changes specified in the SED-ML file before
 calling <code class="xref py py-obj docutils literal notranslate"><span class="pre">task_executer</span></code>.</p></li>
-<li><p><strong>model_etrees</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <code class="xref py py-obj docutils literal notranslate"><span class="pre">etree._Element</span></code>) – </p></li>
+<li><p><strong>model_etrees</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> to <code class="xref py py-obj docutils literal notranslate"><span class="pre">etree._Element</span></code>)</p></li>
 <li><p><strong>pretty_print_modified_xml_models</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>, optional) – if <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code>, pretty print modified XML models</p></li>
 <li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Config</span></code>, optional) – BioSimulators common configuration</p></li>
 </ul>
@@ -5484,7 +5527,7 @@ trees of their sources; required to resolve variables of functional ranges</p></
 <dd><p>Validate that all of the symbols needed for a calculation are defined</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>expression</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Calculation</span></code>) – </p>
+<dd class="field-odd"><p><strong>expression</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Calculation</span></code>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
@@ -5833,7 +5876,7 @@ their models</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – XPath to a model element or attribute</p></li>
 <li><p><strong>namespaces</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>) – dictionary that maps prefixes of namespaces to their URIs</p></li>
-<li><p><strong>context</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code>) – </p></li>
+<li><p><strong>context</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code>)</p></li>
 <li><p><strong>language</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – model language</p></li>
 <li><p><strong>model_id</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – model id</p></li>
 <li><p><strong>model_etree</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">etree.Element</span></code>, optional) – XML element tree for model source</p></li>
@@ -6048,6 +6091,7 @@ affect reports).</p>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.AxisScale"><code class="docutils literal notranslate"><span class="pre">AxisScale</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.AxisScale.__format__"><code class="docutils literal notranslate"><span class="pre">AxisScale.__format__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.AxisScale.linear"><code class="docutils literal notranslate"><span class="pre">AxisScale.linear</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.AxisScale.log"><code class="docutils literal notranslate"><span class="pre">AxisScale.log</span></code></a></li>
 </ul>
@@ -6122,6 +6166,7 @@ affect reports).</p>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.LineStyleType"><code class="docutils literal notranslate"><span class="pre">LineStyleType</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.LineStyleType.__format__"><code class="docutils literal notranslate"><span class="pre">LineStyleType.__format__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.LineStyleType.dash"><code class="docutils literal notranslate"><span class="pre">LineStyleType.dash</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.LineStyleType.dashDot"><code class="docutils literal notranslate"><span class="pre">LineStyleType.dashDot</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.LineStyleType.dashDotDot"><code class="docutils literal notranslate"><span class="pre">LineStyleType.dashDotDot</span></code></a></li>
@@ -6141,6 +6186,7 @@ affect reports).</p>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.MarkerStyleType"><code class="docutils literal notranslate"><span class="pre">MarkerStyleType</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.MarkerStyleType.__format__"><code class="docutils literal notranslate"><span class="pre">MarkerStyleType.__format__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.MarkerStyleType.circle"><code class="docutils literal notranslate"><span class="pre">MarkerStyleType.circle</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.MarkerStyleType.diamond"><code class="docutils literal notranslate"><span class="pre">MarkerStyleType.diamond</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.MarkerStyleType.hDash"><code class="docutils literal notranslate"><span class="pre">MarkerStyleType.hDash</span></code></a></li>
@@ -6204,6 +6250,7 @@ affect reports).</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguage.VCML"><code class="docutils literal notranslate"><span class="pre">ModelLanguage.VCML</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguage.XPP"><code class="docutils literal notranslate"><span class="pre">ModelLanguage.XPP</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguage.ZGINML"><code class="docutils literal notranslate"><span class="pre">ModelLanguage.ZGINML</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguage.__format__"><code class="docutils literal notranslate"><span class="pre">ModelLanguage.__format__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguage.pharmML"><code class="docutils literal notranslate"><span class="pre">ModelLanguage.pharmML</span></code></a></li>
 </ul>
 </li>
@@ -6228,6 +6275,7 @@ affect reports).</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.VCML"><code class="docutils literal notranslate"><span class="pre">ModelLanguageEdamId.VCML</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.XPP"><code class="docutils literal notranslate"><span class="pre">ModelLanguageEdamId.XPP</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.ZGINML"><code class="docutils literal notranslate"><span class="pre">ModelLanguageEdamId.ZGINML</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.__format__"><code class="docutils literal notranslate"><span class="pre">ModelLanguageEdamId.__format__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.pharmML"><code class="docutils literal notranslate"><span class="pre">ModelLanguageEdamId.pharmML</span></code></a></li>
 </ul>
 </li>
@@ -6252,6 +6300,7 @@ affect reports).</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguagePattern.VCML"><code class="docutils literal notranslate"><span class="pre">ModelLanguagePattern.VCML</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguagePattern.XPP"><code class="docutils literal notranslate"><span class="pre">ModelLanguagePattern.XPP</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguagePattern.ZGINML"><code class="docutils literal notranslate"><span class="pre">ModelLanguagePattern.ZGINML</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguagePattern.__format__"><code class="docutils literal notranslate"><span class="pre">ModelLanguagePattern.__format__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.ModelLanguagePattern.pharmML"><code class="docutils literal notranslate"><span class="pre">ModelLanguagePattern.pharmML</span></code></a></li>
 </ul>
 </li>
@@ -6428,6 +6477,7 @@ affect reports).</p>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.Symbol"><code class="docutils literal notranslate"><span class="pre">Symbol</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.Symbol.__format__"><code class="docutils literal notranslate"><span class="pre">Symbol.__format__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.sedml.data_model.Symbol.time"><code class="docutils literal notranslate"><span class="pre">Symbol.time</span></code></a></li>
 </ul>
 </li>
@@ -6645,8 +6695,8 @@ affect reports).</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -6663,6 +6713,14 @@ affect reports).</p>
   </p>
 </div>
       
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    <br/>
+  </p>
+</div>
+      
     </div>
   
   
@@ -6671,7 +6729,7 @@ affect reports).</p>
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
 </p></div>
       
     </div>

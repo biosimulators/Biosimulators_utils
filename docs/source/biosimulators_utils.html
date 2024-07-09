@@ -8,38 +8,36 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>biosimulators_utils package &#8212; BioSimulators utils 0.1.187 documentation</title>
+    <title>biosimulators_utils package &#8212; BioSimulators utils 0.1.188 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="icon" sizes="16x16" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-16x16.png" />
-    <link rel="icon" sizes="32x32" type="image/png" href="https://github.com/biosimulations/biosimulations/raw/dev/libs/shared/assets/src/assets/icons/favicon-32x32.png" />
     <link rel="stylesheet" type="text/css" href="../_static/css/biosimulators.css?v=ff938351" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
-  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=06489c40"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/documentation_options.js?v=ee523f82"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/biosimulators_utils';</script>
     <link rel="author" title="About these documents" href="../about.html" />
@@ -56,27 +54,23 @@
 
   
   
-  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -98,18 +92,25 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <label class="sidebar-toggle primary-toggle" for="__primary">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
-  </label>
+  </button>
   
   
   <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
 
+  
+    
   
 
 <a class="navbar-brand logo" href="../index.html">
@@ -123,8 +124,8 @@
       
     
     
-    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="BioSimulators utils 0.1.187 documentation - Home"/>
-    <script>document.write(`<img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="BioSimulators utils 0.1.187 documentation - Home"/>`);</script>
+    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="BioSimulators utils 0.1.188 documentation - Home"/>
+    <script>document.write(`<img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="BioSimulators utils 0.1.188 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -141,7 +142,7 @@
 
  <script>
  document.write(`
-   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
     <span class="search-button__default-text">Search</span>
     <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -151,7 +152,7 @@
         </div>
       
       
-        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+        <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Quick links">
         <li class="nav-item">
           
@@ -162,7 +163,7 @@
           
           
           
-          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github fa-lg" aria-hidden="true"></i></span>
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -174,7 +175,7 @@
           
           
           
-          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></span>
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
             <span class="sr-only">Twitter</span></a>
         </li>
         <li class="nav-item">
@@ -186,7 +187,7 @@
           
           
           
-          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></span>
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
             <span class="sr-only">Email</span></a>
         </li>
 </ul></div>
@@ -200,7 +201,7 @@
 
  <script>
  document.write(`
-   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
     <span class="search-button__default-text">Search</span>
     <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -211,9 +212,9 @@
   
 
   
-    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
       <span class="fa-solid fa-outdent"></span>
-    </label>
+    </button>
   
 </div>
 
@@ -236,7 +237,7 @@
     
       <div class="sidebar-header-items__end">
         
-          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+          <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Quick links">
         <li class="nav-item">
           
@@ -247,7 +248,7 @@
           
           
           
-          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github fa-lg" aria-hidden="true"></i></span>
+          <a href="https://github.com/biosimulators/Biosimulators_utils" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
@@ -259,7 +260,7 @@
           
           
           
-          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></span>
+          <a href="https://twitter.com/biosimulators" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
             <span class="sr-only">Twitter</span></a>
         </li>
         <li class="nav-item">
@@ -271,7 +272,7 @@
           
           
           
-          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></span>
+          <a href="mailto:info@biosimulators.org" title="Email" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
             <span class="sr-only">Email</span></a>
         </li>
 </ul></div>
@@ -334,13 +335,13 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
@@ -349,7 +350,7 @@
 
 
 
-<nav aria-label="Breadcrumb">
+<nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
     <li class="breadcrumb-item breadcrumb-home">
@@ -593,6 +594,7 @@
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.combine.html#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.YAML"><code class="docutils literal notranslate"><span class="pre">CombineArchiveContentFormat.YAML</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.combine.html#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.ZGINML"><code class="docutils literal notranslate"><span class="pre">CombineArchiveContentFormat.ZGINML</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.combine.html#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.ZIP"><code class="docutils literal notranslate"><span class="pre">CombineArchiveContentFormat.ZIP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.combine.html#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.__format__"><code class="docutils literal notranslate"><span class="pre">CombineArchiveContentFormat.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.combine.html#biosimulators_utils.combine.data_model.CombineArchiveContentFormat.pharmML"><code class="docutils literal notranslate"><span class="pre">CombineArchiveContentFormat.pharmML</span></code></a></li>
 </ul>
 </li>
@@ -704,6 +706,7 @@
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.combine.html#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.YAML"><code class="docutils literal notranslate"><span class="pre">CombineArchiveContentFormatPattern.YAML</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.combine.html#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.ZGINML"><code class="docutils literal notranslate"><span class="pre">CombineArchiveContentFormatPattern.ZGINML</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.combine.html#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.ZIP"><code class="docutils literal notranslate"><span class="pre">CombineArchiveContentFormatPattern.ZIP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.combine.html#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.__format__"><code class="docutils literal notranslate"><span class="pre">CombineArchiveContentFormatPattern.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.combine.html#biosimulators_utils.combine.data_model.CombineArchiveContentFormatPattern.pharmML"><code class="docutils literal notranslate"><span class="pre">CombineArchiveContentFormatPattern.pharmML</span></code></a></li>
 </ul>
 </li>
@@ -937,6 +940,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.log.html#biosimulators_utils.log.data_model.StandardOutputErrorCapturerLevel"><code class="docutils literal notranslate"><span class="pre">StandardOutputErrorCapturerLevel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.log.html#biosimulators_utils.log.data_model.StandardOutputErrorCapturerLevel.__format__"><code class="docutils literal notranslate"><span class="pre">StandardOutputErrorCapturerLevel.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.log.html#biosimulators_utils.log.data_model.StandardOutputErrorCapturerLevel.c"><code class="docutils literal notranslate"><span class="pre">StandardOutputErrorCapturerLevel.c</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.log.html#biosimulators_utils.log.data_model.StandardOutputErrorCapturerLevel.python"><code class="docutils literal notranslate"><span class="pre">StandardOutputErrorCapturerLevel.python</span></code></a></li>
 </ul>
@@ -947,6 +951,7 @@
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.log.html#biosimulators_utils.log.data_model.Status.RUNNING"><code class="docutils literal notranslate"><span class="pre">Status.RUNNING</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.log.html#biosimulators_utils.log.data_model.Status.SKIPPED"><code class="docutils literal notranslate"><span class="pre">Status.SKIPPED</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.log.html#biosimulators_utils.log.data_model.Status.SUCCEEDED"><code class="docutils literal notranslate"><span class="pre">Status.SUCCEEDED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.log.html#biosimulators_utils.log.data_model.Status.__format__"><code class="docutils literal notranslate"><span class="pre">Status.__format__()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.log.html#biosimulators_utils.log.data_model.TaskLog"><code class="docutils literal notranslate"><span class="pre">TaskLog</span></code></a><ul>
@@ -1001,8 +1006,8 @@
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.model_lang.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.model_lang.bngl.html">biosimulators_utils.model_lang.bngl package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.model_lang.bngl.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.model_lang.bngl.html#module-biosimulators_utils.model_lang.bngl.utils">biosimulators_utils.model_lang.bngl.utils module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.model_lang.bngl.html#module-biosimulators_utils.model_lang.bngl.validation">biosimulators_utils.model_lang.bngl.validation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.model_lang.bngl.html#biosimulators-utils-model-lang-bngl-utils-module">biosimulators_utils.model_lang.bngl.utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.model_lang.bngl.html#biosimulators-utils-model-lang-bngl-validation-module">biosimulators_utils.model_lang.bngl.validation module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.model_lang.cellml.html">biosimulators_utils.model_lang.cellml package</a><ul>
@@ -1036,8 +1041,8 @@
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.model_lang.smoldyn.html">biosimulators_utils.model_lang.smoldyn package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.model_lang.smoldyn.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.model_lang.smoldyn.html#module-biosimulators_utils.model_lang.smoldyn.simularium_converter">biosimulators_utils.model_lang.smoldyn.simularium_converter module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.model_lang.smoldyn.html#module-biosimulators_utils.model_lang.smoldyn.utils">biosimulators_utils.model_lang.smoldyn.utils module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.model_lang.smoldyn.html#module-biosimulators_utils.model_lang.smoldyn.validation">biosimulators_utils.model_lang.smoldyn.validation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.model_lang.smoldyn.html#biosimulators-utils-model-lang-smoldyn-utils-module">biosimulators_utils.model_lang.smoldyn.utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.model_lang.smoldyn.html#biosimulators-utils-model-lang-smoldyn-validation-module">biosimulators_utils.model_lang.smoldyn.validation module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.model_lang.xpp.html">biosimulators_utils.model_lang.xpp package</a><ul>
@@ -1055,6 +1060,7 @@
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.omex_meta.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.omex_meta.html#module-biosimulators_utils.omex_meta.data_model">biosimulators_utils.omex_meta.data_model module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataInputFormat"><code class="docutils literal notranslate"><span class="pre">OmexMetadataInputFormat</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataInputFormat.__format__"><code class="docutils literal notranslate"><span class="pre">OmexMetadataInputFormat.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataInputFormat.nquads"><code class="docutils literal notranslate"><span class="pre">OmexMetadataInputFormat.nquads</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataInputFormat.ntriples"><code class="docutils literal notranslate"><span class="pre">OmexMetadataInputFormat.ntriples</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataInputFormat.rdfa"><code class="docutils literal notranslate"><span class="pre">OmexMetadataInputFormat.rdfa</span></code></a></li>
@@ -1063,6 +1069,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataOutputFormat"><code class="docutils literal notranslate"><span class="pre">OmexMetadataOutputFormat</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataOutputFormat.__format__"><code class="docutils literal notranslate"><span class="pre">OmexMetadataOutputFormat.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataOutputFormat.dot"><code class="docutils literal notranslate"><span class="pre">OmexMetadataOutputFormat.dot</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataOutputFormat.html"><code class="docutils literal notranslate"><span class="pre">OmexMetadataOutputFormat.html</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataOutputFormat.json"><code class="docutils literal notranslate"><span class="pre">OmexMetadataOutputFormat.json</span></code></a></li>
@@ -1076,6 +1083,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataSchema"><code class="docutils literal notranslate"><span class="pre">OmexMetadataSchema</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataSchema.__format__"><code class="docutils literal notranslate"><span class="pre">OmexMetadataSchema.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataSchema.biosimulations"><code class="docutils literal notranslate"><span class="pre">OmexMetadataSchema.biosimulations</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.omex_meta.html#biosimulators_utils.omex_meta.data_model.OmexMetadataSchema.rdf_triples"><code class="docutils literal notranslate"><span class="pre">OmexMetadataSchema.rdf_triples</span></code></a></li>
 </ul>
@@ -1185,6 +1193,7 @@
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.report.html#biosimulators_utils.report.data_model.DataGeneratorResults"><code class="docutils literal notranslate"><span class="pre">DataGeneratorResults</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.report.html#biosimulators_utils.report.data_model.DataSetResults"><code class="docutils literal notranslate"><span class="pre">DataSetResults</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.report.html#biosimulators_utils.report.data_model.ReportFormat"><code class="docutils literal notranslate"><span class="pre">ReportFormat</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.report.html#biosimulators_utils.report.data_model.ReportFormat.__format__"><code class="docutils literal notranslate"><span class="pre">ReportFormat.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.report.html#biosimulators_utils.report.data_model.ReportFormat.csv"><code class="docutils literal notranslate"><span class="pre">ReportFormat.csv</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.report.html#biosimulators_utils.report.data_model.ReportFormat.h5"><code class="docutils literal notranslate"><span class="pre">ReportFormat.h5</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.report.html#biosimulators_utils.report.data_model.ReportFormat.hdf"><code class="docutils literal notranslate"><span class="pre">ReportFormat.hdf</span></code></a></li>
@@ -1257,6 +1266,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.AxisScale"><code class="docutils literal notranslate"><span class="pre">AxisScale</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.AxisScale.__format__"><code class="docutils literal notranslate"><span class="pre">AxisScale.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.AxisScale.linear"><code class="docutils literal notranslate"><span class="pre">AxisScale.linear</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.AxisScale.log"><code class="docutils literal notranslate"><span class="pre">AxisScale.log</span></code></a></li>
 </ul>
@@ -1331,6 +1341,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.LineStyleType"><code class="docutils literal notranslate"><span class="pre">LineStyleType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.LineStyleType.__format__"><code class="docutils literal notranslate"><span class="pre">LineStyleType.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.LineStyleType.dash"><code class="docutils literal notranslate"><span class="pre">LineStyleType.dash</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.LineStyleType.dashDot"><code class="docutils literal notranslate"><span class="pre">LineStyleType.dashDot</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.LineStyleType.dashDotDot"><code class="docutils literal notranslate"><span class="pre">LineStyleType.dashDotDot</span></code></a></li>
@@ -1350,6 +1361,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.MarkerStyleType"><code class="docutils literal notranslate"><span class="pre">MarkerStyleType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.MarkerStyleType.__format__"><code class="docutils literal notranslate"><span class="pre">MarkerStyleType.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.MarkerStyleType.circle"><code class="docutils literal notranslate"><span class="pre">MarkerStyleType.circle</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.MarkerStyleType.diamond"><code class="docutils literal notranslate"><span class="pre">MarkerStyleType.diamond</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.MarkerStyleType.hDash"><code class="docutils literal notranslate"><span class="pre">MarkerStyleType.hDash</span></code></a></li>
@@ -1413,6 +1425,7 @@
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguage.VCML"><code class="docutils literal notranslate"><span class="pre">ModelLanguage.VCML</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguage.XPP"><code class="docutils literal notranslate"><span class="pre">ModelLanguage.XPP</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguage.ZGINML"><code class="docutils literal notranslate"><span class="pre">ModelLanguage.ZGINML</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguage.__format__"><code class="docutils literal notranslate"><span class="pre">ModelLanguage.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguage.pharmML"><code class="docutils literal notranslate"><span class="pre">ModelLanguage.pharmML</span></code></a></li>
 </ul>
 </li>
@@ -1437,6 +1450,7 @@
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.VCML"><code class="docutils literal notranslate"><span class="pre">ModelLanguageEdamId.VCML</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.XPP"><code class="docutils literal notranslate"><span class="pre">ModelLanguageEdamId.XPP</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.ZGINML"><code class="docutils literal notranslate"><span class="pre">ModelLanguageEdamId.ZGINML</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.__format__"><code class="docutils literal notranslate"><span class="pre">ModelLanguageEdamId.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguageEdamId.pharmML"><code class="docutils literal notranslate"><span class="pre">ModelLanguageEdamId.pharmML</span></code></a></li>
 </ul>
 </li>
@@ -1461,6 +1475,7 @@
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguagePattern.VCML"><code class="docutils literal notranslate"><span class="pre">ModelLanguagePattern.VCML</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguagePattern.XPP"><code class="docutils literal notranslate"><span class="pre">ModelLanguagePattern.XPP</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguagePattern.ZGINML"><code class="docutils literal notranslate"><span class="pre">ModelLanguagePattern.ZGINML</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguagePattern.__format__"><code class="docutils literal notranslate"><span class="pre">ModelLanguagePattern.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.ModelLanguagePattern.pharmML"><code class="docutils literal notranslate"><span class="pre">ModelLanguagePattern.pharmML</span></code></a></li>
 </ul>
 </li>
@@ -1637,6 +1652,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.Symbol"><code class="docutils literal notranslate"><span class="pre">Symbol</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.Symbol.__format__"><code class="docutils literal notranslate"><span class="pre">Symbol.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.sedml.html#biosimulators_utils.sedml.data_model.Symbol.time"><code class="docutils literal notranslate"><span class="pre">Symbol.time</span></code></a></li>
 </ul>
 </li>
@@ -1824,6 +1840,7 @@
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator.html#module-biosimulators_utils.simulator.data_model">biosimulators_utils.simulator.data_model module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.simulator.html#biosimulators_utils.simulator.data_model.EnvironmentVariable"><code class="docutils literal notranslate"><span class="pre">EnvironmentVariable</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.simulator.html#biosimulators_utils.simulator.data_model.SoftwareInterface"><code class="docutils literal notranslate"><span class="pre">SoftwareInterface</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.simulator.html#biosimulators_utils.simulator.data_model.SoftwareInterface.__format__"><code class="docutils literal notranslate"><span class="pre">SoftwareInterface.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.simulator.html#biosimulators_utils.simulator.data_model.SoftwareInterface.biosimulators_docker_image"><code class="docutils literal notranslate"><span class="pre">SoftwareInterface.biosimulators_docker_image</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.simulator.html#biosimulators_utils.simulator.data_model.SoftwareInterface.command_line"><code class="docutils literal notranslate"><span class="pre">SoftwareInterface.command_line</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.simulator.html#biosimulators_utils.simulator.data_model.SoftwareInterface.desktop_application"><code class="docutils literal notranslate"><span class="pre">SoftwareInterface.desktop_application</span></code></a></li>
@@ -1869,6 +1886,7 @@
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator_registry.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.simulator_registry.html#module-biosimulators_utils.simulator_registry.data_model">biosimulators_utils.simulator_registry.data_model module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.simulator_registry.html#biosimulators_utils.simulator_registry.data_model.IssueLabel"><code class="docutils literal notranslate"><span class="pre">IssueLabel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.simulator_registry.html#biosimulators_utils.simulator_registry.data_model.IssueLabel.__format__"><code class="docutils literal notranslate"><span class="pre">IssueLabel.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.simulator_registry.html#biosimulators_utils.simulator_registry.data_model.IssueLabel.action_error"><code class="docutils literal notranslate"><span class="pre">IssueLabel.action_error</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.simulator_registry.html#biosimulators_utils.simulator_registry.data_model.IssueLabel.approved"><code class="docutils literal notranslate"><span class="pre">IssueLabel.approved</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.simulator_registry.html#biosimulators_utils.simulator_registry.data_model.IssueLabel.invalid"><code class="docutils literal notranslate"><span class="pre">IssueLabel.invalid</span></code></a></li>
@@ -1993,6 +2011,7 @@
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.viz.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="biosimulators_utils.viz.html#module-biosimulators_utils.viz.data_model">biosimulators_utils.viz.data_model module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="biosimulators_utils.viz.html#biosimulators_utils.viz.data_model.VizFormat"><code class="docutils literal notranslate"><span class="pre">VizFormat</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.viz.html#biosimulators_utils.viz.data_model.VizFormat.__format__"><code class="docutils literal notranslate"><span class="pre">VizFormat.__format__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.viz.html#biosimulators_utils.viz.data_model.VizFormat.jpg"><code class="docutils literal notranslate"><span class="pre">VizFormat.jpg</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.viz.html#biosimulators_utils.viz.data_model.VizFormat.pdf"><code class="docutils literal notranslate"><span class="pre">VizFormat.pdf</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="biosimulators_utils.viz.html#biosimulators_utils.viz.data_model.VizFormat.png"><code class="docutils literal notranslate"><span class="pre">VizFormat.png</span></code></a></li>
@@ -2058,6 +2077,12 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.config.</span></span><span class="sig-name descname"><span class="pre">Colors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/config.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.config.Colors" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>An enumeration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.config.Colors.__format__">
+<span class="sig-name descname"><span class="pre">__format__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_spec</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/config.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.config.Colors.__format__" title="Link to this definition">#</a></dt>
+<dd><p>Returns format using actual value type unless __str__ has been overridden.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.config.Colors.failed">
 <span class="sig-name descname"><span class="pre">failed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'red'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/config.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.config.Colors.failed" title="Link to this definition">#</a></dt>
@@ -2648,6 +2673,12 @@ of SED documents</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">biosimulators_utils.data_model.</span></span><span class="sig-name descname"><span class="pre">ValueType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.data_model.ValueType" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>A type of value (e.g., of a model attribute change or algorithm parameter change)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="biosimulators_utils.data_model.ValueType.__format__">
+<span class="sig-name descname"><span class="pre">__format__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_spec</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.data_model.ValueType.__format__" title="Link to this definition">#</a></dt>
+<dd><p>Returns format using actual value type unless __str__ has been overridden.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="biosimulators_utils.data_model.ValueType.any">
 <span class="sig-name descname"><span class="pre">any</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'any'</span></em><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/data_model.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.data_model.ValueType.any" title="Link to this definition">#</a></dt>
@@ -2745,7 +2776,7 @@ should first be pulled (e.g., using <a class="reference internal" href="#biosimu
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>docker_image_url</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – </p></li>
+<li><p><strong>docker_image_url</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>)</p></li>
 <li><p><strong>singularity_filename</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – file name for saving Singularity image</p></li>
 </ul>
 </dd>
@@ -2903,6 +2934,7 @@ URL (<code class="docutils literal notranslate"><span class="pre">ghcr.io/biosim
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-biosimulators_utils.config">biosimulators_utils.config module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.config.Colors"><code class="docutils literal notranslate"><span class="pre">Colors</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.config.Colors.__format__"><code class="docutils literal notranslate"><span class="pre">Colors.__format__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.config.Colors.failed"><code class="docutils literal notranslate"><span class="pre">Colors.failed</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.config.Colors.failure"><code class="docutils literal notranslate"><span class="pre">Colors.failure</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.config.Colors.pass"><code class="docutils literal notranslate"><span class="pre">Colors.pass</span></code></a></li>
@@ -2972,6 +3004,7 @@ URL (<code class="docutils literal notranslate"><span class="pre">ghcr.io/biosim
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.data_model.ValueType"><code class="docutils literal notranslate"><span class="pre">ValueType</span></code></a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.data_model.ValueType.__format__"><code class="docutils literal notranslate"><span class="pre">ValueType.__format__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.data_model.ValueType.any"><code class="docutils literal notranslate"><span class="pre">ValueType.any</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.data_model.ValueType.boolean"><code class="docutils literal notranslate"><span class="pre">ValueType.boolean</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#biosimulators_utils.data_model.ValueType.float"><code class="docutils literal notranslate"><span class="pre">ValueType.float</span></code></a></li>
@@ -3043,8 +3076,8 @@ URL (<code class="docutils literal notranslate"><span class="pre">ghcr.io/biosim
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -3061,6 +3094,14 @@ URL (<code class="docutils literal notranslate"><span class="pre">ghcr.io/biosim
   </p>
 </div>
       
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    <br/>
+  </p>
+</div>
+      
     </div>
   
   
@@ -3069,7 +3110,7 @@ URL (<code class="docutils literal notranslate"><span class="pre">ghcr.io/biosim
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
 </p></div>
       
     </div>
