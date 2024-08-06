@@ -28,9 +28,13 @@ DEFAULT_BIOSIMULATORS_API_ENDPOINT = 'https://api.biosimulators.org/'
 DEFAULT_BIOSIMULATIONS_API_ENDPOINT = 'https://api.biosimulations.org/'
 DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT = 'https://auth.biosimulations.org/oauth/token'
 DEFAULT_BIOSIMULATIONS_API_AUDIENCE = 'api.biosimulations.org'
+DEFAULT_SUPPORTED_SPATIAL_SIMULATOR = 'smoldyn'
 
 
+# noinspection PyPep8Naming,PyDefaultArgument
 class Config(object):
+    SUPPORTED_SPATIAL_SIMULATOR: str
+
     """ Configuration
 
     Attributes:
@@ -65,6 +69,8 @@ class Config(object):
         BIOSIMULATIONS_API_AUDIENCE (:obj:`str`): audience for the BioSimulations API
         VERBOSE (:obj:`bool`): whether to display the detailed output of the execution of each task
         DEBUG (:obj:`bool`): whether to raise exceptions rather than capturing them
+        SUPPORTED_SPATIAL_SIMULATOR (:obj:`strl`, optional): spatial simulator that this config supports. Currently
+                only `'smoldyn'` is supported.
     """
 
     def __init__(self,
@@ -96,22 +102,26 @@ class Config(object):
                  BIOSIMULATIONS_API_AUTH_ENDPOINT=DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT,
                  BIOSIMULATIONS_API_AUDIENCE=DEFAULT_BIOSIMULATIONS_API_AUDIENCE,
                  VERBOSE=False,
-                 DEBUG=False):
+                 DEBUG=False,
+                 SPATIAL=False):
         """
         Args:
-            OMEX_METADATA_INPUT_FORMAT (:obj:`OmexMetadataInputFormat`, optional): format to validate OMEX Metadata files against
+            OMEX_METADATA_INPUT_FORMAT (:obj:`OmexMetadataInputFormat`, optional): format to validate
+                OMEX Metadata files against
             OMEX_METADATA_OUTPUT_FORMAT (:obj:`OmexMetadataOutputFormat`, optional): format to export OMEX Metadata files
             OMEX_METADATA_SCHEMA (:obj:`OmexMetadataSchema`, optional): schema to validate OMEX Metadata files against
-            VALIDATE_OMEX_MANIFESTS (:obj:`bool`, optional): whether to validate OMEX manifests during the execution of COMBINE/OMEX archives
-            VALIDATE_SEDML (:obj:`bool`, optional): whether to validate SED-ML files during the execution of COMBINE/OMEX archives
-            VALIDATE_SEDML_MODELS (:obj:`bool`, optional): whether to validate models referenced by SED-ML files during the execution
+            VALIDATE_OMEX_MANIFESTS (:obj:`bool`, optional): whether to validate OMEX manifests during the execution
                 of COMBINE/OMEX archives
+            VALIDATE_SEDML (:obj:`bool`, optional): whether to validate SED-ML files during the execution of
+                COMBINE/OMEX archives
+            VALIDATE_SEDML_MODELS (:obj:`bool`, optional): whether to validate models referenced by SED-ML
+                files during the execution of COMBINE/OMEX archives
             VALIDATE_IMPORTED_MODEL_FILES (:obj:`bool`, optional): whether to validate files imported from models
             VALIDATE_OMEX_METADATA (:obj:`bool`, optional): whether to validate OMEX metadata (RDF files) during the execution of
                 COMBINE/OMEX archives
             VALIDATE_IMAGES (:obj:`bool`, optional): whether to validate the images in COMBINE/OMEX archives during their execution
             VALIDATE_RESULTS (:obj:`bool`, optional): whether to validate the results of simulations following their execution
-            ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`, optional): algorithm substition policy
+            ALGORITHM_SUBSTITUTION_POLICY (:obj:`str`, optional): algorithm substitution policy
             COLLECT_COMBINE_ARCHIVE_RESULTS (:obj:`bool`, optional): whether to assemble an in memory data structure with all of the
                 simulation results of COMBINE/OMEX archives
             COLLECT_SED_DOCUMENT_RESULTS (:obj:`bool`, optional): whether to assemble an in memory data structure with all of the
@@ -132,6 +142,7 @@ class Config(object):
             BIOSIMULATIONS_API_AUDIENCE (:obj:`str`, optional): audience for the BioSimulations API
             VERBOSE (:obj:`bool`, optional): whether to display the detailed output of the execution of each task
             DEBUG (:obj:`bool`, optional): whether to raise exceptions rather than capturing them
+            SPATIAL (:obj:`bool`, optional): whether the simulation is spatial in nature and able to be simularium-ed
         """
         self.OMEX_METADATA_INPUT_FORMAT = OMEX_METADATA_INPUT_FORMAT
         self.OMEX_METADATA_OUTPUT_FORMAT = OMEX_METADATA_OUTPUT_FORMAT
@@ -162,23 +173,34 @@ class Config(object):
         self.BIOSIMULATIONS_API_AUDIENCE = BIOSIMULATIONS_API_AUDIENCE
         self.VERBOSE = VERBOSE
         self.DEBUG = DEBUG
+        self.SPATIAL = SPATIAL
+        self.SUPPORTED_SPATIAL_SIMULATOR = DEFAULT_SUPPORTED_SPATIAL_SIMULATOR
+        try:
+            assert self.SUPPORTED_SPATIAL_SIMULATOR == 'smoldyn'
+        except AssertionError:
+            raise ValueError(
+                """
+                The only spatial simulator that is currently supported is 'smoldyn'. Please set the value of 
+                    SUPPORTED_SPATIAL_SIMULATOR to 'smoldyn' and try again.
+                """
+            )
 
 
 def get_config():
-    """ Get the configuration
+    """ Factory for generating a new instance of `Config`.
 
     Returns:
         :obj:`Config`: configuration
     """
     report_formats = os.environ.get('REPORT_FORMATS', 'h5').strip()
     if report_formats:
-        report_formats = [ReportFormat(format.strip().lower()) for format in report_formats.split(',')]
+        report_formats = [ReportFormat(f.strip().lower()) for f in report_formats.split(',')]
     else:
         report_formats = []
 
     viz_formats = os.environ.get('VIZ_FORMATS', 'pdf').strip()
     if viz_formats:
-        viz_formats = [VizFormat(format.strip().lower()) for format in viz_formats.split(',')]
+        viz_formats = [VizFormat(f.strip().lower()) for f in viz_formats.split(',')]
     else:
         viz_formats = []
 
@@ -198,7 +220,8 @@ def get_config():
         VALIDATE_RESULTS=os.environ.get('VALIDATE_RESULTS', '1').lower() in ['1', 'true'],
         ALGORITHM_SUBSTITUTION_POLICY=AlgorithmSubstitutionPolicy(os.environ.get(
             'ALGORITHM_SUBSTITUTION_POLICY', DEFAULT_ALGORITHM_SUBSTITUTION_POLICY)),
-        COLLECT_COMBINE_ARCHIVE_RESULTS=os.environ.get('COLLECT_COMBINE_ARCHIVE_RESULTS', '0').lower() in ['1', 'true'],
+        COLLECT_COMBINE_ARCHIVE_RESULTS=os.environ.get('COLLECT_COMBINE_ARCHIVE_RESULTS',
+                                                       '0').lower() in ['1', 'true'],
         COLLECT_SED_DOCUMENT_RESULTS=os.environ.get('COLLECT_SED_DOCUMENT_RESULTS', '0').lower() in ['1', 'true'],
         SAVE_PLOT_DATA=os.environ.get('SAVE_PLOT_DATA', '1').lower() in ['1', 'true'],
         REPORT_FORMATS=report_formats,
@@ -212,10 +235,12 @@ def get_config():
         LOG_PATH=os.environ.get('LOG_PATH', DEFAULT_LOG_PATH),
         BIOSIMULATORS_API_ENDPOINT=os.environ.get('BIOSIMULATORS_API_ENDPOINT', DEFAULT_BIOSIMULATORS_API_ENDPOINT),
         BIOSIMULATIONS_API_ENDPOINT=os.environ.get('BIOSIMULATIONS_API_ENDPOINT', DEFAULT_BIOSIMULATIONS_API_ENDPOINT),
-        BIOSIMULATIONS_API_AUTH_ENDPOINT=os.environ.get('BIOSIMULATIONS_API_AUTH_ENDPOINT', DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT),
+        BIOSIMULATIONS_API_AUTH_ENDPOINT=os.environ.get('BIOSIMULATIONS_API_AUTH_ENDPOINT',
+                                                        DEFAULT_BIOSIMULATIONS_API_AUTH_ENDPOINT),
         BIOSIMULATIONS_API_AUDIENCE=os.environ.get('BIOSIMULATIONS_API_AUDIENCE', DEFAULT_BIOSIMULATIONS_API_AUDIENCE),
         VERBOSE=os.environ.get('VERBOSE', '1').lower() in ['1', 'true'],
         DEBUG=os.environ.get('DEBUG', '0').lower() in ['1', 'true'],
+        SPATIAL=os.environ.get('SPATIAL', '0').lower() in ['1', 'true']
     )
 
 

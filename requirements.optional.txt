@@ -23,10 +23,10 @@ python_libsbml
 
 [smoldyn]
 smoldyn >= 2.66
-# simulariumio
 
-[simularium]
-simulariumio
+[spatial]
+smoldyn >= 2.66
+biosimulators_simularium
 
 #################################
 ## Visualization formats

@@ -11,6 +11,8 @@ from ..data_model import Person  # noqa: F401
 import abc
 import datetime  # noqa: F401
 import enum
+from typing import List
+
 
 __all__ = [
     'CombineArchiveBase',
@@ -40,7 +42,7 @@ class CombineArchive(CombineArchiveBase):
         """
         self.contents = contents or []
 
-    def get_master_content(self):
+    def get_master_content(self) -> List:
         """ Get the master content of an archive
 
         Returns:
