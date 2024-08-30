@@ -24,29 +24,18 @@ jobs:
     name: Lint, test, and compile documentation
     if: "!contains(github.event.head_commit.message, '[skip ci]') && github.actor != 'allcontributors'"
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
+      fail-fast: false
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
-
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9.9' # no particular microversion of 3.9 is required; 3.9.8 behaves oddly in GitHub actions
-
-      - name: Setup pip cache
-        uses: actions/cache@v2
-        with:
-          path: /opt/hostedtoolcache/Python
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements.optional.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install pip and setuptools
-        run: |
-          python -m pip install --upgrade pip==23.0.1
-          python -m pip install --upgrade setuptools
 
       - name: Install Java # for pyNeuroML
         uses: actions/setup-java@v2
@@ -69,24 +58,13 @@ jobs:
           singularity-version: 3.7.1
 
       # install package
-      - name: Install the package
-        run: |
-          python -m pip install git+https://github.com/biosimulators/RBApy.git#egg=rbapy
-          python -m pip install .[all]
-
-      # lint
-      - name: Install flake8
-        run: python -m pip install flake8
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Lint the package
         run: python -m flake8
-
-      # test and upload coverage report to Codecov
-      - name: Install pytest
-        run: python -m pip install pytest pytest-cov
-
-      - name: Install the requirements for the tests
-        run: python -m pip install .[tests]
 
       - name: Run the tests
         uses: GabrielBB/xvfb-action@v1
@@ -94,7 +72,7 @@ jobs:
           MPLBACKEND: PDF
           # BIOSIMULATORS_API_ENDPOINT: https://api.biosimulators.dev/  # uncomment to execute tests with the dev deployment
         with:
-          run: python -m pytest tests/ --cov=./biosimulators_utils --cov-report=xml
+          run: poetry run python -m pytest tests/ --cov=./biosimulators_utils --cov-report=xml
 
       - name: Upload the coverage report to Codecov
         uses: codecov/codecov-action@v2
@@ -104,14 +82,14 @@ jobs:
           file: ./coverage.xml
 
       # compile documentation
-      - name: Install the requirements for compiling the documentation
-        run: python -m pip install -r docs-src/requirements.txt
+      #- name: Install the requirements for compiling the documentation
+      #  run: python -m pip install -r docs-src/requirements.txt
 
-      - name: Compile the documentation
-        run: |
-          sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
-          mkdir -p docs-src/_static
-          sphinx-build docs-src docs
+      #- name: Compile the documentation
+      #  run: |
+      #    sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
+      #    mkdir -p docs-src/_static
+      #    sphinx-build docs-src docs
 
   release:
     name: Release a new version
@@ -119,7 +97,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
           ref: dev
@@ -131,7 +109,7 @@ jobs:
           git config pull.rebase false
 
       - name: Install Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
@@ -139,7 +117,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /opt/hostedtoolcache/Python
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements.optional.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
