@@ -32,7 +32,7 @@ def login_to_docker_registry(registry: str, username: str, password: str):
     Returns:
         :obj:`docker.client.DockerClient`: Docker client
     """
-    docker_client: docker.client.DockerClient = docker.from_env()
+    docker_client: docker.client.DockerClient = docker.from_env(version="1.45")
     docker_client.login(registry=registry, username=username, password=password)
     return docker_client
 
