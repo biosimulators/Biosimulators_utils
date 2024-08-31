@@ -119,10 +119,19 @@ def convert_docker_image_to_singularity(docker_image_url: str, singularity_filen
     Returns:
         :obj:`str`: path where Singularity image was saved
     """
-    cmd: list[str] = ['singularity', 'build']
 
+    # We need to break the command up into two parts: a docker pull using only docker,
+    # Then a singularity build from the pulled (now local) image. This is due to docker
+    # API version error that appear to be coming from singularity's client.
+    # Unless we upgrade a major version, this is our solution.
     if ':' not in docker_image_url:
         docker_image_url += ':latest'
+
+    intermediate_archive_name = "docker_image_to_test.tar"
+    cmd1: list[str] = ['docker', 'image', 'save', docker_image_url, "-o", intermediate_archive_name]
+    subprocess.check_call(cmd1)
+
+    cmd2: list[str] = ['singularity', 'build']
 
     if not singularity_filename:
         singularity_filename: str = os.path.join(
@@ -132,11 +141,11 @@ def convert_docker_image_to_singularity(docker_image_url: str, singularity_filen
     if not os.path.isdir(os.path.dirname(singularity_filename)):
         os.makedirs(os.path.dirname(singularity_filename))
 
-    cmd.append(singularity_filename)
+    cmd2.append(singularity_filename)
 
-    cmd.append('docker-daemon://' + docker_image_url)
+    cmd2.append('docker-archive:' + intermediate_archive_name)
 
     if not os.path.isfile(singularity_filename):
-        subprocess.check_call(cmd)
+        subprocess.check_call(cmd2)
 
     return singularity_filename
