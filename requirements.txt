@@ -2,7 +2,7 @@ appdirs <=1.4.4
 biopython <= 1.79
 cement <= 3.0.6
 evalidate <= 1.0.2
-h5py <= 3.7.0
+h5py < 4.0.0
 kisao >= 2.29, <= 2.30
 lxml <= 4.9.1
 matplotlib <= 3.5.2
