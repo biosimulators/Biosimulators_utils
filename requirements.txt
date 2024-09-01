@@ -15,7 +15,7 @@ pandas <= 1.4.3
 pronto >= 2.4, <= 2.5
 pyomexmeta == 1.2.13
 python_dateutil <= 2.8.2
-python_libcombine >= 0.2.11, <= 0.2.18
+python_libcombine >= 0.2.11
 python_libsedml >= 2.0.16, <= 2.0.32
 pyyaml <= 5.3.1
 rdflib <= 6.2.0
