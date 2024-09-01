@@ -1,20 +1,20 @@
-appdirs
-biopython
+appdirs >= 1.4.4, <2.0.0
+biopython >= 1.84, <2.0.0
 cement <= 3.0.6
-evalidate >= 2.0.0
+evalidate >= 2.0.0, <3.0.0
 h5py < 4.0.0
 kisao >= 2.33
-lxml
-matplotlib
-mpmath
-natsort
+lxml >= 5.3.0, <6.0.0
+matplotlib >=3.9.2, <4.0.0
+mpmath >= 1.3.0, <2.0.0
+natsort >= 8.4.0, <9.0.0
 networkx >= 2.6, <= 2.8.5
-numpy
-openpyxl
-pandas
+numpy >= 2.1.0, < 3.0.0
+openpyxl >= 3.1.5, <4.0.0
+pandas >= 2.2.2, < 3.0.0
 pronto >= 2.4, <= 2.5
 pyomexmeta >= 1.2.13
-python_dateutil
+python_dateutil <= 2.8.2
 python_libcombine >= 0.2.11
 python_libsedml >= 2.0.16, <= 2.0.32
 pyyaml <= 5.3.1
