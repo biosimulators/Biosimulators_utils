@@ -18,7 +18,7 @@ jobs:
           TAG: ${{ github.ref }}
         run: |
           version="${TAG/refs\/tags\//}"
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
 
   build:
     name: Lint, test, and compile documentation
@@ -45,7 +45,7 @@ jobs:
 
       - name: Install pip and setuptools
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip==23.0.1
           python -m pip install --upgrade setuptools
 
       - name: Install Java # for pyNeuroML
@@ -59,24 +59,9 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y --no-install-recommends perl
 
-      - name: Pre-XPP Setup
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y --no-install-recommends wget make gcc libx11-dev libc6-dev
-
       - name: Install XPP
         run: |
-          cd /tmp
-          wget --tries=3 http://www.math.pitt.edu/~bard/bardware/xppaut_latest.tar.gz || wget --tries=1 https://web.archive.org/web/20210425172021/http://www.math.pitt.edu/~bard/bardware/xppaut_latest.tar.gz
-          mkdir xpp
-          tar zxvf xppaut_latest.tar.gz --directory xpp
-          cd xpp
-          make
-          sudo make install
-
-          cd /tmp
-          rm xppaut_latest.tar.gz
-          rm -r xpp
+          sudo apt-get install -y --no-install-recommends wget make gcc libx11-dev libc6-dev xppaut
 
       - name: Install Singularity # to validate that the Docker image can be converted into a Singularity image
         uses: eWaterCycle/setup-singularity@v5
@@ -160,7 +145,7 @@ jobs:
 
       - name: Install pip and setuptools
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install pip==20.3.4
           python -m pip install --upgrade setuptools
 
       # install package
@@ -198,7 +183,7 @@ jobs:
           else
             changed=0
           fi
-          echo "::set-output name=changed::$changed"
+          echo "changed=$changed" >> $GITHUB_OUTPUT
 
       # compile and push documentation
       - name: Install the requirements for compiling the documentation
@@ -224,7 +209,7 @@ jobs:
           else
             changed=0
           fi
-          echo "::set-output name=changed::$changed"
+          echo "changed=$changed" >> $GITHUB_OUTPUT
 
       - name: Push the compiled documentation
         if: steps.commit-identifiers-namespaces.outputs.changed == '1' || steps.commit-docs.outputs.changed == '1'

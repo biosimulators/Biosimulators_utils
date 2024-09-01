@@ -1386,8 +1386,8 @@ def validate_data_generator_variables(variables, model_etrees=None, validate_tar
         if not variable.id:
             variable_errors.append(['Variable must have an id.'])
 
-        if variable.model:
-            variable_errors.append(['Variable should not reference a model.'])
+        # if variable.model:
+        #     variable_errors.append(['Variable should not reference a model.'])
 
         if variable.task:
             task_types.add(get_task_results_shape(variable.task))
@@ -1666,7 +1666,7 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
             xpath = lxml.etree.XPath(target, namespaces=namespaces)
             root = lxml.etree.Element("root")
             try:
-                xpath.evaluate(root)
+                root.xpath(target, namespaces=namespaces)
 
                 if model_etree and check_in_model_source:
                     if context == DataGenerator and '/@' in target:
@@ -1771,8 +1771,8 @@ def validate_calculation(calculation):
 
         try:
             compiled_math = compile_math(calculation.math)
-        except TypeError:
-            errors.append(['The mathematical expression must be a `string`, not a `{}`.'.format(calculation.math.__class__)])
+        except TypeError as exception:
+            errors.append(['The mathematical expression must be a `string`, not a `{}`:'.format(calculation.math.__class__), [[str(exception)]]])
             return (errors, warnings)
         except (SyntaxError, CompilationException) as exception:
             errors.append(['The syntax of the mathematical expression `{}` is invalid.'.format(calculation.math), [[str(exception)]]])
