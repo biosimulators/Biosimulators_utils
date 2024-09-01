@@ -18,7 +18,7 @@ __all__ = ['build_omex_meta_file_for_model', 'get_local_combine_archive_content_
 def build_omex_meta_file_for_model(model_filename,
                                    metadata_filename,
                                    metadata_format=OmexMetadataOutputFormat.rdfxml_abbrev,
-                                   encoding='utf-8'):
+                                   encoding='utf-8', archive_uri=None):
     """ Create an OMEX metadata file for a model encoded in CellML or SBML. Also
     add missing metadata ids to the model file.
 
@@ -39,30 +39,52 @@ def build_omex_meta_file_for_model(model_filename,
         raise NotImplementedError('Output format `{}` is not supported.'.format(metadata_format))
 
     # TODO: uncomment and delete below once pyomexmeta has better error handling
-    # _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format.value, encoding)
+    # _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format.value, encoding, archive_uri)
 
-    process = subprocess.run(
-        [
-            sys.executable, '-c',
-            'from {} import {}; {}("{}", "{}", "{}", "{}")'.format(
-                _build_omex_meta_file_for_model_error_wrapper.__module__,
-                _build_omex_meta_file_for_model_error_wrapper.__name__,
-                _build_omex_meta_file_for_model_error_wrapper.__name__,
-                model_filename.replace('"', '\\"'),
-                metadata_filename.replace('"', '\\"'),
-                metadata_format.value.replace('"', '\\"'),
-                encoding.replace('"', '\\"'),
-            )
-        ],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.PIPE,
-        text=True)
-    if process.returncode != 0:
-        raise RuntimeError(process.stderr or 'Model `{}` could not be read'.format(model_filename))
+    if archive_uri:
+        process = subprocess.run(
+            [
+                sys.executable, '-c',
+                'from {} import {}; {}("{}", "{}", "{}", "{}", "{}")'.format(
+                    _build_omex_meta_file_for_model_error_wrapper.__module__,
+                    _build_omex_meta_file_for_model_error_wrapper.__name__,
+                    _build_omex_meta_file_for_model_error_wrapper.__name__,
+                    model_filename.replace('"', '\\"'),
+                    metadata_filename.replace('"', '\\"'),
+                    metadata_format.value.replace('"', '\\"'),
+                    encoding.replace('"', '\\"'),
+                    archive_uri.replace('"', '\\"'),
+                )
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True)
+        if process.returncode != 0:
+            raise RuntimeError(process.stderr or 'Model `{}` could not be read'.format(model_filename))
+    else:
+        process = subprocess.run(
+            [
+                sys.executable, '-c',
+                'from {} import {}; {}("{}", "{}", "{}", "{}")'.format(
+                    _build_omex_meta_file_for_model_error_wrapper.__module__,
+                    _build_omex_meta_file_for_model_error_wrapper.__name__,
+                    _build_omex_meta_file_for_model_error_wrapper.__name__,
+                    model_filename.replace('"', '\\"'),
+                    metadata_filename.replace('"', '\\"'),
+                    metadata_format.value.replace('"', '\\"'),
+                    encoding.replace('"', '\\"'),
+                )
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True)
+        if process.returncode != 0:
+            raise RuntimeError(process.stderr or 'Model `{}` could not be read'.format(model_filename))
 
 
 def _build_omex_meta_file_for_model_error_wrapper(model_filename, metadata_filename,
-                                                  metadata_format=OmexMetadataOutputFormat.rdfxml_abbrev.value, encoding='utf-8'):
+                                                  metadata_format=OmexMetadataOutputFormat.rdfxml_abbrev.value,
+                                                  encoding='utf-8', archive_uri=None):
     """ Wrapper for ``_build_omex_meta_file_for_model``
 
     Args:
@@ -72,13 +94,14 @@ def _build_omex_meta_file_for_model_error_wrapper(model_filename, metadata_filen
         encoding (:obj:`str`, optional): encoding (e.g., ``utf-8``)
     """
     try:
-        _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format, encoding)
+        _build_omex_meta_file_for_model(model_filename, metadata_filename, metadata_format, encoding, archive_uri)
     except (ValueError, RuntimeError) as exception:
         raise SystemExit(str(exception))
 
 
 def _build_omex_meta_file_for_model(model_filename, metadata_filename,
-                                    metadata_format=OmexMetadataOutputFormat.rdfxml_abbrev.value, encoding='utf-8'):
+                                    metadata_format=OmexMetadataOutputFormat.rdfxml_abbrev.value,
+                                    encoding='utf-8', archive_uri=None,):
     """ Create an OMEX metadata file for a model encoded in CellML or SBML. Also
     add missing metadata ids to the model file.
 
@@ -90,6 +113,9 @@ def _build_omex_meta_file_for_model(model_filename, metadata_filename,
     """
     metadata_format = OmexMetadataOutputFormat(metadata_format)
     rdf = pyomexmeta.RDF()
+    if archive_uri:
+        rdf.set_archive_uri(archive_uri)
+    rdf.set_model_uri(os.path.basename(model_filename))
 
     pyomexmeta_log_level = pyomexmeta.Logger.get_level()
     pyomexmeta.Logger.clear()
@@ -158,7 +184,7 @@ def get_global_combine_archive_content_uri(content_rel_uri, archive_uri=None):
         :obj:`str`: global URI for the content item
     """
     if archive_uri:
-        content_rel_uri = os.path.relpath(content_rel_uri, '.')
+        content_rel_uri = os.path.relpath(content_rel_uri, '.').replace("\\", "/")
         if content_rel_uri == '.':
             return archive_uri
         else:

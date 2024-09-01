@@ -27,6 +27,7 @@ from .warnings import NoTasksWarning, NoOutputsWarning, SedmlFeatureNotSupported
 from lxml import etree  # noqa: F401
 import copy
 import datetime
+import functools
 import numpy
 import os
 import sys
@@ -51,7 +52,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                  apply_xml_model_changes=False,
                  log=None, indent=0, pretty_print_modified_xml_models=False,
                  log_level=StandardOutputErrorCapturerLevel.c,
-                 config=None):
+                 config=None, get_value_executer=None, set_value_executer=None, preprocessed_task_executer=None,
+                 reset_executer=None):
     """ Execute the tasks specified in a SED document and generate the specified outputs
 
     Args:
@@ -164,14 +166,24 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
                 original_model_changes = {}
                 temp_model_sources = []
                 model_etrees = {}
+                preprocessed_task = None
+
+                task_vars = get_variables_for_task(doc, task)
+                preprocessed_task_sub_executer = None
+                if preprocessed_task_executer:
+                    preprocessed_task_sub_executer = functools.partial(preprocessed_task_executer,
+                                                                       task, task_vars,
+                                                                       config=config)
+
                 for original_model in original_models:
                     original_model_sources[original_model.id] = original_model.source
                     original_model_changes[original_model.id] = original_model.changes
 
-                    temp_model, temp_model_source, model_etree = resolve_model_and_apply_xml_changes(
+                    temp_model, temp_model_source, model_etree, preprocessed_task = resolve_model_and_apply_xml_changes(
                         original_model, doc, working_dir,
                         apply_xml_model_changes=apply_xml_model_changes,
-                        pretty_print_modified_xml_models=pretty_print_modified_xml_models)
+                        pretty_print_modified_xml_models=pretty_print_modified_xml_models,
+                        set_value_executer=set_value_executer, preprocessed_task_sub_executer=preprocessed_task_sub_executer)
 
                     original_model.source = temp_model.source
                     original_model.changes = temp_model.changes
@@ -181,18 +193,24 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
 
                     model_etrees[original_model.id] = model_etree
 
-                task_vars = get_variables_for_task(doc, task)
+                # The preprocessed task was not created if there was no set_value_executer, so create one now:
+                if not preprocessed_task and preprocessed_task_executer:
+                    preprocessed_task = preprocessed_task_sub_executer()
 
                 # execute task
                 if isinstance(task, Task):
-                    task_var_results = exec_task(task, task_executer, task_vars, doc, log=task_log, config=config)
+                    task_var_results = exec_task(task, task_executer, task_vars, doc,
+                                                 preprocessed_task=preprocessed_task, log=task_log, config=config)
 
                 elif isinstance(task, RepeatedTask):
                     task_var_results = exec_repeated_task(task, task_executer, task_vars, doc,
                                                           apply_xml_model_changes=apply_xml_model_changes,
                                                           model_etrees=model_etrees,
                                                           pretty_print_modified_xml_models=pretty_print_modified_xml_models,
-                                                          config=config)
+                                                          config=config, preprocessed_task=preprocessed_task,
+                                                          get_value_executer=get_value_executer,
+                                                          set_value_executer=set_value_executer,
+                                                          reset_executer=reset_executer)
 
                 else:  # pragma: no cover: already validated by :obj:`get_models_referenced_by_task`
                     raise NotImplementedError('Tasks of type {} are not supported.'.format(task.__class__.__name__))
@@ -363,7 +381,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     return report_results, log
 
 
-def exec_task(task, task_executer, task_vars, doc, log=None, config=None):
+def exec_task(task, task_executer, task_vars, doc, log=None, config=None, preprocessed_task=None):
     """ Execute a basic SED task
 
     Args:
@@ -401,7 +419,7 @@ def exec_task(task, task_executer, task_vars, doc, log=None, config=None):
         :obj:`VariableResults`: results of the variables
     """
     # execute task
-    task_variable_results, _ = task_executer(task, task_vars, log=log, config=config)
+    task_variable_results, _ = task_executer(task, task_vars, log=log, config=config, preprocessed_task=preprocessed_task)
 
     # check that the expected variables were recorded
     variable_results = VariableResults()
@@ -413,7 +431,8 @@ def exec_task(task, task_executer, task_vars, doc, log=None, config=None):
 
 
 def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_changes=False, model_etrees=None,
-                       pretty_print_modified_xml_models=False, config=None):
+                       pretty_print_modified_xml_models=False, config=None, preprocessed_task=None, get_value_executer=None,
+                       set_value_executer=None, reset_executer=None):
     """ Execute a repeated SED task
 
     Args:
@@ -451,7 +470,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
         :obj:`VariableResults`: results of the variables
     """
     # warn about inability to not reset models
-    if not task.reset_model_for_each_iteration:
+    if not task.reset_model_for_each_iteration and not reset_executer:
         models = get_first_last_models_executed_by_task(task)
         if models[0] == models[-1]:
             msg = (
@@ -462,7 +481,8 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
 
     sub_tasks = sorted(task.sub_tasks, key=lambda sub_task: sub_task.order)
     for prev_sub_task, next_sub_task in zip(sub_tasks[0:-1], sub_tasks[1:]):
-        if get_first_last_models_executed_by_task(prev_sub_task.task)[-1] == get_first_last_models_executed_by_task(next_sub_task.task)[0]:
+        if get_first_last_models_executed_by_task(prev_sub_task.task)[-1] == get_first_last_models_executed_by_task(next_sub_task.task)[0] \
+           and not reset_executer:
             msg = (
                 'Only independent execution of sub-tasks is supported. '
                 'Successive sub-tasks will not be executed starting from the end state of the previous sub-task.'
@@ -500,6 +520,8 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
             doc = copy.deepcopy(original_doc)
             task = next(task for task in doc.tasks if task.id == original_task.id)
             model_etrees = copy.deepcopy(original_model_etrees)
+            if reset_executer:
+                reset_executer(preprocessed_task)
 
         # get range values
         current_range_values = {}
@@ -514,27 +536,42 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
         for change in task.changes:
             variable_values = {}
             for variable in change.variables:
-                if not apply_xml_model_changes:
-                    raise NotImplementedError('Set value changes that involve variables of non-XML-encoded models are not supported.')
-                variable_values[variable.id] = get_value_of_variable_model_xml_targets(variable, model_etrees)
+                if get_value_executer and preprocessed_task:
+                    try:
+                        value = get_value_executer(change.model, variable, preprocessed_task)
+                        variable_values[variable.id] = value
+                    except Exception:
+                        # Even if the above fails, getting the value from the XML directly might be possible.
+                        pass
+                if variable.id not in variable_values:
+                    if not apply_xml_model_changes:
+                        raise NotImplementedError('Set value changes that involve variables of non-XML-encoded models are not supported.')
+                    else:
+                        variable_values[variable.id] = get_value_of_variable_model_xml_targets(variable, model_etrees)
 
             new_value = calc_compute_model_change_new_value(change, variable_values=variable_values, range_values=current_range_values)
-            if new_value == int(new_value):
-                new_value = str(int(new_value))
+
+            if set_value_executer:
+                # Unlike above, we don't try to set values that the set_value_executer doesn't know about by editing the XML.
+                # This is because there's no good way to set some values this way and some with a model editor.
+                set_value_executer(change.model, change.target, change.symbol, new_value, preprocessed_task)
             else:
-                new_value = str(new_value)
+                if new_value == int(new_value):
+                    new_value = str(int(new_value))
+                else:
+                    new_value = str(new_value)
 
-            if change.symbol:
-                raise NotImplementedError('Set value changes of symbols is not supported.')
+                if change.symbol:
+                    raise NotImplementedError('Set value changes of symbols is not supported.')
 
-            attr_change = ModelAttributeChange(target=change.target, target_namespaces=change.target_namespaces, new_value=new_value)
+                attr_change = ModelAttributeChange(target=change.target, target_namespaces=change.target_namespaces, new_value=new_value)
 
-            if apply_xml_model_changes and is_model_language_encoded_in_xml(change.model.language):
-                model = Model(changes=[attr_change])
-                apply_changes_to_xml_model(model, model_etrees[change.model.id], None, None)
+                if apply_xml_model_changes and is_model_language_encoded_in_xml(change.model.language):
+                    model = Model(changes=[attr_change])
+                    apply_changes_to_xml_model(model, model_etrees[change.model.id], None, None)
 
-            else:
-                change.model.changes.append(attr_change)
+                else:
+                    change.model.changes.append(attr_change)
 
         # sort the sub-tasks
         sub_tasks = sorted(task.sub_tasks, key=lambda sub_task: sub_task.order)
@@ -554,7 +591,7 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                                                  standalone=False,
                                                  pretty_print=pretty_print_modified_xml_models)
 
-                sub_task_var_results = exec_task(sub_task.task, task_executer, task_vars, doc, config=config)
+                sub_task_var_results = exec_task(sub_task.task, task_executer, task_vars, doc, config=config, preprocessed_task=preprocessed_task)
 
                 if apply_xml_model_changes and is_model_language_encoded_in_xml(model.language):
                     os.remove(model.source)
@@ -565,7 +602,10 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                                                           apply_xml_model_changes=apply_xml_model_changes,
                                                           model_etrees=model_etrees,
                                                           pretty_print_modified_xml_models=pretty_print_modified_xml_models,
-                                                          config=config)
+                                                          config=config, preprocessed_task=preprocessed_task,
+                                                          get_value_executer=get_value_executer,
+                                                          set_value_executer=set_value_executer,
+                                                          reset_executer=reset_executer)
 
             else:  # pragma: no cover: already validated by :obj:`get_first_last_models_executed_by_task`
                 raise NotImplementedError('Tasks of type {} are not supported.'.format(sub_task.task.__class__.__name__))
@@ -852,13 +892,13 @@ def get_report_for_plot2d(plot):
         data_sets[curve.x_data_generator.id] = DataSet(
             id=curve.x_data_generator.id,
             name=curve.x_data_generator.name,
-            label=curve.x_data_generator.id,
+            label=curve.x_data_generator.name or curve.x_data_generator.id,
             data_generator=curve.x_data_generator,
         )
         data_sets[curve.y_data_generator.id] = DataSet(
             id=curve.y_data_generator.id,
-            name=curve.y_data_generator.name,
-            label=curve.y_data_generator.id,
+            name=curve.name or curve.y_data_generator.name,
+            label=curve.name or curve.y_data_generator.name or curve.y_data_generator.id,
             data_generator=curve.y_data_generator,
         )
     return Report(

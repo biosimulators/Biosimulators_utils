@@ -52,6 +52,7 @@ class CliTestCase(unittest.TestCase):
                 biosimulators_utils.__main__.main()
                 self.assertRegex(context.Exception, 'usage: biosimulators-utils')
 
+    @unittest.skip("BNGL not working at all right now:  ImportError: cannot import name 'packaging' from 'pkg_resources''")
     def test_build_modeling_project(self):
         archive_filename = os.path.join(self.tmp_dir, 'archive.omex')
 
@@ -273,7 +274,7 @@ class CliTestCase(unittest.TestCase):
         with biosimulators_utils.__main__.App(argv=[
             'exec',
             'ghcr.io/biosimulators/copasi:latest',
-            '-i', os.path.join(os.path.dirname(__file__), 'fixtures', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex'),
+            '-i', os.path.join(os.path.dirname(__file__), 'fixtures', 'Caravagna-J-Theor-Biol-2010-tumor-suppressive-oscillations.omex'),
             '-o', os.path.join(self.tmp_dir, 'results'),
             '--env', 'KEY1=value1', 'KEY2=value2',
             '--user', str(os.getuid()),

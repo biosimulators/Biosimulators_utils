@@ -139,7 +139,7 @@ def read_omex_meta_files_for_archive(archive, archive_dirname, config=None):
 class OmexMetaReader(abc.ABC):
     """ Base class for reading OMEX Metadata files """
 
-    @ abc.abstractmethod
+    @abc.abstractmethod
     def run(self, filename_or_filenames, archive=None, working_dir=None, config=None):
         """ Read an OMEX Metadata file
 
@@ -282,7 +282,7 @@ class OmexMetaReader(abc.ABC):
 class OmexMetaWriter(abc.ABC):
     """ Base class for writing OMEX Metadata files """
 
-    @ abc.abstractmethod
+    @abc.abstractmethod
     def run(self, content, filename, config=None):
         """ Write an OMEX Metadata file
 

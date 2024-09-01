@@ -298,7 +298,7 @@ class ValidationTestCase(unittest.TestCase):
             file.write('invalid')
 
         errors, warnings = validate(archive, archive_dirname)
-        self.assertIn('Missing XML declaration', flatten_nested_list_of_strings(errors))
+        self.assertIn('XML content is not well-formed', flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
         with mock.patch.dict('os.environ', {
