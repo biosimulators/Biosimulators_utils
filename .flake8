@@ -4,3 +4,4 @@ exclude =
     tests/*
     docs-src/*
     build/*
+    .venv/
