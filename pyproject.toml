@@ -54,7 +54,7 @@ yamldown = "*"
 [tool.poetry.group.dev.dependencies]
 capturer = "^3.0"
 docker = "^7.1.0"
-bezier = "^2024.6.20"
+bezier = "*"
 flake8 = "^7.1.1"
 pytest = "^8.3.2"
 pytest-cov = "^5.0.0"
@@ -94,9 +94,9 @@ optional = true
 optional = true
 dependencies = { python-libsbml = "*" }
 
-#[tool.poetry.group.smoldyn]
-#optional = true
-#dependencies = { smoldyn = ">=2.66" }
+[tool.poetry.group.smoldyn]
+optional = true
+dependencies = { smoldyn = ">=2.66" }
 
 [tool.poetry.group.simularium]
 optional = true
