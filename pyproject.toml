@@ -21,7 +21,7 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "3.10"
 appdirs = "*"
 biopython = "*"
 cement = "*"
@@ -50,6 +50,21 @@ simplejson = "*"
 termcolor = "*"
 uritools = "*"
 yamldown = "*"
+# Optional Dependenceis
+bionetgen = {version = ">=0.8.4", optional = true}
+libcellml = {version = ">=0.5.0", optional = true}
+pylems = {version = "*", optional = true}
+pyneuroml = {version = ">=0.5.18", optional = true}
+pint = {version = "*", optional = true}
+libneuroml = {version = "*", optional = true}
+rbapy = { git = "https://github.com/biosimulators/RBApy.git", rev="d82e1ade319cb503f6e28759a0cbeffccabd89e8", optional = true }
+python-libsbml = {version = "*", optional = true}
+smoldyn = {version = ">=2.66", optional = true}
+simulariumio = {version = "*", optional = true}
+bezier = {version = "*", optional = true}
+docker = {version = ">=4.4", optional = true}
+capturer = {version = "*", optional = true}
+
 
 [tool.poetry.group.dev.dependencies]
 capturer = "^3.0"
@@ -66,6 +81,18 @@ pydata-sphinx-theme = "*"  # for building documentation
 sphinx = ">=1.8"
 sphinxprettysearchresults = { git = "https://github.com/biosimulators/sphinx-pretty-searchresults.git" }
 
+[tool.poetry.extras]
+bngl = ["bionetgen"]
+cellml = ["libcellml"]
+lems = ["pylems", "pyneuroml", "pint"]
+neuroml = ["libneuroml", "pyneuroml"]
+rba = ["rbapy"]
+sbml = ["python-libsbml"]
+smoldyn = ["smoldyn"]
+simularium = ["simulariumio"]
+escher = ["bezier"]
+containers = ["docker"]
+logging = ["capturer"]
 
 [tool.poetry.group.bngl]
 optional = true

@@ -4483,13 +4483,13 @@ win32 = ["pywin32"]
 
 [[package]]
 name = "setuptools"
-version = "74.1.1"
+version = "74.1.2"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "setuptools-74.1.1-py3-none-any.whl", hash = "sha256:fc91b5f89e392ef5b77fe143b17e32f65d3024744fba66dc3afe07201684d766"},
-    {file = "setuptools-74.1.1.tar.gz", hash = "sha256:2353af060c06388be1cecbf5953dcdb1f38362f87a2356c480b6b4d5fcfc8847"},
+    {file = "setuptools-74.1.2-py3-none-any.whl", hash = "sha256:5f4c08aa4d3ebcb57a50c33b1b07e94315d7fc7230f7115e47fc99776c8ce308"},
+    {file = "setuptools-74.1.2.tar.gz", hash = "sha256:95b40ed940a1c67eb70fc099094bd6e99c6ee7c23aa2306f4d2697ba7916f9c6"},
 ]
 
 [package.extras]
@@ -5204,7 +5204,20 @@ files = [
 [package.dependencies]
 pyYaml = "*"
 
+[extras]
+bngl = ["bionetgen"]
+cellml = ["libcellml"]
+containers = ["docker"]
+escher = ["bezier"]
+lems = ["pint", "pylems", "pyneuroml"]
+logging = ["capturer"]
+neuroml = ["libneuroml", "pyneuroml"]
+rba = ["rbapy"]
+sbml = ["python-libsbml"]
+simularium = ["simulariumio"]
+smoldyn = ["smoldyn"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "d0ff43b79190c2142ab384aa2deb1d5813aece0b77b9a78753a6a6492225b3cb"
+content-hash = "419854bf1bb46d8a41889d2ab9d31a7c77cd292354d4e685a945823335cd4d1d"
