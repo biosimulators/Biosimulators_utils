@@ -61,6 +61,12 @@ pytest-cov = "^5.0.0"
 flaky = "^3.8.1"
 jsonschema = "^4.23.0"
 
+[tool.poetry.group.docs.dependencies]
+pydata-sphinx-theme = "*"  # for building documentation
+sphinx = ">=1.8"
+sphinxprettysearchresults = { git = "https://github.com/biosimulators/sphinx-pretty-searchresults.git" }
+
+
 [tool.poetry.group.bngl]
 optional = true
 dependencies = { bionetgen = ">=0.8.4" }

@@ -82,14 +82,14 @@ jobs:
           file: ./coverage.xml
 
       # compile documentation
-      #- name: Install the requirements for compiling the documentation
-      #  run: poetry run python -m pip install -r docs-src/requirements.txt
+      - name: Install the requirements for compiling the documentation
+        run: poetry install --with docs
 
-      #- name: Compile the documentation
-      #  run: |
-      #    sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
-      #    mkdir -p docs-src/_static
-      #    sphinx-build docs-src docs
+      - name: Compile the documentation
+        run: |
+          poetry run sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
+          mkdir -p docs-src/_static
+          poetry run sphinx-build docs-src docs
 
   release:
     name: Release a new version
@@ -108,44 +108,21 @@ jobs:
           git config --local user.name "biosimulatorsdaemon"
           git config pull.rebase false
 
-      - name: Install Python
-        uses: actions/setup-python@v5
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
         with:
-          python-version: '3.9'
-
-      - name: Setup pip cache
-        uses: actions/cache@v2
-        with:
-          path: /opt/hostedtoolcache/Python
-          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install pip and setuptools
-        run: |
-          python -m pip install pip==20.3.4
-          python -m pip install --upgrade setuptools
-
-      # install package
-      - name: Install the package
-        run: python -m pip install .[all]
+          python-version: ${{ matrix.python-version }}
 
       # update Identifiers.org namespaces
       - name: Update Identifiers.org namespaces
-        run: python -c "from biosimulators_utils.utils.identifiers_org import get_identifiers_org_namespaces; get_identifiers_org_namespaces(reload=True);"
-
-      - name: Install pytest
-        run: python -m pip install pytest
-
-      - name: Install the requirements for the tests
-        run: python -m pip install .[tests]
+        run: poetry run python -c "from biosimulators_utils.utils.identifiers_org import get_identifiers_org_namespaces; get_identifiers_org_namespaces(reload=True);"
 
       - name: Test the updated Identifiers.org namespaces
         uses: GabrielBB/xvfb-action@v1
         env:
           MPLBACKEND: PDF
         with:
-          run: python -m pytest tests/utils/test_identifiers_org_utils.py
+          run: poetry run python -m pytest tests/utils/test_identifiers_org_utils.py
 
       - id: commit-identifiers-namespaces
         name: Commit the Identifiers.org namespaces
@@ -165,13 +142,13 @@ jobs:
 
       # compile and push documentation
       - name: Install the requirements for compiling the documentation
-        run: python -m pip install -r docs-src/requirements.txt
+        run: poetry install --with docs
 
       - name: Compile the documentation
         run: |
-          sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
+          poetry run sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
           mkdir -p docs-src/_static
-          sphinx-build docs-src docs
+          poetry run sphinx-build docs-src docs
 
       - id: commit-docs
         name: Commit the compiled documentation
@@ -206,19 +183,12 @@ jobs:
           release_name: Release ${{ needs.getVersionNumber.outputs.version }}
 
       # Create PyPI release
-      - name: Install twine
-        run: |
-          python -m pip install wheel twine
-
       - name: Create packages to upload to PyPI
         run: |
-          python setup.py sdist
-          python setup.py bdist_wheel
+          poetry build
 
       - name: Upload packages to PyPI
         env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
         run: |
-          twine upload dist/*
-
+          poetry publish --no-interaction --username __token__ --password $POETRY_PYPI_TOKEN_PYPI
