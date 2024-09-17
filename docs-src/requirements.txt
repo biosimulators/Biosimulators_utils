@@ -1,3 +1,0 @@
-pydata-sphinx-theme
-sphinx >= 1.8
-sphinxprettysearchresults @ git+https://github.com/biosimulators/sphinx-pretty-searchresults.git

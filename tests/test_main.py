@@ -1,15 +1,17 @@
-from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent
-from biosimulators_utils.viz.vega.utils import dict_to_vega_dataset
-from biosimulators_utils.warnings import BioSimulatorsWarning
-from unittest import mock
-import biosimulators_utils
-import biosimulators_utils.__main__
-import capturer
+import io
 import json
 import os
 import shutil
 import tempfile
 import unittest
+from contextlib import redirect_stdout, redirect_stderr
+from unittest import mock
+
+import biosimulators_utils
+import biosimulators_utils.__main__
+from biosimulators_utils.combine.data_model import CombineArchive, CombineArchiveContent
+from biosimulators_utils.viz.vega.utils import dict_to_vega_dataset
+from biosimulators_utils.warnings import BioSimulatorsWarning
 
 
 class CliTestCase(unittest.TestCase):
@@ -20,31 +22,41 @@ class CliTestCase(unittest.TestCase):
         shutil.rmtree(self.tmp_dir)
 
     def test_help(self):
-        with biosimulators_utils.__main__.App(argv=[]) as app:
-            with capturer.CaptureOutput(merged=False, relay=False) as captured:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with redirect_stdout(stdout), redirect_stderr(stderr):
+            with biosimulators_utils.__main__.App(argv=[]) as app:
                 app.run()
-                stdout = captured.stdout.get_text()
-                self.assertTrue(stdout.startswith('usage: biosimulators-utils'))
-                self.assertEqual(captured.stderr.get_text(), '')
+
+        stdout_value = stdout.getvalue()
+        stderr_value = stderr.getvalue()
+        self.assertTrue(stdout_value.startswith('usage: biosimulators-utils'))
+        self.assertEqual(stderr_value, '')
 
     def test_version(self):
-        with biosimulators_utils.__main__.App(argv=['-v']) as app:
-            with capturer.CaptureOutput(merged=False, relay=False) as captured:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with redirect_stdout(stdout), redirect_stderr(stderr):
+            with biosimulators_utils.__main__.App(argv=['-v']) as app:
                 with self.assertRaises(SystemExit) as cm:
                     app.run()
                     self.assertEqual(cm.exception.code, 0)
-                stdout = captured.stdout.get_text()
-                self.assertEqual(stdout, biosimulators_utils.__version__)
-                self.assertEqual(captured.stderr.get_text(), '')
+        stdout_value = stdout.getvalue().replace("\n","")
+        stderr_value = stderr.getvalue()
+        self.assertEqual(stdout_value, biosimulators_utils.__version__)
+        self.assertEqual(stderr_value, '')
 
-        with biosimulators_utils.__main__.App(argv=['--version']) as app:
-            with capturer.CaptureOutput(merged=False, relay=False) as captured:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with redirect_stdout(stdout), redirect_stderr(stderr):
+            with biosimulators_utils.__main__.App(argv=['--version']) as app:
                 with self.assertRaises(SystemExit) as cm:
                     app.run()
                     self.assertEqual(cm.exception.code, 0)
-                stdout = captured.stdout.get_text()
-                self.assertEqual(stdout, biosimulators_utils.__version__)
-                self.assertEqual(captured.stderr.get_text(), '')
+        stdout_value = stdout.getvalue().replace("\n","")
+        stderr_value = stderr.getvalue()
+        self.assertEqual(stdout_value, biosimulators_utils.__version__)
+        self.assertEqual(stderr_value, '')
 
     def test_raw_cli(self):
         with mock.patch('sys.argv', ['', '--help']):
@@ -222,14 +234,16 @@ class CliTestCase(unittest.TestCase):
                 with mock.patch('biosimulators_utils.combine.validation.validate', return_value=([], [])):
                     app.run()
 
-        with biosimulators_utils.__main__.App(argv=[
-            'validate-project',
-            os.path.join(os.path.dirname(__file__), 'fixtures', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex'),
-        ]) as app:
-            with capturer.CaptureOutput(merged=False, relay=False) as captured:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with redirect_stdout(stdout), redirect_stderr(stderr):
+            with biosimulators_utils.__main__.App(argv=[
+                'validate-project',
+                os.path.join(os.path.dirname(__file__), 'fixtures', 'Ciliberto-J-Cell-Biol-2003-morphogenesis-checkpoint.omex'),
+            ]) as app:
                 app.run()
-                stdout = captured.stdout.get_text()
-        self.assertRegex(stdout, 'Archive contains 1 SED-ML documents with 1 models')
+        stdout_value = stdout.getvalue()
+        self.assertRegex(stdout_value, 'Archive contains 1 SED-ML documents with 1 models')
 
         # warnings
         with biosimulators_utils.__main__.App(argv=[

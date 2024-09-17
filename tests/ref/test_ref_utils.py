@@ -115,6 +115,7 @@ class RefUtilsTestCase(unittest.TestCase):
             [
                 'James R. Roberts',
                 'Catherine J. Karr',
+                'COUNCIL ON ENVIRONMENTAL HEALTH',
                 'Jerome A. Paulson',
                 'Alice C. Brock-Utne',
                 'Heather L. Brumberg',
@@ -124,7 +125,6 @@ class RefUtilsTestCase(unittest.TestCase):
                 'Megan T. Sandel',
                 'Leonardo Trasande',
                 'Robert O. Wright',
-                'COUNCIL ON ENVIRONMENTAL HEALTH',
             ],
         ]
 

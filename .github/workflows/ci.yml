@@ -8,7 +8,7 @@ jobs:
   getVersionNumber:
     name: Get version number
     if: "startsWith(github.ref, 'refs/tags/') && !contains(github.event.head_commit.message, '[skip ci]') && github.actor != 'allcontributors'"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.get-version-number.outputs.version }}
     steps:
@@ -21,32 +21,21 @@ jobs:
           echo "version=$version" >> $GITHUB_OUTPUT
 
   build:
-    name: Lint, test, and compile documentation
+    name: Lint, test, and compile docs (python ${{ matrix.python-version }})
     if: "!contains(github.event.head_commit.message, '[skip ci]') && github.actor != 'allcontributors'"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python-version: [ "3.10" ]
+      fail-fast: false
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
-
-      - name: Install Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9.9' # no particular microversion of 3.9 is required; 3.9.8 behaves oddly in GitHub actions
-
-      - name: Setup pip cache
-        uses: actions/cache@v2
-        with:
-          path: /opt/hostedtoolcache/Python
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements.optional.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install pip and setuptools
-        run: |
-          python -m pip install --upgrade pip==23.0.1
-          python -m pip install --upgrade setuptools
 
       - name: Install Java # for pyNeuroML
         uses: actions/setup-java@v2
@@ -69,24 +58,13 @@ jobs:
           singularity-version: 3.7.1
 
       # install package
-      - name: Install the package
-        run: |
-          python -m pip install git+https://github.com/biosimulators/RBApy.git#egg=rbapy
-          python -m pip install .[all]
-
-      # lint
-      - name: Install flake8
-        run: python -m pip install flake8
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Lint the package
-        run: python -m flake8
-
-      # test and upload coverage report to Codecov
-      - name: Install pytest
-        run: python -m pip install pytest pytest-cov
-
-      - name: Install the requirements for the tests
-        run: python -m pip install .[tests]
+        run: poetry run python -m flake8
 
       - name: Run the tests
         uses: GabrielBB/xvfb-action@v1
@@ -94,7 +72,7 @@ jobs:
           MPLBACKEND: PDF
           # BIOSIMULATORS_API_ENDPOINT: https://api.biosimulators.dev/  # uncomment to execute tests with the dev deployment
         with:
-          run: python -m pytest tests/ --cov=./biosimulators_utils --cov-report=xml
+          run: poetry run python -m pytest tests/ --cov=./biosimulators_utils --cov-report=xml
 
       - name: Upload the coverage report to Codecov
         uses: codecov/codecov-action@v2
@@ -105,21 +83,21 @@ jobs:
 
       # compile documentation
       - name: Install the requirements for compiling the documentation
-        run: python -m pip install -r docs-src/requirements.txt
+        run: poetry install --with docs
 
       - name: Compile the documentation
         run: |
-          sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
+          poetry run sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
           mkdir -p docs-src/_static
-          sphinx-build docs-src docs
+          poetry run sphinx-build docs-src docs
 
   release:
     name: Release a new version
     needs: [getVersionNumber, build]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
           ref: dev
@@ -130,44 +108,21 @@ jobs:
           git config --local user.name "biosimulatorsdaemon"
           git config pull.rebase false
 
-      - name: Install Python
-        uses: actions/setup-python@v2
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
         with:
-          python-version: '3.9'
-
-      - name: Setup pip cache
-        uses: actions/cache@v2
-        with:
-          path: /opt/hostedtoolcache/Python
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements.optional.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install pip and setuptools
-        run: |
-          python -m pip install pip==20.3.4
-          python -m pip install --upgrade setuptools
-
-      # install package
-      - name: Install the package
-        run: python -m pip install .[all]
+          python-version: ${{ matrix.python-version }}
 
       # update Identifiers.org namespaces
       - name: Update Identifiers.org namespaces
-        run: python -c "from biosimulators_utils.utils.identifiers_org import get_identifiers_org_namespaces; get_identifiers_org_namespaces(reload=True);"
-
-      - name: Install pytest
-        run: python -m pip install pytest
-
-      - name: Install the requirements for the tests
-        run: python -m pip install .[tests]
+        run: poetry run python -c "from biosimulators_utils.utils.identifiers_org import get_identifiers_org_namespaces; get_identifiers_org_namespaces(reload=True);"
 
       - name: Test the updated Identifiers.org namespaces
         uses: GabrielBB/xvfb-action@v1
         env:
           MPLBACKEND: PDF
         with:
-          run: python -m pytest tests/utils/test_identifiers_org_utils.py
+          run: poetry run python -m pytest tests/utils/test_identifiers_org_utils.py
 
       - id: commit-identifiers-namespaces
         name: Commit the Identifiers.org namespaces
@@ -187,13 +142,13 @@ jobs:
 
       # compile and push documentation
       - name: Install the requirements for compiling the documentation
-        run: python -m pip install -r docs-src/requirements.txt
+        run: poetry install --with docs
 
       - name: Compile the documentation
         run: |
-          sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
+          poetry run sphinx-apidoc . setup.py --output-dir docs-src/source --force --module-first --no-toc
           mkdir -p docs-src/_static
-          sphinx-build docs-src docs
+          poetry run sphinx-build docs-src docs
 
       - id: commit-docs
         name: Commit the compiled documentation
@@ -228,19 +183,12 @@ jobs:
           release_name: Release ${{ needs.getVersionNumber.outputs.version }}
 
       # Create PyPI release
-      - name: Install twine
-        run: |
-          python -m pip install wheel twine
-
       - name: Create packages to upload to PyPI
         run: |
-          python setup.py sdist
-          python setup.py bdist_wheel
+          poetry build
 
       - name: Upload packages to PyPI
         env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
         run: |
-          twine upload dist/*
-
+          poetry publish --no-interaction --username __token__ --password $POETRY_PYPI_TOKEN_PYPI

@@ -19,3 +19,5 @@ docs/.buildinfo
 docs/.doctrees/
 docs/_raw_sources/
 docs/_sources/
+
+.python-version
