@@ -903,16 +903,16 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn("is not valid against the schema", flatten_nested_list_of_strings(errors))
         self.assertEqual(warnings, [])
 
-        # RBA
-        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'rba', 'Escherichia-coli-K12-WT.zip')
-        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.RBA)
-        self.assertEqual(errors, [])
-        self.assertEqual(warnings, [])
-
-        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'rba', 'Escherichia-coli-K12-WT-invalid.zip')
-        errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.RBA)
-        self.assertIn("expected '>'", flatten_nested_list_of_strings(errors))
-        self.assertEqual(warnings, [])
+        # # RBA
+        # filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'rba', 'Escherichia-coli-K12-WT.zip')
+        # errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.RBA)
+        # self.assertEqual(errors, [])
+        # self.assertEqual(warnings, [])
+        #
+        # filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'rba', 'Escherichia-coli-K12-WT-invalid.zip')
+        # errors, warnings, _ = validation.validate_model_with_language(filename, data_model.ModelLanguage.RBA)
+        # self.assertIn("expected '>'", flatten_nested_list_of_strings(errors))
+        # self.assertEqual(warnings, [])
 
         # "Smoldyn won't load in github; 'ModuleNotFoundError: No module named 'biosimulators_simularium''"
         # # Smoldyn

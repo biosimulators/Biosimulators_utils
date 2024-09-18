@@ -22,12 +22,13 @@ class RefUtilsTestCase(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.dirname)
 
+    @unittest.skip("avoiding network requests in CI")
     def test_search_entrez_records(self):
         self.assertEqual(utils.search_entrez_records('pmc', '23184105[pmid]')['IdList'], ['5813803'])
-        time.sleep(1)
+        time.sleep(5)
 
         self.assertEqual(utils.search_entrez_records('pmc', 'abc[pmid]')['Count'], '0')
-        time.sleep(1)
+        time.sleep(5)
 
         with self.assertRaisesRegex(TypeError, 'must be a non-empty string'):
             utils.search_entrez_records('pmc', None)
@@ -36,9 +37,10 @@ class RefUtilsTestCase(unittest.TestCase):
         with self.assertRaisesRegex(TypeError, 'must be a non-empty string'):
             utils.search_entrez_records('pmc', 23184105)
 
+    @unittest.skip("avoiding network requests in CI")
     def test_get_entrez_record(self):
         self.assertEqual(utils.get_entrez_record('pmc', '5813803')['Id'], '5813803')
-        time.sleep(1)
+        time.sleep(5)
 
         with self.assertRaisesRegex(ValueError, 'is not a valid id'):
             utils.get_entrez_record('pubmed', 'abc')
@@ -46,58 +48,61 @@ class RefUtilsTestCase(unittest.TestCase):
         with self.assertRaisesRegex(TypeError, 'must be a string'):
             utils.get_entrez_record('pmc', None)
 
+    @unittest.skip("avoiding network requests in CI")
     @flaky.flaky(max_runs=5, min_passes=1)
     def test_get_pubmed_central_id(self):
         self.assertEqual(utils.get_pubmed_central_id('23184105'), 'PMC5813803')
-        time.sleep(1)
+        time.sleep(5)
 
         self.assertEqual(utils.get_pubmed_central_id('1234'), None)
-        time.sleep(1)
+        time.sleep(5)
 
         self.assertEqual(utils.get_pubmed_central_id(1234), None)
-        time.sleep(1)
+        time.sleep(5)
 
         self.assertEqual(utils.get_pubmed_central_id('abc'), None)
-        time.sleep(1)
+        time.sleep(5)
 
         self.assertEqual(utils.get_pubmed_central_id(None), None)
-        time.sleep(1)
+        time.sleep(5)
 
+    @unittest.skip("avoiding network requests in CI")
     def test_get_reference_from_pubmed(self):
         ref = utils.get_reference_from_pubmed('1234')
         self.assertEqual(ref.journal, 'Drug metabolism and disposition: the biological fate of chemicals')
         self.assertEqual(ref.year, '1975')
-        time.sleep(1)
+        time.sleep(5)
 
         ref = utils.get_reference_from_pubmed('23184105')
         self.assertEqual(ref.year, '2012')
         self.assertEqual(ref.pubmed_central_id, 'PMC5813803')
         self.assertEqual(ref.doi, '10.1542/peds.2012-2758')
-        time.sleep(1)
+        time.sleep(5)
 
         ref = utils.get_reference_from_pubmed(pubmed_id=None, doi='10.1542/peds.2012-2758')
         self.assertEqual(ref.year, '2012')
         self.assertEqual(ref.pubmed_id, '23184105')
         self.assertEqual(ref.pubmed_central_id, 'PMC5813803')
         self.assertEqual(ref.doi, '10.1542/peds.2012-2758')
-        time.sleep(1)
+        time.sleep(5)
 
         ref = utils.get_reference_from_pubmed(pubmed_id=None, doi='10.1103/PhysRevLett.127.104301x')
         self.assertEqual(ref, None)
-        time.sleep(1)
+        time.sleep(5)
 
         ref = utils.get_reference_from_pubmed(None, None)
         self.assertEqual(ref, None)
-        time.sleep(1)
+        time.sleep(5)
 
         with self.assertRaisesRegex(ValueError, 'not a valid id'):
             utils.get_reference_from_pubmed(pubmed_id='abc')
-        time.sleep(1)
+        time.sleep(5)
 
         with self.assertRaises(ValueError):
             utils.get_reference_from_pubmed('000')
-        time.sleep(1)
+        time.sleep(5)
 
+    @unittest.skip("avoiding network requests in CI")
     def test_get_reference_from_crossref(self):
         ref = utils.get_reference_from_crossref('10.1542/peds.2012-2758')
         self.assertEqual(ref.year, '2012')
@@ -105,6 +110,7 @@ class RefUtilsTestCase(unittest.TestCase):
         self.assertEqual(ref.pubmed_central_id, None)
         self.assertEqual(ref.doi, '10.1542/peds.2012-2758')
 
+    @unittest.skip("avoiding network requests in CI")
     def test_get_reference(self):
         authors = [
             [
@@ -135,7 +141,7 @@ class RefUtilsTestCase(unittest.TestCase):
         self.assertEqual(ref.pubmed_id, '23184105')
         self.assertEqual(ref.pubmed_central_id, 'PMC5813803')
         self.assertEqual(ref.doi, '10.1542/peds.2012-2758')
-        time.sleep(1)
+        time.sleep(5)
 
         ref = utils.get_reference(doi='10.1542/peds.2012-2758')
         self.assertIn(ref.authors, authors)
@@ -144,15 +150,16 @@ class RefUtilsTestCase(unittest.TestCase):
         self.assertEqual(ref.pubmed_id, '23184105')
         self.assertEqual(ref.pubmed_central_id, 'PMC5813803')
         self.assertEqual(ref.doi, '10.1542/peds.2012-2758')
-        time.sleep(1)
+        time.sleep(5)
 
         ref = utils.get_reference(pubmed_id='1234')
         self.assertEqual(ref.doi, None)
-        time.sleep(1)
+        time.sleep(5)
 
         with self.assertRaises(ValueError):
             utils.get_reference()
 
+    @unittest.skip("avoiding network requests in CI")
     def test_get_pubmed_central_open_access_graphics(self):
         shutil.rmtree(self.dirname)
 
@@ -166,6 +173,7 @@ class RefUtilsTestCase(unittest.TestCase):
         self.assertTrue(images[0].caption.startswith('<p xmlns:xlink'))
         self.assertTrue(os.path.isfile(images[0].filename))
 
+    @unittest.skip("avoiding network requests in CI")
     def test_download_pubmed_central_record(self):
         tgz_filename = os.path.join(self.dirname, 'record.tar.gz')
 

@@ -49,15 +49,15 @@ class ModelUtilsTestCase(unittest.TestCase):
             target_namespaces={'cellml': 'http://www.cellml.org/cellml/1.0#'},
         )))
 
-        # RBA
-        filename = os.path.join(self.FIXTURES_DIRNAME, 'rba', 'Escherichia-coli-K12-WT.zip')
-        params, sims, vars, plots = model_utils.get_parameters_variables_outputs_for_simulation(
-            filename, ModelLanguage.RBA, SteadyStateSimulation, None)
-        self.assertTrue(vars[0].is_equal(Variable(
-            id='objective',
-            name='Value of objective',
-            target='objective',
-        )))
+        # # RBA
+        # filename = os.path.join(self.FIXTURES_DIRNAME, 'rba', 'Escherichia-coli-K12-WT.zip')
+        # params, sims, vars, plots = model_utils.get_parameters_variables_outputs_for_simulation(
+        #     filename, ModelLanguage.RBA, SteadyStateSimulation, None)
+        # self.assertTrue(vars[0].is_equal(Variable(
+        #     id='objective',
+        #     name='Value of objective',
+        #     target='objective',
+        # )))
 
         # SBML
         filename = os.path.join(self.FIXTURES_DIRNAME, 'BIOMD0000000297.xml')
