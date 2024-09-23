@@ -14,8 +14,14 @@ class SimulatorIoTestCase(unittest.TestCase):
         response.raise_for_status()
         file, filename = tempfile.mkstemp(suffix='.json')
         os.close(file)
+        content: str = str(response.content, encoding='utf-8')
+        content = content.replace("__COPASI_VERSION__", "0.0.0")
+        content = content.replace("__CONTAINER_DIGEST__",
+                        "sha256:bf684e81eb8e6e6a313f8cae2bbebb57d794405e0416059667c2bacf47dadc81")
+        content = content.replace("\\n", "\n")
+        byte_content = content.encode("utf-8")
         with open(filename, 'wb') as file:
-            file.write(response.content)
+            file.write(byte_content)
         read_simulator_specs(filename)
 
         with self.assertRaisesRegex(ValueError, 'must be encoded into JSON'):
@@ -42,8 +48,10 @@ class SimulatorIoTestCase(unittest.TestCase):
         os.remove(filename)
 
     def test_url(self):
-        url = 'https://raw.githubusercontent.com/biosimulators/Biosimulators_COPASI/dev/biosimulators.json'
-        specs = read_simulator_specs(url, patch={'version': '0.0.0'})
+        patch_version = "0.0.0"
+        url = ('https://raw.githubusercontent.com/biosimulators/Biosimulators_COPASI'
+               '/ff7a177128db282706d79daa281591d53cb79268/biosimulators.json')
+        specs = read_simulator_specs(url, patch={'version': patch_version})
         self.assertEqual(specs['version'], '0.0.0')
 
         with self.assertRaises(requests.RequestException):

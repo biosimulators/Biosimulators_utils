@@ -11,6 +11,7 @@ from ..combine.utils import get_sedml_contents
 from ..config import Config  # noqa: F401
 from ..sedml.data_model import SedDocument, Task, Output, Report, Plot2D, Plot3D, DataSet, Curve, Surface
 from ..sedml.io import SedmlSimulationReader
+from ..sedml.utils import get_variables_for_task
 from ..warnings import warn
 from .data_model import (Status, CombineArchiveLog, SedDocumentLog,  # noqa: F401
                          TaskLog, OutputLog, ReportLog, Plot2DLog, Plot3DLog,
@@ -102,11 +103,11 @@ def init_sed_document_log(doc,
 
     if Task in logged_features:
         log.tasks = {}
-        for task in doc.tasks:
-            task_log = init_task_log(task, supported_features=supported_features, logged_features=logged_features)
-            task_log.status = Status.QUEUED if isinstance(task, supported_features) else Status.SKIPPED
+        for valid_task in [task for task in doc.tasks if 0 < len(get_variables_for_task(doc, task))]:
+            task_log = init_task_log(valid_task, supported_features=supported_features, logged_features=logged_features)
+            task_log.status = Status.QUEUED if isinstance(valid_task, supported_features) else Status.SKIPPED
             task_log.parent = log
-            log.tasks[task.id] = task_log
+            log.tasks[valid_task.id] = task_log
     else:
         log.tasks = None
 

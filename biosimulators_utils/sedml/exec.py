@@ -120,9 +120,15 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     # update status
     exceptions = []
 
+    # Trim tasks that do not directly request output
+    expected_tasks = []
+    for task in doc.tasks:
+        if 0 < len(get_variables_for_task(doc, task)):
+            expected_tasks.append(task)
+
     # execute tasks
-    if not doc.tasks:
-        warn('SED document does not describe any tasks.', NoTasksWarning)
+    if not expected_tasks:
+        warn('SED document does not describe any tasks with output.', NoTasksWarning)
 
     # TODO: initialize reports with their eventual shapes; this requires individual simulation tools to pass
     # information about the shape of their output to this method
@@ -135,16 +141,16 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
 
     print('{}Found {} tasks and {} outputs:\n{}Tasks:\n{}{}\n{}Outputs:\n{}{}'.format(
         ' ' * 2 * indent,
-        len(doc.tasks),
+        len(expected_tasks),
         len(doc.outputs),
         ' ' * 2 * (indent + 1),
         ' ' * 2 * (indent + 2),
-        ('\n' + ' ' * 2 * (indent + 2)).join(sorted('`' + task.id + '`' for task in doc.tasks)),
+        ('\n' + ' ' * 2 * (indent + 2)).join(sorted('`' + task.id + '`' for task in expected_tasks)),
         ' ' * 2 * (indent + 1),
         ' ' * 2 * (indent + 2),
         ('\n' + ' ' * 2 * (indent + 2)).join(sorted('`' + output.id + '`' for output in doc.outputs)),
     ))
-    for i_task, task in enumerate(doc.tasks):
+    for i_task, task in enumerate(expected_tasks):
         print('{}Executing task {}: `{}`'.format(' ' * 2 * indent, i_task + 1, task.id))
 
         if config.LOG:
@@ -242,7 +248,10 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             task_log.output = captured.get_text()
             task_log.duration = (datetime.datetime.now() - start_time).total_seconds()
             task_log.export()
-        print(' ' + termcolor.colored(task_status.value.lower(), Colors[task_status.value.lower()].value))
+        result_text: str = task_status.value.lower()
+        if task_exception is not None:
+            result_text += ' - ' + str(task_exception)
+        print(' ' + termcolor.colored(result_text, Colors[task_status.value.lower()].value))
 
         # generate outputs
         print('{}Generating {} outputs ...'.format(' ' * 2 * (indent + 1), len(doc.outputs)))
@@ -361,7 +370,7 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             output_status_count[output_log.status] += 1
 
         print('')
-        print('{}Executed {} tasks and {} outputs:'.format(' ' * 2 * indent, len(doc.tasks), len(doc.outputs)))
+        print('{}Executed {} tasks and {} outputs:'.format(' ' * 2 * indent, len(expected_tasks), len(doc.outputs)))
         print('{}  Tasks:'.format(' ' * 2 * indent))
         print('{}    Succeeded: {}'.format(' ' * 2 * indent, task_status_count[Status.SUCCEEDED]))
         print('{}    Skipped: {}'.format(' ' * 2 * indent, task_status_count[Status.SKIPPED]))
