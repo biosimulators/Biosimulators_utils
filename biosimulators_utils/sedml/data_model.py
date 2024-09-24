@@ -174,7 +174,7 @@ class SedIdGroupMixin(abc.ABC):
         name (:obj:`str`): name
     """
 
-    def __init__(self, id=None, name=None):
+    def __init__(self, id: str = None, name: str = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -242,9 +242,10 @@ class SedDocument(SedBase):
         metadata (:obj:`Metadata`): metadata
     """
 
-    def __init__(self, level=1, version=3,
-                 models=None, simulations=None, tasks=None, data_generators=None, outputs=None, styles=None,
-                 metadata=None):
+    def __init__(self, level: int = 1, version: int = 3, models: "list[Model]" = None,
+                 simulations: "list[Simulation]" = None, tasks: "list[AbstractTask]" = None,
+                 data_generators: "list[DataGenerator]" = None, outputs: "list[Output]" = None, \
+                 styles: "list[Style]" = None, metadata: Metadata = None):
         """
         Args:
             level (:obj:`int`, optional): level
@@ -317,7 +318,7 @@ class Simulation(SedBase, SedIdGroupMixin):
         algorithm (:obj:`Algorithm`): algorithm
     """
 
-    def __init__(self, id=None, name=None, algorithm=None):
+    def __init__(self, id: str = None, name: str = None, algorithm: "Algorithm" = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -371,7 +372,7 @@ class OneStepSimulation(Simulation):
         step (:obj:`float`): step
     """
 
-    def __init__(self, id=None, name=None, algorithm=None, step=None):
+    def __init__(self, id: str = None, name: str = None, algorithm: "Algorithm" = None, step: float = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -416,9 +417,9 @@ class UniformTimeCourseSimulation(Simulation):
         number_of_steps (:obj:`int`): number of time steps
     """
 
-    def __init__(self, id=None, name=None, algorithm=None,
-                 initial_time=None, output_start_time=None, output_end_time=None,
-                 number_of_steps=None, number_of_points=None):
+    def __init__(self, id: str = None, name: str = None, algorithm: "Algorithm" = None,
+                 initial_time: float = None, output_start_time: float = None, output_end_time: float = None,
+                 number_of_steps: int = None, number_of_points: int = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -479,7 +480,7 @@ class Algorithm(SedBase):
         changes (:obj:`list` of :obj:`AlgorithmParameterChange`): parameter changes
     """
 
-    def __init__(self, kisao_id=None, changes=None):
+    def __init__(self, kisao_id: str = None, changes: "list[AlgorithmParameterChange]" = None):
         """
         Args:
             kisao_id (:obj:`str`, optional): KiSAO id (e.g., `KISAO_0000029`)
@@ -521,7 +522,7 @@ class AlgorithmParameterChange(SedBase):
         new_value (:obj:`str`): new value
     """
 
-    def __init__(self, kisao_id=None, new_value=None):
+    def __init__(self, kisao_id: str = None, new_value: str = None):
         """
         Args:
             kisao_id (:obj:`str`, optional): KiSAO id (e.g., `KISAO_0000029`)
@@ -564,7 +565,8 @@ class Model(SedBase, SedIdGroupMixin):
         changes (:obj:`list` of :obj:`ModelChange`): model changes
     """
 
-    def __init__(self, id=None, name=None, source=None, language=None, changes=None):
+    def __init__(self, id: str = None, name: str = None, source: str = None,
+                 language: str = None, changes: "list[ModelChange]" = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -629,7 +631,7 @@ class ModelChange(SedBase, SedIdGroupMixin, TargetGroupMixin):
         target_namespaces (:obj:`dict`): map of prefixes of namespaces for the target to their URIs
     """
 
-    def __init__(self, id=None, name=None, target=None, target_namespaces=None):
+    def __init__(self, id: str = None, name: str = None, target: str = None, target_namespaces: dict = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -666,7 +668,8 @@ class ModelAttributeChange(ModelChange):
         new_value (:obj:`str`): new value
     """
 
-    def __init__(self, id=None, name=None, target=None, target_namespaces=None, new_value=None):
+    def __init__(self, id: str = None, name: str = None, target: str = None,
+                 target_namespaces: dict = None, new_value: str = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -710,7 +713,8 @@ class AddElementModelChange(ModelChange):
         new_elements (:obj:`str`): new element(s)
     """
 
-    def __init__(self, id=None, name=None, target=None, target_namespaces=None, new_elements=None):
+    def __init__(self, id: str = None, name: str = None, target: str = None,
+                 target_namespaces: dict = None, new_elements: str = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -754,7 +758,8 @@ class ReplaceElementModelChange(ModelChange):
         new_elements (:obj:`str`): new element(s)
     """
 
-    def __init__(self, id=None, name=None, target=None, target_namespaces=None, new_elements=None):
+    def __init__(self, id: str = None, name: str = None, target: str = None,
+                 target_namespaces: dict = None, new_elements: str = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -814,7 +819,7 @@ class Calculation(SedBase):
         math (:obj:`str`): mathematical expression
     """
 
-    def __init__(self, variables=None, parameters=None, math=None):
+    def __init__(self, variables: "list[Variable]" = None, parameters: "list[Parameter]" = None, math: str = None):
         """
         Args:
             variables (:obj:`list` of :obj:`Variable`, optional): variables
@@ -854,7 +859,8 @@ class ComputeModelChange(ModelChange, Calculation):
         math (:obj:`str`): mathematical expression
     """
 
-    def __init__(self, id=None, name=None, target=None, target_namespaces=None, variables=None, parameters=None, math=None):
+    def __init__(self, id: str = None, name: str = None, target: str = None, target_namespaces: dict = None,
+                 variables: "list[Variable]" = None, parameters: "list[Parameter]" = None, math: str = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -908,8 +914,9 @@ class SetValueComputeModelChange(ComputeModelChange, Calculation):
         symbol (:obj:`str`): symbol
     """
 
-    def __init__(self, id=None, name=None, target=None, target_namespaces=None, variables=None, parameters=None,
-                 math=None, model=None, range=None, symbol=None):
+    def __init__(self, id: str = None, name: str = None, target: str = None, target_namespaces: dict = None,
+                 variables: "list[Variable]" = None, parameters: "list[Parameter]" = None, math: str = None,
+                 model: Model = None, range: "Range" = None, symbol: str = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -970,7 +977,7 @@ class AbstractTask(SedBase, SedIdGroupMixin):
         name (:obj:`str`): name
     """
 
-    def __init__(self, id=None, name=None):
+    def __init__(self, id: str = None, name: str = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1002,7 +1009,7 @@ class Task(AbstractTask):
         simulation (:obj:`Simulation`): simulation
     """
 
-    def __init__(self, id=None, name=None, model=None, simulation=None):
+    def __init__(self, id: str = None, name: str = None, model: Model = None, simulation: Simulation = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1053,7 +1060,9 @@ class RepeatedTask(AbstractTask):
         ranges (:obj:`list` of :obj:`Range`): ranges
     """
 
-    def __init__(self, id=None, name=None, range=None, reset_model_for_each_iteration=None, changes=None, sub_tasks=None, ranges=None):
+    def __init__(self, id: str = None, name: str = None, range: "Range" = None,
+                 reset_model_for_each_iteration: bool = None, changes: "list[SetValueComputeModelChange]" = None,
+                 sub_tasks: "list[SubTask]" = None, ranges: "list[Range]" = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1111,7 +1120,7 @@ class SubTask(SedBase):
         order (:obj:`int`): order in which the subtask should be executed
     """
 
-    def __init__(self, task=None, order=None):
+    def __init__(self, task: AbstractTask = None, order: int = None):
         """
         Args:
             task (:obj:`AbstractTask`, optional): task
@@ -1154,7 +1163,7 @@ class Range(SedBase, SedIdGroupMixin):
         name (:obj:`str`, optional): name
     """
 
-    def __init__(self, id=None, name=None):
+    def __init__(self, id: str = None, name: str = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1194,7 +1203,8 @@ class UniformRange(Range):
         type (:obj:`UniformRangeType`): type
     """
 
-    def __init__(self, id=None, name=None, start=None, end=None, number_of_steps=None, number_of_points=None, type=None):
+    def __init__(self, id: str = None, name: str = None, start: float = None, end: float = None,
+                 number_of_steps: int = None, number_of_points: int = None, type: UniformRangeType = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1254,7 +1264,7 @@ class VectorRange(Range):
         values (:obj:`list` of :obj:`float`): values
     """
 
-    def __init__(self, id=None, name=None, values=None):
+    def __init__(self, id: str = None, name: str = None, values: "list[float]" = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1297,7 +1307,8 @@ class FunctionalRange(Range, Calculation):
         math (:obj:`str`): mathematical expression
     """
 
-    def __init__(self, id=None, name=None, range=None, variables=None, parameters=None, math=None):
+    def __init__(self, id: str = None, name: str = None, range: Range = None, variables: "list[Variable]" = None,
+                 parameters: "list[Parameter]" = None, math: str = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1349,7 +1360,8 @@ class DataGenerator(Calculation, SedIdGroupMixin):
         math (:obj:`str`): mathematical expression
     """
 
-    def __init__(self, id=None, name=None, variables=None, parameters=None, math=None):
+    def __init__(self, id: str = None, name: str = None, variables: "list[Variable]" = None,
+                 parameters: "list[Parameter]" = None, math: str = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1399,7 +1411,8 @@ class Variable(SedBase, SedIdGroupMixin):
         model (:obj:`Model`): model
     """
 
-    def __init__(self, id=None, name=None, target=None, target_namespaces=None, symbol=None, task=None, model=None):
+    def __init__(self, id: str = None, name: str = None, target: str = None, target_namespaces: dict = None,
+                 symbol: str = None, task: AbstractTask = None, model: Model = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1455,7 +1468,7 @@ class Parameter(SedBase, SedIdGroupMixin):
         value (:obj:`float`): value
     """
 
-    def __init__(self, id=None, name=None, value=None):
+    def __init__(self, id: str = None, name: str = None, value: float = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1496,7 +1509,7 @@ class Output(SedBase, SedIdGroupMixin):
         name (:obj:`str`): name
     """
 
-    def __init__(self, id=None, name=None):
+    def __init__(self, id: str = None, name: str = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1527,7 +1540,7 @@ class Report(Output):
         data_sets (:obj:`list` of :obj:`DataSet`): data sets
     """
 
-    def __init__(self, id=None, name=None, data_sets=None):
+    def __init__(self, id: str = None, name:str = None, data_sets: "list[DataSet]" = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1569,7 +1582,7 @@ class DataSet(SedBase, SedIdGroupMixin):
         data_generator (:obj:`DataGenerator`): data generator
     """
 
-    def __init__(self, id=None, name=None, label=None, data_generator=None):
+    def __init__(self, id: str = None, name: str = None, label: str = None, data_generator: DataGenerator = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1628,7 +1641,7 @@ class Plot2D(Plot):
         curves (:obj:`list` of :obj:`Curve`): curves
     """
 
-    def __init__(self, id=None, name=None, curves=None):
+    def __init__(self, id: str = None, name: str = None, curves: "list[Curve]" = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1672,7 +1685,7 @@ class Plot3D(Plot):
         surfaces (:obj:`list` of :obj:`Surface`): surfaces
     """
 
-    def __init__(self, id=None, name=None, surfaces=None):
+    def __init__(self, id: str = None, name: str = None, surfaces: "list[Surface]" = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -1957,7 +1970,8 @@ class Curve(SedBase, SedIdGroupMixin):
         style (:obj:`Style`): graphical style
     """
 
-    def __init__(self, id=None, name=None, x_scale=None, y_scale=None, x_data_generator=None, y_data_generator=None, style: Style = None):
+    def __init__(self, id: str = None, name: str = None, x_scale: AxisScale = None, y_scale: AxisScale = None,
+                 x_data_generator: DataGenerator = None, y_data_generator: DataGenerator = None, style: Style = None):
         """
         Args:
             id (:obj:`str`, optional): id
@@ -2033,10 +2047,9 @@ class Surface(SedBase, SedIdGroupMixin):
         style (:obj:`Style`): graphical style
     """
 
-    def __init__(self, id=None, name=None,
-                 x_scale=None, y_scale=None, z_scale=None,
-                 x_data_generator=None, y_data_generator=None, z_data_generator=None,
-                 style: Style = None):
+    def __init__(self, id: str = None, name: str = None, x_scale: AxisScale = None, y_scale: AxisScale = None,
+                 z_scale: AxisScale = None, x_data_generator: DataGenerator = None,
+                 y_data_generator: DataGenerator = None, z_data_generator: DataGenerator = None, style: Style = None):
         """
         Args:
             id (:obj:`str`, optional): id
