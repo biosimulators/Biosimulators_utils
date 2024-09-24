@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "biosimulators-utils"
-version = "0.2.0"
+version = "0.2.1"
 description = "description"
 license = "MIT"
 authors = ["Center for Reproducible Biomedical Modeling <info@biosimulators.org>"]
