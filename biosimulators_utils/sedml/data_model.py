@@ -244,7 +244,7 @@ class SedDocument(SedBase):
 
     def __init__(self, level: int = 1, version: int = 3, models: "list[Model]" = None,
                  simulations: "list[Simulation]" = None, tasks: "list[AbstractTask]" = None,
-                 data_generators: "list[DataGenerator]" = None, outputs: "list[Output]" = None, \
+                 data_generators: "list[DataGenerator]" = None, outputs: "list[Output]" = None,
                  styles: "list[Style]" = None, metadata: Metadata = None):
         """
         Args:
@@ -1540,7 +1540,7 @@ class Report(Output):
         data_sets (:obj:`list` of :obj:`DataSet`): data sets
     """
 
-    def __init__(self, id: str = None, name:str = None, data_sets: "list[DataSet]" = None):
+    def __init__(self, id: str = None, name: str = None, data_sets: "list[DataSet]" = None):
         """
         Args:
             id (:obj:`str`, optional): id
