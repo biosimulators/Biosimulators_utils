@@ -664,13 +664,15 @@ class ExecTaskCase(unittest.TestCase):
         out_dir = os.path.join(self.tmp_dir, 'results')
         with self.assertWarns(NoOutputsWarning):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-                exec.exec_sed_doc(exec_task, filename, working_dir, out_dir)
+                with mock.patch(target='biosimulators_utils.sedml.exec.is_executable_task', return_value=True):
+                    with mock.patch(target='biosimulators_utils.log.utils.is_executable_task', return_value=True):
+                        exec.exec_sed_doc(exec_task, filename, working_dir, out_dir)
 
     def test_errors(self):
         # unsupported type of task
         doc = data_model.SedDocument()
         doc.tasks.append(mock.Mock(id='task'))
-        with self.assertRaisesRegex(SedmlExecutionError, 'not supported'):
+        with self.assertRaisesRegex(SedmlExecutionError, 'may not be None'):
             exec.exec_sed_doc(None, doc, None, None)
 
         # error: variable not recorded
@@ -733,9 +735,10 @@ class ExecTaskCase(unittest.TestCase):
             id='task_1_ss',
         ))
         out_dir = os.path.join(self.tmp_dir, 'results')
-        with self.assertRaisesRegex(SedmlExecutionError, 'not supported'):
+        with self.assertRaisesRegex(SedmlExecutionError, 'task_1_ss'):
             with mock.patch('biosimulators_utils.model_lang.sbml.validation.validate_model', return_value=([], [], None)):
-                exec.exec_sed_doc(exec_task, doc, '.', out_dir)
+                with mock.patch(target='biosimulators_utils.sedml.exec.is_executable_task', return_value=True):
+                    exec.exec_sed_doc(exec_task, doc, '.', out_dir)
 
         # error: unsupported data generators
         doc = data_model.SedDocument()
@@ -1076,7 +1079,8 @@ class ExecTaskCase(unittest.TestCase):
         for output in doc.outputs:
             log.outputs[output.id] = ReportLog(parent=log)
         with self.assertRaisesRegex(SedmlExecutionError, 'are not supported'):
-            exec.exec_sed_doc(exec_task, doc, working_dir, out_dir, log=log)
+            with mock.patch(target='biosimulators_utils.sedml.exec.is_executable_task', return_value=True):
+                exec.exec_sed_doc(exec_task, doc, working_dir, out_dir, log=log)
 
     def test_2d_plot(self):
         doc = data_model.SedDocument()

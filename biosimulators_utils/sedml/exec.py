@@ -7,7 +7,8 @@
 """
 
 from ..config import get_config, Config, Colors  # noqa: F401
-from ..log.data_model import Status, SedDocumentLog, TaskLog, ReportLog, Plot2DLog, Plot3DLog, StandardOutputErrorCapturerLevel  # noqa: F401
+from ..log.data_model import Status, SedDocumentLog, TaskLog, ReportLog, Plot2DLog, Plot3DLog, \
+    StandardOutputErrorCapturerLevel  # noqa: F401
 from ..log.utils import init_sed_document_log, StandardOutputErrorCapturer
 from ..report.data_model import VariableResults, DataSetResults, ReportResults, ReportFormat  # noqa: F401
 from ..report.io import ReportWriter
@@ -15,10 +16,11 @@ from ..utils.core import pad_arrays_to_consistent_shapes
 from ..viz.data_model import VizFormat  # noqa: F401
 from ..viz.io import write_plot_2d, write_plot_3d
 from ..warnings import warn
-from .data_model import SedDocument, Model, Task, RepeatedTask, Output, Report, Plot2D, Plot3D, ModelAttributeChange, DataSet  # noqa: F401
+from .data_model import SedDocument, Model, Task, RepeatedTask, Output, Report, Plot2D, Plot3D, ModelAttributeChange, \
+    DataSet  # noqa: F401
 from .exceptions import SedmlExecutionError
 from .io import SedmlSimulationReader
-from .utils import (resolve_model_and_apply_xml_changes, get_variables_for_task,
+from .utils import (resolve_model_and_apply_xml_changes, get_variables_for_task, is_executable_task,
                     calc_data_generators_results, resolve_range, get_models_referenced_by_task,
                     get_value_of_variable_model_xml_targets, calc_compute_model_change_new_value,
                     apply_changes_to_xml_model, get_first_last_models_executed_by_task,
@@ -34,7 +36,6 @@ import sys
 import tempfile
 import termcolor
 import types  # noqa: F401
-
 
 __all__ = [
     'exec_sed_doc',
@@ -106,286 +107,308 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
     if not config:
         config = get_config()
 
-    # process arguments
-    if not isinstance(doc, SedDocument):
-        doc = SedmlSimulationReader().run(doc, config=config)
-    else:
-        doc = copy.deepcopy(doc)
-
-    if config.LOG and not log:
-        log = init_sed_document_log(doc)
-
-    verbose = config.VERBOSE
-
     # update status
     exceptions = []
 
-    # Trim tasks that do not directly request output
-    expected_tasks = []
-    for task in doc.tasks:
-        if 0 < len(get_variables_for_task(doc, task)):
-            expected_tasks.append(task)
+    try:
+        # Make sure we have proper args
+        if task_executer is None:
+            exceptions.append(ValueError("Parameter `task_executer` may not be None"))
+        if doc is None:
+            exceptions.append(ValueError("Parameter `doc` may not be None"))
+        if working_dir is None:
+            exceptions.append(ValueError("Parameter `working_dir` may not be None"))
+        if base_out_path is None:
+            exceptions.append(ValueError("Parameter `base_out_path` may not be None"))
 
-    # execute tasks
-    if not expected_tasks:
-        warn('SED document does not describe any tasks with output.', NoTasksWarning)
+        if len(exceptions) > 0:
+            raise RuntimeError()
 
-    # TODO: initialize reports with their eventual shapes; this requires individual simulation tools to pass
-    # information about the shape of their output to this method
-    variable_results = VariableResults()
-
-    if config.COLLECT_SED_DOCUMENT_RESULTS:
-        report_results = ReportResults()
-    else:
-        report_results = None
-
-    print('{}Found {} tasks and {} outputs:\n{}Tasks:\n{}{}\n{}Outputs:\n{}{}'.format(
-        ' ' * 2 * indent,
-        len(expected_tasks),
-        len(doc.outputs),
-        ' ' * 2 * (indent + 1),
-        ' ' * 2 * (indent + 2),
-        ('\n' + ' ' * 2 * (indent + 2)).join(sorted('`' + task.id + '`' for task in expected_tasks)),
-        ' ' * 2 * (indent + 1),
-        ' ' * 2 * (indent + 2),
-        ('\n' + ' ' * 2 * (indent + 2)).join(sorted('`' + output.id + '`' for output in doc.outputs)),
-    ))
-    for i_task, task in enumerate(expected_tasks):
-        print('{}Executing task {}: `{}`'.format(' ' * 2 * indent, i_task + 1, task.id))
-
-        if config.LOG:
-            task_log = log.tasks[task.id]
-            task_log.status = Status.RUNNING
-            task_log.export()
+        # process arguments
+        if not isinstance(doc, SedDocument):
+            doc = SedmlSimulationReader().run(doc, config=config)
         else:
-            task_log = None
+            doc = copy.deepcopy(doc)
 
-        # Execute task
-        print('{}Executing simulation ...'.format(' ' * 2 * (indent + 1)), end='')
-        sys.stdout.flush()
-        with StandardOutputErrorCapturer(relay=verbose, level=log_level, disabled=not config.LOG) as captured:
-            start_time = datetime.datetime.now()
-            try:
-                # get model and apply changes
-                original_models = get_models_referenced_by_task(task)
-                original_model_sources = {}
-                original_model_changes = {}
-                temp_model_sources = []
-                model_etrees = {}
-                preprocessed_task = None
+        if config.LOG and not log:
+            log = init_sed_document_log(doc)
 
-                task_vars = get_variables_for_task(doc, task)
-                preprocessed_task_sub_executer = None
-                if preprocessed_task_executer:
-                    preprocessed_task_sub_executer = functools.partial(preprocessed_task_executer,
-                                                                       task, task_vars,
-                                                                       config=config)
+        verbose = config.VERBOSE
 
-                for original_model in original_models:
-                    original_model_sources[original_model.id] = original_model.source
-                    original_model_changes[original_model.id] = original_model.changes
+        # Trim tasks that do not directly request output
+        expected_tasks = []
+        for task in doc.tasks:
+            if is_executable_task(doc, task):
+                expected_tasks.append(task)
 
-                    temp_model, temp_model_source, model_etree, preprocessed_task = resolve_model_and_apply_xml_changes(
-                        original_model, doc, working_dir,
-                        apply_xml_model_changes=apply_xml_model_changes,
-                        pretty_print_modified_xml_models=pretty_print_modified_xml_models,
-                        set_value_executer=set_value_executer, preprocessed_task_sub_executer=preprocessed_task_sub_executer)
+        # execute tasks
+        if not expected_tasks:
+            warn('SED document does not describe any tasks with output.', NoTasksWarning)
 
-                    original_model.source = temp_model.source
-                    original_model.changes = temp_model.changes
+        # TODO: initialize reports with their eventual shapes; this requires individual simulation tools to pass
+        # information about the shape of their output to this method
+        variable_results = VariableResults()
 
-                    if temp_model_source:
-                        temp_model_sources.append(temp_model_source)
+        if config.COLLECT_SED_DOCUMENT_RESULTS:
+            report_results = ReportResults()
+        else:
+            report_results = None
 
-                    model_etrees[original_model.id] = model_etree
+        print('{}Found {} tasks and {} outputs:\n{}Tasks:\n{}{}\n{}Outputs:\n{}{}'.format(
+            ' ' * 2 * indent,
+            len(expected_tasks),
+            len(doc.outputs),
+            ' ' * 2 * (indent + 1),
+            ' ' * 2 * (indent + 2),
+            ('\n' + ' ' * 2 * (indent + 2)).join(sorted('`' + task.id + '`' for task in expected_tasks)),
+            ' ' * 2 * (indent + 1),
+            ' ' * 2 * (indent + 2),
+            ('\n' + ' ' * 2 * (indent + 2)).join(sorted('`' + output.id + '`' for output in doc.outputs)),
+        ))
+        for i_task, task in enumerate(expected_tasks):
+            print('{}Executing task {}: `{}`'.format(' ' * 2 * indent, i_task + 1, task.id))
 
-                # The preprocessed task was not created if there was no set_value_executer, so create one now:
-                if not preprocessed_task and preprocessed_task_executer:
-                    preprocessed_task = preprocessed_task_sub_executer()
+            if config.LOG:
+                task_log = log.tasks[task.id]
+                task_log.status = Status.RUNNING
+                task_log.export()
+            else:
+                task_log = None
 
-                # execute task
-                if isinstance(task, Task):
-                    task_var_results = exec_task(task, task_executer, task_vars, doc,
-                                                 preprocessed_task=preprocessed_task, log=task_log, config=config)
-
-                elif isinstance(task, RepeatedTask):
-                    task_var_results = exec_repeated_task(task, task_executer, task_vars, doc,
-                                                          apply_xml_model_changes=apply_xml_model_changes,
-                                                          model_etrees=model_etrees,
-                                                          pretty_print_modified_xml_models=pretty_print_modified_xml_models,
-                                                          config=config, preprocessed_task=preprocessed_task,
-                                                          get_value_executer=get_value_executer,
-                                                          set_value_executer=set_value_executer,
-                                                          reset_executer=reset_executer)
-
-                else:  # pragma: no cover: already validated by :obj:`get_models_referenced_by_task`
-                    raise NotImplementedError('Tasks of type {} are not supported.'.format(task.__class__.__name__))
-
-                # append results
-                for key, value in task_var_results.items():
-                    variable_results[key] = value
-
-                # log status
-                task_status = Status.SUCCEEDED
-                task_exception = None
-
-                # cleanup modified model sources
-                for temp_model_source in temp_model_sources:
-                    os.remove(temp_model_source)
-                for original_model in original_models:
-                    original_model.source = original_model_sources[original_model.id]
-                    original_model.changes = original_model_changes[original_model.id]
-            except Exception as exception:
-                if config.DEBUG:
-                    raise
-                exceptions.append(exception)
-                task_status = Status.FAILED
-                task_exception = exception
-
-        if config.LOG:
-            task_log.status = task_status
-            task_log.exception = task_exception
-            task_log.output = captured.get_text()
-            task_log.duration = (datetime.datetime.now() - start_time).total_seconds()
-            task_log.export()
-        result_text: str = task_status.value.lower()
-        if task_exception is not None:
-            result_text += ' - ' + str(task_exception)
-        print(' ' + termcolor.colored(result_text, Colors[task_status.value.lower()].value))
-
-        # generate outputs
-        print('{}Generating {} outputs ...'.format(' ' * 2 * (indent + 1), len(doc.outputs)))
-        task_contributes_to_output = False
-        report_formats = config.REPORT_FORMATS
-        viz_formats = config.VIZ_FORMATS
-        for i_output, output in enumerate(doc.outputs):
-            print('{}Generating output {}: `{}` ...'.format(' ' * 2 * (indent + 2), i_output + 1, output.id), end='')
+            # Execute task
+            print('{}Executing simulation ...'.format(' ' * 2 * (indent + 1)), end='')
             sys.stdout.flush()
-            start_time = datetime.datetime.now()
             with StandardOutputErrorCapturer(relay=verbose, level=log_level, disabled=not config.LOG) as captured:
+                start_time = datetime.datetime.now()
                 try:
-                    if config.LOG and log.outputs[output.id].status == Status.SUCCEEDED:
-                        output_status = log.outputs[output.id].status
-                        print(' ' + termcolor.colored(output_status.value.lower(), Colors[output_status.value.lower()].value))
-                        continue
+                    # get model and apply changes
+                    original_models = get_models_referenced_by_task(task)
+                    original_model_sources = {}
+                    original_model_changes = {}
+                    temp_model_sources = []
+                    model_etrees = {}
+                    preprocessed_task = None
 
-                    if isinstance(output, Report):
-                        output_result, output_status, output_exception, task_contributes_to_report = exec_report(
-                            output, variable_results,
-                            base_out_path, rel_out_path, report_formats,
-                            task=task,
-                            log=log.outputs[output.id] if config.LOG else None,
-                            type=Report)
-                        task_contributes_to_output = task_contributes_to_output or task_contributes_to_report
+                    task_vars = get_variables_for_task(doc, task)
+                    preprocessed_task_sub_executer = None
+                    if preprocessed_task_executer:
+                        preprocessed_task_sub_executer = functools.partial(preprocessed_task_executer,
+                                                                           task, task_vars,
+                                                                           config=config)
 
-                    elif isinstance(output, Plot2D):
-                        output_status, output_exception, task_contributes_to_plot = exec_plot_2d(
-                            output, variable_results,
-                            base_out_path, rel_out_path, viz_formats,
-                            task=task,
-                            log=log.outputs[output.id] if config.LOG else None)
-                        task_contributes_to_output = task_contributes_to_output or task_contributes_to_plot
+                    for original_model in original_models:
+                        original_model_sources[original_model.id] = original_model.source
+                        original_model_changes[original_model.id] = original_model.changes
 
-                        # save data as report
-                        if config.SAVE_PLOT_DATA:
-                            report = get_report_for_plot2d(output)
-                            output_result, _, _, _ = exec_report(
-                                report, variable_results,
-                                base_out_path, rel_out_path, report_formats,
-                                task,
-                                log=None,
-                                type=output.__class__)
-                        else:
-                            output_result = None
+                        temp_model, temp_model_source, model_etree, preprocessed_task = resolve_model_and_apply_xml_changes(
+                            original_model, doc, working_dir,
+                            apply_xml_model_changes=apply_xml_model_changes,
+                            pretty_print_modified_xml_models=pretty_print_modified_xml_models,
+                            set_value_executer=set_value_executer,
+                            preprocessed_task_sub_executer=preprocessed_task_sub_executer)
 
-                    elif isinstance(output, Plot3D):
-                        output_status, output_exception, task_contributes_to_plot = exec_plot_3d(
-                            output, variable_results,
-                            base_out_path, rel_out_path, viz_formats,
-                            task=task,
-                            log=log.outputs[output.id] if config.LOG else None)
-                        task_contributes_to_output = task_contributes_to_output or task_contributes_to_plot
+                        original_model.source = temp_model.source
+                        original_model.changes = temp_model.changes
 
-                        # save as report
-                        if config.SAVE_PLOT_DATA:
-                            report = get_report_for_plot3d(output)
-                            output_result, _, _, _ = exec_report(
-                                report, variable_results,
-                                base_out_path, rel_out_path, report_formats,
-                                task,
-                                log=None,
-                                type=output.__class__)
-                        else:
-                            output_result = None
+                        if temp_model_source:
+                            temp_model_sources.append(temp_model_source)
 
-                    else:
-                        # unreachable because the above cases cover all types of outputs
-                        raise NotImplementedError('Outputs of type {} are not supported.'.format(output.__class__.__name__))
+                        model_etrees[original_model.id] = model_etree
 
-                    if config.COLLECT_SED_DOCUMENT_RESULTS and output_result is not None:
-                        report_results[output.id] = output_result
+                    # The preprocessed task was not created if there was no set_value_executer, so create one now:
+                    if not preprocessed_task and preprocessed_task_executer:
+                        preprocessed_task = preprocessed_task_sub_executer()
 
+                    # execute task
+                    if isinstance(task, Task):
+                        task_var_results = exec_task(task, task_executer, task_vars, doc,
+                                                     preprocessed_task=preprocessed_task, log=task_log, config=config)
+
+                    elif isinstance(task, RepeatedTask):
+                        task_var_results = exec_repeated_task(task, task_executer, task_vars, doc,
+                                                              apply_xml_model_changes=apply_xml_model_changes,
+                                                              model_etrees=model_etrees,
+                                                              pretty_print_modified_xml_models=pretty_print_modified_xml_models,
+                                                              config=config, preprocessed_task=preprocessed_task,
+                                                              get_value_executer=get_value_executer,
+                                                              set_value_executer=set_value_executer,
+                                                              reset_executer=reset_executer)
+
+                    else:  # pragma: no cover: already validated by :obj:`get_models_referenced_by_task`
+                        raise NotImplementedError('Tasks of type {} are not supported.'.format(task.__class__.__name__))
+
+                    # append results
+                    for key, value in task_var_results.items():
+                        variable_results[key] = value
+
+                    # log status
+                    task_status = Status.SUCCEEDED
+                    task_exception = None
+
+                    # cleanup modified model sources
+                    for temp_model_source in temp_model_sources:
+                        os.remove(temp_model_source)
+                    for original_model in original_models:
+                        original_model.source = original_model_sources[original_model.id]
+                        original_model.changes = original_model_changes[original_model.id]
                 except Exception as exception:
                     if config.DEBUG:
                         raise
-                    output_status = Status.FAILED
-                    output_exception = exception
+                    exceptions.append(exception)
+                    task_status = Status.FAILED
+                    task_exception = exception
 
             if config.LOG:
-                log.outputs[output.id].status = output_status
-                log.outputs[output.id].exception = output_exception
-                log.outputs[output.id].output = captured.get_text()
-                log.outputs[output.id].duration = (datetime.datetime.now() - start_time).total_seconds()
-                log.outputs[output.id].export()
+                task_log.status = task_status
+                task_log.exception = task_exception
+                task_log.output = captured.get_text()
+                task_log.duration = (datetime.datetime.now() - start_time).total_seconds()
+                task_log.export()
+            result_text: str = task_status.value.lower()
+            if task_exception is not None:
+                result_text += ' - ' + str(task_exception)
+            print(' ' + termcolor.colored(result_text, Colors[task_status.value.lower()].value))
 
-            if output_exception:
-                exceptions.append(output_exception)
+            # generate outputs
+            print('{}Generating {} outputs ...'.format(' ' * 2 * (indent + 1), len(doc.outputs)))
+            task_contributes_to_output = False
+            report_formats = config.REPORT_FORMATS
+            viz_formats = config.VIZ_FORMATS
+            for i_output, output in enumerate(doc.outputs):
+                print('{}Generating output {}: `{}` ...'.format(' ' * 2 * (indent + 2), i_output + 1, output.id),
+                      end='')
+                sys.stdout.flush()
+                start_time = datetime.datetime.now()
+                with StandardOutputErrorCapturer(relay=verbose, level=log_level, disabled=not config.LOG) as captured:
+                    try:
+                        if config.LOG and log.outputs[output.id].status == Status.SUCCEEDED:
+                            output_status = log.outputs[output.id].status
+                            print(' ' + termcolor.colored(output_status.value.lower(),
+                                                          Colors[output_status.value.lower()].value))
+                            continue
 
-            print(' ' + termcolor.colored(output_status.value.lower(), Colors[output_status.value.lower()].value))
+                        if isinstance(output, Report):
+                            output_result, output_status, output_exception, task_contributes_to_report = exec_report(
+                                output, variable_results,
+                                base_out_path, rel_out_path, report_formats,
+                                task=task,
+                                log=log.outputs[output.id] if config.LOG else None,
+                                type=Report)
+                            task_contributes_to_output = task_contributes_to_output or task_contributes_to_report
 
-        if not task_contributes_to_output:
-            warn('Task {} does not contribute to any outputs.'.format(task.id), NoOutputsWarning)
+                        elif isinstance(output, Plot2D):
+                            output_status, output_exception, task_contributes_to_plot = exec_plot_2d(
+                                output, variable_results,
+                                base_out_path, rel_out_path, viz_formats,
+                                task=task,
+                                log=log.outputs[output.id] if config.LOG else None)
+                            task_contributes_to_output = task_contributes_to_output or task_contributes_to_plot
 
-    # finalize the status of the outputs
-    if config.LOG:
-        for output_log in log.outputs.values():
-            output_log.finalize()
+                            # save data as report
+                            if config.SAVE_PLOT_DATA:
+                                report = get_report_for_plot2d(output)
+                                output_result, _, _, _ = exec_report(
+                                    report, variable_results,
+                                    base_out_path, rel_out_path, report_formats,
+                                    task,
+                                    log=None,
+                                    type=output.__class__)
+                            else:
+                                output_result = None
 
-    # summarize execution
-    if config.LOG:
-        task_status_count = {
-            Status.SUCCEEDED: 0,
-            Status.SKIPPED: 0,
-            Status.FAILED: 0,
-        }
-        for task_log in log.tasks.values():
-            task_status_count[task_log.status] += 1
+                        elif isinstance(output, Plot3D):
+                            output_status, output_exception, task_contributes_to_plot = exec_plot_3d(
+                                output, variable_results,
+                                base_out_path, rel_out_path, viz_formats,
+                                task=task,
+                                log=log.outputs[output.id] if config.LOG else None)
+                            task_contributes_to_output = task_contributes_to_output or task_contributes_to_plot
 
-        output_status_count = {
-            Status.SUCCEEDED: 0,
-            Status.SKIPPED: 0,
-            Status.FAILED: 0,
-        }
-        for output_log in log.outputs.values():
-            output_status_count[output_log.status] += 1
+                            # save as report
+                            if config.SAVE_PLOT_DATA:
+                                report = get_report_for_plot3d(output)
+                                output_result, _, _, _ = exec_report(
+                                    report, variable_results,
+                                    base_out_path, rel_out_path, report_formats,
+                                    task,
+                                    log=None,
+                                    type=output.__class__)
+                            else:
+                                output_result = None
 
-        print('')
-        print('{}Executed {} tasks and {} outputs:'.format(' ' * 2 * indent, len(expected_tasks), len(doc.outputs)))
-        print('{}  Tasks:'.format(' ' * 2 * indent))
-        print('{}    Succeeded: {}'.format(' ' * 2 * indent, task_status_count[Status.SUCCEEDED]))
-        print('{}    Skipped: {}'.format(' ' * 2 * indent, task_status_count[Status.SKIPPED]))
-        print('{}    Failed: {}'.format(' ' * 2 * indent, task_status_count[Status.FAILED]))
-        print('{}  Outputs:'.format(' ' * 2 * indent))
-        print('{}    Succeeded: {}'.format(' ' * 2 * indent, output_status_count[Status.SUCCEEDED]))
-        print('{}    Skipped: {}'.format(' ' * 2 * indent, output_status_count[Status.SKIPPED]))
-        print('{}    Failed: {}'.format(' ' * 2 * indent, output_status_count[Status.FAILED]))
+                        else:
+                            # unreachable because the above cases cover all types of outputs
+                            raise NotImplementedError(
+                                'Outputs of type {} are not supported.'.format(output.__class__.__name__))
 
-    # raise exceptions
-    if exceptions:
+                        if config.COLLECT_SED_DOCUMENT_RESULTS and output_result is not None:
+                            report_results[output.id] = output_result
+
+                    except Exception as exception:
+                        if config.DEBUG:
+                            raise
+                        output_status = Status.FAILED
+                        output_exception = exception
+
+                if config.LOG:
+                    log.outputs[output.id].status = output_status
+                    log.outputs[output.id].exception = output_exception
+                    log.outputs[output.id].output = captured.get_text()
+                    log.outputs[output.id].duration = (datetime.datetime.now() - start_time).total_seconds()
+                    log.outputs[output.id].export()
+
+                if output_exception:
+                    exceptions.append(output_exception)
+
+                print(' ' + termcolor.colored(output_status.value.lower(), Colors[output_status.value.lower()].value))
+
+            if not task_contributes_to_output:
+                warn('Task {} does not contribute to any outputs.'.format(task.id), NoOutputsWarning)
+
+        # finalize the status of the outputs
+        if config.LOG:
+            for output_log in log.outputs.values():
+                output_log.finalize()
+
+        # summarize execution
+        if config.LOG:
+            task_status_count = {
+                Status.SUCCEEDED: 0,
+                Status.SKIPPED: 0,
+                Status.FAILED: 0,
+            }
+            for task_log in log.tasks.values():
+                task_status_count[task_log.status] += 1
+
+            output_status_count = {
+                Status.SUCCEEDED: 0,
+                Status.SKIPPED: 0,
+                Status.FAILED: 0,
+            }
+            for output_log in log.outputs.values():
+                output_status_count[output_log.status] += 1
+
+            print('')
+            print('{}Executed {} tasks and {} outputs:'.format(' ' * 2 * indent, len(expected_tasks), len(doc.outputs)))
+            print('{}  Tasks:'.format(' ' * 2 * indent))
+            print('{}    Succeeded: {}'.format(' ' * 2 * indent, task_status_count[Status.SUCCEEDED]))
+            print('{}    Skipped: {}'.format(' ' * 2 * indent, task_status_count[Status.SKIPPED]))
+            print('{}    Failed: {}'.format(' ' * 2 * indent, task_status_count[Status.FAILED]))
+            print('{}  Outputs:'.format(' ' * 2 * indent))
+            print('{}    Succeeded: {}'.format(' ' * 2 * indent, output_status_count[Status.SUCCEEDED]))
+            print('{}    Skipped: {}'.format(' ' * 2 * indent, output_status_count[Status.SKIPPED]))
+            print('{}    Failed: {}'.format(' ' * 2 * indent, output_status_count[Status.FAILED]))
+
+        # raise exceptions
+        if exceptions:
+            raise RuntimeError()
+
+    except Exception as e:
+        if str(e) != "":
+            exceptions.append(e)
         msg = 'The SED document did not execute successfully:\n\n  {}'.format(
             '\n\n  '.join(str(exceptions).replace('\n', '\n  ') for exceptions in exceptions))
         raise SedmlExecutionError(msg)
-
     # return the results of the reports
     return report_results, log
 
@@ -428,7 +451,8 @@ def exec_task(task, task_executer, task_vars, doc, log=None, config=None, prepro
         :obj:`VariableResults`: results of the variables
     """
     # execute task
-    task_variable_results, _ = task_executer(task, task_vars, log=log, config=config, preprocessed_task=preprocessed_task)
+    task_variable_results, _ = task_executer(task, task_vars, log=log, config=config,
+                                             preprocessed_task=preprocessed_task)
 
     # check that the expected variables were recorded
     variable_results = VariableResults()
@@ -440,7 +464,8 @@ def exec_task(task, task_executer, task_vars, doc, log=None, config=None, prepro
 
 
 def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_changes=False, model_etrees=None,
-                       pretty_print_modified_xml_models=False, config=None, preprocessed_task=None, get_value_executer=None,
+                       pretty_print_modified_xml_models=False, config=None, preprocessed_task=None,
+                       get_value_executer=None,
                        set_value_executer=None, reset_executer=None):
     """ Execute a repeated SED task
 
@@ -490,8 +515,9 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
 
     sub_tasks = sorted(task.sub_tasks, key=lambda sub_task: sub_task.order)
     for prev_sub_task, next_sub_task in zip(sub_tasks[0:-1], sub_tasks[1:]):
-        if get_first_last_models_executed_by_task(prev_sub_task.task)[-1] == get_first_last_models_executed_by_task(next_sub_task.task)[0] \
-           and not reset_executer:
+        if get_first_last_models_executed_by_task(prev_sub_task.task)[-1] == \
+                get_first_last_models_executed_by_task(next_sub_task.task)[0] \
+                and not reset_executer:
             msg = (
                 'Only independent execution of sub-tasks is supported. '
                 'Successive sub-tasks will not be executed starting from the end state of the previous sub-task.'
@@ -554,11 +580,13 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                         pass
                 if variable.id not in variable_values:
                     if not apply_xml_model_changes:
-                        raise NotImplementedError('Set value changes that involve variables of non-XML-encoded models are not supported.')
+                        raise NotImplementedError(
+                            'Set value changes that involve variables of non-XML-encoded models are not supported.')
                     else:
                         variable_values[variable.id] = get_value_of_variable_model_xml_targets(variable, model_etrees)
 
-            new_value = calc_compute_model_change_new_value(change, variable_values=variable_values, range_values=current_range_values)
+            new_value = calc_compute_model_change_new_value(change, variable_values=variable_values,
+                                                            range_values=current_range_values)
 
             if set_value_executer:
                 # Unlike above, we don't try to set values that the set_value_executer doesn't know about by editing the XML.
@@ -573,7 +601,8 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                 if change.symbol:
                     raise NotImplementedError('Set value changes of symbols is not supported.')
 
-                attr_change = ModelAttributeChange(target=change.target, target_namespaces=change.target_namespaces, new_value=new_value)
+                attr_change = ModelAttributeChange(target=change.target, target_namespaces=change.target_namespaces,
+                                                   new_value=new_value)
 
                 if apply_xml_model_changes and is_model_language_encoded_in_xml(change.model.language):
                     model = Model(changes=[attr_change])
@@ -600,7 +629,8 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                                                  standalone=False,
                                                  pretty_print=pretty_print_modified_xml_models)
 
-                sub_task_var_results = exec_task(sub_task.task, task_executer, task_vars, doc, config=config, preprocessed_task=preprocessed_task)
+                sub_task_var_results = exec_task(sub_task.task, task_executer, task_vars, doc, config=config,
+                                                 preprocessed_task=preprocessed_task)
 
                 if apply_xml_model_changes and is_model_language_encoded_in_xml(model.language):
                     os.remove(model.source)
@@ -617,7 +647,8 @@ def exec_repeated_task(task, task_executer, task_vars, doc, apply_xml_model_chan
                                                           reset_executer=reset_executer)
 
             else:  # pragma: no cover: already validated by :obj:`get_first_last_models_executed_by_task`
-                raise NotImplementedError('Tasks of type {} are not supported.'.format(sub_task.task.__class__.__name__))
+                raise NotImplementedError(
+                    'Tasks of type {} are not supported.'.format(sub_task.task.__class__.__name__))
 
             for var in task_vars:
                 variable_results[var.id][i_main_range][i_sub_task] = sub_task_var_results.get(var.id, None)

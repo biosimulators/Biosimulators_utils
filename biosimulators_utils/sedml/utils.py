@@ -37,6 +37,7 @@ __all__ = [
     'get_data_generators_for_output',
     'get_variables_for_data_generators',
     'get_variables_for_task',
+    'is_executable_task',
     'get_model_changes_for_task',
     'resolve_model_and_apply_xml_changes',
     'resolve_model',
@@ -229,6 +230,19 @@ def get_variables_for_task(doc, task):
     variables = get_variables_for_data_generators(data_generators)
 
     return list(filter(lambda var: var.task == task, variables))
+
+
+def is_executable_task(doc: SedDocument, task: Task):
+    """ Check if a task actually has outputs that a simulator needs to find
+
+    Args:
+        doc (:obj:`SedDocument`): sedml document
+        task (:obj:`Task`): task
+
+    Returns:
+        :obj:`bool` value of whether the task is an "executable" one
+    """
+    return 0 < len(get_variables_for_task(doc, task))
 
 
 def get_model_changes_for_task(task):
