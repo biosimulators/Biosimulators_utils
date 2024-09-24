@@ -407,7 +407,8 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
         if str(e) != "":
             exceptions.append(e)
         msg = 'The SED document did not execute successfully:\n\n  {}'.format(
-            '\n\n  '.join(str(exceptions).replace('\n', '\n  ') for exceptions in exceptions))
+            '\n\n  '.join(str(exception.__class__) + ":" + str(exception).replace('\n', '\n  ')
+                          for exception in exceptions))
         raise SedmlExecutionError(msg)
     # return the results of the reports
     return report_results, log

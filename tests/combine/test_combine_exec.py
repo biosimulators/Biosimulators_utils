@@ -9,6 +9,7 @@ from biosimulators_utils.report.data_model import ReportFormat, ReportResults, S
 from biosimulators_utils.sedml.data_model import (SedDocument, Task, Report, Model,
                                                   ModelLanguage, UniformTimeCourseSimulation, Algorithm, Variable, DataGenerator, DataSet)
 from biosimulators_utils.sedml import exec as sedml_exec
+from biosimulators_utils.sedml.exceptions import SedmlExecutionError
 from biosimulators_utils.sedml.io import SedmlSimulationReader, SedmlSimulationWriter
 from biosimulators_utils.viz.data_model import VizFormat
 from unittest import mock
@@ -428,7 +429,7 @@ class ExecCombineTestCase(unittest.TestCase):
 
         config.DEBUG = True
         sed_doc_executer = functools.partial(sedml_exec.exec_sed_doc, sed_task_executer_error)
-        with self.assertRaisesRegex(ValueError, 'Big error'):
+        with self.assertRaisesRegex(SedmlExecutionError, 'Big error'):
             exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
                                             apply_xml_model_changes=False,
                                             config=config)
@@ -453,7 +454,7 @@ class ExecCombineTestCase(unittest.TestCase):
 
         config.DEBUG = True
         sed_doc_executer = functools.partial(sedml_exec.exec_sed_doc, sed_task_executer_error)
-        with self.assertRaisesRegex(ValueError, 'Big error'):
+        with self.assertRaisesRegex(SedmlExecutionError, 'Big error'):
             exec.exec_sedml_docs_in_archive(sed_doc_executer, archive_filename, out_dir,
                                             apply_xml_model_changes=False,
                                             config=config)
