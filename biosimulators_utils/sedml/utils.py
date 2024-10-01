@@ -5,6 +5,7 @@
 :Copyright: 2020, Center for Reproducible Biomedical Modeling
 :License: MIT
 """
+import regex
 
 from ..log.data_model import Status
 from ..report.data_model import VariableResults, DataGeneratorResults  # noqa: F401
@@ -450,7 +451,14 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
 
     # First pass:  Must-be-XML changes:
     non_xml_changes = []
+    possible_changes = (AddElementModelChange, ReplaceElementModelChange,
+                                   RemoveElementModelChange, ModelAttributeChange, ComputeModelChange)
     for change in model.changes:
+        if not isinstance(change, possible_changes):
+            error_msg = (f"Change {' ' + change.name if change.name else ''} "
+                         f"of type {change.__class__.__name__} is not supported.")
+            raise NotImplementedError(error_msg)
+
         if isinstance(change, AddElementModelChange):
             parents = eval_xpath(model_etree, change.target, change.target_namespaces)
 
@@ -496,30 +504,54 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                 parent.remove(element)
 
         elif isinstance(change, ModelAttributeChange):
-            obj_xpath, sep, attr = change.target.rpartition('/@')
-            if sep != '/@':
-                change.model = model
-                non_xml_changes.append(change)
-                continue
-            # get object to change
-            obj_xpath, sep, attr = change.target.rpartition('/@')
-            if sep != '/@':
-                raise NotImplementedError('target ' + change.target + ' cannot be changed by XML manipulation, as the target '
-                                          'is not an attribute of a model element')
-            objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
-            if validate_unique_xml_targets and len(objs) != 1:
-                raise ValueError('xpath {} must match a single object'.format(obj_xpath))
+            xpath_captures = regex.split("[\[|\]]", change.target)
+            if len(xpath_captures) != 3 or "@" not in xpath_captures[1] or xpath_captures[2] != "":
+                # Old method for ModelAttributeChange
+                obj_xpath, sep, attr = change.target.rpartition('/@')
+                if sep != '/@':
+                    change.model = model
+                    non_xml_changes.append(change)
+                    continue
+                # get object to change
+                obj_xpath, sep, attr = change.target.rpartition('/@')
+                if sep != '/@':
+                    raise NotImplementedError(
+                        'target ' + change.target + ' cannot be changed by XML manipulation, as the target '
+                                                    'is not an attribute of a model element')
+                objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
+                if validate_unique_xml_targets and len(objs) != 1:
+                    raise ValueError('xpath {} must match a single object'.format(obj_xpath))
 
-            ns_prefix, _, attr = attr.rpartition(':')
-            if ns_prefix:
-                ns = change.target_namespaces.get(ns_prefix, None)
-                if ns is None:
-                    raise ValueError('No namespace is defined with prefix `{}`'.format(ns_prefix))
-                attr = '{{{}}}{}'.format(ns, attr)
+                ns_prefix, _, attr = attr.rpartition(':')
+                if ns_prefix:
+                    ns = change.target_namespaces.get(ns_prefix, None)
+                    if ns is None:
+                        raise ValueError('No namespace is defined with prefix `{}`'.format(ns_prefix))
+                    attr = '{{{}}}{}'.format(ns, attr)
 
-            # change value
-            for obj in objs:
-                obj.set(attr, change.new_value)
+                # change value
+                for obj in objs:
+                    obj.set(attr, change.new_value)
+            else:
+                # New Method for ModelAttributeChange
+                xml_target_captures = regex.split("[\@|=]", xpath_captures[1])
+                xml_target_captures[2] = xml_target_captures[2][1:-1]
+                _, target_type, target_value = tuple(xml_target_captures)
+                xml_model_attribute = eval_xpath(model_etree, change.target, change.target_namespaces)
+                if validate_unique_xml_targets and len(xml_model_attribute) != 1:
+                    raise ValueError(f'xpath {change.target} must match a single object')
+                xpath_tiers = [elem for elem in regex.split("/", xpath_captures[0]) if ":" in elem]
+                if len(xpath_tiers) == 0:
+                    raise ValueError(f'No namespace is defined')
+                existing_namespace = regex.split(":", xpath_tiers[0])[0]
+                if change.target_namespaces.get(existing_namespace) is None:
+                    raise ValueError(f'No namespace is defined with prefix `{existing_namespace}`')
+                # change value
+                for attribute in xml_model_attribute:
+                    if attribute.get("initialConcentration") is not None:
+                        attribute.set("initialConcentration", change.new_value)
+                    else:
+                        raise ValueError(f"SBML attribute to apply `{change.new_value}` to can not be figured out.")
 
         elif isinstance(change, ComputeModelChange):
             # get the values of model variables referenced by compute model changes
@@ -559,9 +591,6 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
             for obj in objs:
                 obj.set(attr, new_value)
 
-        else:
-            raise NotImplementedError('Change{} of type {} is not supported.'.format(
-                ' ' + change.name if change.name else '', change.__class__.__name__))
 
     # Interlude:  set up the preprocessed task, if there's a set_value_executor
     preprocessed_task = None
