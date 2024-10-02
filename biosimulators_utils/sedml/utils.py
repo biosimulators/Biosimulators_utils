@@ -14,7 +14,8 @@ from ..warnings import warn
 from ..xml.utils import eval_xpath
 from .data_model import (SedBase, SedIdGroupMixin, SedDocument,  # noqa: F401
                          Model, ModelLanguagePattern, ModelChange, ModelAttributeChange, AddElementModelChange,
-                         ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange, SetValueComputeModelChange,
+                         ReplaceElementModelChange, RemoveElementModelChange, ComputeModelChange,
+                         SetValueComputeModelChange,
                          OneStepSimulation, SteadyStateSimulation, UniformTimeCourseSimulation,
                          Task, RepeatedTask, Output, Report, Plot, Plot2D, Plot3D,
                          DataGenerator, Variable,
@@ -320,7 +321,8 @@ def resolve_model_and_apply_xml_changes(orig_model, sed_doc, working_dir,
         try:
             model_etree = etree.parse(model.source)
         except Exception as exception:
-            raise ValueError('The model could not be parsed because the model is not a valid XML document: {}'.format(str(exception)))
+            raise ValueError('The model could not be parsed because the model is not a valid XML document: {}'.format(
+                str(exception)))
 
         if model.changes:
             # Change source here so that tasks point to actual source they can find.
@@ -335,7 +337,8 @@ def resolve_model_and_apply_xml_changes(orig_model, sed_doc, working_dir,
             # write model to file
             if save_to_file:
                 if temp_model_source is None:
-                    modified_model_file, temp_model_source = tempfile.mkstemp(suffix='.xml', dir=os.path.dirname(model.source))
+                    modified_model_file, temp_model_source = tempfile.mkstemp(suffix='.xml',
+                                                                              dir=os.path.dirname(model.source))
                     os.close(modified_model_file)
                     model.source = temp_model_source
 
@@ -452,7 +455,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
     # First pass:  Must-be-XML changes:
     non_xml_changes = []
     possible_changes = (AddElementModelChange, ReplaceElementModelChange,
-                                   RemoveElementModelChange, ModelAttributeChange, ComputeModelChange)
+                        RemoveElementModelChange, ModelAttributeChange, ComputeModelChange)
     for change in model.changes:
         if not isinstance(change, possible_changes):
             error_msg = (f"Change {' ' + change.name if change.name else ''} "
@@ -481,7 +484,8 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                 raise ValueError('xpath {} must match a single object'.format(change.target))
 
             try:
-                new_elements = etree.parse(io.StringIO('<root>' + change.new_elements + '</root>')).getroot().getchildren()
+                new_elements = etree.parse(
+                    io.StringIO('<root>' + change.new_elements + '</root>')).getroot().getchildren()
             except etree.XMLSyntaxError as exception:
                 raise ValueError('`{}` is invalid XML. {}'.format(change.new_elements, str(exception)))
 
@@ -504,7 +508,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                 parent.remove(element)
 
         elif isinstance(change, ModelAttributeChange):
-            xpath_captures = regex.split("[\[|\]]", change.target)
+            xpath_captures = regex.split(r"[\[|\]]", change.target)
             if len(xpath_captures) != 3 or "@" not in xpath_captures[1] or xpath_captures[2] != "":
                 # Old method for ModelAttributeChange
                 obj_xpath, sep, attr = change.target.rpartition('/@')
@@ -526,7 +530,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                 if ns_prefix:
                     ns = change.target_namespaces.get(ns_prefix, None)
                     if ns is None:
-                        raise ValueError('No namespace is defined with prefix `{}`'.format(ns_prefix))
+                        raise ValueError(f'No namespace is defined with prefix `{ns_prefix}`')
                     attr = '{{{}}}{}'.format(ns, attr)
 
                 # change value
@@ -534,7 +538,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                     obj.set(attr, change.new_value)
             else:
                 # New Method for ModelAttributeChange
-                xml_target_captures = regex.split("[\@|=]", xpath_captures[1])
+                xml_target_captures = regex.split(r"[\@|=]", xpath_captures[1])
                 xml_target_captures[2] = xml_target_captures[2][1:-1]
                 _, target_type, target_value = tuple(xml_target_captures)
                 xml_model_attribute = eval_xpath(model_etree, change.target, change.target_namespaces)
@@ -542,7 +546,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                     raise ValueError(f'xpath {change.target} must match a single object')
                 xpath_tiers = [elem for elem in regex.split("/", xpath_captures[0]) if ":" in elem]
                 if len(xpath_tiers) == 0:
-                    raise ValueError(f'No namespace is defined')
+                    raise ValueError('No namespace is defined')
                 existing_namespace = regex.split(":", xpath_tiers[0])[0]
                 if change.target_namespaces.get(existing_namespace) is None:
                     raise ValueError(f'No namespace is defined with prefix `{existing_namespace}`')
@@ -557,12 +561,15 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
             # get the values of model variables referenced by compute model changes
             if variable_values is None:
                 model_etrees = {model.id: model_etree}
-                iter_variable_values = get_values_of_variable_model_xml_targets_of_model_change(change, sed_doc, model_etrees, working_dir)
+                iter_variable_values = get_values_of_variable_model_xml_targets_of_model_change(change, sed_doc,
+                                                                                                model_etrees,
+                                                                                                working_dir)
             else:
                 iter_variable_values = variable_values
 
             # calculate new value
-            new_value = calc_compute_model_change_new_value(change, variable_values=iter_variable_values, range_values=range_values)
+            new_value = calc_compute_model_change_new_value(change, variable_values=iter_variable_values,
+                                                            range_values=range_values)
             if new_value == int(new_value):
                 new_value = str(int(new_value))
             else:
@@ -591,7 +598,6 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
             for obj in objs:
                 obj.set(attr, new_value)
 
-
     # Interlude:  set up the preprocessed task, if there's a set_value_executor
     preprocessed_task = None
     if preprocessed_task_sub_executer:
@@ -607,16 +613,18 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
     for change in non_xml_changes:
         if isinstance(change, ModelAttributeChange):
             if not set_value_executer:
-                raise NotImplementedError('target ' + change.target + ' cannot be changed by XML manipulation, as the target '
-                                          'is not an attribute of a model element')
+                raise NotImplementedError(
+                    'target ' + change.target + ' cannot be changed by XML manipulation, as the target '
+                                                'is not an attribute of a model element')
             else:
                 set_value_executer(change.model, change.target, None, change.new_value, preprocessed_task)
 
         elif isinstance(change, ComputeModelChange):
             obj_xpath, sep, attr = change.target.rpartition('/@')
             if not set_value_executer:
-                raise NotImplementedError('target ' + change.target + ' cannot be changed by XML manipulation, as the target '
-                                          'is not an attribute of a model element')
+                raise NotImplementedError(
+                    'target ' + change.target + ' cannot be changed by XML manipulation, as the target '
+                                                'is not an attribute of a model element')
             set_value_executer(change.model, change.target, change.symbol, change.new_value, preprocessed_task)
 
     return preprocessed_task
@@ -771,7 +779,8 @@ def calc_data_generator_results(data_generator, variable_results):
     else:
         for aggregate_func in AGGREGATE_MATH_FUNCTIONS:
             if re.search(aggregate_func + r' *\(', data_generator.math):
-                msg = 'Evaluation of aggregate mathematical functions such as `{}` is not supported.'.format(aggregate_func)
+                msg = 'Evaluation of aggregate mathematical functions such as `{}` is not supported.'.format(
+                    aggregate_func)
                 raise NotImplementedError(msg)
 
         padded_var_shapes = []
@@ -859,7 +868,8 @@ def calc_data_generators_results(data_generators, variable_results, output, task
 
         if vars_failed:
             status = Status.FAILED
-            msg = 'Data generator {} cannot be calculated because its variables were not successfully produced.'.format(data_gen.id)
+            msg = 'Data generator {} cannot be calculated because its variables were not successfully produced.'.format(
+                data_gen.id)
             exceptions.append(ValueError(msg))
             result = None
 
@@ -1164,7 +1174,8 @@ def resolve_range(range, model_etrees=None):
             if var.symbol:
                 raise NotImplementedError('Symbols are not supported for variables of functional ranges')
             if model_etrees[var.model.id] is None:
-                raise NotImplementedError('Functional ranges that involve variables of non-XML-encoded models are not supported.')
+                raise NotImplementedError(
+                    'Functional ranges that involve variables of non-XML-encoded models are not supported.')
             workspace[var.id] = get_value_of_variable_model_xml_targets(var, model_etrees)
 
         # calculate the values of the range
@@ -1276,11 +1287,11 @@ def does_model_language_use_xpath_variable_targets(language):
         :obj:`bool`: :obj:`True`, if the model language is encoded in XML
     """
     return (
-        re.match(ModelLanguagePattern.CellML, language)
-        or re.match(ModelLanguagePattern.CopasiML, language)
-        or re.match(ModelLanguagePattern.MorpheusML, language)
-        or re.match(ModelLanguagePattern.SBML, language)
-        or re.match(ModelLanguagePattern.VCML, language)
+            re.match(ModelLanguagePattern.CellML, language)
+            or re.match(ModelLanguagePattern.CopasiML, language)
+            or re.match(ModelLanguagePattern.MorpheusML, language)
+            or re.match(ModelLanguagePattern.SBML, language)
+            or re.match(ModelLanguagePattern.VCML, language)
     )
 
 
