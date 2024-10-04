@@ -688,8 +688,33 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
+
         change = data_model.ModelAttributeChange(
-            target="/sbml/model/listOfSpecies/spesies[@id='Trim']",
+            target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:spesies[@id='Trim']/initialConcentration",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
+            new_value='1.9')
+        et = etree.parse(self.FIXTURE_FILENAME)
+        with self.assertRaises(NotImplementedError):
+            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+
+        change = data_model.ModelAttributeChange(
+            target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:spesies[@id='Trim']",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
+            new_value='1.9')
+        et = etree.parse(self.FIXTURE_FILENAME)
+        with self.assertRaises(ValueError):
+            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+
+        change = data_model.ModelAttributeChange(
+            target="/:sbml/:model/:listOfSpecies/:species[@id='Trim']",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
+            new_value='1.9')
+        et = etree.parse(self.FIXTURE_FILENAME)
+        with self.assertRaises(etree.XPathEvalError):
+            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+
+        change = data_model.ModelAttributeChange(
+            target="/sbml/model/listOfSpecies/species[@id='Trim']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
         et = etree.parse(self.FIXTURE_FILENAME)
@@ -750,6 +775,20 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
+            new_value='1.9')
+        et = etree.parse(self.FIXTURE_FILENAME)
+        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+
+        change = data_model.ModelAttributeChange(
+            target="/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='compartment']",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
+            new_value='1.9')
+        et = etree.parse(self.FIXTURE_FILENAME)
+        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+
+        change = data_model.ModelAttributeChange(
+            target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='parameter_1']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
         et = etree.parse(self.FIXTURE_FILENAME)

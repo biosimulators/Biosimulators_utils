@@ -511,17 +511,13 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
             xpath_captures = regex.split(r"[\[|\]]", change.target)
             if len(xpath_captures) != 3 or "@" not in xpath_captures[1] or xpath_captures[2] != "":
                 # Old method for ModelAttributeChange
+                # get object to change
                 obj_xpath, sep, attr = change.target.rpartition('/@')
                 if sep != '/@':
                     change.model = model
                     non_xml_changes.append(change)
                     continue
-                # get object to change
-                obj_xpath, sep, attr = change.target.rpartition('/@')
-                if sep != '/@':
-                    raise NotImplementedError(
-                        'target ' + change.target + ' cannot be changed by XML manipulation, as the target '
-                                                    'is not an attribute of a model element')
+
                 objs = eval_xpath(model_etree, obj_xpath, change.target_namespaces)
                 if validate_unique_xml_targets and len(objs) != 1:
                     raise ValueError('xpath {} must match a single object'.format(obj_xpath))
@@ -546,10 +542,8 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                     raise ValueError(f'xpath {change.target} must match a single object')
                 xpath_tiers = [elem for elem in regex.split("/", xpath_captures[0]) if ":" in elem]
                 if len(xpath_tiers) == 0:
-                    raise ValueError('No namespace is defined')
-                element_type = regex.split(":", xpath_tiers[-1])
-                if len(element_type) != 2:
                     raise ValueError("Unexpected number of tokens in model element xpath")
+                element_type = regex.split(":", xpath_tiers[-1])
 
                 namespace_prefix, type_suffix = tuple(element_type)
                 if change.target_namespaces.get(namespace_prefix) is None:

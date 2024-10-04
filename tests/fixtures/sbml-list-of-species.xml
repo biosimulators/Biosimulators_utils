@@ -14,5 +14,9 @@
       <species compartment="compartment" id="SpeciesToReplace" initialConcentration="0.0035491784" name="Sic1" sboTerm="SBO:0000245">
       </species>
     </listOfSpecies>
+    <listOfParameters>
+      <parameter constant="false" id="parameter_1" name="Fe2GutQUant" value="1E-7">
+      </parameter>
+    </listOfParameters>
   </model>
 </sbml>
