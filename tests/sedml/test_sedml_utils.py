@@ -456,34 +456,10 @@ class ApplyModelChangesTestCase(unittest.TestCase):
 
         species = et.xpath("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
                            namespaces=get_namespaces_with_prefixes(namespaces))
-        num_species = len(species)
-        species_ids = set([s.get('id') for s in species])
+        num_species = len(species) + 2
+        species_ids = set([s.get('id') for s in species]) | {'NewSpecies1', 'NewSpecies2'}
 
-        # apply changes
-        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
-
-        # check changes applied
-        xpath_evaluator = etree.XPathEvaluator(et, namespaces=get_namespaces_with_prefixes(namespaces))
-        species = xpath_evaluator("/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species")
-        self.assertEqual(len(species), num_species + 2)
-        self.assertEqual(set([s.get('id') for s in species]), species_ids | set(['NewSpecies1', 'NewSpecies2']))
-
-        # check that changes can be written/read from file
-        doc = data_model.SedDocument(
-            models=[
-                data_model.Model(
-                    id='model',
-                    language='language',
-                    source='source',
-                    changes=[change],
-                ),
-            ]
-        )
-
-        filename = os.path.join(self.tmp_dir, 'test.sedml')
-        io.SedmlSimulationWriter().run(doc, filename)
-        doc2 = io.SedmlSimulationReader().run(filename)
-        self.assertTrue(doc2.is_equal(doc))
+        self._apply_namespace_changes_and_evaluate_equality(change, et, num_species, namespaces, species_ids)
 
         ####################
         # Incorrect namespace
@@ -508,6 +484,10 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         num_species = len(species)
         species_ids = set([s.get('id') for s in species])
 
+        self._apply_namespace_changes_and_evaluate_equality(change, et, num_species, namespaces, species_ids)
+
+    def _apply_namespace_changes_and_evaluate_equality(self, change: data_model.ModelChange, et, num_species: int,
+                                                       namespaces: dict, species_ids: "set[str]"):
         # apply changes
         utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
@@ -676,123 +656,104 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']/@initialConcentration",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaises(NotImplementedError):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME, NotImplementedError)
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:spesies[@id='Trim']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaises(ValueError):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
-
+        self._attempt_change(change, self.FIXTURE_FILENAME, ValueError)
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:spesies[@id='Trim']/initialConcentration",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaises(NotImplementedError):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME, NotImplementedError)
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:spesies[@id='Trim']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaises(ValueError):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME, ValueError)
 
         change = data_model.ModelAttributeChange(
             target="/:sbml/:model/:listOfSpecies/:species[@id='Trim']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaises(etree.XPathEvalError):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME, etree.XPathEvalError)
 
         change = data_model.ModelAttributeChange(
             target="/sbml/model/listOfSpecies/species[@id='Trim']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaises(ValueError):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME, ValueError)
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species/@initialConcentration",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaises(ValueError):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME, ValueError)
 
         namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']/@sbml2:initialConcentration",
             target_namespaces=namespaces,
             new_value='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaises(ValueError):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME, ValueError)
 
         namespaces['sbml2'] = 'http://www.sbml.org/sbml/level2/version4'
-        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME)
 
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_elements='<')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaisesRegex(ValueError, 'invalid XML'):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME, ValueError)
 
         change = data_model.AddElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_elements='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaisesRegex(ValueError, 'must match a single object'):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME, ValueError)
 
         change = data_model.ReplaceElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_elements='<')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaisesRegex(ValueError, 'invalid XML'):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME, ValueError)
 
         change = data_model.ReplaceElementModelChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_elements='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaisesRegex(ValueError, 'must match a single object'):
-            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME, ValueError)
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME)
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id='compartment']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME)
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='parameter_1']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
-        et = etree.parse(self.FIXTURE_FILENAME)
-        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        self._attempt_change(change, self.FIXTURE_FILENAME)
+
+    def _attempt_change(self, change: data_model.ModelChange, sbml_path: str,
+                        expected_exception: "type[BaseException] | tuple[type[BaseException], ...]" = None):
+        et = etree.parse(sbml_path)
+        if expected_exception is not None:
+            with self.assertRaises(expected_exception):
+                utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+        else:
+            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
     def test_apply_compute_model_change_new_value(self):
         change = data_model.ComputeModelChange(
