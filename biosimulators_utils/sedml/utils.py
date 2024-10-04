@@ -541,29 +541,38 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                 xml_target_captures = regex.split(r"[\@|=]", xpath_captures[1])
                 xml_target_captures[2] = xml_target_captures[2][1:-1]
                 _, target_type, target_value = tuple(xml_target_captures)
-                xml_model_attribute = eval_xpath(model_etree, change.target, change.target_namespaces)
-                if validate_unique_xml_targets and len(xml_model_attribute) != 1:
+                xml_model_element = eval_xpath(model_etree, change.target, change.target_namespaces)
+                if validate_unique_xml_targets and len(xml_model_element) != 1:
                     raise ValueError(f'xpath {change.target} must match a single object')
                 xpath_tiers = [elem for elem in regex.split("/", xpath_captures[0]) if ":" in elem]
                 if len(xpath_tiers) == 0:
                     raise ValueError('No namespace is defined')
-                existing_namespace = regex.split(":", xpath_tiers[0])[0]
-                if change.target_namespaces.get(existing_namespace) is None:
-                    raise ValueError(f'No namespace is defined with prefix `{existing_namespace}`')
+                element_type = regex.split(":", xpath_tiers[-1])
+                if len(element_type) != 2:
+                    raise ValueError("Unexpected number of tokens in model element xpath")
+
+                namespace_prefix, type_suffix = tuple(element_type)
+                if change.target_namespaces.get(namespace_prefix) is None:
+                    raise ValueError(f'No namespace is defined with prefix `{namespace_prefix}`')
                 # change value
-                for attribute in xml_model_attribute:
-                    if attribute.get("initialConcentration") is not None:
+                for attribute in xml_model_element:
+                    if type_suffix == "species" and attribute.get("initialConcentration") is not None:
                         attribute.set("initialConcentration", change.new_value)
+                    elif type_suffix == "compartment" and attribute.get("size") is not None:
+                        attribute.set("size", change.new_value)
+                    elif type_suffix == "parameter" and attribute.get("value") is not None:
+                        attribute.set("value", change.new_value)
                     else:
-                        raise ValueError(f"SBML attribute to apply `{change.new_value}` to can not be figured out.")
+                        change.model = model
+                        non_xml_changes.append(change)
+                        continue
 
         elif isinstance(change, ComputeModelChange):
             # get the values of model variables referenced by compute model changes
             if variable_values is None:
                 model_etrees = {model.id: model_etree}
-                iter_variable_values = get_values_of_variable_model_xml_targets_of_model_change(change, sed_doc,
-                                                                                                model_etrees,
-                                                                                                working_dir)
+                iter_variable_values = \
+                    get_values_of_variable_model_xml_targets_of_model_change(change, sed_doc, model_etrees, working_dir)
             else:
                 iter_variable_values = variable_values
 
@@ -612,10 +621,15 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
     # Second pass:  changes that need to be interpreter-based:
     for change in non_xml_changes:
         if isinstance(change, ModelAttributeChange):
+
             if not set_value_executer:
-                raise NotImplementedError(
-                    'target ' + change.target + ' cannot be changed by XML manipulation, as the target '
-                                                'is not an attribute of a model element')
+                xpath_captures = regex.split(r"[\[|\]]", change.target)
+                if len(xpath_captures) != 3 or "@" not in xpath_captures[1] or xpath_captures[2] != "":
+                    raise NotImplementedError(
+                        'target ' + change.target + ' cannot be changed by XML manipulation, as the target '
+                                                    'is not an attribute of a model element')
+                else:
+                    raise ValueError(f"SBML attribute to apply `{change.new_value}` to can not be figured out.")
             else:
                 set_value_executer(change.model, change.target, None, change.new_value, preprocessed_task)
 

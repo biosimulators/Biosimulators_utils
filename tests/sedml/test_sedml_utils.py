@@ -681,11 +681,19 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
         change = data_model.ModelAttributeChange(
-            target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
+            target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:spesies[@id='Trim']",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
         et = etree.parse(self.FIXTURE_FILENAME)
-        with self.assertRaises(NotImplementedError):
+        with self.assertRaises(ValueError):
+            utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+
+        change = data_model.ModelAttributeChange(
+            target="/sbml/model/listOfSpecies/spesies[@id='Trim']",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
+            new_value='1.9')
+        et = etree.parse(self.FIXTURE_FILENAME)
+        with self.assertRaises(ValueError):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
         change = data_model.ModelAttributeChange(
@@ -739,6 +747,13 @@ class ApplyModelChangesTestCase(unittest.TestCase):
         et = etree.parse(self.FIXTURE_FILENAME)
         with self.assertRaisesRegex(ValueError, 'must match a single object'):
             utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
+
+        change = data_model.ModelAttributeChange(
+            target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:species[@id='Trim']",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
+            new_value='1.9')
+        et = etree.parse(self.FIXTURE_FILENAME)
+        utils.apply_changes_to_xml_model(data_model.Model(changes=[change]), et, None, None)
 
     def test_apply_compute_model_change_new_value(self):
         change = data_model.ComputeModelChange(
