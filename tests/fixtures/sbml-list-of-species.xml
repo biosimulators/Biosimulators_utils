@@ -15,7 +15,7 @@
       </species>
     </listOfSpecies>
     <listOfParameters>
-      <parameter constant="false" id="parameter_1" name="Fe2GutQUant" value="1E-7">
+      <parameter constant="false" id="parameter_1" name="Fe2GutQUant" value="1E-7" units="second">
       </parameter>
     </listOfParameters>
   </model>
