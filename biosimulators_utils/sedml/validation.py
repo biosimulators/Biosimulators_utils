@@ -1179,11 +1179,11 @@ def validate_simulation_type(simulation, types):
     errors = []
 
     if not isinstance(simulation, types):
+        valid_types = "\n  - ".join(type.__name__ for type in types)
         errors.append([
-            'Simulation {} of type `{}` is not supported. Simulation must be an instance of one of the following:\n  - {}'.format(
-                simulation.id, simulation.__class__.__name__, '\n  - '.join(type.__name__ for type in types))
+            f'Simulation {simulation.id} of type `{simulation.__class__.__name__}` is not supported. '
+            f'Simulation must be an instance of one of the following:\n  - {valid_types}'
         ])
-
     return errors
 
 

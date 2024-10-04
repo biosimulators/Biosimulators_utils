@@ -165,7 +165,10 @@ def exec_sed_doc(task_executer, doc, working_dir, base_out_path, rel_out_path=No
             ' ' * 2 * (indent + 2),
             ('\n' + ' ' * 2 * (indent + 2)).join(sorted('`' + output.id + '`' for output in doc.outputs)),
         ))
-        for i_task, task in enumerate(expected_tasks):
+        for i_task in range(0, len(expected_tasks)):
+            task = expected_tasks[i_task]
+            task_status = Status.QUEUED
+            task_exception = None
             print('{}Executing task {}: `{}`'.format(' ' * 2 * indent, i_task + 1, task.id))
 
             if config.LOG:
