@@ -1746,7 +1746,7 @@ def validate_target_xpaths(targets, model_etree, attr='id', separator=None):
         for i in range(1, len(xpath_list)-1):
             combined_id = combined_id + xpath_list[i].split(']')[0][1:-1] + separator
         x_path_attrs[xpath] = combined_id + x_path_attrs[xpath]
-        
+
     return x_path_attrs
 
 
