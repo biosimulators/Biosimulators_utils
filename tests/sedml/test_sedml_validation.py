@@ -1318,6 +1318,29 @@ class ValidationTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             validation.validate_target_xpaths(variables, model_etree)
 
+    def test_validate_target_xpaths_separator(self):
+        namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
+
+        model_source = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000010_url.xml')
+        model_etree = etree.parse(model_source)
+
+        variables = [
+            data_model.Variable(target_namespaces=namespaces,
+                                target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='J0']"),
+            data_model.Variable(target_namespaces=namespaces,
+                                target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='J0']/sbml:kineticLaw/sbml:listOfParameters/sbml:parameter[@id='n']"),
+        ]
+        
+        
+        idmap = validation.validate_target_xpaths(variables, model_etree, attr='id', separator="_")
+        idmap_expect = {
+            "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='J0']": 'J0', 
+            "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='J0']/sbml:kineticLaw/sbml:listOfParameters/sbml:parameter[@id='n']": 'J0_n',
+            }
+            
+        self.assertEqual(idmap, idmap_expect)
+
+
     def test_validate_target(self):
         self.assertEqual(validation.validate_target('/sbml:sbml/sbml:model',
                                                     {'sbml': 'sbml'},
