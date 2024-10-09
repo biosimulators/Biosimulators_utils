@@ -1318,9 +1318,7 @@ class ValidationTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             validation.validate_target_xpaths(variables, model_etree)
 
-    def test_validate_target_xpaths_separator(self):
-        namespaces = {'sbml': 'http://www.sbml.org/sbml/level2/version4'}
-
+        #Test the 'separator' argument of validate_target_xpaths
         model_source = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'BIOMD0000000010_url.xml')
         model_etree = etree.parse(model_source)
 
