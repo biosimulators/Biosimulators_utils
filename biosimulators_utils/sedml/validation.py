@@ -1723,7 +1723,8 @@ def validate_target_xpaths(targets, model_etree, attr='id', separator=None):
         targets (:obj:`list` of :obj:`TargetGroupMixin`): model changes or variables
         model_source (:obj:`lxml.etree._ElementTree`): element tree for the XML model document
         attr (:obj:`str`, optional): attribute to get values of
-        separator (:obj:`str`, optional): string to use when combining attributes into a single id (i.e. 'J0.n' from 'J0' and 'n'.)  If None, don't combine and just use final id.
+        separator (:obj:`str`, optional): string to use when combining attributes into a single id 
+          (i.e. 'J0.n' from 'J0' and 'n'.)  If None, don't combine and just use final id.
 
     Returns:
         :obj:`dict` of :obj:`str` to :obj:`str`: dictionary that maps each XPath to the
