@@ -41,7 +41,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
-          java-version: '15'
+          java-version: '16'
 
       - name: Install Perl # for BioNetGen
         run: |
