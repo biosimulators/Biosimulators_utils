@@ -40,8 +40,8 @@ jobs:
       - name: Install Java # for pyNeuroML
         uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
-          java-version: '20'
+          distribution: 'temurin'
+          java-version: '21'
 
       - name: Install Perl # for BioNetGen
         run: |
