@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>biosimulators_utils.sedml package &#8212; BioSimulators utils 0.2.2 documentation</title>
+    <title>biosimulators_utils.sedml package &#8212; BioSimulators utils 0.2.3 documentation</title>
   
   
   
@@ -36,7 +36,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=000c92bf"></script>
+    <script src="../_static/documentation_options.js?v=a47416a6"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'source/biosimulators_utils.sedml';</script>
@@ -124,8 +124,8 @@
       
     
     
-    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="BioSimulators utils 0.2.2 documentation - Home"/>
-    <script>document.write(`<img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="BioSimulators utils 0.2.2 documentation - Home"/>`);</script>
+    <img src="../_static/biosimulators-logo.svg" class="logo__image only-light" alt="BioSimulators utils 0.2.3 documentation - Home"/>
+    <script>document.write(`<img src="../_static/biosimulators-logo.svg" class="logo__image only-dark" alt="BioSimulators utils 0.2.3 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -5914,15 +5914,17 @@ their models</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="biosimulators_utils.sedml.validation.validate_target_xpaths">
-<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_target_xpaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_etree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.validation.validate_target_xpaths" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">biosimulators_utils.sedml.validation.</span></span><span class="sig-name descname"><span class="pre">validate_target_xpaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_etree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/biosimulators/Biosimulators_utils/blob/dev/biosimulators_utils/sedml/validation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#biosimulators_utils.sedml.validation.validate_target_xpaths" title="Link to this definition">#</a></dt>
 <dd><p>Validate that the target of each model change or variable matches one object in
-an XML-encoded model and, optionally, return the value of one of its attributes</p>
+an XML-encoded model and, optionally, return the value of one of its attributes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>targets</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">TargetGroupMixin</span></code>) – model changes or variables</p></li>
 <li><p><strong>model_source</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">lxml.etree._ElementTree</span></code>) – element tree for the XML model document</p></li>
 <li><p><strong>attr</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – attribute to get values of</p></li>
+<li><p><strong>separator</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, optional) – string to use when combining attributes into a single id
+(i.e. ‘J0.n’ from ‘J0’ and ‘n’.)  If None, don’t combine and just use final id.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
