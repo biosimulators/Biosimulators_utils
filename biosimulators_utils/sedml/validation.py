@@ -1715,14 +1715,16 @@ def validate_target(target, namespaces, context, language, model_id, model_etree
     return errors, warnings
 
 
-def validate_target_xpaths(targets, model_etree, attr='id'):
+def validate_target_xpaths(targets, model_etree, attr='id', separator=None):
     """ Validate that the target of each model change or variable matches one object in
-    an XML-encoded model and, optionally, return the value of one of its attributes
+    an XML-encoded model and, optionally, return the value of one of its attributes.
 
     Args:
         targets (:obj:`list` of :obj:`TargetGroupMixin`): model changes or variables
         model_source (:obj:`lxml.etree._ElementTree`): element tree for the XML model document
         attr (:obj:`str`, optional): attribute to get values of
+        separator (:obj:`str`, optional): string to use when combining attributes into a single id
+          (i.e. 'J0.n' from 'J0' and 'n'.)  If None, don't combine and just use final id.
 
     Returns:
         :obj:`dict` of :obj:`str` to :obj:`str`: dictionary that maps each XPath to the
@@ -1736,6 +1738,17 @@ def validate_target_xpaths(targets, model_etree, attr='id'):
                 x_path, _, _ = x_path.rpartition('/@')
             x_path_attrs[target.target] = validate_xpaths_ref_to_unique_objects(
                 model_etree, [x_path], target.target_namespaces, attr=attr)[x_path]
+    if separator is None:
+        return x_path_attrs
+    for xpath in x_path_attrs:
+        xpath_list = xpath.split("@" + attr + "=")
+        if len(xpath_list) < 3:
+            continue
+        combined_id = ""
+        for i in range(1, len(xpath_list)-1):
+            combined_id = combined_id + xpath_list[i].split(']')[0][1:-1] + separator
+        x_path_attrs[xpath] = combined_id + x_path_attrs[xpath]
+
     return x_path_attrs
 
 
