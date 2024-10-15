@@ -559,7 +559,9 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                         attribute.set("size", change.new_value)
                     elif type_suffix == "parameter" and attribute.get("value") is not None:
                         attribute.set("value", change.new_value)
-                    elif (type_suffix == "reaction" and second_type_suffix == "parameter"
+                    elif (type_suffix == "reaction" and
+                          (second_type_suffix == "parameter"  # SBML L1, L2
+                           or second_type_suffix == "localParameter")  # SBML L3+
                           and attribute.get("value") is not None):  # Reaction parameter change
                         attribute.set("value", change.new_value)
                     else:

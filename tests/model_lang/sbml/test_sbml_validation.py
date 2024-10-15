@@ -8,7 +8,7 @@ class ValidationTestCase(unittest.TestCase):
     FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'fixtures')
 
     def test(self):
-        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'sbml-list-of-species.xml'))
+        errors, warnings, _ = validate_model(os.path.join(self.FIXTURE_DIR, 'sbml-list-of-species-lvl-2.xml'))
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 

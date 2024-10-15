@@ -18,5 +18,27 @@
       <parameter constant="false" id="parameter_1" name="Fe2GutQUant" value="1E-7" units="second">
       </parameter>
     </listOfParameters>
+    <listOfReactions>
+      <reaction metaid="COPASI127" id="lumen" name="01. StomachLumen  -&gt; IntestineLumen" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="Trim" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Clb" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Trim </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" name="k1" value="350"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
   </model>
 </sbml>

@@ -828,7 +828,7 @@ class ValidationTestCase(unittest.TestCase):
         return (errors, warnings)
 
     def test_validate_model_source_with_abs_path(self):
-        filename = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-list-of-species.xml'))
+        filename = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-list-of-species-lvl-2.xml'))
         errors, warnings = validation.validate_model_source(data_model.Model(
             source=filename, language=data_model.ModelLanguage.SBML), [], None, validate_models_with_languages=False)
         self.assertEqual(errors, [])
@@ -851,7 +851,7 @@ class ValidationTestCase(unittest.TestCase):
 
     def test_validate_model_with_language(self):
         # SBML
-        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-list-of-species.xml')
+        filename = os.path.join(os.path.dirname(__file__), '..', 'fixtures', 'sbml-list-of-species-lvl-2.xml')
         validation.validate_model_with_language(filename, data_model.ModelLanguage.SBML)
 
         errors, warnings, _ = validation.validate_model_with_language(filename, '--not-supported--')

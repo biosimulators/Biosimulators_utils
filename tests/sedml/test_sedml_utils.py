@@ -231,7 +231,8 @@ class SedmlUtilsTestCase(unittest.TestCase):
 
 
 class ApplyModelChangesTestCase(unittest.TestCase):
-    FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '../fixtures/sbml-list-of-species.xml')
+    FIXTURE_FILENAME = os.path.join(os.path.dirname(__file__), '../fixtures/sbml-list-of-species-lvl-2.xml')
+    FIXTURE_FILENAME_2 = os.path.join(os.path.dirname(__file__), '../fixtures/sbml-list-of-species-lvl-3.xml')
 
     def setUp(self):
         self.tmp_dir = tempfile.mkdtemp()
@@ -668,7 +669,7 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:spesies[@id='Trim']/initialConcentration",
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
-        self._attempt_change(change, self.FIXTURE_FILENAME, NotImplementedError)
+        self._attempt_change(change, self.FIXTURE_FILENAME, ValueError)
 
         change = data_model.ModelAttributeChange(
             target="/sbml:sbml/sbml:model/sbml:listOfSpecies/sbml:spesies[@id='Trim']",
@@ -745,6 +746,21 @@ class ApplyModelChangesTestCase(unittest.TestCase):
             target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
             new_value='1.9')
         self._attempt_change(change, self.FIXTURE_FILENAME)
+
+        change = data_model.ModelAttributeChange(
+            target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='lumen']/sbml:kineticLaw"
+                   "/sbml:listOfParameters/sbml:parameter[@id='k1']",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level2/version4'},
+            new_value='1.9')
+        self._attempt_change(change, self.FIXTURE_FILENAME)
+
+        change = data_model.ModelAttributeChange(
+            target="/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='lumen']/sbml:kineticLaw"
+                   "/sbml:listOfLocalParameters/sbml:localParameter[@id='k1']/@value",
+            target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version1'},
+            new_value='1.9')
+        self._attempt_change(change, self.FIXTURE_FILENAME_2)
+
 
     def _attempt_change(self, change: data_model.ModelChange, sbml_path: str,
                         expected_exception: "type[BaseException] | tuple[type[BaseException], ...]" = None):
