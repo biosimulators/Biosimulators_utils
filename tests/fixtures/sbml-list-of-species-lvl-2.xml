@@ -1,6 +1,39 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
   <model id="Ciliberto2003_Morphogenesis" name="Ciliberto2003_Morphogenesis_Checkpoint">
+    <listOfUnitDefinitions>
+      <unitDefinition id="volume" name="volume">
+        <listOfUnits>
+          <unit kind="litre" exponent="1" scale="-3" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="time" name="time">
+        <listOfUnits>
+          <unit kind="second" exponent="1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance" name="substance">
+        <listOfUnits>
+          <unit kind="mole" exponent="1" scale="-9" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="unit_0" name="mg">
+        <listOfUnits>
+          <unit kind="gram" exponent="1" scale="-3" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="millilitre" name="ml">
+        <listOfUnits>
+          <unit kind="litre" exponent="1" scale="-3" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="molsPerSecond" name="mols/s">
+        <listOfUnits>
+          <unit kind="mole" exponent="1" scale="-9" multiplier="1"/>
+          <unit kind="second" exponent="-1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
     <listOfCompartments>
       <compartment id="compartment" size="1"/>
     </listOfCompartments>
@@ -21,21 +54,26 @@
     <listOfReactions>
       <reaction metaid="COPASI127" id="lumen" name="01. StomachLumen  -&gt; IntestineLumen" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="Trim" stoichiometry="1" constant="true"/>
+          <speciesReference species="Clb" stoichiometry="1"/>
+          <speciesReference species="Sic" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Clb" stoichiometry="1" constant="true"/>
+          <speciesReference species="Trim" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k1 </ci>
-              <ci> Trim </ci>
+              <apply>
+                <divide/>
+                <ci> Clb </ci>
+                <ci> Sic </ci>
+              </apply>
             </apply>
           </math>
           <listOfParameters>
-            <parameter id="k1" name="k1" value="350"/>
+            <parameter id="k1" name="k1" value="350" units="molsPerSecond"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
