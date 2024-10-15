@@ -509,7 +509,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
 
         elif isinstance(change, ModelAttributeChange):
             xpath_captures = regex.split(r"[\[|\]]", change.target)
-            if len(xpath_captures) != 3 or "@" not in xpath_captures[1] or xpath_captures[2] != "":
+            if len(xpath_captures) < 3 or "/@" in xpath_captures[-1]:
                 # Old method for ModelAttributeChange
                 # get object to change
                 obj_xpath, sep, attr = change.target.rpartition('/@')
@@ -534,9 +534,9 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                     obj.set(attr, change.new_value)
             else:
                 # New Method for ModelAttributeChange
-                xml_target_captures = regex.split(r"[\@|=]", xpath_captures[1])
+                xml_target_captures = regex.split(r"[\@|=]", xpath_captures[-2])
                 xml_target_captures[2] = xml_target_captures[2][1:-1]
-                _, target_type, target_value = tuple(xml_target_captures)
+                #_, target_type, target_value = tuple(xml_target_captures)
                 xml_model_element = eval_xpath(model_etree, change.target, change.target_namespaces)
                 if validate_unique_xml_targets and len(xml_model_element) != 1:
                     raise ValueError(f'xpath {change.target} must match a single object')
@@ -544,8 +544,12 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                 if len(xpath_tiers) == 0:
                     raise ValueError("Unexpected number of tokens in model element xpath")
                 element_type = regex.split(":", xpath_tiers[-1])
+                second_element_type = None if len(xpath_captures) != 5 \
+                    else regex.split(":",
+                                     [elem for elem in regex.split("/", xpath_captures[2]) if ":" in elem][-1])
 
                 namespace_prefix, type_suffix = tuple(element_type)
+                _, second_type_suffix = tuple(second_element_type) if second_element_type else (None, None)
                 if change.target_namespaces.get(namespace_prefix) is None:
                     raise ValueError(f'No namespace is defined with prefix `{namespace_prefix}`')
                 # change value
@@ -555,6 +559,9 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                     elif type_suffix == "compartment" and attribute.get("size") is not None:
                         attribute.set("size", change.new_value)
                     elif type_suffix == "parameter" and attribute.get("value") is not None:
+                        attribute.set("value", change.new_value)
+                    elif (type_suffix == "reaction" and second_type_suffix == "parameter"
+                          and attribute.get("value") is not None): # Reaction parameter change
                         attribute.set("value", change.new_value)
                     else:
                         change.model = model
