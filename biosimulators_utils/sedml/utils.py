@@ -536,7 +536,6 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                 # New Method for ModelAttributeChange
                 xml_target_captures = regex.split(r"[\@|=]", xpath_captures[-2])
                 xml_target_captures[2] = xml_target_captures[2][1:-1]
-                #_, target_type, target_value = tuple(xml_target_captures)
                 xml_model_element = eval_xpath(model_etree, change.target, change.target_namespaces)
                 if validate_unique_xml_targets and len(xml_model_element) != 1:
                     raise ValueError(f'xpath {change.target} must match a single object')
@@ -561,7 +560,7 @@ def apply_changes_to_xml_model(model, model_etree, sed_doc=None, working_dir=Non
                     elif type_suffix == "parameter" and attribute.get("value") is not None:
                         attribute.set("value", change.new_value)
                     elif (type_suffix == "reaction" and second_type_suffix == "parameter"
-                          and attribute.get("value") is not None): # Reaction parameter change
+                          and attribute.get("value") is not None):  # Reaction parameter change
                         attribute.set("value", change.new_value)
                     else:
                         change.model = model
