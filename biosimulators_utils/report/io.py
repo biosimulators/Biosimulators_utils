@@ -77,7 +77,7 @@ class ReportWriter(object):
                     data_set_shapes.append('')
                 else:
                     data_set_dtype = data_set_result.dtype
-                    if data_set_dtype in [numpy.dtype('object'), numpy.dtype('void'), numpy.dtype('S'), numpy.dtype('a')]:
+                    if data_set_dtype in [numpy.dtype('object'), numpy.dtype('void'), numpy.dtype('S')]:
                         msg = 'NumPy dtype should be a specific type such as `float64` or `int64` not `{}`.'.format(data_set_dtype.name)
                         raise TypeError(msg)
                     data_set_data_types.append(data_set_dtype.name)
