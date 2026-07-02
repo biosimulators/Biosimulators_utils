@@ -1,0 +1,54 @@
+{
+  "upload_type": "software",
+  "title": "BioSimulators utils",
+  "license": "mit",
+  "creators": [
+    {
+      "name": "Karr, Jonathan R.",
+      "affiliation": "Icahn School of Medicine at Mount Sinai",
+      "orcid": "0000-0002-2605-5080"
+    },
+    {
+      "name": "Smith, Lucian P.",
+      "affiliation": "University of Washington",
+      "orcid": "0000-0001-7002-6386"
+    },
+    {
+      "name": "Patrie, Alexander",
+      "affiliation": "University of Connecticut School of Medicine",
+      "orcid": "0009-0002-6886-2291"
+    },
+    {
+      "name": "Drescher, Logan",
+      "affiliation": "University of Connecticut School of Medicine"
+    },
+    {
+      "name": "Schaff, James C.",
+      "affiliation": "University of Connecticut School of Medicine",
+      "orcid": "0000-0003-3286-7736"
+    },
+    {
+      "name": "Agmon, Eran",
+      "affiliation": "University of Connecticut School of Medicine",
+      "orcid": "0000-0003-1279-2474"
+    },
+    {
+      "name": "Shaikh, Bilal",
+      "affiliation": "Icahn School of Medicine at Mount Sinai",
+      "orcid": "0000-0001-5801-5510"
+    },
+    {
+      "name": "Moraru, Ion I.",
+      "affiliation": "University of Connecticut School of Medicine",
+      "orcid": "0000-0002-3746-9676"
+    }
+  ],
+  "description": "<p>BioSimulators utils provides utilities for building standardized command-line interfaces for biosimulation software packages. Part of the BioSimulators project (Karr Lab, Icahn School of Medicine at Mount Sinai, and the Center for Cell Analysis and Modeling at UConn Health).</p>",
+  "related_identifiers": [
+    {
+      "relation": "continues",
+      "identifier": "10.5281/zenodo.5059724",
+      "scheme": "doi"
+    }
+  ]
+}
