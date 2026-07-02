@@ -36,6 +36,11 @@
       "name": "Shaikh, Bilal",
       "affiliation": "Icahn School of Medicine at Mount Sinai",
       "orcid": "0000-0001-5801-5510"
+    },
+    {
+      "name": "Moraru, Ion I.",
+      "affiliation": "University of Connecticut School of Medicine",
+      "orcid": "0000-0002-3746-9676"
     }
   ],
   "description": "<p>BioSimulators utils provides utilities for building standardized command-line interfaces for biosimulation software packages. Part of the BioSimulators project (Karr Lab, Icahn School of Medicine at Mount Sinai, and the Center for Cell Analysis and Modeling at UConn Health).</p>",
