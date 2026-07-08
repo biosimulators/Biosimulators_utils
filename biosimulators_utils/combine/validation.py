@@ -11,7 +11,6 @@ from ..omex_meta.io import read_omex_meta_files_for_archive
 from ..sedml.io import SedmlSimulationReader
 from .data_model import CombineArchive, CombineArchiveContent, CombineArchiveContentFormat, CombineArchiveContentFormatPattern  # noqa: F401
 from .utils import get_sedml_contents
-import imghdr
 import os
 import re
 
@@ -169,6 +168,30 @@ def validate_format(format):
     return errors
 
 
+def _get_image_format(filename):
+    """ Get the format of a BMP, GIF, JPEG, PNG, TIFF, or WEBP image. """
+    try:
+        with open(filename, 'rb') as file:
+            header = file.read(12)
+    except OSError:
+        return None
+
+    if header.startswith(b'BM'):
+        return 'bmp'
+    if header.startswith((b'GIF87a', b'GIF89a')):
+        return 'gif'
+    if header.startswith(b'\xff\xd8\xff'):
+        return 'jpeg'
+    if header.startswith(b'\x89PNG\r\n\x1a\n'):
+        return 'png'
+    if header.startswith((b'II*\x00', b'MM\x00*')):
+        return 'tiff'
+    if header.startswith(b'RIFF') and header[8:12] == b'WEBP':
+        return 'webp'
+
+    return None
+
+
 def validate_content(content, archive_dirname,
                      formats_to_validate=[
                          CombineArchiveContentFormat.SED_ML,
@@ -227,7 +250,7 @@ def validate_content(content, archive_dirname,
             and re.match(CombineArchiveContentFormatPattern.BMP.value, content.format)
         ):
             file_type = CombineArchiveContentFormat.BMP.name
-            if not (os.path.isfile(filename) and imghdr.what(filename) == 'bmp'):
+            if not (os.path.isfile(filename) and _get_image_format(filename) == 'bmp'):
                 errors.append(['`{}` is not a valid BMP image.'.format(content.location)])
 
         elif (
@@ -236,7 +259,7 @@ def validate_content(content, archive_dirname,
             and re.match(CombineArchiveContentFormatPattern.GIF.value, content.format)
         ):
             file_type = CombineArchiveContentFormat.GIF.name
-            if not (os.path.isfile(filename) and imghdr.what(filename) == 'gif'):
+            if not (os.path.isfile(filename) and _get_image_format(filename) == 'gif'):
                 errors.append(['`{}` is not a valid GIF image.'.format(content.location)])
 
         elif (
@@ -245,7 +268,7 @@ def validate_content(content, archive_dirname,
             and re.match(CombineArchiveContentFormatPattern.JPEG.value, content.format)
         ):
             file_type = CombineArchiveContentFormat.JPEG.name
-            if not (os.path.isfile(filename) and imghdr.what(filename) == 'jpeg'):
+            if not (os.path.isfile(filename) and _get_image_format(filename) == 'jpeg'):
                 errors.append(['`{}` is not a valid JPEG image.'.format(content.location)])
 
         elif (
@@ -254,7 +277,7 @@ def validate_content(content, archive_dirname,
             and re.match(CombineArchiveContentFormatPattern.PNG.value, content.format)
         ):
             file_type = CombineArchiveContentFormat.PNG.name
-            if not (os.path.isfile(filename) and imghdr.what(filename) == 'png'):
+            if not (os.path.isfile(filename) and _get_image_format(filename) == 'png'):
                 errors.append(['`{}` is not a valid PNG image.'.format(content.location)])
 
         elif (
@@ -263,7 +286,7 @@ def validate_content(content, archive_dirname,
             and re.match(CombineArchiveContentFormatPattern.TIFF.value, content.format)
         ):
             file_type = CombineArchiveContentFormat.TIFF.name
-            if not (os.path.isfile(filename) and imghdr.what(filename) == 'tiff'):
+            if not (os.path.isfile(filename) and _get_image_format(filename) == 'tiff'):
                 errors.append(['`{}` is not a valid TIFF image.'.format(content.location)])
 
         elif (
@@ -272,7 +295,7 @@ def validate_content(content, archive_dirname,
             and re.match(CombineArchiveContentFormatPattern.WEBP.value, content.format)
         ):
             file_type = CombineArchiveContentFormat.WEBP.name
-            if not (os.path.isfile(filename) and imghdr.what(filename) == 'webp'):
+            if not (os.path.isfile(filename) and _get_image_format(filename) == 'webp'):
                 errors.append(['`{}` is not a valid WEBP image.'.format(content.location)])
 
     if errors:
