@@ -21,6 +21,8 @@ package_data = {
     name: [
         os.path.join('utils', 'identifiers_org.json'),
         os.path.join('model_lang', 'cellml', '*.rng'),
+        os.path.join('model_lang', 'cellml', '*.xsd'),
+        os.path.join('model_lang', 'cellml', '**', '*.xsd'),
         os.path.join('viz', 'vega', '**', '*.json'),
     ],
 }

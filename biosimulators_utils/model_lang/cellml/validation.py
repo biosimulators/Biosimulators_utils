@@ -69,6 +69,23 @@ def validate_model(filename, name=None, resolve_imports=True, config=None):
     return (errors, warnings, (model, root))
 
 
+def validate_doc_against_schema(doc, schema):
+    errors = []
+    warnings = []
+    if not schema.validate(doc):
+        for error in schema.error_log.filter_levels([lxml.etree.ErrorLevels.ERROR, lxml.etree.ErrorLevels.FATAL]):
+            errors.append([
+                '{}.{}: {}'.format(error.line, error.column, error.message)
+            ])
+
+        for warning in schema.error_log.filter_levels(lxml.etree.ErrorLevels.WARNING):
+            warnings.append([
+                '{}.{}: {}'.format(warning.line, warning.column, warning.message)
+            ])
+
+    return errors, warnings
+
+
 def validate_model_version_1_0(filename, doc, resolve_imports=True, config=None):
     """ Check that a file is a valid CellML 2.0 model
 
@@ -98,24 +115,12 @@ def validate_model_version_1_0(filename, doc, resolve_imports=True, config=None)
     #         biosimulators_utils/model_lang/cellml/mathml2.rng
     #     ```
 
-    errors = []
-    warnings = []
-
     schema_filename = pkg_resources.resource_filename('biosimulators_utils',
                                                       os.path.join("model_lang", "cellml", "cellml1.0.rng"))
     schema_doc = lxml.etree.parse(schema_filename)
     schema = lxml.etree.RelaxNG(schema_doc)
 
-    if not schema.validate(doc):
-        for error in schema.error_log.filter_levels([lxml.etree.ErrorLevels.ERROR, lxml.etree.ErrorLevels.FATAL]):
-            errors.append([
-                '{}.{}: {}'.format(error.line, error.column, error.message)
-            ])
-
-        for warning in schema.error_log.filter_levels(lxml.etree.ErrorLevels.WARNING):
-            warnings.append([
-                '{}.{}: {}'.format(warning.line, warning.column, warning.message)
-            ])
+    errors, warnings = validate_doc_against_schema(doc, schema)
 
     return (errors, warnings, None)
 
@@ -128,7 +133,6 @@ def validate_model_version_1_1(filename, doc, resolve_imports=True, config=None)
         doc (:obj:`lxml.etree._ElementTree`): XML document for file
         resolve_imports (:obj:`bool`, optional): whether to resolve imports
         config (:obj:`Config`, optional): whether to fail on missing includes
-
     Returns:
         :obj:`tuple`:
 
@@ -136,10 +140,28 @@ def validate_model_version_1_1(filename, doc, resolve_imports=True, config=None)
             * nested :obj:`list` of :obj:`str`: nested list of errors (e.g., required ids missing or ids not unique)
             * :obj:`None`
     """
-    errors = []
-    warnings = []
+    # ``cellml_1_1_original.xsd`` was obtained from https://www.cellml.org/tools/cellml_1_1_schema
+    # `cellml_1_1.xsd`` was created by were directly downloading all referenced namspaces from
+    # https://www.cellml.org/tools/cellml_1_1_schema/common,
+    # https://www.cellml.org/tools/cellml_1_1_schema/content,
+    # https://www.cellml.org/tools/cellml_1_1_schema/presentation
+    # The original ``cellml_1_1.xsd`` was modified to change the http sources to local sources.
+    # Additionally, the following two lines were removed from the ``cellml_1_1_original.xsd``: 113, 309
+    # These lines added the following to the definitions of "Component" and "Role":  <any namespace="##other" processContents="skip"/>
+    # This caused lxml to fail to parse the schema due to it being nondeterministic.
+    # In its place, <any namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"  processContents="skip" />
+    # was added to allow using RDF syntax in the schema. The RDF is not validated.
+    # Finally, in common/common-attribs.xsd the type of the attribute "id" was changed from "ID" to "string".
+    # This was done to allow using numbers as ids for equations as described in the CellML primer.
 
-    warnings.append(['Validation is not available for CellML 1.1 files.'])
+    schema_filename = pkg_resources.resource_filename('biosimulators_utils',
+                                                      os.path.join("model_lang", "cellml", "cellml_1_1.xsd"))
+
+    xml_schema_doc = lxml.etree.parse(schema_filename)
+
+    schema = lxml.etree.XMLSchema(xml_schema_doc)
+
+    errors, warnings = validate_doc_against_schema(doc, schema)
 
     return (errors, warnings, None)
 
