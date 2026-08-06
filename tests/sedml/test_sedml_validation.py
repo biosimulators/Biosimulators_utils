@@ -1945,6 +1945,59 @@ class ValidationTestCase(unittest.TestCase):
         self.assertIn('The following tasks do not contribute', flatten_nested_list_of_strings(warnings))
 
 
+    def test_validate_repeated_task_xpaths_use_the_referenced_model(self):
+        # Two models with distinctly-named parameters, so a target that resolves against one
+        # cannot resolve against the other.
+        sbml = (
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            '<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">'
+            '<model id="{model}"><listOfParameters>'
+            '<parameter id="{parameter}" value="1" constant="true"/>'
+            '</listOfParameters></model></sbml>'
+        )
+        for model_id, parameter in [('model1', 'p1'), ('model2', 'p2')]:
+            with open(os.path.join(self.dirname, model_id + '.xml'), 'w') as file:
+                file.write(sbml.format(model=model_id, parameter=parameter))
+
+        def build_doc(model_order):
+            models = {
+                model_id: data_model.Model(id=model_id, source=model_id + '.xml',
+                                           language=data_model.ModelLanguage.SBML.value)
+                for model_id in ['model1', 'model2']
+            }
+            doc = data_model.SedDocument()
+            doc.models = [models[model_id] for model_id in model_order]
+            doc.simulations.append(data_model.SteadyStateSimulation(
+                id='sim', algorithm=data_model.Algorithm(kisao_id='KISAO_0000019')))
+            doc.tasks.append(data_model.Task(id='task1', model=models['model1'], simulation=doc.simulations[0]))
+            repeated_task = data_model.RepeatedTask(
+                id='task2',
+                sub_tasks=[data_model.SubTask(order=1, task=doc.tasks[0])],
+                ranges=[data_model.VectorRange(id='range1', values=[1., 2.])],
+            )
+            repeated_task.range = repeated_task.ranges[0]
+            repeated_task.changes.append(
+                data_model.SetValueComputeModelChange(
+                    model=models['model1'],
+                    # `p1` is a parameter of model1, which is the model this change references
+                    target="/sbml:sbml/sbml:model/sbml:listOfParameters/sbml:parameter[@id='p1']/@value",
+                    target_namespaces={'sbml': 'http://www.sbml.org/sbml/level3/version2/core'},
+                    range=repeated_task.ranges[0],
+                    math='range1',
+                )
+            )
+            doc.tasks.append(repeated_task)
+            return doc
+
+        # The target must be checked against the model the change references, wherever that
+        # model happens to sit in the document. Previously every change was checked against
+        # the last model in `doc.models`, so this passed in one order and failed in the other.
+        for model_order in [['model1', 'model2'], ['model2', 'model1']]:
+            errors, _ = validation.validate_doc(build_doc(model_order), self.dirname,
+                                                validate_models_with_languages=False)
+            self.assertEqual(errors, [], 'unexpected errors with model order {}'.format(model_order))
+
+
 if __name__ == "__main__":
     import pytest
     pytest.main(["test_sedml_validation.py"])
