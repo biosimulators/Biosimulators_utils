@@ -356,7 +356,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                                     variable.model.language, variable.model.id,
                                     check_in_model_source=validate_targets_with_model_sources,
                                     model_change=variable.model.has_structural_changes(),
-                                    model_etree=model_etrees.get(model, None),
+                                    model_etree=model_etrees.get(variable.model, None),
                                 )
                                 variable_errors.extend(temp_errors)
                                 variable_warnings.extend(temp_warnings)
@@ -506,7 +506,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                                 ModelChange, change.model.language, change.model.id,
                                 check_in_model_source=validate_targets_with_model_sources,
                                 model_change=change.model and change.model.has_structural_changes(),
-                                model_etree=model_etrees.get(model, None),
+                                model_etree=model_etrees.get(change.model, None),
                             )
                             change_errors.extend(temp_errors)
                             change_warnings.extend(temp_warnings)
@@ -548,7 +548,7 @@ def validate_doc(doc, working_dir, validate_semantics=True,
                                 Calculation, variable.model.language, variable.model.id,
                                 check_in_model_source=validate_targets_with_model_sources,
                                 model_change=change.model and change.model.has_structural_changes(),
-                                model_etree=model_etrees.get(model, None),
+                                model_etree=model_etrees.get(variable.model, None),
                             )
                             variable_errors.extend(temp_errors)
                             variable_warnings.extend(temp_warnings)
